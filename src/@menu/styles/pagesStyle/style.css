@@ -1,0 +1,14 @@
+/*  TABLE CODE  */
+
+/* In your CSS or module */
+.table thead th:not(:last-child) {
+  border-right: 1px solid #ccc;
+}
+
+.table thead tr {
+  border-bottom: 2px solid #aaa;
+}
+
+.table thead th {
+  border-bottom: 2px solid #aaa;
+}
