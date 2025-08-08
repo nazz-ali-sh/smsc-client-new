@@ -63,13 +63,13 @@ const AppReactDatepicker = styled('div')(({ theme }: { theme: Theme }) => ({
               backgroundColor: theme.palette.action.hover
             },
             '&.react-datepicker__day--selected': {
-              backgroundColor: theme.palette.primary.light,
-              color: theme.palette.primary.main,
+              backgroundColor: '#35C0ED',
+              color: 'white',
               fontWeight: 600
             },
             '&.react-datepicker__day--keyboard-selected': {
-              backgroundColor: theme.palette.primary.light,
-              color: theme.palette.primary.main,
+              backgroundColor: '#35C0ED',
+              color: 'white',
               fontWeight: 600
             },
             '&.react-datepicker__day--disabled': {

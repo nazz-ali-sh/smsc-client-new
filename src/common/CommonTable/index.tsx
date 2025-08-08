@@ -71,7 +71,7 @@ function CommonTable<T>({
         <CardHeader
           title={
             title ? (
-              <div className='flex justify-between items-center'>
+              <div className='flex justify-between items-center pb-5 pt-2'>
                 <Typography variant='h4' component='h2' className='font-bold'>
                   {title}
                 </Typography>
@@ -87,7 +87,7 @@ function CommonTable<T>({
           <table className={tableStyles?.table} style={{ tableLayout: 'fixed', width: '100%' }}>
             <thead>
               {table?.getHeaderGroups()?.map(headerGroup => (
-                <tr key={headerGroup?.id}>
+                <tr key={headerGroup?.id} className='text-[#262B43E5] text-[13px] font-normal '>
                   {headerGroup?.headers?.map(header => (
                     <th key={header.id}>
                       <div
@@ -95,7 +95,8 @@ function CommonTable<T>({
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
                           whiteSpace: 'nowrap',
-                          cursor: enableSorting && header.column.getCanSort() ? 'pointer' : 'default'
+                          cursor: enableSorting && header.column.getCanSort() ? 'pointer' : 'default',
+                          fontWeight: 400
                         }}
                         onClick={enableSorting ? header.column.getToggleSortingHandler() : undefined}
                         className={enableSorting && header.column.getCanSort() ? ' transition-colors' : ''}
@@ -135,7 +136,11 @@ function CommonTable<T>({
                           maxWidth: cell?.column?.columnDef?.size || '1px',
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap'
+                          whiteSpace: 'nowrap',
+                          color: '#262B43E5',
+                          fontSize: '12px',
+                          paddingTop: '22px',
+                          paddingBottom: '22px'
                         }}
                       >
                         {flexRender(cell?.column?.columnDef?.cell, cell.getContext())}

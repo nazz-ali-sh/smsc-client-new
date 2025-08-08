@@ -104,6 +104,7 @@ declare module '@mui/material/styles' {
       tooltipText: string
       trackBg: string
       ligthBlue: string
+      ligthBlue1: string
       darkGray: string
       darkBlue: string
       textGray: string
@@ -113,17 +114,24 @@ declare module '@mui/material/styles' {
       purple2: string
       cyan1: string
       cyan2: string
+      cyan3: string
       orange1: string
       orange2: string
       green1: string
       green2: string
       green3: string
       green4: string
+      green5: string
+      green6: string
+      green7: string
       gray1: string
       gray2: string
       gray3: string
       gray4: string
       gray5: string
+      gray6: string
+      gray7: string
+      gray8: string
       red1: string
       red2: string
     }

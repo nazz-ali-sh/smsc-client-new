@@ -32,7 +32,7 @@ export const locationSchema = object({
     lat: string(),
     lng: string()
   }),
-  city: optional(string()), 
+  city: optional(string()),
   state: optional(string())
 })
 

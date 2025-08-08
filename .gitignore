@@ -39,3 +39,14 @@ next-env.d.ts
 # icon generated file
 src/assets/iconify-icons/generated-icons.js
 src/assets/iconify-icons/generated-icons.css
+
+# TypeScript and build cache
+.next/cache/
+.tsbuildinfo
+*.tsbuildinfo
+
+# ESLint cache
+.eslintcache
+
+# Bundle analyzer
+.next/analyze/

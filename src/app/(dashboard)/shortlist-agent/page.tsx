@@ -54,7 +54,7 @@ export default function Pages() {
       <div className='my-[50px]'>
         <HorizontalLinearStepper />
       </div>
-      
+
       <section className='shadow-xl p-5 rounded-xl '>
         <Typography variant='h2' className='pl-6 font-bold'>
           Shortlisted Agents

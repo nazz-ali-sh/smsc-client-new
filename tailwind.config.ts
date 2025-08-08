@@ -17,7 +17,8 @@ const config: Config = {
         borderprimary: '#E0E0E0',
         bordercolor: '#F1F1F3',
         bordercolor1: '#35C0ED',
-        darkblue: '#1F4E8D'
+        darkblue: '#1F4E8D',
+        textGray: '#696969'
         // textprimary: '#6B7280'
         // textsecondar: '#111827',
       }

@@ -1,19 +1,27 @@
 {
-  "name": "materialize-mui-nextjs-admin-template",
+  "name": "smsc-client",
   "version": "4.0.1",
   "license": "Commercial",
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:fast": "next dev --turbo",
+    "dev:no-lint": "SKIP_ENV_VALIDATION=true next dev --turbo",
     "build": "next build",
+    "build:analyze": "ANALYZE=true next build",
+    "build:production": "NODE_ENV=production next build",
     "start": "next start",
     "lint": "next lint",
-    "lint:fix": "next lint --fix",
+    "lint:fast": "next lint --cache --cache-location .next/cache/.eslintcache",
+    "lint:fix": "next lint --fix --cache",
+    "type-check": "tsc --noEmit --incremental --tsBuildInfoFile .next/cache/tsbuildinfo",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
     "check": "prettier --check \"**/*.{ts,tsx,js,jsx,md,mdx,css,yaml,yml}\"",
     "build:icons": "tsx src/assets/iconify-icons/bundle-icons-css.ts",
     "postinstall": "npm run build:icons",
-    "prepare": "husky"
+    "prepare": "husky",
+    "clean": "rimraf .next out dist",
+    "clean:cache": "rimraf .next/cache node_modules/.cache"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -73,6 +81,7 @@
     "@iconify/tools": "4.0.4",
     "@iconify/types": "2.0.0",
     "@iconify/utils": "2.1.25",
+    "@next/bundle-analyzer": "^15.4.5",
     "@types/node": "^20.14.12",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",

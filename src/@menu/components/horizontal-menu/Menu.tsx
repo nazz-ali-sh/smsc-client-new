@@ -106,7 +106,7 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
     {
       image: <i className='ri-mail-open-line'></i>,
       menuItem: 'Tender information',
-      href: '/'
+      href: '/tender-information-update'
     },
     {
       image: <i className='ri-database-line'></i>,
@@ -120,23 +120,23 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
     },
     {
       image: <i className='ri-file-list-2-line'></i>,
-      menuItem: 'Video Calls',
-      href: '/'
+      menuItem: 'Invites',
+      href: '/rmc-calendar'
     },
     {
       image: <i className='ri-pages-line'></i>,
-      menuItem: 'Site Visits',
-      href: '/'
+      menuItem: 'Chats',
+      href: '/chats'
     },
     {
       image: <i className='ri-bar-chart-2-line'></i>,
       menuItem: 'Final Selection',
-      href: '/'
+      href: '/final-selection'
     },
     {
       image: <i className='ri-bar-chart-2-line'></i>,
-      menuItem: 'Insurance',
-      href: '/'
+      menuItem: 'Archive',
+      href: '/archive'
     }
   ])
 

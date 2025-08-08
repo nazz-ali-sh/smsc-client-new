@@ -38,22 +38,24 @@ const SidebarLeft = (props: SidebarLeftProps) => {
   const colorsArr = calendarsColor ? Object.entries(calendarsColor) : []
 
   const renderFilters = colorsArr.length
-    ? colorsArr.map(([key, value]: string[]) => {
-        return (
-          <FormControlLabel
-            className='mbe-1'
-            key={key}
-            label={key}
-            control={
-              <Checkbox
-                color={value as ThemeColor}
-                checked={calendarStore.selectedCalendars.indexOf(key as CalendarFiltersType) > -1}
-                onChange={() => dispatch(filterCalendarLabel(key as CalendarFiltersType))}
-              />
-            }
-          />
-        )
-      })
+    ? colorsArr
+        .filter(([key]: string[]) => key === 'Site Visits' || key === 'Online Calls')
+        .map(([key, value]: string[]) => {
+          return (
+            <FormControlLabel
+              className='mbe-1'
+              key={key}
+              label={key}
+              control={
+                <Checkbox
+                  color={value as ThemeColor}
+                  checked={calendarStore.selectedCalendars.indexOf(key as CalendarFiltersType) > -1}
+                  onChange={() => dispatch(filterCalendarLabel(key as CalendarFiltersType))}
+                />
+              }
+            />
+          )
+        })
     : null
 
   const handleSidebarToggleSidebar = () => {
@@ -170,11 +172,14 @@ const SidebarLeft = (props: SidebarLeftProps) => {
                 size='small'
                 onClick={() => setSiteVisitsModalOpen(true)}
                 sx={{
-                  borderColor: 'primary.main',
-                  color: 'primary.main',
+                  height: 20,
+                  borderColor: 'customColors.cyan2',
+                  color: 'customColors.cyan2',
+                  backgroundColor: 'transparent !important',
                   '&:hover': {
-                    borderColor: 'primary.dark',
-                    backgroundColor: 'primary.light'
+                    borderColor: 'customColors.cyan2',
+                    backgroundColor: 'transparent !important',
+                    color: 'customColors.cyan2'
                   }
                 }}
               >
@@ -188,11 +193,14 @@ const SidebarLeft = (props: SidebarLeftProps) => {
                 size='small'
                 onClick={() => setOnlineCallsModalOpen(true)}
                 sx={{
-                  borderColor: 'primary.main',
-                  color: 'primary.main',
+                  height: 20,
+                  borderColor: 'customColors.cyan2',
+                  color: 'customColors.cyan2',
+                  backgroundColor: 'transparent !important',
                   '&:hover': {
-                    borderColor: 'primary.dark',
-                    backgroundColor: 'primary.light'
+                    borderColor: 'customColors.cyan2',
+                    backgroundColor: 'transparent !important',
+                    color: 'customColors.cyan2'
                   }
                 }}
               >

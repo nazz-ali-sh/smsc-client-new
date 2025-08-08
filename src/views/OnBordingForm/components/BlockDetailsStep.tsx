@@ -19,7 +19,7 @@ import {
 } from '@mui/material'
 
 import { toast } from 'react-toastify'
-import { useMutation} from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 
 import { updateBlockDetails, setCurrentStep } from '@/redux-store/slices/multiStepForm'
 import { blockDetailsSchema } from './PreFunnelSchema'
@@ -58,7 +58,7 @@ const BlockDetailsStep: React.FC<BlockDetailsStepProps> = ({ formData, currentSt
 
   const handleCloseModal = () => {
     setIsModalOpen(false)
-    setModalDismissed(true) 
+    setModalDismissed(true)
   }
 
   const handleConfirm = () => {
@@ -68,8 +68,8 @@ const BlockDetailsStep: React.FC<BlockDetailsStepProps> = ({ formData, currentSt
   }
 
   const session_id = useSelector((state: RootState) => state.form.steps.location.session_id)
-   
-  //  comments for a time beings 
+
+  //  comments for a time beings
 
   // const { data, isLoading } = useQuery({
   //   queryKey: ['getballPark', session_id],

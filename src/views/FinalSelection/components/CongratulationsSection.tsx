@@ -8,7 +8,7 @@ import { finalSelectionData } from '../data'
 
 const CongratulationsSection = () => {
   return (
-    <Card sx={{ mb: 3 }}>
+    <Card>
       <CardContent>
         <Grid container alignItems='center' spacing={4}>
           <Grid item xs={12} md={8}>
@@ -23,13 +23,14 @@ const CongratulationsSection = () => {
                   mb: 1
                 }}
               >
-                Congratulations!
+                Congratulations! 🎉
               </Typography>
               <Typography
                 variant='h5'
                 sx={{
-                  fontWeight: 500,
-                  fontSize: 20
+                  fontWeight: 300,
+                  fontSize: '20px',
+                  color: 'customColors.gray8'
                 }}
               >
                 You’ve appointed a new managing agent
@@ -40,10 +41,11 @@ const CongratulationsSection = () => {
                   color: 'customColors.darkBlue',
                   fontWeight: 600,
                   mt: 2,
-                  fontSize: 18
+                  fontSize: '18px'
                 }}
               >
-                Start Date: {finalSelectionData.startDate}
+                Start Date:
+                <span className='font-normal pl-1'>{finalSelectionData.startDate}</span>
               </Typography>
             </Box>
           </Grid>

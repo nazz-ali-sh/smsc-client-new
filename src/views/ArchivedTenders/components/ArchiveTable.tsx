@@ -71,9 +71,9 @@ const ArchiveTable = () => {
           const meetingHeld = info.getValue()
 
           return (
-            <div className='text-sm'>
-              <div>Video Calls: {meetingHeld.videoCalls}</div>
-              <div>Site Visits: {meetingHeld.siteVisits}</div>
+            <div className='text-[12px] text-[#262B43E5]'>
+              <p>Video Calls: {meetingHeld.videoCalls}</p>
+              <p>Site Visits: {meetingHeld.siteVisits}</p>
             </div>
           )
         },

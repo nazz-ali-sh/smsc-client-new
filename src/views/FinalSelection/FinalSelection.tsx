@@ -10,7 +10,7 @@ const FinalSelection = () => {
   return (
     <Container maxWidth={false} sx={{ py: 4 }}>
       <Box>
-        <Grid container spacing={4}>
+        <Grid container spacing={8}>
           <Grid item xs={12}>
             <CongratulationsSection />
           </Grid>

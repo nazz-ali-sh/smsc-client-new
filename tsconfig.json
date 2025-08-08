@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "ES2022",
     "downlevelIteration": true,
     "lib": [
       "DOM",
       "DOM.Iterable",
-      "ESNext"
+      "ES2022"
     ],
     "allowJs": true,
     "skipLibCheck": true,
@@ -19,6 +19,11 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    // Performance optimizations
+    "tsBuildInfoFile": ".next/cache/tsbuildinfo",
+    "assumeChangesOnlyAffectDirectDependencies": true,
+    // Faster type checking
+    "verbatimModuleSyntax": true,
     "plugins": [
       {
         "name": "next"
@@ -60,6 +65,15 @@
     ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
-  ]
+    "node_modules",
+    ".next",
+    "out",
+    "dist"
+  ],
+  // Speed up type checking
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
+  }
 }

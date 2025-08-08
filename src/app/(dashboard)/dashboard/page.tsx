@@ -8,8 +8,7 @@ import type { RootState } from '@/redux-store'
 import { dashboardData } from '@/services/dashboard-apis/dashboard-api'
 import AccordionExpand from '@/views/Dashboard/AccordionExpand'
 import CurrentActivity from '@/views/Dashboard/CurrentActivity'
-import HorizontalLinearStepper from '@/views/Dashboard/HorizontalLinearStepper'
-import PopularInstructors from '@/views/Dashboard/PopularInstructors'
+import { TenderCards } from '@/views/Dashboard/PopularInstructors'
 import WeeklyReport from '@/common/WeeklyReport'
 
 interface Stage {
@@ -64,11 +63,11 @@ export default function Page() {
       <section className='flex w-full'>
         <WeeklyReport dashboard dashboardResponce={dashboardResponce} />
       </section>
-      <div className='my-[50px]'>
-        <HorizontalLinearStepper dashboardResponce={dashboardResponce} />
+      <div className='mt-3'>
+        <TenderCards />
       </div>
-      <PopularInstructors />
-      <div className='mt-[50px]'>
+
+      <div className='mt-[36px]'>
         <CurrentActivity />
       </div>
       <div className='mt-[70px] mb-[60px]'>

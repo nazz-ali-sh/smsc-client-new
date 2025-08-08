@@ -5,24 +5,20 @@ import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
 
 import CalendarWrapper from './components/CalendarWrapper'
-import InvitesCard from './components/InvitesCard'
-import PrimaryUserCard from './components/PrimaryUserCard'
 import MetricCards from './components/MetricCards'
 
 import AppFullCalendar from '@/libs/styles/AppFullCalendar'
+import WeeklyReport from '@/common/WeeklyReport'
 
 const RmcCalendar = () => {
   return (
-    <Box className='p-5'>
+    <Box className=''>
       <Grid container spacing={3} className='mbe-6'>
-        <Grid item xs={12} md={6}>
-          <InvitesCard />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <PrimaryUserCard />
-        </Grid>
+        <WeeklyReport dashboard={undefined} dashboardResponce={undefined} />
       </Grid>
+
       <MetricCards />
+
       <Card className='overflow-visible'>
         <AppFullCalendar className='app-calendar'>
           <CalendarWrapper />

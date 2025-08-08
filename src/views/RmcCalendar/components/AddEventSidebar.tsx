@@ -107,10 +107,34 @@ const AddEventSidebar = (props: AddEventSidebarType) => {
   const RenderModalFooter = () => {
     return (
       <Box className='flex items-center gap-2'>
-        <Button variant='outlined' onClick={handleModalClose}>
+        <Button
+          variant='outlined'
+          onClick={handleModalClose}
+          sx={{
+            borderColor: 'customColors.cyan2',
+            color: 'customColors.cyan2',
+            backgroundColor: 'transparent !important',
+            '&:hover': {
+              borderColor: 'customColors.cyan2',
+              backgroundColor: 'transparent !important',
+              color: 'customColors.cyan2'
+            }
+          }}
+        >
           Reset
         </Button>
-        <Button variant='contained' type='submit'>
+
+        <Button
+          variant='contained'
+          type='submit'
+          sx={{
+            backgroundColor: 'customColors.ligthBlue',
+            paddingX: '30px',
+            '&:hover': {
+              backgroundColor: 'customColors.ligthBlue'
+            }
+          }}
+        >
           {calendarStore.selectedEvent !== null &&
           calendarStore.selectedEvent.title &&
           calendarStore.selectedEvent.title.length
@@ -151,7 +175,7 @@ const AddEventSidebar = (props: AddEventSidebarType) => {
       aria-describedby='add-event-modal-description'
     >
       <Box sx={modalStyle}>
-        <Box className='flex justify-between items-center mbe-4'>
+        <Box className='flex justify-between items-center mbe-4 px-4'>
           <Typography variant='h5'>
             {calendarStore.selectedEvent &&
             calendarStore.selectedEvent.title &&
@@ -177,7 +201,7 @@ const AddEventSidebar = (props: AddEventSidebarType) => {
           )}
         </Box>
 
-        <form onSubmit={handleSubmit(onSubmit)} autoComplete='off'>
+        <form onSubmit={handleSubmit(onSubmit)} className='px-4' autoComplete='off'>
           <FormControl fullWidth className='mbe-5'>
             <Controller
               name='title'

@@ -8,14 +8,14 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 import Link from '@mui/material/Link'
-import { Box, Stack } from '@mui/material'
+import { Box, Divider, Stack } from '@mui/material'
 
 import { Document, Page, pdfjs } from 'react-pdf'
 
 import 'react-pdf/dist/Page/AnnotationLayer.css'
 import 'react-pdf/dist/Page/TextLayer.css'
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString()
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`
 
 import companyImage from '../../../../public/images/customImages/company.png'
 
@@ -27,13 +27,13 @@ const ManagingAgentDetails = () => {
   }
 
   console.log(numPages, 'numPages')
-  const iconStyle = { fontSize: '20px' }
+  const iconStyle = { fontSize: '17px' }
 
   return (
     <Card>
       <CardContent className='flex flex-col   '>
         <div className='flex flex-col '>
-          <div className='flex flex-col items-center justify-center gap-y-4'>
+          <div className='flex flex-col items-center justify-center gap-y-4 pt-4'>
             <Image alt='user-profile' src={companyImage} width={155} height={155} className='rounded-lg' />
           </div>
           <Typography
@@ -42,8 +42,11 @@ const ManagingAgentDetails = () => {
           >
             PMA-SE10077
           </Typography>
+          <Box sx={{ marginX: '28px', marginTop: '12px' }}>
+            <Divider />
+          </Box>
           <Typography
-            className='flex justify-center items-center text-[18px] leading-[22px]'
+            className='flex justify-center items-center text-[18px] pt-4 leading-[22px]'
             sx={{ color: 'customColors.darkGray1' }}
           >
             Ouma Property Management London
@@ -51,29 +54,35 @@ const ManagingAgentDetails = () => {
           <Link
             href='#'
             underline='none'
-            sx={{ color: 'customColors.ligthBlue', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            sx={{
+              color: 'customColors.ligthBlue',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingTop: '5px'
+            }}
           >
             www.oumapropertymanagement.co.uk
           </Link>
         </div>
-        <Stack spacing={3} sx={{ color: 'text.primary', paddingX: '28px', paddingTop: '22.5px' }}>
+        <Stack spacing={5} sx={{ color: 'text.primary', paddingX: '28px', paddingTop: '22.5px' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <i className='ri-user-line' style={iconStyle} />
+            <i className='ri-user-line text-[#696969]' style={iconStyle} />
             <Typography variant='body2'>David Greenway</Typography>
           </Box>
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <i className='ri-mail-line' style={iconStyle} />
+            <i className='ri-mail-line text-[#696969]' style={iconStyle} />
             <Typography variant='body2'>david@oumapropertymanagement.co.uk</Typography>
           </Box>
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <i className='ri-phone-line' style={iconStyle} />
+            <i className='ri-phone-line text-[#696969]' style={iconStyle} />
             <Typography variant='body2'>07825 97 3421</Typography>
           </Box>
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <i className='ri-map-pin-line' style={iconStyle} />
+            <i className='ri-map-pin-line text-[#696969]' style={iconStyle} />
             <Typography variant='body2'>52 Old Quay Street London SW11 6HP</Typography>
           </Box>
         </Stack>

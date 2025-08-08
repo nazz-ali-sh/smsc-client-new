@@ -264,7 +264,6 @@ const OnlineCallsModal: React.FC<OnlineCallsModalProps> = ({ open, onClose }) =>
             />
           </Grid>
 
-          {/* Start Time and End Time */}
           <Grid item xs={12} md={6}>
             <TextField
               fullWidth

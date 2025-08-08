@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import { Controller, useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
-import ReCAPTCHA from 'react-google-recaptcha'
+import { default as ReCAPTCHA } from 'react-google-recaptcha'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
@@ -251,7 +251,7 @@ const TenderDetailsStep: React.FC<TenderDetailsStepProps> = ({
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          {/* @ts-ignore */}
+          {/** @ts-expect-error */}
           <ReCAPTCHA
             sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
             ref={recaptchaRef}

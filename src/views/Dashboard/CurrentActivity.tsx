@@ -9,7 +9,6 @@ import { Button, Typography } from '@mui/material'
 
 import line from '../../../public/images/customImages/line.svg'
 
-// Dynamically import react-pdf components to avoid SSR issues
 const Document = dynamic(() => import('react-pdf').then(mod => ({ default: mod.Document })), {
   ssr: false,
   loading: () => <div className='w-[160px] h-[145px] bg-gray-200 animate-pulse rounded'></div>
@@ -19,7 +18,6 @@ const Page = dynamic(() => import('react-pdf').then(mod => ({ default: mod.Page 
   ssr: false
 })
 
-// Array of PDF objects with file and label
 const pdfFiles = [
   { file: '/data.pdf', label: 'Download Scheduled Calls Report' },
   { file: '/data.pdf', label: 'Download Shortlisted Agents' }
@@ -28,7 +26,7 @@ const pdfFiles = [
 const CurrentActivity = () => {
   const [numPages, setNumPages] = useState<number | null>(null)
   const [isClient, setIsClient] = useState(false)
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null) // Track hovered PDF index
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
   useEffect(() => {
     setIsClient(true)
@@ -42,53 +40,50 @@ const CurrentActivity = () => {
 
   return (
     <>
-      <div className='bg-white p-4 md:p-8 shadow-xl rounded-lg'>
+      <div className='bg-white p-4 md:p-8 shadow-xl  rounded-lg h-[288px]'>
         <div className=''>
           <section className='flex justify-between items-start w-[100%] '>
-            <Typography variant='h3' className='w-[50%]'>
+            <Typography variant='h3' className='w-[50%] text-[18px]'>
               Current Activity
             </Typography>
-            <Typography variant='h3' className='w-[50%] pl-[40px]'>
+            <Typography variant='h3' className='w-[50%] pl-[40px] text-[18px]'>
               Download Reports
             </Typography>
           </section>
-          <div className='flex  items-center justify-between '>
-            {/* Current Activity Section */}
+          <div className='flex items-start justify-between pt-3'>
             <div className=' w-[50%]'>
               <div className='flex gap-x-[70px] items-center '>
-                <div className='bg-white rounded-lg shadow-sm border border-gray-200 p-6 w-[259px] h-[160px]'>
+                <div className='bg-white rounded-lg shadow-sm border border-gray-200 px-[20px] py-[20px] w-[259px] h-[145px]'>
                   <div className='flex items-center justify-between mb-4'>
                     <div className='flex items-center space-x-4'>
                       <div className=' bg-sky p-2 flex items-center rounded-lg'>
                         <i className='ri-customer-service-2-line bg-buttonPrimary'></i>
                       </div>
                       <div>
-                        <div className='text-2xl font-bold text-gray-900'>27</div>
-                        <div className='text-gray-600'>Schedule Calls</div>
+                        <div className='text-2xl font-bold text-gray-900 text-[18px]'>27</div>
+                        <div className='text-textGray text-[14px]'>Schedule Calls</div>
                       </div>
                     </div>
                   </div>
-                  <section className='flex justify-end items-end mt-6'>
+                  <section className='flex justify-end items-end mt-5'>
                     <Button variant='contained' className=' bg-buttonPrimary'>
                       View List <i className='ri-arrow-right-line bg-white ml-2 size-[18px]'></i>
                     </Button>
                   </section>
                 </div>
-
-                {/* Shortlisted Agents Card */}
-                <div className='bg-white rounded-lg shadow-sm border border-gray-200 p-6 w-[259px] h-[160px]'>
+                <div className='bg-white rounded-lg shadow-sm border border-gray-200 p-5 w-[259px] h-[145px]'>
                   <div className='flex items-center justify-between mb-4'>
                     <div className='flex items-center justify-center space-x-4'>
-                      <div className='bg-blue-100 p-2 flex items-center rounded-lg'>
-                        <i className='ri-user-3-line bg-buttonPrimary'></i>
+                      <div className='bg-[#E6E7FF] p-2 flex items-center rounded-lg'>
+                        <i className='ri-user-3-line bg-[#666CFF]'></i>
                       </div>
                       <div>
                         <div className='text-2xl font-bold text-gray-900'>6</div>
-                        <div className='text-gray-600'>Shortlisted Agents</div>
+                        <div className='text-[14px] text-textGray '>Shortlisted Agents</div>
                       </div>
                     </div>
                   </div>
-                  <section className='flex justify-end items-end mt-6'>
+                  <section className='flex justify-end items-end mt-5'>
                     <Button variant='contained' className='bg-buttonPrimary'>
                       View List <i className='ri-arrow-right-line bg-white ml-2 size-[18px]'></i>
                     </Button>
@@ -96,19 +91,10 @@ const CurrentActivity = () => {
                 </div>
               </div>
             </div>
-
-            {/* Download Reports Section */}
-
             <section className='w-[50%]'>
-              {/* <Typography variant='h2' align='center'>
-                Download Reports
-              </Typography> */}
-
-              {/* Mid Line */}
-
               <div className='flex '>
                 <div>
-                  <Image src={line} alt='horizontal line' height={300} />
+                  <Image src={line} alt='horizontal line' height={166} />
                 </div>
                 <div className=' w-[100%] relative space-y-8 flex items-end justify-between  '>
                   {pdfFiles.map(({ file, label }, index) => (
@@ -118,7 +104,7 @@ const CurrentActivity = () => {
                         onMouseEnter={() => setHoveredIndex(index)}
                         onMouseLeave={() => setHoveredIndex(null)}
                       >
-                        {/* PDF Thumbnail */}
+                        {' '}
                         {isClient && (
                           <Document
                             file={file}
@@ -128,8 +114,6 @@ const CurrentActivity = () => {
                             <Page pageNumber={1} width={160} height={145} />
                           </Document>
                         )}
-
-                        {/* Hover Preview */}
                         {hoveredIndex === index && isClient && (
                           <div className='absolute top-0 left-0 z-10 bg-white shadow-lg border border-gray-200'>
                             <Document
@@ -142,8 +126,6 @@ const CurrentActivity = () => {
                           </div>
                         )}
                       </div>
-
-                      {/* Download Link */}
                       <section className='w-[100%]'>
                         <Typography variant='body1' align='center' className='mt-2 cursor-pointer '>
                           <a

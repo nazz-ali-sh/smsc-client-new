@@ -16,9 +16,6 @@ export const tenderResponce = async (tender_id: number) => {
   }
 }
 
-
-
-
 export const ShortlistedPma = async (tender_id: number, pma_user_ids: number[]) => {
   try {
     const url = apiEndpoints.selectShortListpma()
@@ -26,7 +23,7 @@ export const ShortlistedPma = async (tender_id: number, pma_user_ids: number[]) 
     // Create the payload to send in the request body
     const payload = {
       tender_id,
-      pma_user_ids,
+      pma_user_ids
     }
 
     console.log('Generated URL:', url)
@@ -42,8 +39,7 @@ export const ShortlistedPma = async (tender_id: number, pma_user_ids: number[]) 
   }
 }
 
-
-// 
+//
 
 export const finalShortListedAgent = async (tender_id: number) => {
   try {
@@ -59,4 +55,3 @@ export const finalShortListedAgent = async (tender_id: number) => {
     throw error
   }
 }
-

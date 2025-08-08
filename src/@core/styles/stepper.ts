@@ -49,25 +49,23 @@ const StepperWrapper = styled(Box)<BoxProps>(({ theme }) => {
       },
 
       '& .MuiStepIcon-root': {
-        color: theme.palette.grey[400], 
+        color: theme.palette.grey[400],
         '&.Mui-active': {
-          color: '#35c0ed' 
+          color: '#35c0ed'
         },
         '&.Mui-completed': {
-          color: '#35c0ed' 
+          color: '#35c0ed'
         }
       },
 
       '& .MuiStepLabel-label': {
         '&.Mui-active': {
-          color: '#35c0ed' 
+          color: '#35c0ed'
         },
         '&.Mui-completed': {
-          color: '#35c0ed' 
+          color: '#35c0ed'
         }
       }
-
-
     },
     '& .MuiStepConnector-root': {
       '& .MuiStepConnector-line': {
@@ -76,8 +74,7 @@ const StepperWrapper = styled(Box)<BoxProps>(({ theme }) => {
       },
       '&.Mui-active, &.Mui-completed': {
         '& .MuiStepConnector-line': {
-          
-          borderColor: '#35c0ed' 
+          borderColor: '#35c0ed'
         }
       },
       '&.Mui-disabled .MuiStepConnector-line': {
@@ -103,14 +100,12 @@ const StepperWrapper = styled(Box)<BoxProps>(({ theme }) => {
           borderInlineStartWidth: 3,
           marginInlineStart: theme.spacing(2.25),
 
-        
-          borderColor: '#35c0ed' 
+          borderColor: '#35c0ed'
         },
         '& .button-wrapper': {
           marginTop: theme.spacing(4)
         },
         '&.active + .MuiStepConnector-root .MuiStepConnector-line': {
-         
           borderColor: '#35c0ed'
         }
       },

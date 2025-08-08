@@ -30,7 +30,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ title, count, iconClass, colo
       <Typography variant='body2' color='text.secondary' sx={{ mb: 0.5, fontSize: '0.875rem' }}>
         {title}
       </Typography>
-      <Typography variant='h5' sx={{ fontWeight: 600, color: color }}>
+      <Typography variant='h5' sx={{ fontWeight: 700, color: color }}>
         {count}
       </Typography>
     </div>
@@ -40,11 +40,16 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ title, count, iconClass, colo
 const SummaryCards = () => {
   return (
     <Card sx={{ p: 2 }}>
-      <div className='mb-8 px-[25px]'>
-        <Typography variant='h3' sx={{ color: 'customColors.gray3' }} component='h1' className='font-bold mb-2'>
+      <div className='mb-3 px-[25px]'>
+        <Typography
+          variant='h3'
+          sx={{ color: 'customColors.darkGray1', paddingTop: '25px', fontSize: '28px' }}
+          component='h1'
+          className='font-bold '
+        >
           Archived Tenders
         </Typography>
-        <Typography variant='body1' color='text.secondary' className='max-w-2xl '>
+        <Typography variant='body1' color='text.secondary' className='max-w-2xl pt-1'>
           Lorem ipsum dolor sit amet consectetur. Nullam cursus dictum ultrices aenean leo.
         </Typography>
       </div>

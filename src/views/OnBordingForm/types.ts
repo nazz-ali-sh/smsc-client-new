@@ -46,24 +46,23 @@ export interface LatLng {
   lng: number
 }
 
+export interface RtmRole {
+  id: number | string
+  name: string
+  email: string
+  phone_no: string
+  address: string
+  created_at: string
+  updated_at: string
+}
 
- export interface RtmRole {
-    id: number | string
-    name: string
-    email: string
-    phone_no: string
-    address: string
-    created_at: string
-    updated_at: string
-  }
+export interface NearByPmaParams {
+  lat: number
+  lng: number
+  radius: number
+}
 
-  export interface NearByPmaParams {
-    lat: number
-    lng: number
-    radius: number
-  }
-
-  export interface AutocompleteSuggestion {
+export interface AutocompleteSuggestion {
   placePrediction?: {
     place: string
     placeId: string
