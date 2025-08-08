@@ -101,7 +101,7 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
     {
       image: <i className='ri-home-smile-line'></i>,
       menuItem: 'Dashboard',
-      href: '/dashboard'
+      href: '/home'
     },
     {
       image: <i className='ri-mail-open-line'></i>,
