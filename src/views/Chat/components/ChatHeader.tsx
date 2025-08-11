@@ -11,7 +11,14 @@ interface ChatHeaderProps {
 
 const ChatHeader = ({ contactName, contactRole, contactAvatar, isOnline }: ChatHeaderProps) => {
   return (
-    <Card className='p-4 border-b border-gray-200 bg-white shadow-sm'>
+    <Card
+      sx={{
+        borderTopLeftRadius: 0,
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0
+      }}
+      className='p-4 py-[20.5px] border-b border-gray-200 bg-white shadow-sm'
+    >
       <Box className='flex items-center justify-between'>
         <Box className='flex items-center gap-3'>
           <Box className='relative'>

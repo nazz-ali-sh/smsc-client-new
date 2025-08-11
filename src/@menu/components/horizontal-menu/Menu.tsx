@@ -145,14 +145,14 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
   return (
     <HorizontalMenuContext.Provider value={providerValue}>
       <FloatingTree>
-        <div className='flex items-center justify-center gap-x-[20px]'>
+        <div className='flex items-center justify-center gap-x-[20px] min-w-[1300px] w-full '>
           {menuData.map((items, index) => (
             <Link
               key={index}
               href={items.href}
               className={`flex items-center ${
-                pathname === items.href ? 'bg-[#35C0ED]' : ''
-              } justify-center py-2 cursor-pointer rounded-lg`}
+                pathname === items.href ? 'bg-[#35C0ED] text-white' : ''
+              } justify-center py-2 cursor-pointer rounded-lg min-w-[140px]`}
             >
               <section className='flex gap-x-[8px] px-3'>
                 <div className='size-[22px]'>{items.image}</div>

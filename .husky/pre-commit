@@ -1,1 +1,25 @@
-npm run format
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Get staged files
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+
+# Only run checks if there are staged files
+if [ -n "$STAGED_FILES" ]; then
+  echo "🔍 Checking staged files..."
+  
+  # Format staged TypeScript/JavaScript files
+  echo "📝 Formatting staged files..."
+  echo "$STAGED_FILES" | grep -E '\.(js|jsx|ts|tsx)$' | xargs -r prettier --write
+  
+  # Lint staged TypeScript/JavaScript files (only if they exist)
+  TYPESCRIPT_FILES=$(echo "$STAGED_FILES" | grep -E '\.(js|jsx|ts|tsx)$' | tr '\n' ' ')
+  if [ -n "$TYPESCRIPT_FILES" ]; then
+    echo "🔍 Linting staged files..."
+    npx eslint --fix $TYPESCRIPT_FILES
+  fi
+  
+  echo "✅ Pre-commit checks completed!"
+else
+  echo "ℹ️  No staged files to check"
+fi

@@ -15,7 +15,15 @@ const TenderCards = () => {
             <i style={{ color: '#35c0ed' }} className='ri-eye-2-line size-[24px]' />
           </div>
 
-          <Typography sx={{ fontSize: '30px', color: 'customColors.darkGray1', paddingTop: '8px', paddingX: '22px' }}>
+          <Typography
+            sx={{
+              fontSize: '30px',
+              color: 'customColors.darkGray1',
+              paddingTop: '8px',
+              paddingX: '22px',
+              fontWeight: 500
+            }}
+          >
             Tender Overview
           </Typography>
           <Typography
@@ -100,7 +108,15 @@ const TenderCards = () => {
             <i style={{ color: '#35c0ed' }} className='ri-database-line size-[24px]' />{' '}
           </div>
 
-          <Typography sx={{ fontSize: '30px', color: 'customColors.darkGray1', paddingTop: '8px', paddingX: '22px' }}>
+          <Typography
+            sx={{
+              fontSize: '30px',
+              color: 'customColors.darkGray1',
+              paddingTop: '8px',
+              paddingX: '22px',
+              fontWeight: 500
+            }}
+          >
             Tender Results
           </Typography>
           <Typography
@@ -184,7 +200,15 @@ const TenderCards = () => {
             <i style={{ color: '#35c0ed' }} className='ri-list-check-2 size-[24px]' />{' '}
           </div>
 
-          <Typography sx={{ fontSize: '30px', color: 'customColors.darkGray1', paddingTop: '8px', paddingX: '22px' }}>
+          <Typography
+            sx={{
+              fontSize: '30px',
+              color: 'customColors.darkGray1',
+              paddingTop: '8px',
+              paddingX: '22px',
+              fontWeight: 500
+            }}
+          >
             Shortlisted{' '}
           </Typography>
           <Typography
@@ -247,7 +271,15 @@ const TenderCards = () => {
             <Image src={phone} className='' alt='phone-image' />
           </div>
 
-          <Typography sx={{ fontSize: '30px', color: 'customColors.darkGray1', paddingTop: '8px', paddingX: '22px' }}>
+          <Typography
+            sx={{
+              fontSize: '30px',
+              color: 'customColors.darkGray1',
+              paddingTop: '8px',
+              paddingX: '22px',
+              fontWeight: 500
+            }}
+          >
             Video Calls
           </Typography>
           <Typography
@@ -321,7 +353,15 @@ const TenderCards = () => {
             <Image src={person} className='' alt='phone-image' />
           </div>
 
-          <Typography sx={{ fontSize: '30px', color: 'customColors.darkGray1', paddingTop: '8px', paddingX: '22px' }}>
+          <Typography
+            sx={{
+              fontSize: '30px',
+              color: 'customColors.darkGray1',
+              paddingTop: '8px',
+              paddingX: '22px',
+              fontWeight: 500
+            }}
+          >
             Site Visits
           </Typography>
           <Typography
@@ -408,7 +448,15 @@ const TenderCards = () => {
             <Image src={star} className='' alt='phone-image' />
           </div>
 
-          <Typography sx={{ fontSize: '30px', color: 'customColors.darkGray1', paddingTop: '8px', paddingX: '22px' }}>
+          <Typography
+            sx={{
+              fontSize: '30px',
+              color: 'customColors.darkGray1',
+              paddingTop: '8px',
+              paddingX: '22px',
+              fontWeight: 500
+            }}
+          >
             Appoint Your Agent
           </Typography>
           <Typography

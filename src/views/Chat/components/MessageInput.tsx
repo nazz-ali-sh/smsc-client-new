@@ -17,7 +17,7 @@ const MessageInput = ({ message, onMessageChange, onSendMessage }: MessageInputP
   }
 
   return (
-    <Card className='p-4 border-t border-gray-200 bg-white shadow-sm'>
+    <Card className='p-4 border-t border-gray-200 bg-white shadow-sm mx-20 mb-10'>
       <Box className='flex items-center gap-3'>
         <TextField
           fullWidth

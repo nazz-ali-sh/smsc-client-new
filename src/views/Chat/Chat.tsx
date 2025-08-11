@@ -48,7 +48,7 @@ const Chat = () => {
       avatar: 'GS',
       isOnline: true,
       lastMessage: 'Lorem ipsum dolor sit amet.',
-      lastActivity: '5 Minutes'
+      lastActivity: '20 Minutes'
     },
     {
       id: '3',
@@ -57,7 +57,16 @@ const Chat = () => {
       avatar: '/images/avatars/1.png',
       isOnline: true,
       lastMessage: 'Lorem ipsum dolor sit amet.',
-      lastActivity: '5 Minutes'
+      lastActivity: '2 Minutes'
+    },
+    {
+      id: '4',
+      name: 'PMA Company name',
+      role: 'UI/UX Designer',
+      avatar: 'GS',
+      isOnline: true,
+      lastMessage: 'Lorem ipsum dolor sit amet.',
+      lastActivity: '10 Minutes'
     }
   ]
 
@@ -121,7 +130,8 @@ const Chat = () => {
     {
       id: '5',
       sender: 'user',
-      message: 'Lorem ipsum dolor sit amet consectetur. vitae etiam convallis sit diam.',
+      message:
+        'Lorem ipsum dolor sit amet consectetur. vitae etiam convallis sit diam.Lorem ipsum dolor sit amet consectetur.',
       timestamp: '10:56 pm',
       avatar: 'GS',
       name: 'You'
@@ -143,7 +153,7 @@ const Chat = () => {
   const activeContact = chatContacts.find(contact => contact.id === activeChat) || chatContacts[0]
 
   return (
-    <Box className='flex h-[calc(100vh-80px)] bg-white'>
+    <Box className='flex h-[calc(100vh-160px)] bg-white'>
       <ChatSidebar
         chatContacts={chatContacts}
         connectContacts={connectContacts}
