@@ -6,7 +6,7 @@ import { useParams } from 'next/navigation'
 
 import Image from 'next/image'
 
-import { FormControl, InputLabel, Select, MenuItem, Grid } from '@mui/material'
+import { FormControl, InputLabel, Select, MenuItem, Grid, Button } from '@mui/material'
 
 import classnames from 'classnames'
 
@@ -135,15 +135,28 @@ const NavbarContent = () => {
       </div>
 
       <div className='flex items-center'>
+        <Button
+          variant='contained'
+          sx={{
+            backgroundColor: 'customColors.ligthBlue',
+            paddingX: '30px',
+            marginRight: '20px',
+            '&:hover': {
+              backgroundColor: 'customColors.ligthBlue'
+            }
+          }}
+        >
+          Launch New Tender
+        </Button>
         <div className='w-[200px]'>
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel id='tender-label'>Select Tender</InputLabel>
+            <FormControl fullWidth size='small'>
+              <InputLabel id='tender-input'>Select Tender</InputLabel>
               <Select
-                size='small'
-                labelId='tender-label'
-                label='Select Tender'
+                labelId='tender-input'
+                id='demo-simple-select'
                 value={rmctenderId}
+                label='Age'
                 onChange={handleTenderChange}
               >
                 {isLoading ? (
