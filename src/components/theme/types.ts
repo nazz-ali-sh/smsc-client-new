@@ -134,6 +134,8 @@ declare module '@mui/material/styles' {
       gray8: string
       red1: string
       red2: string
+      red3: string
+      red4: string
     }
   }
   interface PaletteOptions {

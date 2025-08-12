@@ -14,7 +14,7 @@ const RmcCalendar = () => {
   return (
     <Box className=''>
       <Grid container spacing={3} className='mbe-6'>
-        <WeeklyReport dashboard={undefined} dashboardResponce={undefined} />
+        <WeeklyReport text={'Invites'} dashboardResponce={undefined} />
       </Grid>
 
       <MetricCards />

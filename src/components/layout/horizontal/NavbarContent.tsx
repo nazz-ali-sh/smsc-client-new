@@ -137,9 +137,10 @@ const NavbarContent = () => {
       <div className='flex items-center'>
         <Button
           variant='contained'
+          startIcon={<i className='ri-add-line text-[20px]'></i>}
           sx={{
             backgroundColor: 'customColors.ligthBlue',
-            paddingX: '30px',
+            paddingX: '20px',
             marginRight: '20px',
             '&:hover': {
               backgroundColor: 'customColors.ligthBlue'
@@ -151,13 +152,38 @@ const NavbarContent = () => {
         <div className='w-[200px]'>
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth size='small'>
-              <InputLabel id='tender-input'>Select Tender</InputLabel>
+              <InputLabel
+                id='tender-input'
+                sx={{
+                  color: '#35C0ED',
+                  '&.Mui-focused': {
+                    color: '#35C0ED'
+                  }
+                }}
+              >
+                Select Tender
+              </InputLabel>
               <Select
                 labelId='tender-input'
                 id='demo-simple-select'
                 value={rmctenderId}
-                label='Age'
+                label='Select Tender'
                 onChange={handleTenderChange}
+                sx={{
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#35C0ED'
+                  },
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#35C0ED'
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#35C0ED'
+                  },
+                  '& .MuiSelect-select': {
+                    paddingTop: '8px',
+                    paddingBottom: '8px'
+                  }
+                }}
               >
                 {isLoading ? (
                   <div className='text-center'> Loading.... </div>

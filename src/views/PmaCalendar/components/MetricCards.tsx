@@ -19,7 +19,7 @@ const MetricCards = () => {
                 27
               </Typography>
               <Typography variant='caption' color='text.secondary'>
-                Schedule Calls
+                Scheduled Calls
               </Typography>
             </Box>
           </Box>
@@ -36,7 +36,7 @@ const MetricCards = () => {
                 3
               </Typography>
               <Typography variant='caption' color='text.secondary'>
-                Complete Calls
+                Completed Calls
               </Typography>
             </Box>
           </Box>
@@ -53,7 +53,7 @@ const MetricCards = () => {
                 6
               </Typography>
               <Typography variant='caption' color='text.secondary'>
-                Schedule Visits
+                Scheduled Visits
               </Typography>
             </Box>
           </Box>

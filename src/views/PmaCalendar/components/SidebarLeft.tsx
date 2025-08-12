@@ -153,7 +153,7 @@ const SidebarLeft = (props: SidebarLeftProps) => {
         <Divider className='is-full' />
         <div className='flex flex-col p-5 is-full'>
           <Typography variant='h5' className='mbe-4'>
-            Events Notification
+            Meeting Requests
           </Typography>
           <div className='flex items-center justify-between mbe-3'>
             <Typography variant='body2'>Site Visits</Typography>

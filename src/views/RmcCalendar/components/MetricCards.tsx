@@ -31,7 +31,7 @@ const MetricCards = () => {
                 className='leading-[22px]'
                 sx={{ fontSize: '15px', fontWeight: 400, color: 'customColors.gray7' }}
               >
-                Schedule Calls
+                Scheduled Calls
               </Typography>
             </Box>
           </Box>
@@ -60,7 +60,7 @@ const MetricCards = () => {
                 className='leading-[22px]'
                 sx={{ fontSize: '15px', fontWeight: 400, color: 'customColors.gray7' }}
               >
-                Complete Calls
+                Completed Calls
               </Typography>
             </Box>
           </Box>
@@ -69,8 +69,11 @@ const MetricCards = () => {
       <Grid item xs={6} md={3}>
         <Card className='p-4 py-6'>
           <Box className='flex items-center gap-3'>
-            <Box className='size-10 bg-blue-100 rounded-xl flex items-center justify-center'>
-              <i className='ri-map-pin-line text-xl text-blue-600' />
+            <Box
+              className='size-10  rounded-xl flex items-center justify-center'
+              sx={{ backgroundColor: 'customColors.cyan1' }}
+            >
+              <i className='ri-map-pin-line text-xl  text-[#35C0ED]' />
             </Box>
             <Box>
               <Typography
@@ -86,7 +89,7 @@ const MetricCards = () => {
                 className='leading-[22px]'
                 sx={{ fontSize: '15px', fontWeight: 400, color: 'customColors.gray7' }}
               >
-                Schedule Visits
+                Scheduled Visits
               </Typography>
             </Box>
           </Box>

@@ -50,7 +50,7 @@ const SummaryCards = () => {
           Archived Tenders
         </Typography>
         <Typography variant='body1' color='text.secondary' className='max-w-2xl pt-1'>
-          Lorem ipsum dolor sit amet consectetur. Nullam cursus dictum ultrices aenean leo.
+          Access a complete history of all your past tenders here
         </Typography>
       </div>
       <CardContent>
@@ -69,8 +69,8 @@ const SummaryCards = () => {
               title='Expired'
               count='4 Tenders'
               iconClass='ri-lightbulb-flash-line'
-              color='customColors.cyan2'
-              bgColor='customColors.cyan1'
+              color='customColors.red3'
+              bgColor='customColors.red4'
             />
           </Grid>
           <Grid item xs={12} sm={6} md={2.4}>
@@ -78,8 +78,8 @@ const SummaryCards = () => {
               title='Shortlisted'
               count='3 Tenders'
               iconClass='ri-list-check'
-              color='customColors.orange2'
-              bgColor='customColors.orange1'
+              color='customColors.cyan2'
+              bgColor='customColors.cyan1'
             />
           </Grid>
           <Grid item xs={12} sm={6} md={2.4}>
@@ -96,8 +96,8 @@ const SummaryCards = () => {
               title='Not Shortlisted'
               count='3 Tenders'
               iconClass='ri-close-circle-line'
-              color='customColors.gray2'
-              bgColor='customColors.gray1'
+              color='customColors.orange2'
+              bgColor='customColors.orange1'
             />
           </Grid>
         </Grid>

@@ -28,8 +28,18 @@ const MessageInput = ({ message, onMessageChange, onSendMessage }: MessageInputP
           multiline
           maxRows={3}
           className='bg-white'
-          variant='outlined'
           size='small'
+          sx={{
+            fontSize: '6px',
+            '& .MuiOutlinedInput-root': {
+              '&:hover fieldset': {
+                borderColor: '#35C0ED'
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: '#35C0ED'
+              }
+            }
+          }}
         />
         <IconButton size='small' className='text-gray-600 hover:bg-gray-100'>
           <i className='ri-attachment-2' />

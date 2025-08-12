@@ -61,7 +61,7 @@ export default function Page() {
   return (
     <>
       <section className='flex w-full'>
-        <WeeklyReport dashboard dashboardResponce={dashboardResponce} />
+        <WeeklyReport text={'Welcome Back'} dashboardResponce={dashboardResponce} />
       </section>
       <div className='mt-3'>
         <TenderCards />

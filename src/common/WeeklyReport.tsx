@@ -16,11 +16,11 @@ import tenderResponce from '../../public/images/dashboardImages/tenderResponce.s
 import tenderExpire from '../../public/images/dashboardImages/tenderExpire.svg'
 
 const WeeklyReport = ({
-  dashboard,
+  text,
   dashboardResponce,
   progress = 10
 }: {
-  dashboard?: any
+  text?: string
   dashboardResponce?: any
   progress?: number
 }) => {
@@ -35,9 +35,8 @@ const WeeklyReport = ({
       <div className='md:is-8/12 shadow-lg px-[25px] py-[32px] rounded-xl bg-white'>
         <div className='flex items-center gap-1 mbe-2'>
           <Typography variant='h2' sx={{ fontSize: '28px', fontWeight: 700, color: 'customColors.gray6' }}>
-            {dashboard ? 'Welcome back' : 'Results'}
+            {text}
           </Typography>
-          <Typography variant='h3'> 👋🏻</Typography>
         </div>
         <div>
           <Typography sx={{ fontSize: '14px' }}>Your Tender Progress so far</Typography>
@@ -112,12 +111,12 @@ const WeeklyReport = ({
               variant='body1'
               sx={{ fontSize: '15px', fontWeight: 400, paddingTop: '6px', color: 'customColors.gray7' }}
             >
-              Went Live 17/5/2025
+              Went Live on 17/5/2025
             </Typography>
           </div>
         </div>
         <div className='flex justify-center items-center mr-5'>
-          <CustomCircularProgress progress={progress} size={90} strokeWidth={12} />
+          <CustomCircularProgress progress={progress} size={100} strokeWidth={12} />
         </div>
       </div>
     </div>

@@ -19,8 +19,8 @@ const Page = dynamic(() => import('react-pdf').then(mod => ({ default: mod.Page 
 })
 
 const pdfFiles = [
-  { file: '/data.pdf', label: 'Download Scheduled Calls Report' },
-  { file: '/data.pdf', label: 'Download Shortlisted Agents' }
+  { file: '/data.pdf', label: 'Download Blind Tender Report' },
+  { file: '/data.pdf', label: ' Download Full Journey Report ' }
 ]
 
 const CurrentActivity = () => {
@@ -60,14 +60,14 @@ const CurrentActivity = () => {
                         <i className='ri-customer-service-2-line bg-buttonPrimary'></i>
                       </div>
                       <div>
-                        <div className='text-2xl font-bold text-gray-900 text-[18px]'>27</div>
+                        <div className=' font-bold text-gray-900 text-[15px]'>27</div>
                         <div className='text-textGray text-[14px]'>Schedule Calls</div>
                       </div>
                     </div>
                   </div>
-                  <section className='flex justify-end items-end mt-5'>
-                    <Button variant='contained' className=' bg-buttonPrimary'>
-                      View List <i className='ri-arrow-right-line bg-white ml-2 size-[18px]'></i>
+                  <section className='flex justify-end items-end mt-5 mb-2 mr-2'>
+                    <Button variant='contained' className='bg-buttonPrimary w-[110px] text-[11px] whitespace-nowrap'>
+                      View List <i className='ri-arrow-right-line bg-white ml-1 size-[12px]'></i>
                     </Button>
                   </section>
                 </div>
@@ -78,14 +78,14 @@ const CurrentActivity = () => {
                         <i className='ri-user-3-line bg-[#666CFF]'></i>
                       </div>
                       <div>
-                        <div className='text-2xl font-bold text-gray-900'>6</div>
+                        <div className='text-[15px] font-bold text-gray-900'>6</div>
                         <div className='text-[14px] text-textGray '>Shortlisted Agents</div>
                       </div>
                     </div>
                   </div>
-                  <section className='flex justify-end items-end mt-5'>
-                    <Button variant='contained' className='bg-buttonPrimary'>
-                      View List <i className='ri-arrow-right-line bg-white ml-2 size-[18px]'></i>
+                  <section className='flex justify-end items-end mt-5 mb-2 mr-2'>
+                    <Button variant='contained' className='bg-buttonPrimary w-[110px] text-[11px] whitespace-nowrap'>
+                      View List <i className='ri-arrow-right-line bg-white ml-1 size-[12px]'></i>
                     </Button>
                   </section>
                 </div>

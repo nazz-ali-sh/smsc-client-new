@@ -5,12 +5,13 @@ import { Grid, Card, CardContent, Typography, Divider, Box } from '@mui/material
 import phone from '../../../public/images/dashboardImages/phone.svg'
 import person from '../../../public/images/dashboardImages/person.svg'
 import star from '../../../public/images/dashboardImages/star.svg'
+import CustomTooltip from '../../common/CustomTooltip'
 
 const TenderCards = () => {
   return (
-    <Grid container spacing={6}>
+    <Grid container spacing={8}>
       <Grid item xs={12} sm={6} md={4}>
-        <Card elevation={0} sx={{ borderRadius: 1, p: 1, height: '380px' }} className='shadow-lg'>
+        <Card elevation={0} sx={{ borderRadius: 1, height: '370px' }} className='shadow-lg'>
           <div className='bg-[#c4edfa] mx-[22px]  p-2 rounded-full flex items-center justify-center mt-[24px] size-[44px]'>
             <i style={{ color: '#35c0ed' }} className='ri-eye-2-line size-[24px]' />
           </div>
@@ -84,26 +85,28 @@ const TenderCards = () => {
             </Typography>
           </CardContent>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '30px' }}>
-            <Box
-              sx={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '6px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: 'customColors.cyan3',
-                marginX: '22px'
-              }}
-            >
-              <i className='ri-eye-line w-[14px] h-[14px] text-[#26C6F9]'></i>
-            </Box>
+            <CustomTooltip text='View Tender Overview' position='left' align='left'>
+              <Box
+                sx={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '6px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'customColors.cyan3',
+                  marginX: '22px'
+                }}
+              >
+                <i className='ri-eye-line w-[14px] h-[14px] text-[#26C6F9]'></i>
+              </Box>
+            </CustomTooltip>
           </Box>
         </Card>
       </Grid>
 
       <Grid item xs={12} sm={6} md={4}>
-        <Card elevation={0} sx={{ borderRadius: 1, p: 1, height: '380px' }} className='shadow-lg'>
+        <Card elevation={0} sx={{ borderRadius: 1, height: '370PX' }} className='shadow-lg'>
           <div className='bg-[#c4edfa] mx-[22px]  p-2 rounded-full flex items-center justify-center mt-[24px] size-[44px]'>
             <i style={{ color: '#35c0ed' }} className='ri-database-line size-[24px]' />{' '}
           </div>
@@ -177,25 +180,27 @@ const TenderCards = () => {
             </Typography>
           </CardContent>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '30px' }}>
-            <Box
-              sx={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '6px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: 'customColors.cyan3',
-                marginX: '22px'
-              }}
-            >
-              <i className='ri-eye-line w-[14px] h-[14px] text-[#26C6F9]'></i>
-            </Box>
+            <CustomTooltip text='View Tender Results' position='left' align='left'>
+              <Box
+                sx={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '6px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'customColors.cyan3',
+                  marginX: '22px'
+                }}
+              >
+                <i className='ri-eye-line w-[14px] h-[14px] text-[#26C6F9]'></i>
+              </Box>
+            </CustomTooltip>
           </Box>
         </Card>
       </Grid>
       <Grid item xs={12} sm={6} md={4}>
-        <Card elevation={0} sx={{ borderRadius: 1, p: 1, height: '380px' }} className='shadow-lg'>
+        <Card elevation={0} sx={{ borderRadius: 1, height: '370PX' }} className='shadow-lg'>
           <div className='bg-[#c4edfa] mx-[22px]  p-2 rounded-full flex items-center justify-center mt-[24px] size-[44px]'>
             <i style={{ color: '#35c0ed' }} className='ri-list-check-2 size-[24px]' />{' '}
           </div>
@@ -236,37 +241,41 @@ const TenderCards = () => {
             </Typography>
           </CardContent>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px', marginX: '22px', gap: '7px' }}>
-            <Box
-              sx={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '6px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: 'customColors.cyan3'
-              }}
-            >
-              <i className='ri-eye-line w-[14px] h-[14px] text-[#26C6F9]'></i>
-            </Box>
-            <Box
-              sx={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '6px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: 'customColors.cyan3'
-              }}
-            >
-              <i className='ri-group-fill w-[14px] h-[14px] text-[#26C6F9]'></i>
-            </Box>
+            <CustomTooltip text='View Shortlisted Agents' position='left' align='left'>
+              <Box
+                sx={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '6px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'customColors.cyan3'
+                }}
+              >
+                <i className='ri-eye-line w-[14px] h-[14px] text-[#26C6F9]'></i>
+              </Box>
+            </CustomTooltip>
+            <CustomTooltip text='Invite More Agents to Shortlist' position='left' align='right'>
+              <Box
+                sx={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '6px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'customColors.cyan3'
+                }}
+              >
+                <i className='ri-group-fill w-[14px] h-[14px] text-[#26C6F9]'></i>
+              </Box>
+            </CustomTooltip>
           </Box>
         </Card>
       </Grid>
       <Grid item xs={12} sm={6} md={4}>
-        <Card elevation={0} sx={{ borderRadius: 1, p: 1, height: '380px' }} className='shadow-lg'>
+        <Card elevation={0} sx={{ borderRadius: 1, height: '370PX' }} className='shadow-lg'>
           <div className='bg-[#c4edfa] mx-[22px]  p-2 rounded-full flex items-center justify-center mt-[24px] size-[44px]'>
             <Image src={phone} className='' alt='phone-image' />
           </div>
@@ -291,7 +300,7 @@ const TenderCards = () => {
               fontWeight: 300
             }}
           >
-            You’ve invited 3 agents to video calls.{' '}
+            You've invited 3 agents to video calls.{' '}
           </Typography>
           <Divider sx={{ height: '2px', backgroundColor: '#D9D9D9', my: 1, marginTop: '14px' }} />
           <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
@@ -317,38 +326,42 @@ const TenderCards = () => {
             </Typography>
           </CardContent>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px', marginX: '22px', gap: '7px' }}>
-            <Box
-              sx={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '6px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: 'customColors.cyan3'
-              }}
-            >
-              <i className='ri-eye-line w-[14px] h-[14px] text-[#26C6F9]'></i>
-            </Box>
-            <Box
-              sx={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '6px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: 'customColors.cyan3'
-              }}
-            >
-              <i className='ri-group-fill w-[14px] h-[14px] text-[#26C6F9]'></i>
-            </Box>
+            <CustomTooltip text='View All Video Calls' position='left' align='left'>
+              <Box
+                sx={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '6px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'customColors.cyan3'
+                }}
+              >
+                <i className='ri-eye-line w-[14px] h-[14px] text-[#26C6F9]'></i>
+              </Box>
+            </CustomTooltip>
+            <CustomTooltip text='Invite More Agents to Video Call' position='left' align='right'>
+              <Box
+                sx={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '6px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'customColors.cyan3'
+                }}
+              >
+                <i className='ri-group-fill w-[14px] h-[14px] text-[#26C6F9]'></i>
+              </Box>
+            </CustomTooltip>
           </Box>
         </Card>
       </Grid>
 
       <Grid item xs={12} sm={6} md={4}>
-        <Card elevation={0} sx={{ borderRadius: 1, p: 1, height: '380px' }} className='shadow-lg'>
+        <Card elevation={0} sx={{ borderRadius: 1, height: '370PX' }} className='shadow-lg'>
           <div className='bg-[#c4edfa] mx-[22px]  p-2 rounded-full flex items-center justify-center mt-[24px] size-[44px]'>
             <Image src={person} className='' alt='phone-image' />
           </div>
@@ -373,7 +386,7 @@ const TenderCards = () => {
               fontWeight: 300
             }}
           >
-            You’ve invited 3 agents to video calls.{' '}
+            You've invited 3 agents to site visits.{' '}
           </Typography>
           <Divider sx={{ height: '2px', backgroundColor: '#D9D9D9', my: 1, marginTop: '14px' }} />
           <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
@@ -399,51 +412,57 @@ const TenderCards = () => {
             </Typography>
           </CardContent>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px', marginX: '22px', gap: '7px' }}>
-            <Box
-              sx={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '6px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: 'customColors.cyan3'
-              }}
-            >
-              <i className='ri-eye-line w-[14px] h-[14px] text-[#26C6F9]'></i>
-            </Box>
-            <Box
-              sx={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '6px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: 'customColors.cyan3'
-              }}
-            >
-              <i className='ri-user-forbid-fill w-[14px] h-[14px] text-[#26C6F9]'></i>
-            </Box>
-            <Box
-              sx={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '6px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: 'customColors.cyan3'
-              }}
-            >
-              <i className='ri-group-fill w-[14px] h-[14px] text-[#26C6F9]'></i>
-            </Box>
+            <CustomTooltip text='View All Site Visits' position='left' align='left'>
+              <Box
+                sx={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '6px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'customColors.cyan3'
+                }}
+              >
+                <i className='ri-eye-line w-[14px] h-[14px] text-[#26C6F9]'></i>
+              </Box>
+            </CustomTooltip>
+            <CustomTooltip text='Appoint a Managing Agent' position='left' align='center'>
+              <Box
+                sx={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '6px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'customColors.cyan3'
+                }}
+              >
+                <i className='ri-user-follow-fill w-[14px] h-[14px] text-[#26C6F9]'></i>
+              </Box>
+            </CustomTooltip>
+            <CustomTooltip text='Invite More Agents to Site Visit' position='left' align='right'>
+              <Box
+                sx={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '6px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'customColors.cyan3'
+                }}
+              >
+                <i className='ri-group-fill w-[14px] h-[14px] text-[#26C6F9]'></i>
+              </Box>
+            </CustomTooltip>
           </Box>
         </Card>
       </Grid>
 
       <Grid item xs={12} sm={6} md={4}>
-        <Card elevation={0} sx={{ borderRadius: 1, p: 1, height: '380px' }} className='shadow-lg'>
+        <Card elevation={0} sx={{ borderRadius: 1, height: '370PX' }} className='shadow-lg'>
           <div className='bg-[#c4edfa] mx-[22px]  p-2 rounded-full flex items-center justify-center mt-[24px] size-[44px]'>
             <Image src={star} className='' alt='phone-image' />
           </div>
@@ -480,36 +499,40 @@ const TenderCards = () => {
                 lineHeight: '22px'
               }}
             >
-              Congratulations, you’ve appointed a new managing agent.We ll now archive this tender in X Days
+              Congratulations, you've appointed a new managing agent.We ll now archive this tender in X Days
             </Typography>
           </CardContent>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px', marginX: '22px', gap: '7px' }}>
-            <Box
-              sx={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '6px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: 'customColors.cyan3'
-              }}
-            >
-              <i className='ri-eye-line w-[14px] h-[14px] text-[#26C6F9]'></i>
-            </Box>
-            <Box
-              sx={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '6px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: 'customColors.cyan3'
-              }}
-            >
-              <i className='ri-group-fill w-[14px] h-[14px] text-[#26C6F9]'></i>
-            </Box>
+            <CustomTooltip text='View Agent Details' position='left' align='left'>
+              <Box
+                sx={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '6px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'customColors.cyan3'
+                }}
+              >
+                <i className='ri-eye-line w-[14px] h-[14px] text-[#26C6F9]'></i>
+              </Box>
+            </CustomTooltip>
+            <CustomTooltip text='Manage Appointed Agents' position='left' align='right'>
+              <Box
+                sx={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '6px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'customColors.cyan3'
+                }}
+              >
+                <i className='ri-user-follow-fill w-[14px] h-[14px] text-[#26C6F9]'></i>
+              </Box>
+            </CustomTooltip>
           </Box>
         </Card>
       </Grid>
