@@ -107,7 +107,6 @@ export default function AccordionExpand() {
           {defaultFaqs.map(faq => (
             <Accordion
               key={faq.id}
-              defaultExpanded={faq.id === 2}
               sx={{
                 borderRadius: '8px',
                 overflow: 'hidden',
@@ -163,7 +162,6 @@ export default function AccordionExpand() {
         {data.data.faqs.map(faq => (
           <Accordion
             key={faq.id}
-            defaultExpanded={faq.id === data.data.faqs[0].id}
             sx={{
               borderRadius: '8px',
               overflow: 'hidden',

@@ -256,7 +256,7 @@ const TenderCards = () => {
                 <i className='ri-eye-line w-[14px] h-[14px] text-[#26C6F9]'></i>
               </Box>
             </CustomTooltip>
-            <CustomTooltip text='Invite More Agents to Shortlist' position='left' align='right'>
+            <CustomTooltip text='Shortlist More Agents' position='left' align='right'>
               <Box
                 sx={{
                   width: '36px',

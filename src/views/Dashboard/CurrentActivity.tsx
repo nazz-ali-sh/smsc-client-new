@@ -38,15 +38,23 @@ const CurrentActivity = () => {
     setNumPages(numPages)
   }
 
+  const headingStyle = {
+    fontSize: '30px',
+    color: 'customColors.darkGray1',
+    paddingTop: '8px',
+    paddingX: '22px',
+    fontWeight: 500
+  }
+
   return (
     <>
       <div className='bg-white p-4 md:p-8 shadow-xl  rounded-lg h-[288px]'>
         <div className=''>
           <section className='flex justify-between items-start w-[100%] '>
-            <Typography variant='h3' className='w-[50%] text-[18px]'>
+            <Typography variant='h3' className='w-[50%]' sx={headingStyle}>
               Current Activity
             </Typography>
-            <Typography variant='h3' className='w-[50%] pl-[40px] text-[18px]'>
+            <Typography variant='h3' className='w-[50%] pl-[40px] ' sx={headingStyle}>
               Download Reports
             </Typography>
           </section>
@@ -61,7 +69,7 @@ const CurrentActivity = () => {
                       </div>
                       <div>
                         <div className=' font-bold text-gray-900 text-[15px]'>27</div>
-                        <div className='text-textGray text-[14px]'>Schedule Calls</div>
+                        <div className='text-textGray text-[14px]'>Scheduled Calls</div>
                       </div>
                     </div>
                   </div>

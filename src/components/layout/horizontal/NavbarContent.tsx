@@ -155,7 +155,7 @@ const NavbarContent = () => {
               <InputLabel
                 id='tender-input'
                 sx={{
-                  color: '#35C0ED',
+                  color: '#696969',
                   '&.Mui-focused': {
                     color: '#35C0ED'
                   }
@@ -171,7 +171,7 @@ const NavbarContent = () => {
                 onChange={handleTenderChange}
                 sx={{
                   '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#35C0ED'
+                    borderColor: '#696969'
                   },
                   '&:hover .MuiOutlinedInput-notchedOutline': {
                     borderColor: '#35C0ED'
