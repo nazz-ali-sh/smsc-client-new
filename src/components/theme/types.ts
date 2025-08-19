@@ -133,6 +133,7 @@ declare module '@mui/material/styles' {
       gray7: string
       gray8: string
       gray9: string
+      gray10: string
       red1: string
       red2: string
       red3: string

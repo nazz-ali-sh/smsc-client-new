@@ -193,6 +193,7 @@ const colorSchemes = (skin: Skin): Theme['colorSchemes'] => {
           gray7: '#262B43B2',
           gray8: '#696969E5',
           gray9: '#00000096',
+          gray10: '#787878',
           red1: '#FF0000',
           red2: '#FFC2C2',
           red3: '#FE3D3D',
