@@ -8,13 +8,24 @@ import Image from 'next/image'
 
 import { useRouter } from 'next/navigation'
 
-import { Rating, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import Popover from '@mui/material/Popover'
 
 import companyImage from '../../../public/images/customImages/company.png'
 
 import phone from '../../../public/images/customImages/phone.svg'
 import menuDots from '../../../public/images/manuDots.svg'
+
+import phoneCalls from '../../../public/images/tenderShortlisted/phoneCalls.svg'
+import videoCalls from '../../../public/images/tenderShortlisted/videoCall.svg'
+import visitLocation from '../../../public/images/tenderShortlisted/visitLocation.svg'
+import visitPerson from '../../../public/images/tenderShortlisted/visitPerson.svg'
+import person from '../../../public/images/tenderShortlisted/person.svg'
+import eye from '../../../public/images/tenderShortlisted/eye.svg'
+
+import VideosCallsModal from '@/common/VideosCallsModal'
+import SiteVisitsModal from '@/common/SiteVisitsModal'
+import AppointManagemnetModal from '@/common/AppointManagemnetAgent'
 
 // Dynamically import react-pdf components to avoid SSR issues
 const Document = dynamic(() => import('react-pdf').then(mod => ({ default: mod.Document })), {
@@ -51,20 +62,21 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
   const router = useRouter()
   const [numPages, setNumPages] = useState<number | null>(null)
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null) // Track hovered PDF index
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+  const [onlineCallsModalOpen, setOnlineCallsModalOpen] = useState(false)
+  const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
+  const [apointAgentModalOpen, setApointAgentModalOpen] = useState(false)
   const [isClient, setIsClient] = useState(false)
-
-  console.log(numPages, 'numPages')
 
   useEffect(() => {
     setIsClient(true)
   }, [])
 
-  console.log('finalShortListedResponce', finalShortListedResponce)
-
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages)
   }
+
+  console.log(numPages)
 
   const handleClose = () => {
     setAnchorEl(null)
@@ -80,47 +92,84 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
   return (
     <>
       <section className='pb-[70px]'>
-        {finalShortListedResponce?.data?.shortlisted_pma_users?.map((company: any, index: number) => (
+        {finalShortListedResponce?.data?.shortlisted_pmas?.map((company: any, index: number) => (
           <section
             key={index}
             className='flex justify-between items-center mt-8 border border-borderprimary p-[24px] rounded-xl'
           >
             {/* Left section */}
             <div
-              onClick={() => router.push(`/shortlist-agent/${company.id}`)}
-              className='flex items-center gap-6 cursor-pointer'
+              onClick={() => router.push(`/shortlist-agent/${company?.pma_user?.id}`)}
+              className='flex items-start gap-6 cursor-pointer'
             >
-              <div>
-                <Image src={companyImage} alt={`${company.title} logo`} width={180} height={190} />
-              </div>
-              <div>
-                <div className='text-[20px] font-bold leading-[42px]'>{company.company_name}</div>
-                <Rating value={company.rating} readOnly size='small' />
-                <Typography variant='body2'>{`${company?.rating} Star | ${company?.reviews} Reviews`}</Typography>
+              <div className='flex flex-col'>
+                <Image
+                  src={companyImage}
+                  alt={`${company.title} logo`}
+                  width={180}
+                  height={190}
+                  className='rounded-xl'
+                />
 
+                <div className='mt-[19px] text-[12px] text-buttonPrimary font-bold text-center flex items-center justify-center '>
+                  <Image src={eye} alt='eye' className='size-[18px] mr-[12px]' /> View Full Profile
+                </div>
+              </div>
+
+              <div>
+                <div className='text-[20px] font-bold leading-[42px]'>{company?.company_details?.name}</div>
+                <div className='text-[12px] font-normal leading-[32px] text-buttonPrimary'>
+                  {company?.company_details?.website}
+                </div>
+
+                {/* active  tabs  */}
+
+                <section>
+                  <div className='flex space-x-4'>
+                    <button className='flex items-center space-x-2 px-[15px] py-1 rounded-full bg-blue-100 text-blue-500 font-semibold '>
+                      <span className='w-2 h-2 bg-blue-500 rounded-full'></span>
+                      <span>Call Booked</span>
+                    </button>
+
+                    <button className='px-6 py-3 rounded-full bg-[#6969691A] text-gray-400 font-semibold'>
+                      Visit Arranged
+                    </button>
+
+                    <button className='px-6 py-3 rounded-full bg-[#6969691A] text-gray-400 font-semibold '>
+                      Video Call
+                    </button>
+                  </div>
+                </section>
+
+                <Typography variant='h3' className='text-[#1F4E8D] text-[34px font-bold py-1'>
+                  €150
+                </Typography>
+
+                <div className='flex items-center gap-x-[30px]'>
+                  <span>
+                    <Image src={person} alt='person' />
+                  </span>
+                  <Typography variant='body2'>{company?.pma_user?.full_name}</Typography>
+                </div>
                 <div className='flex items-center gap-x-[30px]'>
                   <span>
                     <i className='ri-mail-line size-[14px]'></i>
                   </span>
-                  <Typography variant='body2'>www.strategisthub.com</Typography>
+                  <Typography variant='body2'>{company?.pma_user?.email}</Typography>
                 </div>
+
                 <div className='flex items-center gap-x-[30px]'>
                   <span>
                     <Image src={phone} alt='phone' className='size-[14px]' />
                   </span>
-                  <Typography variant='body2'>{company.mobile_number}</Typography>
+                  <Typography variant='body2'>{company?.pma_user?.mobile_number}</Typography>
                 </div>
-                <div className='flex items-center gap-x-[30px]'>
-                  <span>
-                    <i className='ri-chat-4-line size-[14px]'></i>
-                  </span>
-                  <Typography variant='body2'>{company.email}</Typography>
-                </div>
+
                 <div className='flex items-center gap-x-[30px]'>
                   <span>
                     <i className='ri-map-pin-line size-[14px]'></i>
                   </span>
-                  <Typography variant='body2'>{company.location}</Typography>
+                  <Typography variant='body2'>{company?.pma_user?.address}</Typography>
                 </div>
               </div>
             </div>
@@ -288,8 +337,41 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                 </div>
               </section>
             </div>
+
+            {/* call to actions buttons  */}
+
+            <section className='flex flex-col space-y-4'>
+              <Image
+                src={videoCalls}
+                alt='videocalls'
+                className='cursor-pointer'
+                onClick={() => setOnlineCallsModalOpen(true)}
+              />
+              <Image
+                src={visitLocation}
+                alt='location'
+                className='cursor-pointer'
+                onClick={() => setSiteVisitsModalOpen(true)}
+              />
+              <Image
+                src={phoneCalls}
+                alt='phoneCalls'
+                className='cursor-pointer'
+                onClick={() => setSiteVisitsModalOpen(true)}
+              />
+              <Image
+                src={visitPerson}
+                alt='person'
+                className='cursor-pointer'
+                onClick={() => setApointAgentModalOpen(true)}
+              />
+            </section>
           </section>
         ))}
+
+        <VideosCallsModal open={onlineCallsModalOpen} onClose={() => setOnlineCallsModalOpen(false)} />
+        <SiteVisitsModal open={siteVisitsModalOpen} onClose={() => setSiteVisitsModalOpen(false)} />
+        <AppointManagemnetModal open={apointAgentModalOpen} onClose={() => setApointAgentModalOpen(false)} />
       </section>
     </>
   )

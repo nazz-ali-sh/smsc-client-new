@@ -8,7 +8,13 @@ import { tabs } from '../shortlistAgent/data'
 import EditableDataTables from './components/PastActivityTable'
 import useMediaQuery from '@/@menu/hooks/useMediaQuery'
 
-const EventDetails = () => {
+import type { PmaDetailsResponse } from './type'
+
+interface EventDetailsProps {
+  userData: PmaDetailsResponse
+}
+
+const EventDetails = ({ userData }: EventDetailsProps) => {
   const totalReviewsData: any[] = [
     { rating: 5, value: 109 },
     { rating: 4, value: 40 },
@@ -23,7 +29,6 @@ const EventDetails = () => {
   return (
     <>
       <section className='shadow-lg p-4 rounded-xl'>
-        {/* Tabs sections */}
         <div className='flex gap-x-4 items-center'>
           {tabs.map((items, index) => (
             <div className='w-[300px]' key={index}>
@@ -55,9 +60,6 @@ const EventDetails = () => {
             </div>
           ))}
         </div>
-
-        {/*  */}
-
         <section className='shadow-lg p-4 rounded-xl mt-5'>
           <section className=' flex gap-x-[24px] py-[20px] '>
             <div>
@@ -70,7 +72,10 @@ const EventDetails = () => {
                 </div>
                 <div>
                   <Typography className='text-[28px] font-bold text-buttonPrimary'> AVG 4.89</Typography>
-                  <Typography variant='body2'> Total 187 reviews</Typography>
+                  <Typography variant='body2'>
+                    {' '}
+                    Total {userData?.data?.ratings_and_reviews?.google_review_count} reviews
+                  </Typography>
                   <Typography variant='body2'> All reviews are from genuine customers</Typography>
                   <Typography variant='h6'>
                     <Typography className='flex justify-end items-center text-[15px]'>

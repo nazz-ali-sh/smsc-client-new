@@ -43,5 +43,13 @@ export const apiEndpoints = {
 
   selectShortListpma: () => 'rmc/pma-shortlist',
 
-  finalShortList: (id: number) => `rmc/shortlist/${id}`
+  finalShortList: (id: number) => `rmc/shortlisted-pmas/${id}`,
+
+  getShortlistedCompantDetails: (user_id: number) => `rmc/pma-company-detail?pma_id=${user_id}`,
+
+  getAvailableSlots: `rmc/video-call/available-days-slots`,
+
+  pmaAvailablegGuest: `rmc/video-call/available-pmas`,
+
+  rmcVideoCallInvit: () => `rmc/video-call/invites`
 }

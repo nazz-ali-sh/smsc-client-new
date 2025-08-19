@@ -16,14 +16,13 @@ export const tenderResponce = async (tender_id: number) => {
   }
 }
 
-export const ShortlistedPma = async (tender_id: number, pma_user_ids: number[]) => {
+export const ShortlistedPma = async (tender_id: number, pma_user_ids: number[] | number, selectedAgentId: any) => {
   try {
     const url = apiEndpoints.selectShortListpma()
 
-    // Create the payload to send in the request body
     const payload = {
       tender_id,
-      pma_user_ids
+      pma_user_ids: selectedAgentId || pma_user_ids
     }
 
     console.log('Generated URL:', url)
@@ -44,6 +43,63 @@ export const ShortlistedPma = async (tender_id: number, pma_user_ids: number[]) 
 export const finalShortListedAgent = async (tender_id: number) => {
   try {
     const url = apiEndpoints.finalShortList(tender_id)
+
+    console.log('Generated URL:', url)
+    const response = await axiosClient.get(url)
+
+    return response.data
+  } catch (error) {
+    console.error('Tender Responce API error:', error)
+
+    throw error
+  }
+}
+
+
+
+export const getPmaCompanyDetails = async (user_id: number) => {
+  try {
+    const url = apiEndpoints.getShortlistedCompantDetails(user_id)
+
+    console.log('Generated URL:', url)
+    const response = await axiosClient.get(url)
+
+    return response.data
+  } catch (error) {
+    console.error('Tender Responce API error:', error)
+
+    throw error
+  }
+}
+
+
+
+// getting Available Slots :
+
+  
+  export const getSlots = async () => {
+  try {
+    const url = apiEndpoints.getAvailableSlots
+
+    console.log('Generated URL:', url)
+    const response = await axiosClient.get(url)
+
+    return response.data
+  } catch (error) {
+    console.error('Tender Responce API error:', error)
+
+    throw error
+  }
+}
+
+
+// guest Available call 
+
+
+
+ export const pmaAvailableGuest = async () => {
+  try {
+    const url = apiEndpoints.pmaAvailablegGuest
 
     console.log('Generated URL:', url)
     const response = await axiosClient.get(url)

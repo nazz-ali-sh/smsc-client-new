@@ -49,7 +49,7 @@ export default function Pages() {
   return (
     <div>
       <section className='flex w-full'>
-        <WeeklyReport dashboard={[]} dashboardResponce={[]} />
+        <WeeklyReport text='Welcome' dashboardResponce={[]} />
       </section>
       <div className='my-[50px]'>
         <HorizontalLinearStepper />

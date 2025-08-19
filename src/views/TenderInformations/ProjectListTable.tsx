@@ -27,6 +27,8 @@ import { useSelector } from 'react-redux'
 
 import { useQuery, useMutation } from '@tanstack/react-query'
 
+import { toast } from 'react-toastify'
+
 import menuDots from '../../../public/images/manuDots.svg'
 import pdfFrame from '../../../public/images/customImages/frame.png'
 import type { ApiResponseItem, DataType, TenderResponse } from './type'
@@ -38,8 +40,6 @@ import { ShortlistedPma, tenderResponce } from '@/services/tender_result-apis/te
 
 import SuccessModal from '../../common/SucessModal'
 import ShortListAgent from '@/common/ShortListAgent'
-
-// Import the shortlist API function (adjust path as needed)
 
 const columnHelper = createColumnHelper<DataType>()
 
@@ -65,6 +65,8 @@ const KitchenSink = () => {
   const [globalFilter, setGlobalFilter] = useState('')
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [tableData, setTableData] = useState<DataType[]>([])
+  const [selectedAgentId, setSelectedAgentId] = useState<any[]>([])
+
   const router = useRouter()
 
   const [successModalOpen, setSuccessModalOpen] = useState(false)
@@ -79,13 +81,18 @@ const KitchenSink = () => {
     enabled: !!tender_id
   })
 
-  // Mutation for shortlisting
   const shortlistMutation = useMutation({
-    mutationFn: ({ tender_id, pma_user_ids }: { tender_id: number; pma_user_ids: number[] }) =>
-      ShortlistedPma(tender_id, pma_user_ids),
+    mutationFn: ({
+      tender_id,
+      pma_user_ids
+    }: {
+      tender_id: number
+      pma_user_ids: number[] | number
+      selectedAgentId: any
+    }) => ShortlistedPma(tender_id, pma_user_ids, selectedAgentId),
     onSuccess: () => {
       setShortListedSuccessModalOpen(true)
-      table.resetRowSelection() // Clear selected rows after success
+      table.resetRowSelection()
     },
     onError: error => {
       console.error('Error shortlisting agents:', error)
@@ -226,7 +233,10 @@ const KitchenSink = () => {
                 }
               }}
               variant='contained'
-              onClick={() => setDrawerOpen(true)}
+              onClick={() => {
+                setDrawerOpen(true)
+                setSelectedAgentId([row.original.pma_id])
+              }}
             >
               {row.original.Questionaire}
             </Button>
@@ -279,8 +289,8 @@ const KitchenSink = () => {
   const handleConfirmSelected = () => {
     const selectedRows = table.getSelectedRowModel().rows
 
-    if (selectedRows.length === 0) {
-      alert('Please select at least one agent to shortlist.')
+    if (selectedRows.length === 0 && selectedAgentId?.length === 0) {
+      toast.warning('Please select at least one agent to shortlist')
 
       return
     }
@@ -288,7 +298,7 @@ const KitchenSink = () => {
     const pma_user_ids = selectedRows.map(row => row.original.pma_id)
 
     if (tender_id) {
-      shortlistMutation.mutate({ tender_id: Number(tender_id), pma_user_ids })
+      shortlistMutation.mutate({ tender_id: Number(tender_id), pma_user_ids, selectedAgentId })
     }
   }
 
@@ -301,6 +311,14 @@ const KitchenSink = () => {
   }, [table])
 
   const openModal = () => {
+    const selectedRows = table.getSelectedRowModel().rows
+
+    if (selectedRows.length === 0 && selectedAgentId?.length === 0) {
+      toast.warning('Please select at least one agent to shortlist')
+
+      return
+    }
+
     setSuccessModalOpen(true)
   }
 
@@ -415,7 +433,14 @@ const KitchenSink = () => {
         </table>
       </div>
 
-      <AnchorTemporaryDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      <AnchorTemporaryDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        drawerData={responceData?.data}
+        successModalOpen={successModalOpen}
+        setSuccessModalOpen={setSuccessModalOpen}
+        handleConfirmSelected={handleConfirmSelected}
+      />
       <TablePagination
         rowsPerPageOptions={[7, 10, 25, { label: 'All', value: tableData.length }]}
         component='div'
@@ -434,7 +459,6 @@ const KitchenSink = () => {
         </Button>
       </section>
       {/* Success Modal */}
-
       <SuccessModal
         open={successModalOpen}
         onClose={() => setSuccessModalOpen(false)}
@@ -447,7 +471,6 @@ const KitchenSink = () => {
           handleConfirmSelected()
         }}
       />
-
       <ShortListAgent open={shortlistedModalOpen} onClose={handleCloseAndNavigate} />
     </Card>
   )
