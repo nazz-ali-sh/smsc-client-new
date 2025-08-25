@@ -45,12 +45,11 @@ const iconMap: any = {
 interface AnchorTemporaryDrawerProps {
   open: boolean
   onClose: () => void
-  drawerData: any 
+  drawerData: any
   successModalOpen: boolean
   setSuccessModalOpen: Dispatch<SetStateAction<boolean>>
   handleConfirmSelected: () => void
 }
-
 
 export default function AnchorTemporaryDrawer({
   open,
@@ -58,7 +57,6 @@ export default function AnchorTemporaryDrawer({
   drawerData,
   setSuccessModalOpen
 }: AnchorTemporaryDrawerProps) {
-
   const anchor: Anchor = 'right'
 
   const cardsData = [
@@ -112,7 +110,7 @@ export default function AnchorTemporaryDrawer({
       <Divider sx={{ mt: 9 }} />
 
       <div className='flex justify-between items-center mt-[34px]'>
-        {cardsData.map((items : any, index) => (
+        {cardsData.map((items: any, index) => (
           <div className='w-[227px]' key={index}>
             <Card color={'primary'}>
               <CardContent className='flex items-center gap-x-[16px]'>
@@ -256,6 +254,58 @@ export default function AnchorTemporaryDrawer({
                   </AccordionDetails>
                 </Accordion>
               </Box>
+            </section>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', rowGap: '20px' }}>
+              <Typography variant='h3' className='text-darkblue pt-[34px] text-[18px]'>
+                Building Height:
+              </Typography>
+
+              <Typography variant='h3' className=' pt-[34px] text-[18px] text-[#696969] pl-[20px]'>
+                11
+              </Typography>
+            </Box>
+
+            <Typography variant='h3' className='text-darkblue pt-[34px] text-[18px]'>
+              RMC Service Charge Budget
+            </Typography>
+            <section className='flex flex-wrap pt-[28px]'>
+              {item.management_fees?.map((feeItem: any, feeIndex: any) => (
+                <Grid item xs={12} sm={6} md={4} key={feeIndex} className='w-[240px]'>
+                  <>
+                    <Box sx={{ marginBottom: 4, marginTop: 4 }}>
+                      <Grid container spacing={3} className='w-[230px]'>
+                        <Grid item xs={12} sm={6} md={12}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                width: 40,
+                                height: 40,
+                                backgroundColor: '#E3F2FD',
+                                borderRadius: '8px',
+                                flexShrink: 0
+                              }}
+                            >
+                              <Image src={iconMap[feeItem?.management_fee_slug]} alt='images' />
+                            </Box>
+                            <Box>
+                              <Typography variant='body2' sx={{ fontWeight: 500 }} className='w-[180px]'>
+                                {feeItem?.management_fee_title}
+                              </Typography>
+                              <Typography variant='caption' color='#262B43E5' className='text-[20px]'>
+                                €{feeItem?.fee_amount}
+                              </Typography>
+                            </Box>
+                          </Box>
+                        </Grid>
+                      </Grid>
+                    </Box>
+                  </>
+                </Grid>
+              ))}
             </section>
 
             <Typography variant='h3' className='text-darkblue pt-[34px] text-[18px]'>

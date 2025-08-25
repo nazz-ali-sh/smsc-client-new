@@ -1,4 +1,6 @@
 'use client'
+import { useState, type SetStateAction } from 'react'
+
 import { Grid } from '@mui/material'
 
 import { useQuery } from '@tanstack/react-query'
@@ -14,17 +16,23 @@ interface PageProps {
 }
 
 export default function AgentDetail({ params }: PageProps) {
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['companyDetails', params.id],
-    queryFn: () => getPmaCompanyDetails(Number(params.id))
+  const [dataFromsubChild, setDataFromSubChild] = useState('')
+
+  function handleDataFromSubChild(data: SetStateAction<string>) {
+    setDataFromSubChild(data)
+  }
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['companyDetails', params.id, dataFromsubChild],
+    queryFn: () => getPmaCompanyDetails(Number(params.id), dataFromsubChild)
   })
 
   if (isLoading) {
-    return <div>Loading company details...</div>
+    return <div className='flex justify-between items-center w-full'>Loading company details...</div>
   }
 
   if (isError) {
-    return <div>Error fetching data: {error.message}</div>
+    return <div className='text-center'>Data Not Found </div>
   }
 
   return (
@@ -35,7 +43,7 @@ export default function AgentDetail({ params }: PageProps) {
             <UserProfile userData={data} />
           </Grid>
           <Grid item xs={12} lg={9} md={7}>
-            <EventDetails userData={data} />
+            <EventDetails userData={data} handleDataFromSubChild={handleDataFromSubChild} />
           </Grid>
         </Grid>
       </section>

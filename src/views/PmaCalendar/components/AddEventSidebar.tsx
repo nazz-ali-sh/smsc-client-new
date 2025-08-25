@@ -199,6 +199,7 @@ const AddEventSidebar = (props: AddEventSidebarType) => {
               <DatePicker
                 label='Start Date'
                 value={values.startDate}
+                // @ts-ignore
                 onChange={(date: Date | null) => date !== null && setValues({ ...values, startDate: date })}
                 slotProps={{
                   textField: {
@@ -212,6 +213,7 @@ const AddEventSidebar = (props: AddEventSidebarType) => {
               <DatePicker
                 label='End Date'
                 value={values.endDate}
+                // @ts-ignore
                 onChange={(date: Date | null) => date !== null && setValues({ ...values, endDate: date })}
                 minDate={values.startDate}
                 slotProps={{

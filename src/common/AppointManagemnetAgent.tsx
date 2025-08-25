@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 
 import {
   Dialog,
@@ -13,25 +13,103 @@ import {
   Box,
   IconButton,
   Grid,
-  InputAdornment,
   useTheme,
   Divider,
   FormControlLabel,
   Checkbox
 } from '@mui/material'
+import { useMutation } from '@tanstack/react-query'
+
+import { useSelector } from 'react-redux'
+
+import { toast } from 'react-toastify'
+
+import ConfirmationModal from './ConfirmationModal'
+import { gettingRmcAppoint } from '@/services/tender_result-apis/tender-result-api'
+import type { RootState } from '@/redux-store'
 
 interface SiteVisitsModalProps {
   open: boolean
   onClose: () => void
+  finalShortListedResponce: any
+  pmaSelectedID: number
 }
 
-const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({ open, onClose }) => {
+const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
+  open,
+  onClose,
+  finalShortListedResponce,
+  pmaSelectedID
+}) => {
   const theme = useTheme()
+  const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)
+  const [feedbacks, setFeedbacks] = useState<{ [key: number]: { feedback: string; noFeedback: boolean } }>({})
+
+  const rmcTenderId = useSelector((state: RootState) => state?.users?.tenderId)
+
+  const { mutate: appointMutate } = useMutation({
+    mutationFn: ({
+      pma_user_id,
+      appointment_message,
+      other_pma_feedbacks,
+      rmcTenderId
+    }: {
+      pma_user_id: number
+      appointment_message: string
+      other_pma_feedbacks: { pma_user_id: number; feedback: string }[]
+      rmcTenderId: any
+    }) => gettingRmcAppoint(pma_user_id, appointment_message, other_pma_feedbacks, rmcTenderId),
+    onSuccess: () => {
+      setConfirmationModalOpen(true)
+    },
+    onError: (error: any) => {
+      const errorMessage = error?.response?.data?.message || 'Failed to About Step'
+
+      console.error('About API error:', errorMessage)
+      toast.error(errorMessage)
+    }
+  })
+
+  const handleFeedbackChange = (pmaId: number, value: string) => {
+    setFeedbacks(prev => ({
+      ...prev,
+      [pmaId]: { ...prev[pmaId], feedback: value, noFeedback: false }
+    }))
+  }
+
+  const handleCheckboxChange = (pmaId: number, checked: boolean) => {
+    setFeedbacks(prev => ({
+      ...prev,
+      [pmaId]: { ...prev[pmaId], feedback: '', noFeedback: checked }
+    }))
+  }
 
   const handleSendInvites = () => {
-    console.log('Sending invites to selected agents')
-    onClose()
+    const appointmentMessage = 'Congratulations on your appointment as the managing agent!'
+
+    const otherPmaFeedbacks =
+      finalShortListedResponce?.data?.shortlisted_pmas
+        ?.filter((pma: any) => pma.pma_user.id !== pmaSelectedID)
+        ?.map((pma: any) => ({
+          pma_user_id: pma.pma_user.id,
+          feedback: feedbacks[pma.pma_user.id]?.noFeedback
+            ? 'Thank you for your proposal, but we have decided to go with another agent.'
+            : feedbacks[pma.pma_user.id]?.feedback || ''
+        })) || []
+
+    appointMutate({
+      pma_user_id: pmaSelectedID,
+      appointment_message: appointmentMessage,
+      other_pma_feedbacks: otherPmaFeedbacks,
+      rmcTenderId
+    })
   }
+
+  const type = 'appointAgent'
+
+  const selectedPma =
+    finalShortListedResponce?.data?.shortlisted_pmas?.find((pma: any) => pma.pma_user.id === pmaSelectedID)?.pma_user
+      ?.full_name || 'PMA1xxxx'
 
   return (
     <Dialog
@@ -61,7 +139,7 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({ open, onClose 
               Congratulations!
             </Typography>
             <Typography variant='body2' sx={{ paddingTop: '12px' }}>
-              You’ve have chosen to appoint PMA1xxxx as your new managing agent. They will be thrilled to hear that
+              You’ve chosen to appoint {selectedPma} as your new managing agent. They will be thrilled to hear that
               they’ve been selected to manage your block
             </Typography>
           </Box>
@@ -80,114 +158,49 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({ open, onClose 
 
       <DialogContent sx={{ pt: 2, px: 3 }}>
         <Grid container spacing={3} className='mt-2'>
-          <Grid item xs={12}>
-            <Grid container spacing={6}>
-              <Grid item xs={12} md={12}>
-                <TextField
-                  fullWidth
-                  label='Date And Time'
-                  placeholder='Set Date And Time For'
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position='end'>
-                        <i className='ri-calendar-line' style={{ cursor: 'pointer' }} />
-                      </InputAdornment>
-                    )
-                  }}
-                  sx={{
-                    '& .MuiInputBase-root': {
-                      backgroundColor: 'white'
-                    }
-                  }}
-                />
-              </Grid>
-
-              <Box
-                sx={{
-                  backgroundColor: theme.colorSchemes.light.palette.customColors.darkGray,
-                  color: 'white',
-                  paddingX: '30px',
-                  fontWeight: '600',
-                  marginTop: '24px',
-                  marginLeft: '22px',
-                  borderRadius: '5px',
-                  paddingY: '6px',
-                  fontSize: '0.875rem',
-                  width: '100%'
-                }}
-              >
-                Feedback
-              </Box>
-            </Grid>
-          </Grid>
-
-          {/*  */}
-          <section className='border-1 border-black mt-[20px] ml-[14px] '>
+          <section className='border-1 border-black mt-[20px] ml-[14px]'>
             <Grid container spacing={2}>
-              <Typography sx={{ marginLeft: '8px' }}>PMA2xxxx </Typography>
-
-              <Grid item xs={12} md={12} sx={{ marginTop: '19px' }}>
-                <TextField
-                  fullWidth
-                  type='text'
-                  label='Feedback'
-                  placeholder='Set Date And Time For'
-                  sx={{
-                    '& .MuiInputBase-root': {
-                      backgroundColor: 'white'
-                    }
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12} md={12} sx={{ marginTop: '10px' }}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-
-                    // checked={isChecked}
-                    // onChange={handleCheckboxChange}
-                    />
-                  }
-                  label='I would prefer not to leave any feedback'
-                />
-              </Grid>
-
-              {/*last feedback */}
-
-              <Typography sx={{ marginLeft: '8px', marginTop: '20px' }}>PMA2xxxx </Typography>
-
-              <Grid item xs={12} md={12} sx={{ marginTop: '19px' }}>
-                <TextField
-                  fullWidth
-                  type='text'
-                  label='Feedback'
-                  placeholder='Set Date And Time For'
-                  sx={{
-                    '& .MuiInputBase-root': {
-                      backgroundColor: 'white'
-                    }
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12} md={12} sx={{ marginTop: '10px' }}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-
-                    // checked={isChecked}
-                    // onChange={handleCheckboxChange}
-                    />
-                  }
-                  label='I would prefer not to leave any feedback'
-                />
-              </Grid>
+              {finalShortListedResponce?.data?.shortlisted_pmas?.map((pma: any, index: number) => (
+                <React.Fragment key={pma.pma_user.id}>
+                  <Typography sx={{ marginLeft: '8px', marginTop: index > 0 ? '20px' : '0' }}>
+                    {pma.pma_user.id !== pmaSelectedID && <span> ({pma.pma_user.full_name})</span>}
+                  </Typography>
+                  {pma.pma_user.id !== pmaSelectedID && (
+                    <>
+                      <Grid item xs={12} md={12} sx={{ marginTop: '19px' }}>
+                        <TextField
+                          fullWidth
+                          type='text'
+                          label='Feedback'
+                          placeholder='Set Date And Time For'
+                          value={feedbacks[pma.pma_user.id]?.feedback || ''}
+                          onChange={e => handleFeedbackChange(pma.pma_user.id, e.target.value)}
+                          sx={{
+                            '& .MuiInputBase-root': {
+                              backgroundColor: 'white'
+                            }
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={12} md={12} sx={{ marginTop: '10px' }}>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={feedbacks[pma.pma_user.id]?.noFeedback || false}
+                              onChange={e => handleCheckboxChange(pma.pma_user.id, e.target.checked)}
+                            />
+                          }
+                          label='I would prefer not to leave any feedback'
+                        />
+                      </Grid>
+                    </>
+                  )}
+                </React.Fragment>
+              ))}
             </Grid>
 
             <Typography sx={{ marginTop: '20px' }}>
-              {' '}
-              <span className='font-bold'> PMA1xxxx</span> will be in touch very soon to begin getting you set up as
+              <span className='font-bold'>{selectedPma}</span> will be in touch very soon to begin getting you set up as
               their new client. Thank you for using SMSC, and we look forward to supporting you through the transition
               process!
             </Typography>
@@ -212,6 +225,16 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({ open, onClose 
           Appoint Managing Agent
         </Button>
       </DialogActions>
+
+      <ConfirmationModal
+        type={type}
+        open={confirmationModalOpen}
+        onClose={() => {
+          setConfirmationModalOpen(false)
+          onClose()
+        }}
+        inviteData={[]}
+      />
     </Dialog>
   )
 }

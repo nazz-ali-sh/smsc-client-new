@@ -25,6 +25,8 @@ const OnboardingBlockDetails = () => {
     setOpen(true)
   }
 
+  const fields = [{ placeholder: 'Name' }, { placeholder: 'No of Units' }, { placeholder: 'Current Managing Agent' }]
+
   return (
     <>
       <div className='flex flex-col items-center pt-20 px-4'>
@@ -51,152 +53,56 @@ const OnboardingBlockDetails = () => {
           </div>
 
           <div className='mt-10 grid grid-cols-3 gap-4'>
-            <Box>
-              <TextField
-                fullWidth
-                placeholder='Name'
-                variant='outlined'
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position='end' sx={{ mr: 0 }}>
-                      <Box
-                        sx={{
-                          backgroundColor: '#f5f5f5',
-                          borderRadius: '0 6px 6px 0',
-                          width: '60px',
-                          height: '54px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
-                        }}
-                      >
-                        <i className='ri-error-warning-line'></i>
-                      </Box>
-                    </InputAdornment>
-                  )
-                }}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '6px',
-                    pr: 0,
-                    '& fieldset': {
-                      borderColor: '#d9d9d9'
+            {fields.map((field, index) => (
+              <Box key={index}>
+                <TextField
+                  fullWidth
+                  placeholder={field.placeholder}
+                  variant='outlined'
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position='end' sx={{ mr: 0 }}>
+                        <Box
+                          sx={{
+                            backgroundColor: '#f5f5f5',
+                            borderRadius: '0 6px 6px 0',
+                            width: '60px',
+                            height: '54px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}
+                        >
+                          <i className='ri-error-warning-line'></i>
+                        </Box>
+                      </InputAdornment>
+                    )
+                  }}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '6px',
+                      pr: 0,
+                      '& fieldset': {
+                        borderColor: '#d9d9d9'
+                      },
+                      '&:hover fieldset': {
+                        borderColor: '#bfbfbf'
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: '#35C0ED'
+                      },
+                      '& input::placeholder': {
+                        color: '#666',
+                        opacity: 1
+                      }
                     },
-                    '&:hover fieldset': {
-                      borderColor: '#bfbfbf'
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: '#35C0ED'
-                    },
-                    '& input::placeholder': {
-                      color: '#666',
-                      opacity: 1
+                    '& .MuiInputBase-input': {
+                      pr: 0
                     }
-                  },
-                  '& .MuiInputBase-input': {
-                    pr: 0
-                  }
-                }}
-              />
-            </Box>
-
-            <Box>
-              <TextField
-                fullWidth
-                placeholder='No of Units'
-                variant='outlined'
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position='end' sx={{ mr: 0 }}>
-                      <Box
-                        sx={{
-                          backgroundColor: '#f5f5f5',
-                          borderRadius: '0 6px 6px 0',
-                          width: '60px',
-                          height: '54px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
-                        }}
-                      >
-                        <i className='ri-error-warning-line'></i>
-                      </Box>
-                    </InputAdornment>
-                  )
-                }}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '6px',
-                    pr: 0,
-                    '& fieldset': {
-                      borderColor: '#d9d9d9'
-                    },
-                    '&:hover fieldset': {
-                      borderColor: '#bfbfbf'
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: '#35C0ED'
-                    },
-                    '& input::placeholder': {
-                      color: '#666',
-                      opacity: 1
-                    }
-                  },
-                  '& .MuiInputBase-input': {
-                    pr: 0
-                  }
-                }}
-              />
-            </Box>
-
-            <Box>
-              <TextField
-                fullWidth
-                placeholder='Current Managing Agent'
-                variant='outlined'
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position='end' sx={{ mr: 0 }}>
-                      <Box
-                        sx={{
-                          backgroundColor: '#f5f5f5',
-                          borderRadius: '0 6px 6px 0',
-                          width: '60px',
-                          height: '54px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
-                        }}
-                      >
-                        <i className='ri-error-warning-line'></i>
-                      </Box>
-                    </InputAdornment>
-                  )
-                }}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '6px',
-                    pr: 0,
-                    '& fieldset': {
-                      borderColor: '#d9d9d9'
-                    },
-                    '&:hover fieldset': {
-                      borderColor: '#bfbfbf'
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: '#35C0ED'
-                    },
-                    '& input::placeholder': {
-                      color: '#666',
-                      opacity: 1
-                    }
-                  },
-                  '& .MuiInputBase-input': {
-                    pr: 0
-                  }
-                }}
-              />
-            </Box>
+                  }}
+                />
+              </Box>
+            ))}
           </div>
 
           <div className='grid grid-cols-3 gap-4 mt-8'>

@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import { useRouter } from 'next/navigation'
-
 import Image from 'next/image'
 
 import { Card, TablePagination, Checkbox, Button, Rating, Stack, Typography } from '@mui/material'
@@ -24,9 +23,7 @@ import { rankItem } from '@tanstack/match-sorter-utils'
 import type { ColumnFiltersState, FilterFn, ColumnDef } from '@tanstack/react-table'
 import type { RankingInfo } from '@tanstack/match-sorter-utils'
 import { useSelector } from 'react-redux'
-
 import { useQuery, useMutation } from '@tanstack/react-query'
-
 import { toast } from 'react-toastify'
 
 import menuDots from '../../../public/images/manuDots.svg'
@@ -37,7 +34,6 @@ import styles from '@core/styles/table.module.css'
 import AnchorTemporaryDrawer from '@/common/RightDrawer'
 import type { RootState } from '@/redux-store'
 import { ShortlistedPma, tenderResponce } from '@/services/tender_result-apis/tender-result-api'
-
 import SuccessModal from '../../common/SucessModal'
 import ShortListAgent from '@/common/ShortListAgent'
 
@@ -65,14 +61,11 @@ const KitchenSink = () => {
   const [globalFilter, setGlobalFilter] = useState('')
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [tableData, setTableData] = useState<DataType[]>([])
-  const [selectedAgentId, setSelectedAgentId] = useState<any[]>([])
+  const [selectedAgentId, setSelectedAgentId] = useState<number[]>([]) // Changed to number[] for consistency
 
   const router = useRouter()
-
   const [successModalOpen, setSuccessModalOpen] = useState(false)
-
   const [shortlistedModalOpen, setShortListedSuccessModalOpen] = useState(false)
-
   const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
 
   const { data: responceData } = useQuery<TenderResponse, Error>({
@@ -87,9 +80,8 @@ const KitchenSink = () => {
       pma_user_ids
     }: {
       tender_id: number
-      pma_user_ids: number[] | number
-      selectedAgentId: any
-    }) => ShortlistedPma(tender_id, pma_user_ids, selectedAgentId),
+      pma_user_ids: number[] // Changed to number[] to ensure array
+    }) => ShortlistedPma(tender_id, pma_user_ids),
     onSuccess: () => {
       setShortListedSuccessModalOpen(true)
       table.resetRowSelection()
@@ -288,17 +280,19 @@ const KitchenSink = () => {
   // Handle Confirm Selected button click
   const handleConfirmSelected = () => {
     const selectedRows = table.getSelectedRowModel().rows
+    const pma_user_ids = selectedRows.map(row => row.original.pma_id)
 
-    if (selectedRows.length === 0 && selectedAgentId?.length === 0) {
+    // If no rows are selected but selectedAgentId exists (e.g., from Questionnaire button)
+    const allSelectedIds = [...new Set([...pma_user_ids, ...selectedAgentId])]
+
+    if (allSelectedIds.length === 0) {
       toast.warning('Please select at least one agent to shortlist')
 
       return
     }
 
-    const pma_user_ids = selectedRows.map(row => row.original.pma_id)
-
     if (tender_id) {
-      shortlistMutation.mutate({ tender_id: Number(tender_id), pma_user_ids, selectedAgentId })
+      shortlistMutation.mutate({ tender_id: Number(tender_id), pma_user_ids: allSelectedIds })
     }
   }
 
@@ -312,8 +306,9 @@ const KitchenSink = () => {
 
   const openModal = () => {
     const selectedRows = table.getSelectedRowModel().rows
+    const allSelectedIds = [...new Set([...selectedRows.map(row => row.original.pma_id), ...selectedAgentId])]
 
-    if (selectedRows.length === 0 && selectedAgentId?.length === 0) {
+    if (allSelectedIds.length === 0) {
       toast.warning('Please select at least one agent to shortlist')
 
       return
@@ -458,7 +453,6 @@ const KitchenSink = () => {
           Shorlisted
         </Button>
       </section>
-      {/* Success Modal */}
       <SuccessModal
         open={successModalOpen}
         onClose={() => setSuccessModalOpen(false)}
@@ -471,7 +465,7 @@ const KitchenSink = () => {
           handleConfirmSelected()
         }}
       />
-      <ShortListAgent open={shortlistedModalOpen} onClose={handleCloseAndNavigate} />
+      <ShortListAgent open={shortlistedModalOpen} onClose={handleCloseAndNavigate} pmaSelectedID={0} />
     </Card>
   )
 }

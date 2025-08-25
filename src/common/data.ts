@@ -1,17 +1,7 @@
- export const daysWithSlots = [
-    {
-      day: 'Monday'
-    },
-    {
-      day: 'Tuesday'
-    },
-    {
-      day: 'Wednesday'
-    },
-    {
-      day: 'Thursday'
-    },
-    {
-      day: 'Friday'
-    }
-  ]
+export const daysWithSlots = [
+  { id: 1, day: 'Monday' },
+  { id: 2, day: 'Tuesday' },
+  { id: 3, day: 'Wednesday' },
+  { id: 4, day: 'Thursday' },
+  { id: 5, day: 'Friday' }
+]

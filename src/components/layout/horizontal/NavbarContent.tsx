@@ -97,13 +97,13 @@ interface TenderIdResponse {
 const NavbarContent = () => {
   const dispatch = useDispatch()
 
-  // Hooks
   const { isBreakpointReached } = useHorizontalNav()
   const { lang: locale } = useParams()
 
   const [rmctenderId, setRmcTenderId] = useState<number | ''>('')
 
   const handleTenderChange = (event: any) => {
+    debugger
     const newTenderId = event.target.value as number
 
     dispatch(setTenderId(newTenderId))
@@ -115,8 +115,6 @@ const NavbarContent = () => {
     queryKey: ['rmcTenderIds'],
     queryFn: gettingRmcTenderId
   })
-
-  console.log(rmcTenderIDData, 'rmcTenderID')
 
   return (
     <div

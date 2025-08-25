@@ -45,11 +45,21 @@ export const apiEndpoints = {
 
   finalShortList: (id: number) => `rmc/shortlisted-pmas/${id}`,
 
-  getShortlistedCompantDetails: (user_id: number) => `rmc/pma-company-detail?pma_id=${user_id}`,
+  getShortlistedCompantDetails: (user_id: number, type: string) =>
+    `rmc/pma-company-detail?pma_id=${user_id}&type=${type}`,
 
-  getAvailableSlots: `rmc/video-call/available-days-slots`,
+  // getAvailableSlots: `rmc/video-call/available-days-slots`,
+  getAvailableSlots: `rmc/availability/days-slots`,
 
-  pmaAvailablegGuest: `rmc/video-call/available-pmas`,
+  rmcVideoCallInvite: () => `rmc/video-call/invites`,
 
-  rmcVideoCallInvit: () => `rmc/video-call/invites`
+  gettingSlots: (date: any) => `rmc/video-call/slots-for-date?date=${date}`,
+
+  gettingrmcshortlistStats: (tender_id: number) => `rmc/shortlist-agent/stats?tender_id=${tender_id}`,
+
+  rmcAppintRmc: (tender_id: number) => `/rmc/appoint-pma?tender_id=${tender_id} `,
+
+  rmcShortlistContact: `rmc/request-agent/request-contact`,
+
+  rmcExtendDays: (tender_id: number) => `rmc/shortlist/${tender_id}/extend`
 }

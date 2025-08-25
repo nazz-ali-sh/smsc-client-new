@@ -1,197 +1,208 @@
-'use client'
-
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button,
   TextField,
+  Button,
   Typography,
   Box,
+  Grid,
   Chip,
   IconButton,
-  Grid,
-  InputAdornment,
-  Popover,
-  List,
-  ListItem,
-  ListItemButton,
-  Paper,
+  Divider,
   useTheme,
-  Divider
+  Autocomplete,
+  FormControl,
+  MenuItem,
+  Select,
+  InputLabel
 } from '@mui/material'
-import ReactDatepicker from 'react-datepicker'
+import type { FieldChangeHandlerContext } from '@mui/x-date-pickers/internals'
+import type { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { useForm, Controller } from 'react-hook-form'
+import { valibotResolver } from '@hookform/resolvers/valibot'
+import { object, string, optional, any } from 'valibot'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { toast } from 'react-toastify'
 
-import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
+import ConfirmationModal from './ConfirmationModal'
+import { getSlotsAndDay, videoCallsInvite } from '@/services/tender_result-apis/tender-result-api'
 
-interface AvailabilitySlot {
+interface Guest {
   id: string
-  date: string
-  startTime: string
-  endTime: string
-  location: string
+  name?: string
+  pma_number?: string
 }
 
-interface SiteVisitsModalProps {
+interface OnlineCallsModalProps {
   open: boolean
   onClose: () => void
+  shorlistedPmas: any
 }
 
-const SiteVisitsModal: React.FC<SiteVisitsModalProps> = ({ open, onClose }) => {
+interface Slot {
+  id: number | string
+  slot_name: string
+  start_time: string
+  end_time: string
+}
+
+export const videoCallSchema = object({
+  selectedDay: string('Please select a day'),
+  availableSlots: string('Please select an available slot'),
+  pmaGuest: optional(any()),
+  additionalNotes: optional(string())
+})
+
+const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({ open, onClose, shorlistedPmas }) => {
   const theme = useTheme()
+  const [dayId, setDayId] = useState('')
+  const [finalSelectedSlots, setFinalSelectedSlots] = useState<Slot[]>([])
+  const [inviteData, setInviteData] = useState<[]>([])
 
-  const [dateTime, setDateTime] = useState('')
-  const [location, setLocation] = useState('')
-  const [startTime, setStartTime] = useState('9:00 AM')
-  const [endTime, setEndTime] = useState('10:00 AM')
-  const [additionalNotes, setAdditionalNotes] = useState('')
-  const [datePickerAnchor, setDatePickerAnchor] = useState<HTMLElement | null>(null)
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
-  const [timePickerAnchor, setTimePickerAnchor] = useState<HTMLElement | null>(null)
-  const [timePickerType, setTimePickerType] = useState<'start' | 'end'>('start')
-  const [tempTime, setTempTime] = useState({ hours: 9, minutes: 0, ampm: 'AM' })
-  const [editingSlotId, setEditingSlotId] = useState<string | null>(null)
-  const [availabilitySlots, setAvailabilitySlots] = useState<AvailabilitySlot[]>([])
+  const [userSelectedSlots, setUserSelectedSlots] = useState<{ selectedIds: string; slotName: string | null }>({
+    selectedIds: '',
+    slotName: ''
+  })
 
-  const handleAddSlot = () => {
-    if (dateTime && location && startTime && endTime) {
-      if (editingSlotId) {
-        setAvailabilitySlots(
-          availabilitySlots.map(slot =>
-            slot.id === editingSlotId ? { ...slot, date: dateTime, startTime, endTime, location } : slot
-          )
-        )
-        setEditingSlotId(null)
+  const [value, setValue] = useState<Dayjs | null>(dayjs())
+  const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)
 
-        setDateTime('')
-        setLocation('')
-        setStartTime('9:00 AM')
-        setEndTime('10:00 AM')
-        setSelectedDate(null)
-      } else {
-        const newSlot: AvailabilitySlot = {
-          id: Date.now().toString(),
-          date: dateTime,
-          startTime,
-          endTime,
-          location
-        }
-
-        setAvailabilitySlots([...availabilitySlots, newSlot])
-        setDateTime('')
-        setLocation('')
-        setStartTime('9:00 AM')
-        setEndTime('10:00 AM')
-        setSelectedDate(null)
-      }
+  const {
+    control,
+    reset,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
+    resolver: valibotResolver(videoCallSchema),
+    defaultValues: {
+      selectedDay: '',
+      availableSlots: '',
+      pmaGuest: [],
+      additionalNotes: ''
     }
-  }
+  })
 
-  const handleDeleteSlot = (id: string) => {
-    setAvailabilitySlots(availabilitySlots.filter(slot => slot.id !== id))
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleDateChange = (newValue: Date | Dayjs | null, _context: FieldChangeHandlerContext<any>) => {
+    if (!newValue) return
 
-    if (editingSlotId === id) {
-      setEditingSlotId(null)
-      setDateTime('')
-      setLocation('')
-      setStartTime('9:00 AM')
-      setEndTime('10:00 AM')
-      setSelectedDate(null)
+    const d = dayjs(newValue)
+
+    if (d.day() === 0 || d.day() === 6) {
+      toast.error('Saturday and Sunday are not available')
+
+      return
     }
-  }
 
-  const handleEditSlot = (id: string) => {
-    const slot = availabilitySlots.find(s => s.id === id)
+    if (d.isBefore(dayjs(), 'day')) {
+      toast.error('Previous dates are not allowed')
 
-    if (slot) {
-      setDateTime(slot.date)
-      setLocation(slot.location)
-      setStartTime(slot.startTime)
-      setEndTime(slot.endTime)
-      setEditingSlotId(id)
-
-      const [month, day, year] = slot.date.split(' ')
-      const parsedDate = new Date(`${month} ${day} ${year}`)
-
-      setSelectedDate(isNaN(parsedDate.getTime()) ? null : parsedDate)
+      return
     }
+
+    setValue(d)
   }
 
-  const handleDateClick = (event: React.MouseEvent<HTMLElement>) => {
-    setDatePickerAnchor(event.currentTarget)
+  const shouldDisableDate = (date: Date | Dayjs) => {
+    const d = dayjs(date)
+
+    const isWeekend = d.day() === 0 || d.day() === 6
+    const isPastDate = d.isBefore(dayjs(), 'day')
+
+    return isWeekend || isPastDate
   }
 
-  const handleDatePickerClose = () => {
-    setDatePickerAnchor(null)
+  const defaultSelection =
+    shorlistedPmas?.length > 0
+      ? [{ id: shorlistedPmas[0].pma_user.id, pma_number: shorlistedPmas[0].pma_user.pma_number }]
+      : []
+
+  const handleSlotSelection = (selectedId: string) => {
+    const found = finalSelectedSlots.find(s => String(s.id) === String(selectedId)) ?? null
+
+    setUserSelectedSlots({ selectedIds: String(selectedId), slotName: found?.slot_name || '' })
   }
 
-  const handleDateChange = (date: Date | null) => {
-    setSelectedDate(date)
+  interface SlotsApiResponse {
+    success: boolean
+    message: string
+    data: { day_id: string; slots: Slot[] }
+  }
 
-    if (date) {
-      setDateTime(
-        date.toLocaleDateString('en-US', {
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric'
-        })
-      )
+  const {
+    data: gettingSlotsAndDays,
+    isError,
+    error
+  } = useQuery<SlotsApiResponse, Error>({
+    queryKey: ['AvailableSlotsAndDays', value?.format('YYYY-MM-DD')],
+    queryFn: () => getSlotsAndDay(value!.format('YYYY-MM-DD'))
+  })
+
+  // Handle dayId and slots updates
+  useEffect(() => {
+    if (gettingSlotsAndDays?.data) {
+      setDayId(gettingSlotsAndDays.data.day_id)
+      setFinalSelectedSlots(gettingSlotsAndDays.data.slots || [])
     } else {
-      setDateTime('')
+      setDayId('')
+      setFinalSelectedSlots([])
     }
+  }, [gettingSlotsAndDays])
 
-    setDatePickerAnchor(null)
-  }
-
-  const handleTimeClick = (event: React.MouseEvent<HTMLElement>, type: 'start' | 'end') => {
-    setTimePickerType(type)
-    setTimePickerAnchor(event.currentTarget)
-
-    const currentTime = type === 'start' ? startTime : endTime
-    const timeMatch = currentTime.match(/(\d+):(\d+)\s*(AM|PM)/i)
-
-    if (timeMatch) {
-      setTempTime({
-        hours: parseInt(timeMatch[1]),
-        minutes: parseInt(timeMatch[2]),
-        ampm: timeMatch[3].toUpperCase()
-      })
+  useEffect(() => {
+    if (isError && error) {
+      toast.error(error.message)
     }
-  }
+  }, [isError, error])
 
-  const handleTimePickerClose = () => {
-    setTimePickerAnchor(null)
-  }
+  const videoCallInviteMutation = useMutation({
+    mutationFn: ({
+      value,
+      day_id,
+      slot_ids,
+      pma_user_ids,
+      message
+    }: {
+      value: any | string
+      day_id: number
+      slot_ids: number
+      pma_user_ids: number[] | number
+      message: string
+    }) => videoCallsInvite(value, day_id, slot_ids, pma_user_ids, message),
+    onSuccess: (data: any) => {
+      debugger
+      setInviteData(data?.data?.invites)
+      toast.success(data?.message || 'Invite sent successfully!')
+      reset()
+      setConfirmationModalOpen(true)
+    },
+    onError: (error: any) => {
+      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to send invite'
 
-  const handleTimeChange = (field: 'hours' | 'minutes' | 'ampm', value: number | string) => {
-    setTempTime(prev => ({ ...prev, [field]: value }))
-  }
-
-  const handleTimeConfirm = () => {
-    const formattedTime = `${tempTime.hours.toString().padStart(2, '0')}:${tempTime.minutes.toString().padStart(2, '0')} ${tempTime.ampm}`
-
-    if (timePickerType === 'start') {
-      setStartTime(formattedTime)
-    } else {
-      setEndTime(formattedTime)
+      toast.error(errorMessage)
+      console.error('Failed to send invite:', error)
     }
+  })
 
-    setTimePickerAnchor(null)
+  const handleSendVideoCall = (formData: any) => {
+    videoCallInviteMutation.mutate({
+      value: value!.format('YYYY-MM-DD'),
+      day_id: Number(dayId),
+      slot_ids: Number(formData.availableSlots),
+      pma_user_ids: formData.pmaGuest.map((g: Guest) => g.id),
+      message: formData.additionalNotes
+    })
   }
 
-  const handleTimeCancel = () => {
-    setTimePickerAnchor(null)
-  }
-
-  const handleSendInvites = () => {
-    console.log('Sending invites to selected agents')
-    onClose()
-  }
-
-  const lightBlue = theme.colorSchemes.light.palette.customColors.ligthBlue
+  const type = 'siteVisit'
 
   return (
     <Dialog
@@ -218,130 +229,68 @@ const SiteVisitsModal: React.FC<SiteVisitsModalProps> = ({ open, onClose }) => {
                 fontSize: '1.75rem'
               }}
             >
-              Site Visits Invites
+              Video Call Invites
             </Typography>
-            <Typography variant='body2' sx={{ paddingTop: '12px' }}>
+            <Typography variant='body2' sx={{ paddingY: '12px' }}>
               Use this section to invite PMAs to meeting
             </Typography>
           </Box>
-          <IconButton onClick={onClose} size='small' sx={{ mt: -1 }}>
+          <IconButton onClick={onClose} sx={{ color: 'customColors.textGray' }}>
             <i className='ri-close-line' />
           </IconButton>
         </Box>
-        <Box sx={{ paddingY: '12px' }}>
-          <Divider
-            sx={{
-              height: '2px'
-            }}
-          />
+        <Box sx={{ paddingTop: '12px' }}>
+          <Divider />
         </Box>
       </DialogTitle>
 
-      <DialogContent sx={{ pt: 2, px: 3 }}>
-        <Grid container spacing={3} className='mt-2'>
-          <Grid item xs={12}>
-            <Grid container spacing={6}>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  label='Date And Time'
-                  placeholder='Set Date And Time For'
-                  value={dateTime}
-                  onClick={handleDateClick}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position='end'>
-                        <i className='ri-calendar-line' style={{ cursor: 'pointer' }} />
-                      </InputAdornment>
-                    )
-                  }}
-                  sx={{
-                    '& .MuiInputBase-root': {
-                      backgroundColor: 'white'
-                    }
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  label='Location'
-                  placeholder='Set Location'
-                  value={location}
-                  onChange={e => setLocation(e.target.value)}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position='end'>
-                        <i className='ri-map-pin-line' />
-                      </InputAdornment>
-                    )
-                  }}
-                  sx={{
-                    '& .MuiInputBase-root': {
-                      backgroundColor: 'white'
-                    }
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12} md={6} className='mt-2'>
-                <TextField
-                  fullWidth
-                  label='Start Time'
-                  value={startTime}
-                  onClick={e => handleTimeClick(e, 'start')}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position='end'>
-                        <i className='ri-time-line' style={{ cursor: 'pointer' }} />
-                      </InputAdornment>
-                    )
-                  }}
-                  sx={{
-                    '& .MuiInputBase-root': {
-                      backgroundColor: 'white'
-                    }
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12} md={6} className='mt-2'>
-                <TextField
-                  fullWidth
-                  label='End Time'
-                  value={endTime}
-                  onClick={e => handleTimeClick(e, 'end')}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position='end'>
-                        <i className='ri-time-line' style={{ cursor: 'pointer' }} />
-                      </InputAdornment>
-                    )
-                  }}
-                  sx={{
-                    '& .MuiInputBase-root': {
-                      backgroundColor: 'white'
-                    }
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  <Button
-                    variant='contained'
-                    onClick={handleAddSlot}
-                    sx={{
-                      px: 15,
-                      backgroundColor: lightBlue,
-                      color: 'white',
-                      '&:hover': {
-                        backgroundColor: lightBlue
-                      }
+      <DialogContent sx={{ px: 3, py: 2 }} className='mt-10'>
+        <Grid container spacing={6} className='mt-[40px]'>
+          <Grid item xs={12} sm={12}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label='Select date'
+                value={value}
+                onChange={handleDateChange}
+                shouldDisableDate={shouldDisableDate}
+                slotProps={{
+                  textField: { fullWidth: true }
+                }}
+              />
+            </LocalizationProvider>
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <Controller
+              name='availableSlots'
+              control={control}
+              render={({ field }) => (
+                <FormControl fullWidth error={!!errors.availableSlots}>
+                  <InputLabel>Available Slots</InputLabel>
+                  <Select
+                    {...field}
+                    value={field.value || ''}
+                    onChange={e => {
+                      const value = e.target.value
+
+                      field.onChange(value)
+                      handleSlotSelection(value)
                     }}
                   >
-                    {editingSlotId ? 'Edit' : 'Add'}
-                  </Button>
-                </Box>
-              </Grid>
-            </Grid>
+                    {finalSelectedSlots.map((item, index) => (
+                      <MenuItem key={index} value={String(item.id)}>
+                        {item.slot_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {errors.availableSlots && (
+                    <Typography variant='caption' color='error'>
+                      {errors.availableSlots.message as string}
+                    </Typography>
+                  )}
+                </FormControl>
+              )}
+            />
           </Grid>
 
           <Grid item xs={12}>
@@ -353,266 +302,172 @@ const SiteVisitsModal: React.FC<SiteVisitsModalProps> = ({ open, onClose }) => {
               Availability Set for
             </Typography>
 
-            <Grid container spacing={4} sx={{ mb: 2 }}>
-              {availabilitySlots.map(slot => (
-                <Grid item xs={12} sm={6} key={slot.id}>
-                  <Chip
-                    label={`${slot.date} from ${slot.startTime} to ${slot.endTime}`}
-                    sx={{
-                      backgroundColor: theme => theme.colorSchemes.light.palette.customColors.darkGray,
-                      color: 'white',
-                      '& .MuiChip-label': { px: 2 },
-                      height: '32px',
-                      borderRadius: '5px',
-                      justifyContent: 'space-between',
-                      width: '100%'
-                    }}
-                    deleteIcon={
-                      <Box sx={{ display: 'flex', gap: 0.5, paddingLeft: '10px' }}>
-                        <IconButton size='small' onClick={() => handleEditSlot(slot.id)} sx={{ color: 'white' }}>
-                          <i className='ri-edit-line' />
-                        </IconButton>
-                        <IconButton size='small' onClick={() => handleDeleteSlot(slot.id)} sx={{ color: 'white' }}>
-                          <i className='ri-delete-bin-line' />
-                        </IconButton>
-                      </Box>
-                    }
-                    onDelete={() => {}}
-                  />
-                </Grid>
-              ))}
+            <Grid container spacing={2} alignItems='center' sx={{ mb: 2 }}>
+              {/* Chip */}
+              <Grid item xs={12} sm={6} sx={{ overflowY: 'auto', width: '100%' }}>
+                <Chip
+                  label={
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        paddingTop: '20',
+                        height: '200px',
+                        overflowY: 'auto'
+                      }}
+                    >
+                      {gettingSlotsAndDays?.data?.slots?.map(item => (
+                        <span
+                          className={`pt-[10px] ${userSelectedSlots?.selectedIds == item?.id ? 'bg-buttonPrimary' : ''} `}
+                          key={item?.id}
+                        >
+                          {item.slot_name}
+                        </span>
+                      ))}
+                    </Box>
+                  }
+                  sx={{
+                    backgroundColor: theme => theme.colorSchemes.light.palette.customColors.darkGray,
+                    color: 'white',
+                    '& .MuiChip-label': {
+                      px: 2,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'flex-start',
+                      paddingTop: '20'
+                    },
+                    height: 'auto',
+                    borderRadius: '5px',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    paddingY: '8px'
+                  }}
+                />
+              </Grid>
+
+              {/* Button */}
+              <Grid item>
+                <Button
+                  variant='contained'
+                  onClick={handleSubmit(handleSendVideoCall)}
+                  sx={{
+                    backgroundColor: 'customColors.ligthBlue',
+                    '&:hover': { backgroundColor: 'customColors.ligthBlue' }
+                  }}
+                >
+                  Update Slots Slots
+                </Button>
+              </Grid>
             </Grid>
+
             <Box sx={{ paddingY: '12px' }}>
               <Divider />
             </Box>
           </Grid>
 
           <Grid item xs={12}>
-            <TextField
-              fullWidth
-              multiline
-              rows={4}
-              label='Additional Notes'
-              placeholder='Add Additional Notes'
-              value={additionalNotes}
-              onChange={e => setAdditionalNotes(e.target.value)}
-              sx={{
-                '& .MuiInputBase-root': {
-                  backgroundColor: 'white'
-                }
-              }}
+            <Typography variant='h6' sx={{ mb: 2, color: '#333', fontWeight: '600' }}>
+              Add Guests
+            </Typography>
+            <Controller
+              name='pmaGuest'
+              control={control}
+              defaultValue={defaultSelection}
+              render={({ field }) => (
+                <Autocomplete
+                  multiple
+                  options={shorlistedPmas || []}
+                  getOptionLabel={option => option.pma_user?.pma_number || ''}
+                  isOptionEqualToValue={(option, value) => String(option.pma_user?.id) === String((value as any)?.id)}
+                  getOptionDisabled={option =>
+                    (field.value || []).some((guest: any) => String(guest.id) === String(option.pma_user?.id))
+                  }
+                  value={field.value || []}
+                  onChange={(_, newValue) => {
+                    const mapped = newValue.map((item: any) => ({
+                      id: item.pma_user.id,
+                      pma_number: item.pma_user.pma_number
+                    }))
+
+                    field.onChange(mapped)
+                  }}
+                  renderInput={params => <TextField {...params} placeholder='Select guests...' variant='outlined' />}
+                  renderTags={(value: any[], getTagProps) =>
+                    value.map((option, index) => {
+                      const { key, ...tagProps } = getTagProps({ index }) // 👈 strip key
+
+                      return (
+                        <Chip
+                          key={option.id ?? key}
+                          {...tagProps}
+                          label={option.pma_number}
+                          sx={{
+                            backgroundColor: 'customColors.darkGray',
+                            color: 'white',
+                            '& .MuiChip-deleteIcon': { color: 'white' }
+                          }}
+                        />
+                      )
+                    })
+                  }
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Controller
+              name='additionalNotes'
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  fullWidth
+                  label='Add Additional Notes'
+                  multiline
+                  rows={4}
+                  placeholder='Enter additional notes...'
+                />
+              )}
             />
           </Grid>
         </Grid>
       </DialogContent>
 
-      <DialogActions sx={{ p: 3, pt: 1 }}>
-        <Button onClick={onClose} sx={{ color: 'customColors.textGray' }}>
-          Cancel
+      <DialogActions sx={{ px: 3, pb: 8, mt: 5 }}>
+        <Button
+          variant='contained'
+          onClick={handleSubmit(handleSendVideoCall)}
+          sx={{
+            backgroundColor: 'customColors.ligthBlue',
+            '&:hover': { backgroundColor: 'customColors.ligthBlue' }
+          }}
+        >
+          Send To All Shortlisted Agents
         </Button>
         <Button
           variant='contained'
-          onClick={handleSendInvites}
+          onClick={handleSubmit(handleSendVideoCall)}
           sx={{
             backgroundColor: 'customColors.ligthBlue',
-            '&:hover': {
-              backgroundColor: 'customColors.ligthBlue'
-            }
+            '&:hover': { backgroundColor: 'customColors.ligthBlue' }
           }}
         >
           Send To Selected Agents
         </Button>
       </DialogActions>
-      <Popover
-        open={Boolean(datePickerAnchor)}
-        anchorEl={datePickerAnchor}
-        onClose={handleDatePickerClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left'
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left'
-        }}
-      >
-        <AppReactDatepicker>
-          <ReactDatepicker
-            inline
-            selected={selectedDate}
-            onChange={handleDateChange}
-            renderCustomHeader={({
-              date,
-              decreaseMonth,
-              increaseMonth,
-              prevMonthButtonDisabled,
-              nextMonthButtonDisabled
-            }: {
-              date: Date
-              decreaseMonth: () => void
-              increaseMonth: () => void
-              prevMonthButtonDisabled: boolean
-              nextMonthButtonDisabled: boolean
-            }) => (
-              <div className='flex justify-between items-center p-2'>
-                <button
-                  type='button'
-                  onClick={decreaseMonth}
-                  disabled={prevMonthButtonDisabled}
-                  className='p-1 hover:bg-gray-100 rounded'
-                >
-                  <i className='ri-arrow-left-s-line' />
-                </button>
-                <span className='font-semibold text-sm'>
-                  {date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-                </span>
-                <button
-                  type='button'
-                  onClick={increaseMonth}
-                  disabled={nextMonthButtonDisabled}
-                  className='p-1 hover:bg-gray-100 rounded'
-                >
-                  <i className='ri-arrow-right-s-line' />
-                </button>
-              </div>
-            )}
-          />
-        </AppReactDatepicker>
-      </Popover>
-      <Popover
-        open={Boolean(timePickerAnchor)}
-        anchorEl={timePickerAnchor}
-        onClose={handleTimePickerClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left'
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left'
-        }}
-      >
-        <Paper sx={{ p: 2, minWidth: 280 }}>
-          <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
-            <Button
-              variant='contained'
-              size='small'
-              sx={{
-                minWidth: 'auto',
-                px: 2,
-                backgroundColor: lightBlue,
-                '&:hover': { backgroundColor: lightBlue }
-              }}
-            >
-              {tempTime.hours.toString().padStart(2, '0')}
-            </Button>
-            <Typography sx={{ alignSelf: 'center' }}>:</Typography>
-            <Button
-              variant='contained'
-              size='small'
-              sx={{
-                minWidth: 'auto',
-                px: 2,
-                backgroundColor: 'customColors.ligthBlue',
-                '&:hover': { backgroundColor: lightBlue }
-              }}
-            >
-              {tempTime.minutes.toString().padStart(2, '0')}
-            </Button>
-            <Button
-              variant='contained'
-              size='small'
-              sx={{
-                minWidth: 'auto',
-                px: 2,
-                backgroundColor: 'customColors.ligthBlue',
-                '&:hover': { backgroundColor: lightBlue }
-              }}
-            >
-              {tempTime.ampm}
-            </Button>
-          </Box>
 
-          <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-            <Box sx={{ width: 80, maxHeight: 200, overflow: 'auto' }}>
-              <List dense>
-                {Array.from({ length: 12 }, (_, i) => i + 1).map(hour => (
-                  <ListItem key={hour} disablePadding>
-                    <ListItemButton
-                      selected={tempTime.hours === hour}
-                      onClick={() => handleTimeChange('hours', hour)}
-                      sx={{
-                        minHeight: 32,
-                        '&.Mui-selected': {
-                          backgroundColor: '#e3f2fd',
-                          color: 'customColors.ligthBlue'
-                        }
-                      }}
-                    >
-                      <Typography variant='body2'>{hour.toString().padStart(2, '0')}</Typography>
-                    </ListItemButton>
-                  </ListItem>
-                ))}
-              </List>
-            </Box>
-
-            <Box sx={{ width: 80, maxHeight: 200, overflow: 'auto' }}>
-              <List dense>
-                {Array.from({ length: 60 }, (_, i) => i).map(minute => (
-                  <ListItem key={minute} disablePadding>
-                    <ListItemButton
-                      selected={tempTime.minutes === minute}
-                      onClick={() => handleTimeChange('minutes', minute)}
-                      sx={{
-                        minHeight: 32,
-                        '&.Mui-selected': {
-                          backgroundColor: lightBlue,
-                          color: 'white'
-                        }
-                      }}
-                    >
-                      <Typography variant='body2'>{minute.toString().padStart(2, '0')}</Typography>
-                    </ListItemButton>
-                  </ListItem>
-                ))}
-              </List>
-            </Box>
-
-            <Box sx={{ width: 60, maxHeight: 200, overflow: 'auto' }}>
-              <List dense>
-                {['AM', 'PM'].map(period => (
-                  <ListItem key={period} disablePadding>
-                    <ListItemButton
-                      selected={tempTime.ampm === period}
-                      onClick={() => handleTimeChange('ampm', period)}
-                      sx={{
-                        minHeight: 32,
-                        '&.Mui-selected': {
-                          backgroundColor: lightBlue,
-                          color: 'white'
-                        }
-                      }}
-                    >
-                      <Typography variant='body2'>{period}</Typography>
-                    </ListItemButton>
-                  </ListItem>
-                ))}
-              </List>
-            </Box>
-          </Box>
-
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-            <Button onClick={handleTimeCancel} sx={{ color: lightBlue }}>
-              CANCEL
-            </Button>
-            <Button onClick={handleTimeConfirm} sx={{ color: lightBlue }}>
-              OK
-            </Button>
-          </Box>
-        </Paper>
-      </Popover>
+      <ConfirmationModal
+        type={type}
+        inviteData={inviteData}
+        open={confirmationModalOpen}
+        onClose={() => {
+          setConfirmationModalOpen(false)
+          onClose()
+        }}
+      />
     </Dialog>
   )
 }
 
-export default SiteVisitsModal
+export default VideosCallsModal

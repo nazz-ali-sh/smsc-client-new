@@ -11,6 +11,8 @@ import { useRouter } from 'next/navigation'
 import { Typography } from '@mui/material'
 import Popover from '@mui/material/Popover'
 
+import { useMutation } from '@tanstack/react-query'
+
 import companyImage from '../../../public/images/customImages/company.png'
 
 import phone from '../../../public/images/customImages/phone.svg'
@@ -20,12 +22,16 @@ import phoneCalls from '../../../public/images/tenderShortlisted/phoneCalls.svg'
 import videoCalls from '../../../public/images/tenderShortlisted/videoCall.svg'
 import visitLocation from '../../../public/images/tenderShortlisted/visitLocation.svg'
 import visitPerson from '../../../public/images/tenderShortlisted/visitPerson.svg'
+import extend3days from '../../../public/images/tenderShortlisted/extend3days.svg'
 import person from '../../../public/images/tenderShortlisted/person.svg'
 import eye from '../../../public/images/tenderShortlisted/eye.svg'
 
 import VideosCallsModal from '@/common/VideosCallsModal'
 import SiteVisitsModal from '@/common/SiteVisitsModal'
 import AppointManagemnetModal from '@/common/AppointManagemnetAgent'
+import ShortListAgent from '../../common/ShortListAgent'
+import ContactModal from '@/common/ContactModal'
+import { rmcsendContactpma } from '@/services/tender_result-apis/tender-result-api'
 
 // Dynamically import react-pdf components to avoid SSR issues
 const Document = dynamic(() => import('react-pdf').then(mod => ({ default: mod.Document })), {
@@ -66,6 +72,9 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
   const [onlineCallsModalOpen, setOnlineCallsModalOpen] = useState(false)
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
   const [apointAgentModalOpen, setApointAgentModalOpen] = useState(false)
+  const [contactModalOpen, setContactModalOpen] = useState(false)
+  const [shortlistedModalOpen, setShortListedSuccessModalOpen] = useState(false)
+  const [pmaSelectedID, setPmaSelectedID] = useState<number | any>()
   const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
@@ -89,15 +98,47 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
     setAnchorEl(event.currentTarget as any)
   }
 
+  const handkeAppointAgnet = (selected_pma_id: any) => {
+    setPmaSelectedID(selected_pma_id)
+    setApointAgentModalOpen(true)
+  }
+
+  const handleExtendByThree = (selected_pma_id: any) => {
+    setPmaSelectedID(selected_pma_id)
+    setShortListedSuccessModalOpen(true)
+  }
+
+  const sendContactPmaMutation = useMutation({
+    mutationFn: ({ pma_user_id, message }: { pma_user_id: number; message: string }) =>
+      rmcsendContactpma(pma_user_id, message),
+
+    onSuccess: data => {
+      console.log('Contact sent successfully:', data)
+      setContactModalOpen(true)
+    },
+
+    onError: error => {
+      console.error('Error sending contact:', error)
+    }
+  })
+
+  const handlecontactAgent = (selected_pma_id: number) => {
+    setPmaSelectedID(selected_pma_id)
+
+    sendContactPmaMutation.mutate({
+      pma_user_id: Number(selected_pma_id),
+      message: 'kdhqkd'
+    })
+  }
+
   return (
-    <>
-      <section className='pb-[70px]'>
+    <div className='pb-[70px]'>
+      <section className=' p-[24px] border border-borderprimary mt-8 '>
         {finalShortListedResponce?.data?.shortlisted_pmas?.map((company: any, index: number) => (
           <section
             key={index}
-            className='flex justify-between items-center mt-8 border border-borderprimary p-[24px] rounded-xl'
+            className='flex justify-between items-center mt-8 border border-borderprimary  rounded-xl'
           >
-            {/* Left section */}
             <div
               onClick={() => router.push(`/shortlist-agent/${company?.pma_user?.id}`)}
               className='flex items-start gap-6 cursor-pointer'
@@ -174,18 +215,14 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
               </div>
             </div>
 
-            {/* Right section */}
             <div className='flex items-start'>
               <section className='relative flex flex-col justify-between items-center w-[100%]'>
-                {/* left section  */}
-
                 <section>
                   <div
                     className='relative cursor-pointer'
                     onMouseEnter={() => setHoveredIndex(index)}
                     onMouseLeave={() => setHoveredIndex(null)}
                   >
-                    {/* PDF Thumbnail */}
                     {isClient && (
                       <Document
                         file={`/${company.pdf}`}
@@ -210,7 +247,6 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                     )}
                   </div>
 
-                  {/* Download Link */}
                   <section className='w-[100%]'>
                     <Typography variant='body1' align='center' className='mt-2 cursor-pointer'>
                       <a
@@ -357,23 +393,52 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                 src={phoneCalls}
                 alt='phoneCalls'
                 className='cursor-pointer'
-                onClick={() => setSiteVisitsModalOpen(true)}
+                onClick={() => handlecontactAgent(company?.pma_user?.id)}
               />
               <Image
                 src={visitPerson}
                 alt='person'
                 className='cursor-pointer'
-                onClick={() => setApointAgentModalOpen(true)}
+                onClick={() => handkeAppointAgnet(company?.pma_user?.id)}
               />
+
+              <section className='flex bg-[#26C6F93D] p-3 rounded-md'>
+                <Image
+                  src={extend3days}
+                  alt='person'
+                  className='cursor-pointer'
+                  onClick={() => handleExtendByThree(company?.pma_user?.id)}
+                />
+              </section>
             </section>
           </section>
         ))}
+        <VideosCallsModal
+          open={onlineCallsModalOpen}
+          onClose={() => setOnlineCallsModalOpen(false)}
+          shorlistedPmas={finalShortListedResponce?.data?.shortlisted_pmas}
+        />
+        <SiteVisitsModal
+          open={siteVisitsModalOpen}
+          onClose={() => setSiteVisitsModalOpen(false)}
+          shorlistedPmas={finalShortListedResponce?.data?.shortlisted_pmas}
+        />
+        <AppointManagemnetModal
+          open={apointAgentModalOpen}
+          onClose={() => setApointAgentModalOpen(false)}
+          finalShortListedResponce={finalShortListedResponce}
+          pmaSelectedID={pmaSelectedID}
+        />
 
-        <VideosCallsModal open={onlineCallsModalOpen} onClose={() => setOnlineCallsModalOpen(false)} />
-        <SiteVisitsModal open={siteVisitsModalOpen} onClose={() => setSiteVisitsModalOpen(false)} />
-        <AppointManagemnetModal open={apointAgentModalOpen} onClose={() => setApointAgentModalOpen(false)} />
+        <ContactModal onClose={() => setContactModalOpen(false)} open={contactModalOpen} />
+
+        <ShortListAgent
+          open={shortlistedModalOpen}
+          onClose={() => setShortListedSuccessModalOpen(false)}
+          pmaSelectedID={pmaSelectedID}
+        />
       </section>
-    </>
+    </div>
   )
 }
 

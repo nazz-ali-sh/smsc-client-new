@@ -1,6 +1,10 @@
 'use client'
 
-import { Button, Card, CardContent, Tooltip, Typography } from '@mui/material'
+import { useState } from 'react'
+
+import Image from 'next/image'
+
+import { Button, Card, CardContent, Typography } from '@mui/material'
 
 import { useSelector } from 'react-redux'
 
@@ -10,10 +14,12 @@ import HorizontalLinearStepper from '@/views/Dashboard/HorizontalLinearStepper'
 import WeeklyReport from '@/common/WeeklyReport'
 
 import DetailedReview from '../../../views/shortlistAgent/DetailedReview'
-import { cardsData } from '../../../views/shortlistAgent/data'
+
+import successVisit from '../../../../public/images/customImages/sucess.svg'
 
 import type { RootState } from '@/redux-store'
-import { finalShortListedAgent } from '@/services/tender_result-apis/tender-result-api'
+import { finalShortListedAgent, getrmcshortlistStats } from '@/services/tender_result-apis/tender-result-api'
+import ToolTipModal from '@/common/ToolTipModal'
 
 export default function Pages() {
   interface shortListedFinalAgent {
@@ -38,6 +44,8 @@ export default function Pages() {
   }
 
   const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+  const [open, setOpen] = useState(false)
+  const [modalType, setModalType] = useState<'shortList_agent' | 'shortList_agent_info' | string>('')
 
   const { data: finalShortListedResponce } = useQuery<shortListedFinalAgent, Error>({
     queryKey: ['finalAgents', tender_id],
@@ -45,6 +53,42 @@ export default function Pages() {
     enabled: !!tender_id,
     refetchOnWindowFocus: false
   })
+
+  const { data: rmcShortlistStats } = useQuery<shortListedFinalAgent, Error>({
+    queryKey: ['shortlistData', tender_id],
+    queryFn: () => getrmcshortlistStats(Number(tender_id)),
+    enabled: !!tender_id,
+    refetchOnWindowFocus: false
+  })
+
+  const cardsData = [
+    {
+      id: 0,
+      state: rmcShortlistStats?.data?.scheduled_calls,
+      icons: <i className='ri-customer-service-2-line'></i>,
+      descrption: 'Schedule Calls'
+    },
+    {
+      id: 1,
+      icons: <i className='ri-phone-line'></i>,
+      state: rmcShortlistStats?.data?.completed_calls,
+      descrption: 'Complete Calls'
+    },
+
+    {
+      id: 2,
+      icons: <i className='ri-map-pin-2-line'></i>,
+      state: rmcShortlistStats?.data?.scheduled_visits,
+      descrption: 'Schedule Visits'
+    },
+
+    {
+      id: 3,
+      icons: <Image src={successVisit} alt='success Visit' />,
+      state: rmcShortlistStats?.data?.successful_visits,
+      descrption: 'Successful visits'
+    }
+  ]
 
   return (
     <div>
@@ -56,17 +100,32 @@ export default function Pages() {
       </div>
 
       <section className='shadow-xl p-5 rounded-xl '>
+        <Typography variant='h5' className='pl-6 font-bold  text-buttonPrimary'>
+          SMSC Recommended Steps for Shortlisted Agents
+          <Button
+            onClick={() => {
+              setOpen(true)
+              setModalType('shortList_agent')
+            }}
+          >
+            <i className='ri-information-line bg-buttonPrimary'></i>
+          </Button>
+        </Typography>
+
         <Typography variant='h2' className='pl-6 font-bold'>
           Shortlisted Agents
-          <Tooltip
-            title="Once you've shortlisted your preferred agents, we recommend starting with video calls to get an initial feel for each company. After the video calls, you can then invite the agents you'd like to meet in person to carry out a site visit.If you'd like others to join the video calls — such as fellow directors or leaseholders — you can invite them from the video call section of your portal.Don't forget: using the evaluation matrix is a great way to score each agent's suitability and keep track of your impressions throughout the process."
-            placement='bottom'
+          <Button
+            onClick={() => {
+              setOpen(true)
+              setModalType('shortList_agent_info')
+            }}
           >
-            <Button>
-              <i className='ri-information-line'></i>
-            </Button>
-          </Tooltip>
+            <i className='ri-information-line bg-[#262B43E5]'></i>
+          </Button>
         </Typography>
+
+        <ToolTipModal open={open} onClose={() => setOpen(false)} type={modalType} />
+
         <ul>
           <li className='text-[16px] font-normal leading-6'>
             Schedule video calls with the managing agents you&apos;ve shortlisted.
@@ -116,7 +175,11 @@ export default function Pages() {
             </div>
           ))}
         </div>
-        {finalShortListedResponce && <DetailedReview finalShortListedResponce={finalShortListedResponce} />}
+        {finalShortListedResponce ? (
+          <DetailedReview finalShortListedResponce={finalShortListedResponce} />
+        ) : (
+          'Data Not Found'
+        )}
       </section>
     </div>
   )

@@ -8,7 +8,7 @@ const axiosClient = axios.create({
 
 axiosClient.interceptors.request.use(
   (config: any) => {
-    const token = `2|nNEPjyseHX1dhQmDW9Co4JQzSG0lNRqkn3jmyPCq16ec6c47`
+    const token = `13|LlmtqoksgRVtF447xcnaAQWwMfgTsdgbh60uSleVb4add94a`
 
     if (!config.headers) {
       config.headers = {}

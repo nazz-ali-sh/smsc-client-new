@@ -20,23 +20,31 @@ import {
   Select,
   InputLabel
 } from '@mui/material'
-
+import type { FieldChangeHandlerContext } from '@mui/x-date-pickers/internals'
+import type { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { useForm, Controller } from 'react-hook-form'
-
-import { useQuery } from '@tanstack/react-query'
+import { valibotResolver } from '@hookform/resolvers/valibot'
+import { object, string, optional, any } from 'valibot'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { toast } from 'react-toastify'
 
 import ConfirmationModal from './ConfirmationModal'
-import { getSlots, pmaAvailableGuest } from '@/services/tender_result-apis/tender-result-api'
-import { daysWithSlots } from './data'
+import { getSlotsAndDay, videoCallsInvite } from '@/services/tender_result-apis/tender-result-api'
 
 interface Guest {
   id: string
-  name: string
+  name?: string
+  pma_number?: string
 }
 
 interface OnlineCallsModalProps {
   open: boolean
   onClose: () => void
+  shorlistedPmas: any
 }
 
 interface Slot {
@@ -46,69 +54,157 @@ interface Slot {
   end_time: string
 }
 
-const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({ open, onClose }) => {
+export const videoCallSchema = object({
+  selectedDay: string('Please select a day'),
+  availableSlots: string('Please select an available slot'),
+  pmaGuest: optional(any()),
+  additionalNotes: optional(string())
+})
+
+const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({ open, onClose, shorlistedPmas }) => {
   const theme = useTheme()
+  const [dayId, setDayId] = useState('')
+  const [finalSelectedSlots, setFinalSelectedSlots] = useState<Slot[]>([])
+  const [inviteData, setInviteData] = useState<[]>([])
 
-  const [additionalNotes, setAdditionalNotes] = useState('')
-  const [selectedGuests, setSelectedGuests] = useState<Guest[]>([])
-  const [fianlSelectedSlots, setFianlSelectedSlots] = useState<Slot[]>([])
-  const [userSelectedSlots, setUserSelectedSlots] = useState<any>({ selectedIds: '', slotName: '' })
+  const [userSelectedSlots, setUserSelectedSlots] = useState<{ selectedIds: string; slotName: string | null }>({
+    selectedIds: '',
+    slotName: ''
+  })
 
-
+  const [value, setValue] = useState<Dayjs | null>(dayjs())
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)
-  
 
-  const { control, watch, setValue } = useForm({
+  const {
+    control,
+    reset,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
+    resolver: valibotResolver(videoCallSchema),
     defaultValues: {
       selectedDay: '',
       availableSlots: '',
-      pmaGuest: ''
+      pmaGuest: [],
+      additionalNotes: ''
     }
   })
 
-  const selectedDay = watch('selectedDay')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleDateChange = (newValue: Date | Dayjs | null, _context: FieldChangeHandlerContext<any>) => {
+    if (!newValue) return
 
-  useEffect(() => {
-    setValue('availableSlots', '')
-  }, [selectedDay, setValue, userSelectedSlots])
+    // ensure it's a Dayjs instance
+    const d = dayjs(newValue)
+
+    if (d.day() === 0 || d.day() === 6) {
+      toast.error('Saturday and Sunday are not available')
+
+      return
+    }
+
+    if (d.isBefore(dayjs(), 'day')) {
+      toast.error('Previous dates are not allowed')
+
+      return
+    }
+
+    setValue(d)
+  }
+
+  const shouldDisableDate = (date: Date | Dayjs) => {
+    const d = dayjs(date)
+
+    const isWeekend = d.day() === 0 || d.day() === 6
+    const isPastDate = d.isBefore(dayjs(), 'day')
+
+    return isWeekend || isPastDate
+  }
+
+  const defaultSelection =
+    shorlistedPmas?.length > 0
+      ? [{ id: shorlistedPmas[0].pma_user.id, pma_number: shorlistedPmas[0].pma_user.pma_number }]
+      : []
 
   const handleSlotSelection = (selectedId: string) => {
+    const found = finalSelectedSlots.find(s => String(s.id) === String(selectedId)) ?? null
 
-    const found = fianlSelectedSlots.find(s => String(s.id ) === String(selectedId)) ?? null
-
-    setUserSelectedSlots({ selectedIds: String(selectedId), slotName: found })
+    setUserSelectedSlots({ selectedIds: String(selectedId), slotName: found?.slot_name || '' })
   }
 
-  const { data: AvailableSlotsData } = useQuery<any, Error>({
-    queryKey: ['AvailabeSlots'],
-    queryFn: () => getSlots()
+  interface SlotsApiResponse {
+    success: boolean
+    message: string
+    data: { day_id: string; slots: Slot[] }
+  }
+
+  const {
+    data: gettingSlotsAndDays,
+    isError,
+    error
+  } = useQuery<SlotsApiResponse, Error>({
+    queryKey: ['AvailableSlotsAndDays', value?.format('YYYY-MM-DD')],
+    queryFn: () => getSlotsAndDay(value!.format('YYYY-MM-DD'))
   })
 
-
-  const { data: AvailableGuest } = useQuery<any, Error>({
-    queryKey: ['guestAvailable'],
-    queryFn: () => pmaAvailableGuest()
-  })
-
-
+  // Handle dayId and slots updates
   useEffect(() => {
-    if (AvailableSlotsData?.data && selectedDay) {
-      const daySlots = AvailableSlotsData.data.find((day: { day_name: string }) => day.day_name === selectedDay)
-
-      if (daySlots) {
-        setFianlSelectedSlots(daySlots.slots)
-      } else {
-        setFianlSelectedSlots([])
-      }
+    if (gettingSlotsAndDays?.data) {
+      setDayId(gettingSlotsAndDays.data.day_id)
+      setFinalSelectedSlots(gettingSlotsAndDays.data.slots || [])
     } else {
-      setFianlSelectedSlots([])
+      setDayId('')
+      setFinalSelectedSlots([])
     }
-  }, [AvailableSlotsData, selectedDay])
+  }, [gettingSlotsAndDays])
 
-  const handleSendInvites = () => {
-    console.log('Sending invites to selected agents')
-    setConfirmationModalOpen(true)
+  // Handle query error
+  useEffect(() => {
+    if (isError && error) {
+      toast.error(error.message)
+    }
+  }, [isError, error])
+
+  const videoCallInviteMutation = useMutation({
+    mutationFn: ({
+      value,
+      day_id,
+      slot_ids,
+      pma_user_ids,
+      message
+    }: {
+      value: any | string
+      day_id: number
+      slot_ids: number
+      pma_user_ids: number[] | number
+      message: string
+    }) => videoCallsInvite(value, day_id, slot_ids, pma_user_ids, message),
+    onSuccess: (data: any) => {
+      debugger
+      setInviteData(data?.data?.invites)
+      toast.success(data?.message || 'Invite sent successfully!')
+      reset()
+      setConfirmationModalOpen(true)
+    },
+    onError: (error: any) => {
+      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to send invite'
+
+      toast.error(errorMessage)
+      console.error('Failed to send invite:', error)
+    }
+  })
+
+  const handleSendVideoCall = (formData: any) => {
+    videoCallInviteMutation.mutate({
+      value: value!.format('YYYY-MM-DD'),
+      day_id: Number(dayId),
+      slot_ids: Number(formData.availableSlots),
+      pma_user_ids: formData.pmaGuest.map((g: Guest) => g.id),
+      message: formData.additionalNotes
+    })
   }
+
+  const type = 'videoCall'
 
   return (
     <Dialog
@@ -151,61 +247,53 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({ open, onClose }) =>
       </DialogTitle>
 
       <DialogContent sx={{ px: 3, py: 2 }} className='mt-10'>
-        <Grid container spacing={6}>
-          {/* Add Button */}
-
-          <Grid container spacing={6} className='mt-[40px]'>
-            {/* Select Day dropdown */}
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name='selectedDay'
-                control={control}
-                render={({ field }) => (
-                  <FormControl fullWidth>
-                    <InputLabel>Select Day</InputLabel>
-                    <Select label='Select Day' {...field}>
-                      {daysWithSlots.map(day => (
-                        <MenuItem key={day.day} value={day.day}>
-                          {day.day}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                )}
+        <Grid container spacing={6} className='mt-[40px]'>
+          <Grid item xs={12} sm={12}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label='Select date'
+                value={value}
+                onChange={handleDateChange}
+                shouldDisableDate={shouldDisableDate}
+                slotProps={{
+                  textField: { fullWidth: true }
+                }}
               />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name='availableSlots'
-                control={control}
-                render={({ field }) => (
-                  <FormControl fullWidth>
-                    <InputLabel>Available Slots</InputLabel>
-                    <Select
-                      label='Available Slots'
-                      value={field.value || ''} 
-                      onChange={e => {
-                        const value = e.target.value as string
-
-                        field.onChange(value) 
-                        handleSlotSelection(value) 
-                      }}
-                      disabled={!selectedDay}
-                    >
-                      {fianlSelectedSlots?.map((item, index) => (
-                        <MenuItem key={index} value={String(item?.id)}>
-                          {item?.slot_name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                )}
-              />
-            </Grid>
+            </LocalizationProvider>
           </Grid>
 
-          
+          <Grid item xs={12} sm={6}>
+            <Controller
+              name='availableSlots'
+              control={control}
+              render={({ field }) => (
+                <FormControl fullWidth error={!!errors.availableSlots}>
+                  <InputLabel>Available Slots</InputLabel>
+                  <Select
+                    {...field}
+                    value={field.value || ''}
+                    onChange={e => {
+                      const value = e.target.value
+
+                      field.onChange(value)
+                      handleSlotSelection(value)
+                    }}
+                  >
+                    {finalSelectedSlots.map((item, index) => (
+                      <MenuItem key={index} value={String(item.id)}>
+                        {item.slot_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {errors.availableSlots && (
+                    <Typography variant='caption' color='error'>
+                      {errors.availableSlots.message as string}
+                    </Typography>
+                  )}
+                </FormControl>
+              )}
+            />
+          </Grid>
 
           <Grid item xs={12}>
             <Box sx={{ paddingY: '12px' }}>
@@ -216,23 +304,67 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({ open, onClose }) =>
               Availability Set for
             </Typography>
 
-            <Grid container spacing={4} sx={{ mb: 2 }}>
-              <Grid item xs={12} sm={6}>
+            <Grid container spacing={2} alignItems='center' sx={{ mb: 2 }}>
+              {/* Chip */}
+              <Grid item xs={12} sm={6} sx={{ overflowY: 'auto', width: '100%' }}>
                 <Chip
-                  label={`${userSelectedSlots?.slotName?.slot_name}`}
+                  label={
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        paddingTop: '20',
+                        height: '200px',
+                        overflowY: 'auto'
+
+                        // width: '100%'
+                      }}
+                    >
+                      {gettingSlotsAndDays?.data?.slots?.map(item => (
+                        <span
+                          className={`pt-[10px] ${userSelectedSlots?.selectedIds == item?.id ? 'bg-buttonPrimary' : ''} `}
+                          key={item?.id}
+                        >
+                          {item.slot_name}
+                        </span>
+                      ))}
+                    </Box>
+                  }
                   sx={{
                     backgroundColor: theme => theme.colorSchemes.light.palette.customColors.darkGray,
                     color: 'white',
-                    '& .MuiChip-label': { px: 2 },
-                    height: '32px',
+                    '& .MuiChip-label': {
+                      px: 2,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'flex-start',
+                      paddingTop: '20'
+                    },
+                    height: 'auto',
                     borderRadius: '5px',
                     justifyContent: 'space-between',
-                    width: '100%'
+                    width: '100%',
+                    paddingY: '8px'
                   }}
-                  onDelete={() => {}}
                 />
               </Grid>
+
+              {/* Button */}
+              <Grid item>
+                <Button
+                  variant='contained'
+                  onClick={handleSubmit(handleSendVideoCall)}
+                  sx={{
+                    backgroundColor: 'customColors.ligthBlue',
+                    '&:hover': { backgroundColor: 'customColors.ligthBlue' }
+                  }}
+                >
+                  Update Slots Slots
+                </Button>
+              </Grid>
             </Grid>
+
             <Box sx={{ paddingY: '12px' }}>
               <Divider />
             </Box>
@@ -242,42 +374,65 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({ open, onClose }) =>
             <Typography variant='h6' sx={{ mb: 2, color: '#333', fontWeight: '600' }}>
               Add Guests
             </Typography>
-            <Autocomplete
-              multiple
-              options={AvailableGuest?.data}
-              getOptionLabel={option => option.name}
-              getOptionDisabled={option => selectedGuests.some(guest => guest.id === option.id)}
-              value={selectedGuests}
-              onChange={(event, newValue) => setSelectedGuests(newValue)}
-              renderInput={params => <TextField {...params} placeholder='Select guests...' variant='outlined' />}
-              renderTags={(value, getTagProps) =>
-                value.map((option, index) => (
-                  // eslint-disable-next-line react/jsx-key
-                  <Chip
-                    label={option.name}
-                    {...getTagProps({ index })}
-                    sx={{
-                      backgroundColor: 'customColors.darkGray',
-                      color: 'white',
-                      '& .MuiChip-deleteIcon': {
-                        color: 'white'
-                      }
-                    }}
-                  />
-                ))
-              }
+            <Controller
+              name='pmaGuest'
+              control={control}
+              defaultValue={defaultSelection}
+              render={({ field }) => (
+                <Autocomplete
+                  multiple
+                  options={shorlistedPmas || []}
+                  getOptionLabel={option => option.pma_user?.pma_number || ''}
+                  isOptionEqualToValue={(option, value) => String(option.pma_user?.id) === String((value as any)?.id)}
+                  getOptionDisabled={option =>
+                    (field.value || []).some((guest: any) => String(guest.id) === String(option.pma_user?.id))
+                  }
+                  value={field.value || []}
+                  onChange={(_, newValue) => {
+                    const mapped = newValue.map((item: any) => ({
+                      id: item.pma_user.id,
+                      pma_number: item.pma_user.pma_number
+                    }))
+
+                    field.onChange(mapped)
+                  }}
+                  renderInput={params => <TextField {...params} placeholder='Select guests...' variant='outlined' />}
+                  renderTags={(value: any[], getTagProps) =>
+                    value.map((option, index) => {
+                      const { key, ...tagProps } = getTagProps({ index })
+
+                      return (
+                        <Chip
+                          key={option.id ?? key}
+                          {...tagProps}
+                          label={option.pma_number}
+                          sx={{
+                            backgroundColor: 'customColors.darkGray',
+                            color: 'white',
+                            '& .MuiChip-deleteIcon': { color: 'white' }
+                          }}
+                        />
+                      )
+                    })
+                  }
+                />
+              )}
             />
           </Grid>
-
           <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label='Add Additional Notes'
-              multiline
-              rows={4}
-              value={additionalNotes}
-              onChange={e => setAdditionalNotes(e.target.value)}
-              placeholder='Enter additional notes...'
+            <Controller
+              name='additionalNotes'
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  fullWidth
+                  label='Add Additional Notes'
+                  multiline
+                  rows={4}
+                  placeholder='Enter additional notes...'
+                />
+              )}
             />
           </Grid>
         </Grid>
@@ -286,24 +441,20 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({ open, onClose }) =>
       <DialogActions sx={{ px: 3, pb: 8, mt: 5 }}>
         <Button
           variant='contained'
-          onClick={handleSendInvites}
+          onClick={handleSubmit(handleSendVideoCall)}
           sx={{
             backgroundColor: 'customColors.ligthBlue',
-            '&:hover': {
-              backgroundColor: 'customColors.ligthBlue'
-            }
+            '&:hover': { backgroundColor: 'customColors.ligthBlue' }
           }}
         >
           Send To All Shortlisted Agents
         </Button>
         <Button
           variant='contained'
-          onClick={handleSendInvites}
+          onClick={handleSubmit(handleSendVideoCall)}
           sx={{
             backgroundColor: 'customColors.ligthBlue',
-            '&:hover': {
-              backgroundColor: 'customColors.ligthBlue'
-            }
+            '&:hover': { backgroundColor: 'customColors.ligthBlue' }
           }}
         >
           Send To Selected Agents
@@ -311,6 +462,8 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({ open, onClose }) =>
       </DialogActions>
 
       <ConfirmationModal
+        type={type}
+        inviteData={inviteData}
         open={confirmationModalOpen}
         onClose={() => {
           setConfirmationModalOpen(false)

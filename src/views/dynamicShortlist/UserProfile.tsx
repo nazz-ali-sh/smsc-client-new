@@ -20,8 +20,6 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 
 import companyImage from '../../../public/images/customImages/company.png'
 
-
-
 const UserProfile = ({ userData }: any) => {
   const [numPages, setNumPages] = useState<number | null>(null)
 
@@ -74,12 +72,12 @@ const UserProfile = ({ userData }: any) => {
                 {/* Contact Informations */}
                 <Typography variant='body2' className='flex items-start mt-3'>
                   <i className='ri-phone-line mr-[14px]'></i>
-                  {userData?.data?.email}
+                  {userData?.data?.pma_user?.email}
                 </Typography>
 
                 <Typography variant='body2' className='flex items-start mt-3'>
                   <i className='ri-contacts-book-3-line mr-[14px]'></i>
-                  {userData?.data?.mobile_number} (Primary)
+                  {userData?.data?.pma_user?.mobile_number} (Primary)
                 </Typography>
 
                 <Typography variant='body2' className='flex items-center mt-3'>

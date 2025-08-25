@@ -12,19 +12,26 @@ import type { PmaDetailsResponse } from './type'
 
 interface EventDetailsProps {
   userData: PmaDetailsResponse
+  handleDataFromSubChild: any
 }
 
-const EventDetails = ({ userData }: EventDetailsProps) => {
-  const totalReviewsData: any[] = [
-    { rating: 5, value: 109 },
-    { rating: 4, value: 40 },
-    { rating: 3, value: 18 },
-    { rating: 2, value: 12 },
-    { rating: 1, value: 8 }
+const EventDetails = ({ userData, handleDataFromSubChild }: EventDetailsProps) => {
+  const starRatings = [
+    { label: '5 Star', count: userData?.data?.ratings_and_reviews?.five_star_count },
+    { label: '4 Star', count: userData?.data?.ratings_and_reviews?.four_star_count },
+    { label: '3 Star', count: userData?.data?.ratings_and_reviews?.three_star_count },
+    { label: '2 Star', count: userData?.data?.ratings_and_reviews?.two_star_count },
+    { label: '1 Star', count: userData?.data?.ratings_and_reviews?.one_star_count }
   ]
+
+  console.log(userData)
 
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
+
+  function handleDataFromChild(dataFromChild: any) {
+    handleDataFromSubChild(dataFromChild)
+  }
 
   return (
     <>
@@ -73,7 +80,6 @@ const EventDetails = ({ userData }: EventDetailsProps) => {
                 <div>
                   <Typography className='text-[28px] font-bold text-buttonPrimary'> AVG 4.89</Typography>
                   <Typography variant='body2'>
-                    {' '}
                     Total {userData?.data?.ratings_and_reviews?.google_review_count} reviews
                   </Typography>
                   <Typography variant='body2'> All reviews are from genuine customers</Typography>
@@ -87,35 +93,36 @@ const EventDetails = ({ userData }: EventDetailsProps) => {
             </div>
 
             <Divider orientation={isSmallScreen ? 'horizontal' : 'vertical'} flexItem />
-            <div className='flex flex-col gap-3 is-full sm:is-6/12'>
-              {totalReviewsData.map((item, index) => (
-                <div key={index} className='flex items-center gap-y-[20px] gap-x-2'>
-                  <Typography variant='body2' className='text-nowrap'>
-                    {item.rating} Star
-                  </Typography>
-                  <LinearProgress
-                    variant='determinate'
-                    value={Math.floor((item.value / 185) * 100)}
-                    className='w-full my-2'
-                    sx={{
-                      height: 8,
-                      borderRadius: 4,
-                      backgroundColor: '#FFFFFF',
-                      '& .MuiLinearProgress-bar': {
-                        backgroundColor: '#35C0ED'
-                      }
-                    }}
-                  />
-                  <Typography variant='body2'>{item.value}</Typography>
+
+            <section className='flex flex-col gap-3 is-full sm:is-6/12'>
+              {starRatings.map((rating, index) => (
+                <div key={index}>
+                  <div className='flex items-center gap-y-[20px] gap-x-2'>
+                    <Typography variant='body2' className='text-nowrap'>
+                      {rating.label}
+                    </Typography>
+                    <LinearProgress
+                      variant='determinate'
+                      value={(rating.count / userData?.data?.ratings_and_reviews?.google_review_count) * 100}
+                      className='w-full my-2'
+                      sx={{
+                        height: 8,
+                        borderRadius: 4,
+                        backgroundColor: '#FFFFFF',
+                        '& .MuiLinearProgress-bar': {
+                          backgroundColor: '#35C0ED'
+                        }
+                      }}
+                    />
+                  </div>
                 </div>
               ))}
-            </div>
+            </section>
           </section>
         </section>
 
-        {/* tabs switch  */}
         <div className='mt-[50px]'>
-          <TabsSwitch />
+          <TabsSwitch sendDataToParent={handleDataFromChild} data={userData} />
         </div>
         <div className='mt-[50px]'>
           <EditableDataTables />
