@@ -6,15 +6,11 @@ import { useRouter } from 'next/navigation'
 
 import { Typography } from '@mui/material'
 
-const OnboardingLeaseholderSelection = () => {
+const OnboardingRtmQuestions = () => {
   const router = useRouter()
 
   const handleCardClick = () => {
-    router.push('/rmc-onboarding-director')
-  }
-
-  const handleRTM = () => {
-    router.push('/rmc-onboarding-resident')
+    router.push('/rmc-onboarding-second')
   }
 
   return (
@@ -26,7 +22,14 @@ const OnboardingLeaseholderSelection = () => {
           sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1' }}
           className=' mb-6'
         >
-          Confirm Leaseholder Status
+          RTM Question
+        </Typography>
+        <Typography
+          variant='h6'
+          sx={{ fontSize: '18px', fontWeight: 500, color: 'customColors.textGray' }}
+          className=' mb-6'
+        >
+          1. Are the blocks capable of independent redevelopment?
         </Typography>
 
         <div className='flex justify-center py-10'>
@@ -37,7 +40,7 @@ const OnboardingLeaseholderSelection = () => {
             >
               <div className='flex items-center justify-center flex-grow'>
                 <div className='transition-transform duration-300 group-hover:scale-125'>
-                  <Image src='/svgs/onboardingUser.svg' alt='Director' width={150} height={150} className='mb-4' />
+                  <Image src='/svgs/thumbUp.svg' alt='Director' width={150} height={150} className='mb-4' />
                 </div>
               </div>
               <Typography
@@ -45,21 +48,21 @@ const OnboardingLeaseholderSelection = () => {
                 sx={{ color: 'customColors.gray10', fontSize: '15px', fontWeight: 500, paddingTop: '14px' }}
                 className='text-center'
               >
-                Director
+                Yes
               </Typography>
             </div>
 
             <div
-              onClick={handleRTM}
+              onClick={handleCardClick}
               className='group flex flex-col items-center p-6 shadow-sm rounded-md bg-[#F3FCFE] border border-blue-100 cursor-pointer w-[280px] h-[318px] justify-between transition-all duration-300 hover:bg-[#D7F2FB]'
             >
               <div className='flex items-center justify-center flex-grow'>
                 <div className='transition-transform duration-300 group-hover:scale-125'>
-                  <Image src='/svgs/onboardingNonUser.svg' alt='Resident' width={150} height={150} />
+                  <Image src='/svgs/thumbDown.svg' alt='Resident' width={150} height={150} />
                 </div>
               </div>
               <Typography sx={{ color: 'customColors.gray10', fontSize: '15px', fontWeight: 500, padding: 0 }}>
-                Non Director Of RMC - Resident
+                No
               </Typography>
             </div>
           </div>
@@ -69,4 +72,4 @@ const OnboardingLeaseholderSelection = () => {
   )
 }
 
-export default OnboardingLeaseholderSelection
+export default OnboardingRtmQuestions

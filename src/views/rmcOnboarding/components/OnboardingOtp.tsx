@@ -1,11 +1,15 @@
 'use client'
 import { useState } from 'react'
 
+import { useRouter } from 'next/navigation'
+
 import { TextField, Typography } from '@mui/material'
 
 import CustomButton from '@/common/CustomButton'
 
 export default function OnboardingOtp() {
+  const router = useRouter()
+
   const [code, setCode] = useState(['', '', '', '', '', ''])
 
   const handleChange = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,8 +25,8 @@ export default function OnboardingOtp() {
     }
   }
 
-  const handleResendCode = () => {
-    console.log('Resend code requested')
+  const handleNavigate = () => {
+    router.push('/rmc-onboarding-postcode')
   }
 
   return (
@@ -66,7 +70,7 @@ export default function OnboardingOtp() {
             </Typography>
           </div>
           <div className='text-center mb-6 mt-10'>
-            <CustomButton sx={{ width: '300px', fontSize: '14px', borderRadius: '4px' }} onClick={handleResendCode}>
+            <CustomButton sx={{ width: '300px', fontSize: '14px', borderRadius: '4px' }} onClick={handleNavigate}>
               Resend Code
             </CustomButton>
           </div>
