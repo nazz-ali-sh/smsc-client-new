@@ -162,9 +162,11 @@ const OnboardingPriorities: React.FC = () => {
     router.push('/rmc-onboarding-open')
   }
 
+  const buttonStyles = { fontSize: '14px', fontWeight: 700 }
+
   return (
     <>
-      <div className='  flex flex-col items-center py-10 pb-20'>
+      <div className='flex flex-col items-center py-10 pb-32'>
         <h1 className='text-3xl font-bold text-[#262B43] mb-8'>RMC Onboarding</h1>
 
         <DndContext
@@ -173,7 +175,7 @@ const OnboardingPriorities: React.FC = () => {
           onDragEnd={handleDragEnd}
           modifiers={[restrictToWindowEdges]}
         >
-          <div className='bg-white  p-10 w-11/12 max-w-7xl grid grid-cols-2 gap-8'>
+          <div className='bg-white  p-10 w-full max-w-7xl grid grid-cols-2 gap-8'>
             <div>
               <h2 className='text-lg font-semibold text-[#262B43] mb-4'>RMC Priorities</h2>
               <p className='text-sm text-[#696969] mb-6'>
@@ -225,8 +227,10 @@ const OnboardingPriorities: React.FC = () => {
 
               <p className='text-xs font-semibold text-[#424242] mt-2'>Least Important</p>
               <div className='flex justify-end gap-3 mt-10'>
-                <CustomButton startIcon={<i className='ri-arrow-left-line'></i>}>Back</CustomButton>
-                <CustomButton endIcon={<i className='ri-arrow-right-line'></i>} onClick={handleNext}>
+                <CustomButton sx={buttonStyles} startIcon={<i className='ri-arrow-left-line'></i>}>
+                  Back
+                </CustomButton>
+                <CustomButton sx={buttonStyles} endIcon={<i className='ri-arrow-right-line'></i>} onClick={handleNext}>
                   Next
                 </CustomButton>
               </div>

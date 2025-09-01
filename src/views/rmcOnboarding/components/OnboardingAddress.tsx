@@ -18,9 +18,9 @@ const OnboardingAddress = () => {
   }
 
   return (
-    <div className='flex flex-col items-center pt-20 px-4'>
-      <h1 className='text-[48px] font-bold text-[#262B43E5] mb-8'>RMC Onboarding</h1>
-      <div className='bg-white p-8 pt-10 w-full max-w-7xl mt-16'>
+    <div className='flex flex-col items-center pt-10'>
+      <h1 className='text-[48px] font-bold text-[#262B43E5]'>RMC Onboarding</h1>
+      <div className='bg-white p-8 pt-10 w-full max-w-7xl mt-6'>
         <Typography
           variant='h6'
           sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1' }}
@@ -34,7 +34,7 @@ const OnboardingAddress = () => {
           who are local to your area and have a strong understanding of the regional market and its specific needs.
         </Typography>
 
-        <div className='pb-20 mt-16'>
+        <div className='pb-14 mt-14'>
           <div className='flex gap-3 items-center'>
             <Typography sx={{ color: 'customColors.textGray', fontSize: '18px', fontWeight: 500 }}>
               Postcode:
@@ -50,7 +50,7 @@ const OnboardingAddress = () => {
         </div>
 
         <div className=''>
-          <div className='grid grid-cols-1 pb-20'>
+          <div className='grid grid-cols-1 pb-10'>
             <Select
               fullWidth
               displayEmpty

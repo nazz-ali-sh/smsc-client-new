@@ -21,9 +21,9 @@ const OnboardingSpaces = () => {
   ]
 
   return (
-    <div className='flex flex-col items-center pt-20 px-4'>
-      <h1 className='text-[48px] font-bold text-[#262B43E5] mb-8'>RMC Onboarding</h1>
-      <div className='bg-white p-8 pt-10 w-full max-w-7xl mt-16 pb-20'>
+    <div className='flex flex-col items-center pt-10'>
+      <h1 className='text-[48px] font-bold text-[#262B43E5] '>RMC Onboarding</h1>
+      <div className='bg-white p-8 pt-10 w-full max-w-7xl mt-6 pb-10'>
         <Typography
           variant='h6'
           sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1' }}
@@ -32,7 +32,7 @@ const OnboardingSpaces = () => {
           Outdoor Space
         </Typography>
 
-        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-center place-items-center pb-6 mt-16 mx-32'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-center place-items-center pb-10 mt-10 mx-32'>
           {leaseholderTypes.map(({ title, image }) => (
             <div
               key={title}

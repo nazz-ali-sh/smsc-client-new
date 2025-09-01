@@ -38,9 +38,9 @@ const OnboardingRtmForm = () => {
   }
 
   return (
-    <div className='flex flex-col items-center pt-20 px-4'>
-      <h1 className='text-[48px] font-bold text-[#262B43E5] mb-8'>RMC Onboarding</h1>
-      <div className='bg-white p-8 pt-10 w-full max-w-7xl mt-16'>
+    <div className='flex flex-col items-center pt-10'>
+      <h1 className='text-[48px] font-bold text-[#262B43E5]'>RMC Onboarding</h1>
+      <div className='bg-white p-8 pt-10 w-full max-w-7xl mt-6'>
         <Typography
           variant='h6'
           sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1' }}
@@ -49,8 +49,8 @@ const OnboardingRtmForm = () => {
           Setup An RTM
         </Typography>
 
-        <div className='py-10'>
-          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-20'>
+        <div className='py-6'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-10'>
             {inputFields.map(field => (
               <TextField
                 key={field.name}
@@ -75,7 +75,7 @@ const OnboardingRtmForm = () => {
             ))}
           </div>
         </div>
-        <div className='flex justify-end gap-4 mt-44'>
+        <div className='flex justify-end gap-4 mt-44 pb-10'>
           <CustomButton sx={{ fontSize: '16px', fontWeight: 700 }} startIcon={<i className='ri-arrow-left-line'></i>}>
             Back
           </CustomButton>

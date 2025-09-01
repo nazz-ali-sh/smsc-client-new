@@ -16,9 +16,9 @@ const OnboardingPostCode = () => {
   }
 
   return (
-    <div className='flex flex-col items-center pt-20 px-4'>
-      <h1 className='text-[48px] font-bold text-[#262B43E5] mb-8'>RMC Onboarding</h1>
-      <div className='bg-white p-8 pt-10 w-full max-w-7xl mt-16'>
+    <div className='flex flex-col items-center pt-10'>
+      <h1 className='text-[48px] font-bold text-[#262B43E5]'>RMC Onboarding</h1>
+      <div className='bg-white p-8 pt-10 w-full max-w-7xl mt-6'>
         <Typography
           variant='h6'
           sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1' }}
@@ -54,7 +54,7 @@ const OnboardingPostCode = () => {
             />
           </div>
         </div>
-        <div className='pb-40'>
+        <div className='pb-20'>
           <CustomButton
             onClick={handleNavigate}
             sx={{ fontSize: '16px', fontWeight: 700 }}

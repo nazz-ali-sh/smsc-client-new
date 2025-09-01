@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 
 import { useRouter } from 'next/navigation'
 
-import { Box, InputAdornment, MenuItem, Select, TextField, Typography } from '@mui/material'
+import { Box, MenuItem, Select, TextField, Typography } from '@mui/material'
 
 import CustomButton from '@/common/CustomButton'
 import CommonModal from '@/common/CommonModal'
@@ -29,9 +29,9 @@ const OnboardingBlockDetails = () => {
 
   return (
     <>
-      <div className='flex flex-col items-center pt-20 px-4'>
-        <h1 className='text-[48px] font-bold text-[#262B43E5] mb-8'>RMC Onboarding</h1>
-        <div className='bg-white p-8 pt-10 w-full max-w-7xl mt-16'>
+      <div className='flex flex-col items-center pt-10'>
+        <h1 className='text-[48px] font-bold text-[#262B43E5] '>RMC Onboarding</h1>
+        <div className='bg-white p-8 pt-10 w-full max-w-7xl mt-6'>
           <Typography
             variant='h6'
             sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1' }}
@@ -54,34 +54,15 @@ const OnboardingBlockDetails = () => {
 
           <div className='mt-10 grid grid-cols-3 gap-4'>
             {fields.map((field, index) => (
-              <Box key={index}>
+              <Box key={index} sx={{ position: 'relative' }}>
                 <TextField
                   fullWidth
                   placeholder={field.placeholder}
                   variant='outlined'
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position='end' sx={{ mr: 0 }}>
-                        <Box
-                          sx={{
-                            backgroundColor: '#f5f5f5',
-                            borderRadius: '0 6px 6px 0',
-                            width: '60px',
-                            height: '54px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}
-                        >
-                          <i className='ri-error-warning-line'></i>
-                        </Box>
-                      </InputAdornment>
-                    )
-                  }}
                   sx={{
                     '& .MuiOutlinedInput-root': {
                       borderRadius: '6px',
-                      pr: 0,
+                      paddingRight: '60px',
                       '& fieldset': {
                         borderColor: '#d9d9d9'
                       },
@@ -95,12 +76,28 @@ const OnboardingBlockDetails = () => {
                         color: '#666',
                         opacity: 1
                       }
-                    },
-                    '& .MuiInputBase-input': {
-                      pr: 0
                     }
                   }}
                 />
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    right: '1px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    backgroundColor: '#f5f5f5',
+                    borderRadius: '0 6px 6px 0',
+                    width: '60px',
+                    height: '53px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: 'none',
+                    boxShadow: 'none'
+                  }}
+                >
+                  <i className='ri-error-warning-line'></i>
+                </Box>
               </Box>
             ))}
           </div>
@@ -162,7 +159,7 @@ const OnboardingBlockDetails = () => {
             </Select>
           </div>
 
-          <div className='pb-40 mt-16 flex justify-end'>
+          <div className='pb-9 mt-16 flex justify-end'>
             <CustomButton
               onClick={handleModalOpen}
               sx={{ fontSize: '16px', fontWeight: 700 }}

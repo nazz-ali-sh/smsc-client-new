@@ -32,10 +32,12 @@ export default function OnboardingForm() {
     router.push('/rmc-onboarding-verification')
   }
 
+  const buttonStyles = { fontWeight: 700, fontSize: '14px' }
+
   return (
     <>
-      <h1 className='text-[48px] text-center font-bold text-[#262B43E5] mb-8 mt-10'>RMC Onboarding</h1>
-      <div className='flex items-center justify-center p-4  bg-white mt-20'>
+      <h1 className='text-[48px] text-center font-bold text-[#262B43E5] mt-8'>RMC Onboarding</h1>
+      <div className='flex items-center justify-center p-4  bg-white mt-8'>
         <div className='p-4 rounded-lg w-full max-w-7xl'>
           <Typography
             variant='h6'
@@ -95,9 +97,11 @@ export default function OnboardingForm() {
                 />
               </div>
             </div>
-            <div className='flex justify-end gap-2 items-center mt-48'>
-              <CustomButton>Back</CustomButton>
-              <CustomButton onClick={handleNext}>Next</CustomButton>
+            <div className='flex justify-end gap-2 items-center mt-40'>
+              <CustomButton sx={buttonStyles}>Back</CustomButton>
+              <CustomButton sx={buttonStyles} onClick={handleNext}>
+                Next
+              </CustomButton>
             </div>
           </form>
         </div>

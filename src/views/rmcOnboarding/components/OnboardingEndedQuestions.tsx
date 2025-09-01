@@ -49,12 +49,14 @@ const OnboardingEndedQuestions = () => {
     router.push('/rmc-onboarding-priorities')
   }
 
+  const buttonStyles = { fontSize: '14px', fontWeight: 700 }
+
   return (
     <>
-      <div className='flex flex-col items-center pt-20 px-4'>
-        <h1 className='text-[48px] font-bold text-[#262B43E5] mb-8'>RMC Onboarding</h1>
-        <div className='bg-white p-8 pt-10 w-full max-w-7xl mt-16 '>
-          <Typography variant='h6' sx={{ fontSize: '24px', fontWeight: 500, color: '#333' }} className='mb-20'>
+      <div className='flex flex-col items-center pt-10 pb-32'>
+        <h1 className='text-[48px] font-bold text-[#262B43E5] '>RMC Onboarding</h1>
+        <div className='bg-white p-8 pt-10 w-full max-w-7xl mt-8 '>
+          <Typography variant='h6' sx={{ fontSize: '24px', fontWeight: 500, color: '#333' }} className='mb-10'>
             Open- Ended Questions
           </Typography>
 
@@ -88,10 +90,10 @@ const OnboardingEndedQuestions = () => {
           ))}
 
           <div className='flex justify-end gap-3 mt-10'>
-            <CustomButton onClick={handleBack} startIcon={<i className='ri-arrow-left-line'></i>}>
+            <CustomButton sx={buttonStyles} onClick={handleBack} startIcon={<i className='ri-arrow-left-line'></i>}>
               Back
             </CustomButton>
-            <CustomButton endIcon={<i className='ri-arrow-right-line'></i>} onClick={handleOpen}>
+            <CustomButton sx={buttonStyles} endIcon={<i className='ri-arrow-right-line'></i>} onClick={handleOpen}>
               Launch
             </CustomButton>
           </div>
@@ -104,7 +106,7 @@ const OnboardingEndedQuestions = () => {
             Tenders typically run for 5 days. Quotes will start arriving soon."
           </p>
           <div className='mt-8 flex justify-end'>
-            <CustomButton sx={{ fontSize: '14px', fontWeight: 700 }}>Ok</CustomButton>
+            <CustomButton sx={buttonStyles}>Ok</CustomButton>
           </div>
         </CommonModal>
       )}

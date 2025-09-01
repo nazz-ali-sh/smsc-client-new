@@ -21,6 +21,11 @@ const verticalMenuData = (): VerticalMenuDataType[] => [
     label: 'Final Selection',
     href: '/final-selection',
     icon: 'ri-check-double-line'
+  },
+  {
+    label: 'Evaluation Matrix',
+    href: '/evaluation-matrix',
+    icon: 'ri-table-line'
   }
 
   // {

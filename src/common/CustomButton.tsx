@@ -20,6 +20,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({ children, sx, ...props }) =
         '&:hover': {
           backgroundColor: 'customColors.ligthBlue'
         },
+
         ...sx
       }}
       {...props}

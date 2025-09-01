@@ -31,7 +31,7 @@ import { getLocalizedUrl } from '@/utils/i18n'
 import { gettingRmcTenderId } from '@/services/dashboard-apis/dashboard-api'
 
 import { setTenderId } from '../../../redux-store/slices/userSlice'
-import logo3 from '../../../../public/images/customImages/logofinal4.png'
+import appLogo from '../../../../public/images/customImages/appLogo.png'
 
 const notifications: NotificationsType[] = [
   {
@@ -127,7 +127,7 @@ const NavbarContent = () => {
         <NavToggle />
         {!isBreakpointReached && (
           <Link href={getLocalizedUrl('/', locale as Locale)}>
-            <Image src={logo3} alt='nav Logo' className='mt-2' />
+            <Image src={appLogo} alt='nav Logo' className='mt-2' />
           </Link>
         )}
       </div>

@@ -31,10 +31,10 @@ export default function OnboardingOtp() {
 
   return (
     <>
-      <h1 className='text-[48px] font-bold text-[#262B43E5] text-center mt-10 mb-8'>RMC Onboarding</h1>
+      <h1 className='text-[48px] font-bold text-[#262B43E5] text-center mt-6 mb-4'>RMC Onboarding</h1>
 
       <div className=' bg-white flex items-center justify-center p-2 '>
-        <div className='px-3 rounded-lg w-full max-w-7xl pb-24'>
+        <div className='px-3 rounded-lg w-full max-w-7xl pb-12'>
           <Typography
             variant='h6'
             sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1' }}
@@ -42,7 +42,7 @@ export default function OnboardingOtp() {
           >
             Verification
           </Typography>{' '}
-          <div className=' mb-6 mt-28'>
+          <div className=' mb-6 mt-20'>
             <Typography variant='body1' color='textSecondary' className='mb-2'>
               Verify Your Identity
             </Typography>

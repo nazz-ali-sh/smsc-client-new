@@ -52,9 +52,9 @@ const OnboardingBudget = () => {
   }
 
   return (
-    <div className='flex flex-col items-center pt-20 px-4'>
-      <h1 className='text-[48px] font-bold text-[#262B43E5] mb-8'>RMC Onboarding</h1>
-      <div className='bg-white p-8 pt-10 w-full max-w-7xl mt-16'>
+    <div className='flex flex-col items-center pt-10'>
+      <h1 className='text-[48px] font-bold text-[#262B43E5] '>RMC Onboarding</h1>
+      <div className='bg-white p-8 pt-10 w-full max-w-7xl mt-6'>
         <Typography
           variant='h6'
           sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1' }}
@@ -69,7 +69,7 @@ const OnboardingBudget = () => {
           upload it, you can skip this step but please note: once your tender goes live, you won’t be able to add budget
           details Later.The fees you enter for each fee type will be applied to the full block
         </Typography>
-        <div className='grid sm:grid-cols-1 lg:grid-cols-3 gap-6 mt-20 '>
+        <div className='grid sm:grid-cols-1 lg:grid-cols-3 gap-6 mt-10 '>
           {fields.map(({ key, label }) => (
             <TextField
               key={key}
@@ -86,7 +86,7 @@ const OnboardingBudget = () => {
           <Typography sx={{ color: 'customColors.textGray', fontSize: '14px', fontWeight: 300 }}>SWA 1AA</Typography>
         </div>
 
-        <div className='pb-3 pt-16 flex justify-end'>
+        <div className='pb-3 pt-3 flex justify-end'>
           <CustomButton
             onClick={handleNavigate}
             sx={{ fontSize: '16px', fontWeight: 700 }}

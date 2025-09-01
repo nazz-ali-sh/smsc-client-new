@@ -14,9 +14,9 @@ const OnboardingResidentRtm = () => {
   }
 
   return (
-    <div className='flex flex-col items-center pt-20 px-4'>
-      <h1 className='text-[48px] font-bold text-[#262B43E5] mb-8'>RMC Onboarding</h1>
-      <div className='bg-white p-8 pt-10 w-full max-w-7xl mt-16'>
+    <div className='flex flex-col items-center pt-10'>
+      <h1 className='text-[48px] font-bold text-[#262B43E5] '>RMC Onboarding</h1>
+      <div className='bg-white p-8 pt-10 w-full max-w-7xl mt-6'>
         <Typography
           variant='h6'
           sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1' }}
@@ -25,8 +25,8 @@ const OnboardingResidentRtm = () => {
           Setup An RTM
         </Typography>
 
-        <div className='flex justify-center py-10'>
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-16 pb-20'>
+        <div className='flex justify-center py-6'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-16 pb-10'>
             <div
               onClick={handleCardClick}
               className='group flex flex-col items-center p-6 shadow-sm rounded-md bg-[#F3FCFE] border border-blue-100 cursor-pointer w-[280px] h-[318px] justify-between transition-all duration-300 hover:bg-[#D7F2FB]'
