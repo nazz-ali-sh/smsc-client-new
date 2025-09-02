@@ -16,6 +16,18 @@ export const InviteTabItems = [
     icon: 'ri-thumb-up-line',
     bg: '#F3F8D4',
     color: '#72E128'
+  },
+  {
+    label: 'Pending Visit',
+    icon: 'ri-calendar-schedule-line',
+    bg: '#FDF3DC',
+    color: '#FDB528'
+  },
+  {
+    label: 'Rejected / Cancelled tabs',
+    icon: 'ri-calendar-schedule-line',
+    bg: '#FDF3DC',
+    color: '#FDB528'
   }
 ]
 
@@ -143,5 +155,62 @@ export const sampleTenderData = [
     videoCallLink: 'Link',
     timeline: '2025-08-15',
     status: 'Completed'
+  }
+]
+
+export const pendingCallData = [
+  {
+    pmaId: 'PMA1xxxx',
+    yearTrading: '11 years',
+    unitsManaged: 23,
+    quotations: '£4,500',
+    videoCallLink: 'Link',
+    timeline: '7 July 2025 from 11:00am to 11:45am',
+    rescheduled: '7 July 2025 from 11:00am to 11:45am'
+  },
+  {
+    pmaId: 'PMA1xxxx',
+    yearTrading: '4 years',
+    unitsManaged: 23,
+    quotations: '£4,500',
+    videoCallLink: 'Link',
+    timeline: '7 July 2025 from 11:00am to 11:45am',
+    rescheduled: '7 July 2025 from 11:00am to 11:45am'
+  },
+  {
+    pmaId: 'PMA1xxxx',
+    yearTrading: '11 years',
+    unitsManaged: 23,
+    quotations: '£4,500',
+    videoCallLink: 'Link',
+    timeline: '7 July 2025 from 11:00am to 11:45am',
+    rescheduled: '7 July 2025 from 11:00am to 11:45am'
+  },
+  {
+    pmaId: 'PMA1xxxx',
+    yearTrading: '4 years',
+    unitsManaged: 23,
+    quotations: '£4,500',
+    videoCallLink: 'Link',
+    timeline: '7 July 2025 from 11:00am to 11:45am',
+    rescheduled: '7 July 2025 from 11:00am to 11:45am'
+  },
+  {
+    pmaId: 'PMA1xxxx',
+    yearTrading: '4 years',
+    unitsManaged: 23,
+    quotations: '£4,500',
+    videoCallLink: 'Link',
+    timeline: '7 July 2025 from 11:00am to 11:45am',
+    rescheduled: '7 July 2025 from 11:00am to 11:45am'
+  },
+  {
+    pmaId: 'PMA1xxxx',
+    yearTrading: '11 years',
+    unitsManaged: 23,
+    quotations: '£4,500',
+    videoCallLink: 'Link',
+    timeline: '7 July 2025 from 11:00am to 11:45am',
+    rescheduled: '7 July 2025 from 11:00am to 11:45am'
   }
 ]

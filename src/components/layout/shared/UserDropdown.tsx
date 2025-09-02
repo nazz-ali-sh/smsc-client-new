@@ -17,9 +17,7 @@ import Paper from '@mui/material/Paper'
 import ClickAwayListener from '@mui/material/ClickAwayListener'
 import MenuList from '@mui/material/MenuList'
 import Typography from '@mui/material/Typography'
-import Divider from '@mui/material/Divider'
 import MenuItem from '@mui/material/MenuItem'
-import Button from '@mui/material/Button'
 
 // Hook Imports
 import { useSettings } from '@core/hooks/useSettings'
@@ -62,11 +60,6 @@ const UserDropdown = () => {
     setOpen(false)
   }
 
-  const handleUserLogout = async () => {
-    // Redirect to login page
-    router.push('/login')
-  }
-
   return (
     <>
       <Badge
@@ -105,44 +98,18 @@ const UserDropdown = () => {
             >
               <ClickAwayListener onClickAway={e => handleDropdownClose(e as MouseEvent | TouchEvent)}>
                 <MenuList>
-                  <div className='flex items-center plb-2 pli-4 gap-2' tabIndex={-1}>
-                    <Avatar alt='John Doe' src='/images/avatars/1.png' />
-                    <div className='flex items-start flex-col'>
-                      <Typography variant='body2' className='font-medium' color='text.primary'>
-                        John Doe
-                      </Typography>
-                      <Typography variant='caption'>admin@materialize.com</Typography>
-                    </div>
-                  </div>
-                  <Divider className='mlb-1' />
-                  <MenuItem className='gap-3 pli-4' onClick={e => handleDropdownClose(e)}>
-                    <i className='ri-user-3-line' />
-                    <Typography color='text.primary'>My Profile</Typography>
+                  <MenuItem className='gap-3 pli-4' onClick={e => handleDropdownClose(e, '/my-accounts')}>
+                    <Typography color='text.primary'>My Account</Typography>
                   </MenuItem>
                   <MenuItem className='gap-3 pli-4' onClick={e => handleDropdownClose(e)}>
-                    <i className='ri-settings-4-line' />
-                    <Typography color='text.primary'>Settings</Typography>
+                    <Typography color='text.primary'>Set Availability </Typography>
                   </MenuItem>
                   <MenuItem className='gap-3 pli-4' onClick={e => handleDropdownClose(e)}>
-                    <i className='ri-money-dollar-circle-line' />
-                    <Typography color='text.primary'>Pricing</Typography>
+                    <Typography color='text.primary'>Insurance Registration</Typography>
                   </MenuItem>
                   <MenuItem className='gap-3 pli-4' onClick={e => handleDropdownClose(e)}>
-                    <i className='ri-question-line' />
-                    <Typography color='text.primary'>FAQ</Typography>
+                    <Typography color='text.primary'>Sign out</Typography>
                   </MenuItem>
-                  <div className='flex items-center plb-1.5 pli-4'>
-                    <Button
-                      fullWidth
-                      variant='contained'
-                      color='error'
-                      size='small'
-                      endIcon={<i className='ri-logout-box-r-line' />}
-                      onClick={handleUserLogout}
-                    >
-                      Logout
-                    </Button>
-                  </div>
                 </MenuList>
               </ClickAwayListener>
             </Paper>

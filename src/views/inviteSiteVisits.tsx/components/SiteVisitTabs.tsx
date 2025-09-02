@@ -1,16 +1,24 @@
 'use client'
 
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import { Box } from '@mui/material'
 import { createColumnHelper } from '@tanstack/react-table'
 
-import CommonTable from '@/common/CommonTable'
-import { InviteTabItems, sampleTenderData } from '../data'
+import { useSelector } from 'react-redux'
+
+import { useQuery } from '@tanstack/react-query'
+
+import { InviteTabItems } from '../data'
 import SiteVisitTabSection, { type InviteTabItem } from './SiteVisitTabSection'
 import SiteVisitHeader from './SiteVisitHeader'
-import SiteReschedule from './SiteReschedule'
+import SiteReschedule from './SiteVisitReschedule'
 import SiteVisitCompletedCalls from './SiteVisitCompletedCalls'
+import SiteVisitPending from './SiteVisitPending'
+import type { RootState } from '@/redux-store'
+import { rmcSiteVisitDetails } from '@/services/site_visit_apis/site_visit_api'
+import SiteVisitUpcoming from './SiteVisitUpcoming'
+import SiteVisitReject from './SiteVisitReject'
 
 interface TenderType {
   tenderName: string
@@ -26,8 +34,31 @@ interface TenderType {
 const columnHelper = createColumnHelper<TenderType>()
 
 const SiteVisitTabs = () => {
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 })
   const [activeTab, setActiveTab] = useState(0)
+  const [activeStatus, setActiveStatus] = useState('')
+  const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+
+  useEffect(() => {
+    if (activeTab === 0) {
+      setActiveStatus('upcoming')
+    } else if (activeTab === 1) {
+      setActiveStatus('rescheduled')
+    } else if (activeTab === 2) {
+      setActiveStatus('accepted')
+    } else if (activeTab === 3) {
+      setActiveStatus('pending')
+    } else {
+      setActiveStatus('rejected')
+    }
+  }, [activeTab])
+
+  const { data: getSiteVisit } = useQuery({
+    queryKey: ['dashboardDatas', tender_id, activeStatus],
+    queryFn: () => rmcSiteVisitDetails(activeStatus, tender_id),
+    enabled: !!activeStatus
+  })
+
+  console.log(getSiteVisit)
 
   const columns = useMemo(
     () => [
@@ -63,7 +94,7 @@ const SiteVisitTabs = () => {
         enableSorting: true
       }),
       columnHelper.accessor('videoCallLink', {
-        header: 'Video Call Link',
+        header: 'Location',
         cell: info => (
           <a
             href={info.getValue()}
@@ -112,27 +143,47 @@ const SiteVisitTabs = () => {
         return 'Rescheduled Site Visits'
       case 2:
         return 'Completed Visits'
+      case 3:
+        return 'RMC Pending Visits'
+      case 4:
+        return 'Rejected / Cancelled tabs'
       default:
         return 'Site Visits'
     }
   }
 
+  const tableData: any[] =
+    getSiteVisit?.data?.invites?.map(
+      (invite: {
+        pma_name: any
+        pma_company: { trading_years: { toString: () => any }; total_units: any }
+        quotation: { total_quote_inc_vat: any }
+        zoom_meeting_link: any
+        slot: { name: any }
+        status_label: any
+      }) => ({
+        pmaId: invite.pma_name,
+        yearTrading: invite.pma_company?.trading_years?.toString() ?? '',
+        unitsManaged: invite.pma_company?.total_units ?? 0,
+        quotations: invite.quotation?.total_quote_inc_vat ?? '',
+        videoCallLink: invite.zoom_meeting_link ?? '',
+        timeline: invite.slot?.name ?? '',
+        rescheduled: invite.status_label ?? ''
+      })
+    ) || []
+
+  console.log(columns, tableData)
+
   return (
     <Box className='p-1 bg-white rounded-lg shadow h-[70vh] overflow-y-auto'>
-      <SiteVisitHeader title={getTitle()} actionButton='Schedule New Calls' />
+      <SiteVisitHeader title={getTitle()} actionButton='Schedule New Calls' videoCallmodalData={getSiteVisit} />
       <SiteVisitTabSection value={activeTab} onChange={handleTabChange} tabs={InviteTabItems as InviteTabItem[]} />
-      {activeTab === 0 && (
-        <CommonTable
-          data={sampleTenderData}
-          columns={columns}
-          pagination={pagination}
-          onPaginationChange={setPagination}
-          pageSizeOptions={[5, 10, 25]}
-          enableSorting={true}
-        />
-      )}
-      {activeTab === 1 && <SiteReschedule />}
-      {activeTab === 2 && <SiteVisitCompletedCalls />}
+
+      {activeTab === 0 && <SiteVisitUpcoming SiteUpComingData={getSiteVisit} />}
+      {activeTab === 1 && <SiteReschedule siteRechedual={getSiteVisit} />}
+      {activeTab === 2 && <SiteVisitCompletedCalls siteCompleted={getSiteVisit} />}
+      {activeTab === 3 && <SiteVisitPending sitePendingData={getSiteVisit} />}
+      {activeTab === 4 && <SiteVisitReject siteRejectedData={getSiteVisit} />}
     </Box>
   )
 }

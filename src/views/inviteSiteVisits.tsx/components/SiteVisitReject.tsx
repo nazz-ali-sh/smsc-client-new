@@ -2,38 +2,45 @@
 
 import React, { useState } from 'react'
 
-import Image from 'next/image'
-
 import { Box } from '@mui/material'
 import { createColumnHelper } from '@tanstack/react-table'
 
+import { useMutation } from '@tanstack/react-query'
+
+import { useSelector } from 'react-redux'
+
+import { toast } from 'react-toastify'
+
 import CommonTable from '@/common/CommonTable'
 
-import person from '../../../../public/images/TenderResults/person.svg'
-import SiteVisitsModal from '../../../common/SiteVisitsModal'
-import AppointManagemnetModal from '@/common/AppointManagemnetAgent'
-import VideosCallsModal from '@/common/VideosCallsModal'
+import type { RootState } from '@/redux-store'
+import { rmcSideVisitAccept } from '@/services/site_visit_apis/site_visit_api'
 
-interface CompletedCallType {
+interface RescheduledCallType {
   pmaId: string
   yearTrading: string
   unitsManaged: number
   quotations: string
   videoCallLink: string
   timeline: string
-  action: string
+  rescheduled: string
+  siteRejectedData: any
+  invite_id: number
+  slot_ids: string
   location: any
 }
 
-const columnHelper = createColumnHelper<CompletedCallType>()
+const columnHelper = createColumnHelper<RescheduledCallType>()
 
-const SiteVisitCompletedCalls = ({ siteCompleted }: any) => {
-  const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
-  const [apointAgentModalOpen, setApointAgentModalOpen] = useState(false)
-  const [onlineCallsModalOpen, setOnlineCallsModalOpen] = useState(false)
+const SiteVisitReject = ({ siteRejectedData }: any) => {
+  const [SuccessOpen, setSuccessOpen] = useState(false)
 
-  const tableData: any[] =
-    siteCompleted?.data?.invites?.map(
+  console.log(SuccessOpen)
+
+  const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+
+  const tableData: RescheduledCallType[] =
+    siteRejectedData?.data?.invites?.map(
       (invite: {
         pma_name: any
         id: number
@@ -53,9 +60,35 @@ const SiteVisitCompletedCalls = ({ siteCompleted }: any) => {
         timeline: invite.slot?.name ?? '',
         slot_ids: invite.slot?.id ?? '',
         rescheduled: invite.status_label ?? '',
-        siteCompleted
+        siteRejectedData
       })
     ) || []
+
+  const reschedual_inviteId = siteRejectedData?.data?.invites?.[0]?.id ?? null
+
+  const rechedualRmcAgain = useMutation({
+    mutationFn: ({ invite_id, rmctender_id }: { invite_id: number; rmctender_id: number }) =>
+      rmcSideVisitAccept(invite_id, rmctender_id),
+    onSuccess: (data: any) => {
+      toast.success(data?.message || 'Invite sent successfully!')
+      setSuccessOpen(true)
+    },
+    onError: (error: any) => {
+      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to send invite'
+
+      toast.error(errorMessage)
+      console.error('Failed to send invite:', error)
+    }
+  })
+
+  const handleAgainReschedual = () => {
+    rechedualRmcAgain.mutate({
+      invite_id: reschedual_inviteId,
+      rmctender_id: tender_id
+    })
+  }
+
+  handleAgainReschedual()
 
   const columns = [
     columnHelper.accessor((row, index) => index + 1, {
@@ -110,27 +143,16 @@ const SiteVisitCompletedCalls = ({ siteCompleted }: any) => {
       size: 150,
       enableSorting: true
     }),
-    columnHelper.accessor('action', {
-      header: 'Action',
-      cell: () => (
-        <>
-          <div className='flex gap-2'>
-            <span
-              onClick={() => setOnlineCallsModalOpen(true)}
-              className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#DE481A] flex justify-center items-center'
-            >
-              <Image src={person} alt='person' />
-            </span>
-          </div>
-        </>
-      ),
-      size: 250,
-      enableSorting: false
+    columnHelper.accessor('rescheduled', {
+      header: 'Rescheduled',
+      cell: info => info.getValue(),
+      size: 150,
+      enableSorting: true
     })
   ]
 
   return (
-    <Box className='h-[70vh] overflow-y-auto'>
+    <Box className='bg-white h-[70vh] overflow-y-auto'>
       <CommonTable
         data={tableData}
         columns={columns}
@@ -139,35 +161,8 @@ const SiteVisitCompletedCalls = ({ siteCompleted }: any) => {
         pageSizeOptions={[5, 10, 25]}
         enableSorting={true}
       />
-      <SiteVisitsModal
-        open={siteVisitsModalOpen}
-        onClose={() => setSiteVisitsModalOpen(false)}
-        shorlistedPmas={undefined}
-        types={null}
-        Reschedual={undefined}
-        siteVisitDate={undefined}
-        SideVisitsSchedualInviteId={undefined}
-        VideoCallInviteId={undefined}
-        completedShorlistedPmas={undefined}
-      />
-
-      <AppointManagemnetModal
-        open={apointAgentModalOpen}
-        onClose={() => setApointAgentModalOpen(false)}
-        finalShortListedResponce={null}
-        pmaSelectedID={null}
-        InviteCompletedCalls={tableData}
-      />
-
-      <VideosCallsModal
-        open={onlineCallsModalOpen}
-        onClose={() => setOnlineCallsModalOpen(false)}
-        shorlistedPmas={null}
-        siteVisitshorlistedPmas={tableData}
-        mainSiteVisitVideoCalls={undefined}
-      />
     </Box>
   )
 }
 
-export default SiteVisitCompletedCalls
+export default SiteVisitReject

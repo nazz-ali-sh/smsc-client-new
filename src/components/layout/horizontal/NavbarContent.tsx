@@ -103,7 +103,6 @@ const NavbarContent = () => {
   const [rmctenderId, setRmcTenderId] = useState<number | ''>('')
 
   const handleTenderChange = (event: any) => {
-    debugger
     const newTenderId = event.target.value as number
 
     dispatch(setTenderId(newTenderId))

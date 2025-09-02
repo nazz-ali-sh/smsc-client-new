@@ -32,8 +32,13 @@ import { object, string, optional, any } from 'valibot'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
+import { useSelector } from 'react-redux'
+
 import ConfirmationModal from './ConfirmationModal'
-import { getSlotsAndDay, videoCallsInvite } from '@/services/tender_result-apis/tender-result-api'
+import { sideVisitCalendarSlots, SideVisitInvite } from '@/services/tender_result-apis/tender-result-api'
+import { rmcReSchedualAgain, rmcSideVisitInvites } from '@/services/site_visit_apis/site_visit_api'
+import type { RootState } from '@/redux-store'
+import SuccessModal from './SucessModal'
 
 interface Guest {
   id: string
@@ -45,6 +50,12 @@ interface OnlineCallsModalProps {
   open: boolean
   onClose: () => void
   shorlistedPmas: any
+  types: any | null
+  Reschedual?: any
+  siteVisitDate?: any
+  SideVisitsSchedualInviteId?: any
+  VideoCallInviteId?: any
+  completedShorlistedPmas?: any
 }
 
 interface Slot {
@@ -61,19 +72,29 @@ export const videoCallSchema = object({
   additionalNotes: optional(string())
 })
 
-const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({ open, onClose, shorlistedPmas }) => {
+const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
+  open,
+  onClose,
+  shorlistedPmas,
+  types,
+  SideVisitsSchedualInviteId,
+  VideoCallInviteId,
+  completedShorlistedPmas
+}) => {
   const theme = useTheme()
   const [dayId, setDayId] = useState('')
   const [finalSelectedSlots, setFinalSelectedSlots] = useState<Slot[]>([])
   const [inviteData, setInviteData] = useState<[]>([])
+  const [SuccessOpen, setSuccessOpen] = useState(false)
+  const [value, setValue] = useState<Dayjs | null>(dayjs())
+  const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)
 
   const [userSelectedSlots, setUserSelectedSlots] = useState<{ selectedIds: string; slotName: string | null }>({
     selectedIds: '',
     slotName: ''
   })
 
-  const [value, setValue] = useState<Dayjs | null>(dayjs())
-  const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)
+  const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
 
   const {
     control,
@@ -143,10 +164,9 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({ open, onClose, shor
     error
   } = useQuery<SlotsApiResponse, Error>({
     queryKey: ['AvailableSlotsAndDays', value?.format('YYYY-MM-DD')],
-    queryFn: () => getSlotsAndDay(value!.format('YYYY-MM-DD'))
+    queryFn: () => sideVisitCalendarSlots(value!.format('YYYY-MM-DD'))
   })
 
-  // Handle dayId and slots updates
   useEffect(() => {
     if (gettingSlotsAndDays?.data) {
       setDayId(gettingSlotsAndDays.data.day_id)
@@ -163,22 +183,109 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({ open, onClose, shor
     }
   }, [isError, error])
 
+  const rechedualRmcAgain = useMutation({
+    mutationFn: ({
+      invite_id,
+      rmctender_id,
+      date,
+      day_id,
+      rmcslot_id,
+      message
+    }: {
+      invite_id: number
+      rmctender_id: number
+      date: string
+      day_id: number
+      rmcslot_id: number
+      message: string
+    }) => rmcReSchedualAgain(invite_id, rmctender_id, date, day_id, rmcslot_id, message),
+    onSuccess: (data: any) => {
+      setInviteData(data?.data?.invites)
+      toast.success(data?.message || 'Invite sent successfully!')
+      reset()
+      setSuccessOpen(true)
+    },
+    onError: (error: any) => {
+      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to send invite'
+
+      toast.error(errorMessage)
+      console.error('Failed to send invite:', error)
+    }
+  })
+
+  const handleAgainReschedual = (formData: any) => {
+    rechedualRmcAgain.mutate({
+      invite_id: VideoCallInviteId,
+      rmctender_id: tender_id,
+      date: value!.format('YYYY-MM-DD'),
+      day_id: Number(dayId),
+      rmcslot_id: Number(formData.availableSlots),
+      message: formData.additionalNotes
+    })
+  }
+
+  const sideVisitrechedualRmcAgain = useMutation({
+    mutationFn: ({
+      invite_id,
+      rmctender_id,
+      date,
+      day_id,
+      rmcslot_id,
+      message
+    }: {
+      invite_id: number
+      rmctender_id: number
+      date: string
+      day_id: number
+      rmcslot_id: number
+      message: any
+    }) => rmcSideVisitInvites(invite_id, rmctender_id, date, day_id, rmcslot_id, message),
+    onSuccess: (data: any) => {
+      setInviteData(data?.data?.invites)
+      toast.success(data?.message || 'Invite sent successfully!')
+      reset()
+      setSuccessOpen(true)
+    },
+    onError: (error: any) => {
+      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to send invite'
+
+      toast.error(errorMessage)
+      console.error('Failed to send invite:', error)
+    }
+  })
+
+  const handleSiteVisitReschedual = (formData: any) => {
+    sideVisitrechedualRmcAgain.mutate({
+      invite_id: SideVisitsSchedualInviteId,
+      rmctender_id: tender_id,
+      date: value!.format('YYYY-MM-DD'),
+      day_id: Number(dayId),
+      rmcslot_id: Number(formData.availableSlots),
+      message: formData.additionalNotes
+    })
+  }
+
+  const location = '123 Property Lane, London, SW1A 1AA'
+
   const videoCallInviteMutation = useMutation({
     mutationFn: ({
       value,
       day_id,
       slot_ids,
       pma_user_ids,
-      message
+      message,
+      rmctender_id,
+      location
     }: {
       value: any | string
       day_id: number
       slot_ids: number
       pma_user_ids: number[] | number
       message: string
-    }) => videoCallsInvite(value, day_id, slot_ids, pma_user_ids, message),
+      rmctender_id: number
+      location: string
+    }) => SideVisitInvite(value, day_id, slot_ids, pma_user_ids, message, rmctender_id, location),
     onSuccess: (data: any) => {
-      debugger
       setInviteData(data?.data?.invites)
       toast.success(data?.message || 'Invite sent successfully!')
       reset()
@@ -198,11 +305,24 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({ open, onClose, shor
       day_id: Number(dayId),
       slot_ids: Number(formData.availableSlots),
       pma_user_ids: formData.pmaGuest.map((g: Guest) => g.id),
-      message: formData.additionalNotes
+      message: formData.additionalNotes,
+      rmctender_id: tender_id,
+      location
     })
   }
 
   const type = 'siteVisit'
+
+  const normalizedOptions = [
+    ...(shorlistedPmas || []).map((item: any) => ({
+      id: item.pma_user.id,
+      pma_number: item.pma_user.pma_number
+    })),
+    ...(completedShorlistedPmas || []).map((item: any) => ({
+      id: item.pma_user_ids,
+      pma_number: item.pmaId
+    }))
+  ]
 
   return (
     <Dialog
@@ -229,7 +349,11 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({ open, onClose, shor
                 fontSize: '1.75rem'
               }}
             >
-              Video Call Invites
+              {types == 'Reschedual'
+                ? 'Reschedule Video Call Invites'
+                : types == 'SiteVisits'
+                  ? 'Reschedule Site Visit'
+                  : '  Video Call Invites'}
             </Typography>
             <Typography variant='body2' sx={{ paddingY: '12px' }}>
               Use this section to invite PMAs to meeting
@@ -366,55 +490,55 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({ open, onClose, shor
             </Box>
           </Grid>
 
-          <Grid item xs={12}>
-            <Typography variant='h6' sx={{ mb: 2, color: '#333', fontWeight: '600' }}>
-              Add Guests
-            </Typography>
-            <Controller
-              name='pmaGuest'
-              control={control}
-              defaultValue={defaultSelection}
-              render={({ field }) => (
-                <Autocomplete
-                  multiple
-                  options={shorlistedPmas || []}
-                  getOptionLabel={option => option.pma_user?.pma_number || ''}
-                  isOptionEqualToValue={(option, value) => String(option.pma_user?.id) === String((value as any)?.id)}
-                  getOptionDisabled={option =>
-                    (field.value || []).some((guest: any) => String(guest.id) === String(option.pma_user?.id))
-                  }
-                  value={field.value || []}
-                  onChange={(_, newValue) => {
-                    const mapped = newValue.map((item: any) => ({
-                      id: item.pma_user.id,
-                      pma_number: item.pma_user.pma_number
-                    }))
+          {types == 'Reschedual' || types == 'SiteVisits' ? (
+            ''
+          ) : (
+            <Grid item xs={12}>
+              <Typography variant='h6' sx={{ mb: 2, color: '#333', fontWeight: '600' }}>
+                Add Guests
+              </Typography>
+              <Controller
+                name='pmaGuest'
+                control={control}
+                defaultValue={defaultSelection}
+                render={({ field }) => (
+                  <Autocomplete
+                    multiple
+                    options={normalizedOptions}
+                    getOptionLabel={(option: any) => option.pma_number || ''}
+                    isOptionEqualToValue={(option, value) => String(option.id) === String((value as any)?.id)}
+                    getOptionDisabled={option =>
+                      (field.value || []).some((guest: any) => String(guest.id) === String(option.id))
+                    }
+                    value={field.value || []}
+                    onChange={(_, newValue) => {
+                      field.onChange(newValue) // already normalized
+                    }}
+                    renderInput={params => <TextField {...params} placeholder='Select guests...' variant='outlined' />}
+                    renderTags={(value: any[], getTagProps) =>
+                      value.map((option, index) => {
+                        const { key, ...tagProps } = getTagProps({ index })
 
-                    field.onChange(mapped)
-                  }}
-                  renderInput={params => <TextField {...params} placeholder='Select guests...' variant='outlined' />}
-                  renderTags={(value: any[], getTagProps) =>
-                    value.map((option, index) => {
-                      const { key, ...tagProps } = getTagProps({ index }) // 👈 strip key
+                        return (
+                          <Chip
+                            key={option.id ?? key}
+                            {...tagProps}
+                            label={option.pma_number}
+                            sx={{
+                              backgroundColor: 'customColors.darkGray',
+                              color: 'white',
+                              '& .MuiChip-deleteIcon': { color: 'white' }
+                            }}
+                          />
+                        )
+                      })
+                    }
+                  />
+                )}
+              />
+            </Grid>
+          )}
 
-                      return (
-                        <Chip
-                          key={option.id ?? key}
-                          {...tagProps}
-                          label={option.pma_number}
-                          sx={{
-                            backgroundColor: 'customColors.darkGray',
-                            color: 'white',
-                            '& .MuiChip-deleteIcon': { color: 'white' }
-                          }}
-                        />
-                      )
-                    })
-                  }
-                />
-              )}
-            />
-          </Grid>
           <Grid item xs={12}>
             <Controller
               name='additionalNotes'
@@ -434,38 +558,90 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({ open, onClose, shor
         </Grid>
       </DialogContent>
 
-      <DialogActions sx={{ px: 3, pb: 8, mt: 5 }}>
-        <Button
-          variant='contained'
-          onClick={handleSubmit(handleSendVideoCall)}
-          sx={{
-            backgroundColor: 'customColors.ligthBlue',
-            '&:hover': { backgroundColor: 'customColors.ligthBlue' }
-          }}
-        >
-          Send To All Shortlisted Agents
-        </Button>
-        <Button
-          variant='contained'
-          onClick={handleSubmit(handleSendVideoCall)}
-          sx={{
-            backgroundColor: 'customColors.ligthBlue',
-            '&:hover': { backgroundColor: 'customColors.ligthBlue' }
-          }}
-        >
-          Send To Selected Agents
-        </Button>
-      </DialogActions>
+      {types == 'Reschedual' ? (
+        <>
+          <DialogActions sx={{ px: 3, pb: 8, mt: 5 }}>
+            <Button
+              variant='contained'
+              onClick={handleSubmit(handleAgainReschedual)}
+              sx={{
+                backgroundColor: 'customColors.ligthBlue',
+                '&:hover': { backgroundColor: 'customColors.ligthBlue' }
+              }}
+            >
+              Reschedual
+            </Button>
+          </DialogActions>
+        </>
+      ) : types == 'SiteVisits' ? (
+        <DialogActions sx={{ px: 3, pb: 8, mt: 5 }}>
+          <Button
+            variant='contained'
+            onClick={handleSubmit(handleSiteVisitReschedual)}
+            sx={{
+              backgroundColor: 'customColors.ligthBlue',
+              '&:hover': { backgroundColor: 'customColors.ligthBlue' }
+            }}
+          >
+            Reschedual
+          </Button>
+        </DialogActions>
+      ) : (
+        <>
+          <DialogActions sx={{ px: 3, pb: 8, mt: 5 }}>
+            <Button
+              variant='contained'
+              onClick={handleSubmit(handleSendVideoCall)}
+              sx={{
+                backgroundColor: 'customColors.ligthBlue',
+                '&:hover': { backgroundColor: 'customColors.ligthBlue' }
+              }}
+            >
+              Send To All Shortlisted Agents
+            </Button>
+            <Button
+              variant='contained'
+              onClick={handleSubmit(handleSendVideoCall)}
+              sx={{
+                backgroundColor: 'customColors.ligthBlue',
+                '&:hover': { backgroundColor: 'customColors.ligthBlue' }
+              }}
+            >
+              Send To Selected Agents
+            </Button>
+          </DialogActions>
+        </>
+      )}
 
-      <ConfirmationModal
-        type={type}
-        inviteData={inviteData}
-        open={confirmationModalOpen}
-        onClose={() => {
-          setConfirmationModalOpen(false)
-          onClose()
-        }}
-      />
+      {types == 'Reschedual' ? (
+        <>
+          <SuccessModal
+            open={SuccessOpen}
+            onClose={() => {
+              setSuccessOpen(false)
+            }}
+            onConfirm={() => {
+              setSuccessOpen(false)
+            }}
+            cancelButton='Cancel'
+            message='Success! You have Sent the new meeting time. '
+            title='Reschedule Request Sent!'
+            confirmButtonText='Confirm'
+          />
+        </>
+      ) : (
+        <>
+          <ConfirmationModal
+            type={type}
+            inviteData={inviteData}
+            open={confirmationModalOpen}
+            onClose={() => {
+              setConfirmationModalOpen(false)
+              onClose()
+            }}
+          />
+        </>
+      )}
     </Dialog>
   )
 }

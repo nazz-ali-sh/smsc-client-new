@@ -4,9 +4,13 @@ import React, { useState } from 'react'
 import { Box, Typography, TextField, Snackbar, Alert } from '@mui/material'
 
 import CustomButton from '@/common/CustomButton'
+import CommonModal from '@/common/CommonModal'
+import EvaluationInstructions from './EvaluationInstructions'
 
 const EvaluationMatrix = () => {
   const [toast, setToast] = useState({ open: false, message: '', severity: 'error' as 'error' | 'success' })
+
+  const [isOpen, setIsOpen] = useState(false)
 
   const [evaluationData, setEvaluationData] = useState([
     {
@@ -172,42 +176,62 @@ const EvaluationMatrix = () => {
     console.log('Saving evaluation data:', evaluationData)
   }
 
+  const handleModalOpen = () => {
+    setIsOpen(true)
+  }
+
+  const handleModalClose = () => {
+    setIsOpen(false)
+  }
+
   return (
-    <div className='flex flex-col items-center pt-10'>
-      <div className='bg-white p-8 pt-10 w-full max-w-7xl mt-6'>
-        <Box sx={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr>
-                <th
-                  style={{
-                    padding: '16px',
-                    textAlign: 'left',
-                    border: '1px solid #e0e0e0',
-                    backgroundColor: '#f8f9fa',
-                    fontWeight: 'bold',
-                    fontSize: '14px',
-                    color: '#333'
-                  }}
-                >
-                  CATEGORY
-                </th>
-                <th
-                  style={{
-                    padding: '16px',
-                    textAlign: 'center',
-                    border: '1px solid #e0e0e0',
-                    backgroundColor: '#f8f9fa',
-                    fontWeight: 'bold',
-                    fontSize: '14px',
-                    color: '#333'
-                  }}
-                >
-                  Weighting
-                </th>
-                {pmaColumns.map((pma, index) => (
+    <>
+      <Box sx={{ marginTop: 18 }}>
+        <Typography sx={{ color: '#262B43E5', fontWeight: 600, fontSize: '18px' }}>Evaluation Matrix</Typography>
+        <Typography sx={{ marginTop: '16px', color: '#262B43E5', fontWeight: 400, fontSize: '16px' }}>
+          Use this matrix to score each shortlisted managing agent on a scale of 1 to 10 during your video calls and
+          site visits. You can print a copy to take handwritten notes, then return to your portal to enter final scores.
+          Your saved weightings will be applied automatically, and the results will be shown in your Final Report. Note:
+          once saved, your matrix cannot be changed
+        </Typography>
+
+        <Typography
+          sx={{
+            marginTop: '16px',
+            color: '#262B43E5',
+            fontWeight: 600,
+            fontSize: '18px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px'
+          }}
+        >
+          How to use Evaluation Matrix
+          <span onClick={handleModalOpen}>
+            <i className='ri-error-warning-line text-lg pt-1 cursor-pointer'></i>
+          </span>
+        </Typography>
+      </Box>
+      <div className='flex flex-col items-center mt-5'>
+        <div className='bg-white p-8 pt-10 w-full max-w-8xl mt-6'>
+          <Box sx={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr>
                   <th
-                    key={index}
+                    style={{
+                      padding: '16px',
+                      textAlign: 'left',
+                      border: '1px solid #e0e0e0',
+                      backgroundColor: '#f8f9fa',
+                      fontWeight: 'bold',
+                      fontSize: '14px',
+                      color: '#333'
+                    }}
+                  >
+                    CATEGORY
+                  </th>
+                  <th
                     style={{
                       padding: '16px',
                       textAlign: 'center',
@@ -218,66 +242,45 @@ const EvaluationMatrix = () => {
                       color: '#333'
                     }}
                   >
-                    {pma}
+                    Weighting
                   </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {evaluationData.map((category, categoryIndex) => (
-                <tr key={categoryIndex}>
-                  <td
-                    style={{
-                      padding: '16px',
-                      border: '1px solid #e0e0e0',
-                      verticalAlign: 'top',
-                      width: '300px'
-                    }}
-                  >
-                    <Typography variant='body2' sx={{ fontWeight: 'bold', marginBottom: '4px' }}>
-                      {category.categoryName}
-                    </Typography>
-                    <Typography variant='caption' sx={{ color: '#666', fontSize: '12px' }}>
-                      {category.description}
-                    </Typography>
-                  </td>
-                  <td
-                    style={{
-                      padding: '8px',
-                      border: '1px solid #e0e0e0',
-                      textAlign: 'center'
-                    }}
-                  >
-                    <TextField
-                      type='number'
-                      size='small'
-                      value={category.Weighting}
-                      onChange={e => handleInputChange(categoryIndex, 'Weighting', e.target.value)}
-                      placeholder='--'
-                      inputProps={{
-                        min: 0.5,
-                        max: 1.5,
-                        step: 0.25
+                  {pmaColumns.map((pma, index) => (
+                    <th
+                      key={index}
+                      style={{
+                        padding: '16px',
+                        textAlign: 'center',
+                        border: '1px solid #e0e0e0',
+                        backgroundColor: '#f8f9fa',
+                        fontWeight: 'bold',
+                        fontSize: '14px',
+                        color: '#333'
                       }}
-                      sx={{
-                        width: '80px',
-                        '& .MuiOutlinedInput-root': {
-                          '& fieldset': {
-                            borderColor: '#d9d9d9'
-                          },
-                          '&:hover fieldset': {
-                            borderColor: '#bfbfbf'
-                          },
-                          '&.Mui-focused fieldset': {
-                            borderColor: '#35C0ED'
-                          }
-                        }
-                      }}
-                    />
-                  </td>
-                  {pmaColumns.map((pma, pmaIndex) => (
+                    >
+                      {pma}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {evaluationData.map((category, categoryIndex) => (
+                  <tr key={categoryIndex}>
                     <td
-                      key={pmaIndex}
+                      style={{
+                        padding: '16px',
+                        border: '1px solid #e0e0e0',
+                        verticalAlign: 'top',
+                        width: '300px'
+                      }}
+                    >
+                      <Typography variant='body2' sx={{ fontWeight: 'bold', marginBottom: '4px' }}>
+                        {category.categoryName}
+                      </Typography>
+                      <Typography variant='caption' sx={{ color: '#666', fontSize: '12px' }}>
+                        {category.description}
+                      </Typography>
+                    </td>
+                    <td
                       style={{
                         padding: '8px',
                         border: '1px solid #e0e0e0',
@@ -287,13 +290,13 @@ const EvaluationMatrix = () => {
                       <TextField
                         type='number'
                         size='small'
-                        value={category[pma as keyof typeof category]}
-                        onChange={e => handleInputChange(categoryIndex, pma, e.target.value)}
+                        value={category.Weighting}
+                        onChange={e => handleInputChange(categoryIndex, 'Weighting', e.target.value)}
                         placeholder='--'
                         inputProps={{
-                          min: 1,
-                          max: 10,
-                          step: 1
+                          min: 0.5,
+                          max: 1.5,
+                          step: 0.25
                         }}
                         sx={{
                           width: '80px',
@@ -311,35 +314,57 @@ const EvaluationMatrix = () => {
                         }}
                       />
                     </td>
-                  ))}
-                </tr>
-              ))}
-              <tr>
-                <td
-                  style={{
-                    padding: '16px',
-                    border: '1px solid #e0e0e0',
-                    fontWeight: 'bold',
-                    backgroundColor: '#f8f9fa'
-                  }}
-                >
-                  TOTAL
-                </td>
-                <td
-                  style={{
-                    padding: '8px',
-                    border: '1px solid #e0e0e0',
-                    textAlign: 'center',
-                    backgroundColor: '#f8f9fa'
-                  }}
-                >
-                  <Typography variant='body2' sx={{ color: '#333', fontWeight: 'bold' }}>
-                    {totals.Weighting.toFixed(1)}
-                  </Typography>
-                </td>
-                {pmaColumns.map((pma, index) => (
+                    {pmaColumns.map((pma, pmaIndex) => (
+                      <td
+                        key={pmaIndex}
+                        style={{
+                          padding: '8px',
+                          border: '1px solid #e0e0e0',
+                          textAlign: 'center'
+                        }}
+                      >
+                        <TextField
+                          type='number'
+                          size='small'
+                          value={category[pma as keyof typeof category]}
+                          onChange={e => handleInputChange(categoryIndex, pma, e.target.value)}
+                          placeholder='--'
+                          inputProps={{
+                            min: 1,
+                            max: 10,
+                            step: 1
+                          }}
+                          sx={{
+                            width: '80px',
+                            '& .MuiOutlinedInput-root': {
+                              '& fieldset': {
+                                borderColor: '#d9d9d9'
+                              },
+                              '&:hover fieldset': {
+                                borderColor: '#bfbfbf'
+                              },
+                              '&.Mui-focused fieldset': {
+                                borderColor: '#35C0ED'
+                              }
+                            }
+                          }}
+                        />
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+                <tr>
                   <td
-                    key={index}
+                    style={{
+                      padding: '16px',
+                      border: '1px solid #e0e0e0',
+                      fontWeight: 'bold',
+                      backgroundColor: '#f8f9fa'
+                    }}
+                  >
+                    TOTAL
+                  </td>
+                  <td
                     style={{
                       padding: '8px',
                       border: '1px solid #e0e0e0',
@@ -348,44 +373,71 @@ const EvaluationMatrix = () => {
                     }}
                   >
                     <Typography variant='body2' sx={{ color: '#333', fontWeight: 'bold' }}>
-                      {totals[pma as keyof typeof totals]}
+                      {totals.Weighting.toFixed(1)}
                     </Typography>
                   </td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
-        </Box>
+                  {pmaColumns.map((pma, index) => (
+                    <td
+                      key={index}
+                      style={{
+                        padding: '8px',
+                        border: '1px solid #e0e0e0',
+                        textAlign: 'center',
+                        backgroundColor: '#f8f9fa'
+                      }}
+                    >
+                      <Typography variant='body2' sx={{ color: '#333', fontWeight: 'bold' }}>
+                        {totals[pma as keyof typeof totals]}
+                      </Typography>
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </Box>
 
-        <div className='flex justify-end mt-8'>
-          <CustomButton
-            onClick={handleSaveEvaluation}
-            sx={{
-              fontSize: '16px',
-              fontWeight: 700,
-              backgroundColor: '#35C0ED',
-              '&:hover': {
-                backgroundColor: '#2BA8D1'
-              }
-            }}
-            startIcon={<i className='ri-cloud-upload-line'></i>}
-          >
-            Save Evaluation
-          </CustomButton>
+          <div className='flex justify-end mt-8'>
+            <CustomButton
+              onClick={handleSaveEvaluation}
+              sx={{
+                fontSize: '16px',
+                fontWeight: 700,
+                backgroundColor: '#35C0ED',
+                '&:hover': {
+                  backgroundColor: '#2BA8D1'
+                }
+              }}
+              startIcon={<i className='ri-download-2-line text-lg'></i>}
+            >
+              Save Evaluation
+            </CustomButton>
+          </div>
         </div>
+
+        <Snackbar
+          open={toast.open}
+          autoHideDuration={4000}
+          onClose={() => setToast({ ...toast, open: false })}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        >
+          <Alert onClose={() => setToast({ ...toast, open: false })} severity={toast.severity} sx={{ width: '100%' }}>
+            {toast.message}
+          </Alert>
+        </Snackbar>
       </div>
 
-      <Snackbar
-        open={toast.open}
-        autoHideDuration={4000}
-        onClose={() => setToast({ ...toast, open: false })}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-      >
-        <Alert onClose={() => setToast({ ...toast, open: false })} severity={toast.severity} sx={{ width: '100%' }}>
-          {toast.message}
-        </Alert>
-      </Snackbar>
-    </div>
+      {isOpen && (
+        <CommonModal
+          isOpen={isOpen}
+          handleClose={handleModalClose}
+          header='How to use Evaluation Matrix'
+          maxWidth='lg'
+          fullWidth
+        >
+          <EvaluationInstructions />
+        </CommonModal>
+      )}
+    </>
   )
 }
 

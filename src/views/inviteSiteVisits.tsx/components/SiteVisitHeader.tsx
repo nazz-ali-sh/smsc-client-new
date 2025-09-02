@@ -1,15 +1,20 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 
 import { Box, Typography, Button } from '@mui/material'
+
+import VideosCallsModal from '@/common/VideosCallsModal'
 
 interface InviteCallHeaderProps {
   title?: string
   actionButton?: React.ReactNode
+  videoCallmodalData: any
 }
 
-const SiteVisitHeader = ({ title = 'Video Calls', actionButton }: InviteCallHeaderProps) => {
+const SiteVisitHeader = ({ title = 'Video Calls', actionButton, videoCallmodalData }: InviteCallHeaderProps) => {
+  const [onlineCallsModalOpen, setOnlineCallsModalOpen] = useState(false)
+
   return (
     <Box className=' p-6'>
       <Box className='flex justify-between items-center'>
@@ -24,6 +29,7 @@ const SiteVisitHeader = ({ title = 'Video Calls', actionButton }: InviteCallHead
             textTransform: 'none'
           }}
           className='flex items-center gap-2'
+          onClick={() => setOnlineCallsModalOpen(true)}
         >
           {actionButton}
         </Button>
@@ -40,6 +46,13 @@ const SiteVisitHeader = ({ title = 'Video Calls', actionButton }: InviteCallHead
         Manage your entire call history here. You can view all upcoming, rescheduled and completed calls in one
         centralized location.
       </Typography>
+
+      <VideosCallsModal
+        open={onlineCallsModalOpen}
+        onClose={() => setOnlineCallsModalOpen(false)}
+        shorlistedPmas={null}
+        mainSiteVisitVideoCalls={videoCallmodalData}
+      />
     </Box>
   )
 }

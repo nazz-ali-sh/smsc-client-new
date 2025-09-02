@@ -21,7 +21,7 @@ interface TenderFormState {
   summary: string
   questions: Question[]
   dragList: DragAndDrop[]
-  tender_id: number | null
+  tender_id: number | any
 }
 
 // Initial State

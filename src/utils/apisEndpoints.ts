@@ -53,7 +53,13 @@ export const apiEndpoints = {
 
   rmcVideoCallInvite: () => `rmc/video-call/invites`,
 
+  rmcSideVisitInvite: () => `rmc/site-visit/invites`,
+
   gettingSlots: (date: any) => `rmc/video-call/slots-for-date?date=${date}`,
+
+  // video-call/slots-for-date?date=2024-01-15
+
+  gettingSideInvitesSlots: (date: any) => `rmc/site-visit/slots-for-date?date=${date}`,
 
   gettingrmcshortlistStats: (tender_id: number) => `rmc/shortlist-agent/stats?tender_id=${tender_id}`,
 
@@ -61,5 +67,32 @@ export const apiEndpoints = {
 
   rmcShortlistContact: `rmc/request-agent/request-contact`,
 
-  rmcExtendDays: (tender_id: number) => `rmc/shortlist/${tender_id}/extend`
+  rmcExtendDays: (tender_id: number) => `rmc/shortlist/${tender_id}/extend`,
+
+  //---------------------- Site Visit Apis  ------------------------------//
+
+  rmcSiteVisit: (status: string, tender_id: number) => `rmc/site-visit/invites?status=${status}&tender_id=${tender_id}`,
+
+  rmcVideoCallsInvite: (status: string, tender_id: number) =>
+    `rmc/video-call/invites?status=${status}&tender_id=${tender_id}`,
+
+  //---------------------- Video Calls Apis  ------------------------------//
+
+  rmcSchedualAgain: () => `rmc/video-call/invites/rescheduled/reschedule`,
+
+  rmcRejectInvite: () => `rmc/video-call/invites/rescheduled/reject`,
+
+  rmcAcceptRechedual: () => `/rmc/video-call/invites/rescheduled/accept`,
+
+  //---------------------- Site Visit  ------------------------------//
+
+  rmcsiteVisitSchedualAgain: () => `rmc/site-visit/invites/rescheduled/reschedule`,
+
+  rmcSiteVisityRejectInvite: () => `rmc/site-visit/invites/rescheduled/reject`,
+
+  rmcSiteVisitAcceptReschedual: () => `rmc/site-visit/invites/rescheduled/accept`,
+
+  //---------------------- Final selection   ------------------------------//
+
+  gettingFianlSelectionDetails: (tender_id: number) => `/rmc/final-page-detail?tender_id=${tender_id}`
 }

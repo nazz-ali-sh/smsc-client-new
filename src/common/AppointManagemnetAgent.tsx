@@ -18,50 +18,85 @@ import {
   FormControlLabel,
   Checkbox
 } from '@mui/material'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 
 import { useSelector } from 'react-redux'
 
 import { toast } from 'react-toastify'
 
 import ConfirmationModal from './ConfirmationModal'
-import { gettingRmcAppoint } from '@/services/tender_result-apis/tender-result-api'
+import { finalShortListedAgent, gettingRmcAppoint } from '@/services/tender_result-apis/tender-result-api'
 import type { RootState } from '@/redux-store'
 
 interface SiteVisitsModalProps {
   open: boolean
   onClose: () => void
-  finalShortListedResponce: any
-  pmaSelectedID: number
+  finalShortListedResponce: any | null
+  pmaSelectedID: number | null
+  InviteCompletedCalls: any
+}
+
+interface shortListedFinalAgent {
+  data: any
+  shortlist_id: number
+  tender_id: number
+  tender_name: string
+  shortlisted_pma_count: number
+  shortlisted_pma_users: {
+    id: number
+    pma_number: string
+    full_name: string
+    email: string
+    mobile_number: string
+    company_name: string
+  }[]
+  shortlisted_by: {
+    id: number
+    name: string | null
+    email: string
+  }
 }
 
 const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
   open,
   onClose,
   finalShortListedResponce,
-  pmaSelectedID
+  pmaSelectedID,
+  InviteCompletedCalls
 }) => {
   const theme = useTheme()
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)
   const [feedbacks, setFeedbacks] = useState<{ [key: number]: { feedback: string; noFeedback: boolean } }>({})
 
-  const rmcTenderId = useSelector((state: RootState) => state?.users?.tenderId)
+  const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+
+  const reschedual_pma_user_id = (InviteCompletedCalls ?? [])[0]?.pma_user_ids || '0'
+
+  const { data: pmaShortlistedData } = useQuery<shortListedFinalAgent, Error>({
+    queryKey: ['finalAgents', tender_id],
+    queryFn: () => finalShortListedAgent(Number(tender_id)),
+    enabled: !!tender_id,
+    refetchOnWindowFocus: false
+  })
 
   const { mutate: appointMutate } = useMutation({
     mutationFn: ({
       pma_user_id,
       appointment_message,
       other_pma_feedbacks,
-      rmcTenderId
+      tender_id
     }: {
       pma_user_id: number
       appointment_message: string
       other_pma_feedbacks: { pma_user_id: number; feedback: string }[]
-      rmcTenderId: any
-    }) => gettingRmcAppoint(pma_user_id, appointment_message, other_pma_feedbacks, rmcTenderId),
-    onSuccess: () => {
+      tender_id: any
+    }) => gettingRmcAppoint(pma_user_id, appointment_message, other_pma_feedbacks, tender_id),
+
+    onSuccess: data => {
+      toast.success(data?.message)
       setConfirmationModalOpen(true)
     },
+
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || 'Failed to About Step'
 
@@ -87,21 +122,25 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
   const handleSendInvites = () => {
     const appointmentMessage = 'Congratulations on your appointment as the managing agent!'
 
-    const otherPmaFeedbacks =
-      finalShortListedResponce?.data?.shortlisted_pmas
-        ?.filter((pma: any) => pma.pma_user.id !== pmaSelectedID)
-        ?.map((pma: any) => ({
-          pma_user_id: pma.pma_user.id,
-          feedback: feedbacks[pma.pma_user.id]?.noFeedback
-            ? 'Thank you for your proposal, but we have decided to go with another agent.'
-            : feedbacks[pma.pma_user.id]?.feedback || ''
-        })) || []
+    // Get shortlisted_pmas safely
+    const shortlistedPmas =
+      finalShortListedResponce?.data?.shortlisted_pmas || pmaShortlistedData?.data?.shortlisted_pmas || []
+
+    // Build feedback for all PMAs except the selected one
+    const otherPmaFeedbacks = shortlistedPmas
+      .filter((pma: any) => pma?.pma_user?.id !== (pmaSelectedID || reschedual_pma_user_id))
+      .map((pma: any) => ({
+        pma_user_id: pma?.pma_user?.id,
+        feedback: feedbacks[pma?.pma_user?.id]?.noFeedback
+          ? 'Thank you for your proposal, but we have decided to go with another agent.'
+          : feedbacks[pma?.pma_user?.id]?.feedback || ''
+      }))
 
     appointMutate({
-      pma_user_id: pmaSelectedID,
+      pma_user_id: pmaSelectedID || reschedual_pma_user_id,
       appointment_message: appointmentMessage,
       other_pma_feedbacks: otherPmaFeedbacks,
-      rmcTenderId
+      tender_id
     })
   }
 
@@ -160,19 +199,23 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
         <Grid container spacing={3} className='mt-2'>
           <section className='border-1 border-black mt-[20px] ml-[14px]'>
             <Grid container spacing={2}>
-              {finalShortListedResponce?.data?.shortlisted_pmas?.map((pma: any, index: number) => (
+              {(
+                finalShortListedResponce?.data?.shortlisted_pmas ||
+                pmaShortlistedData?.data?.shortlisted_pmas ||
+                []
+              ).map((pma: any, index: number) => (
                 <React.Fragment key={pma.pma_user.id}>
                   <Typography sx={{ marginLeft: '8px', marginTop: index > 0 ? '20px' : '0' }}>
-                    {pma.pma_user.id !== pmaSelectedID && <span> ({pma.pma_user.full_name})</span>}
+                    {pma.pma_user.id !== pmaSelectedID && <span> {pma.pma_user.full_name}</span>}
                   </Typography>
-                  {pma.pma_user.id !== pmaSelectedID && (
+                  {pma.pma_user.id !== (pmaSelectedID || reschedual_pma_user_id) && (
                     <>
                       <Grid item xs={12} md={12} sx={{ marginTop: '19px' }}>
                         <TextField
                           fullWidth
                           type='text'
                           label='Feedback'
-                          placeholder='Set Date And Time For'
+                          placeholder='write you feedback'
                           value={feedbacks[pma.pma_user.id]?.feedback || ''}
                           onChange={e => handleFeedbackChange(pma.pma_user.id, e.target.value)}
                           sx={{

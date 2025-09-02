@@ -81,8 +81,6 @@ export const getSlots = async () => {
   }
 }
 
-// gettingSlots
-
 export const getSlotsAndDay = async (date: any) => {
   try {
     const url = apiEndpoints.gettingSlots(date)
@@ -97,24 +95,74 @@ export const getSlotsAndDay = async (date: any) => {
   }
 }
 
-// rmcVideoCallInvit
+//  Site Visit Calander Slot
+export const sideVisitCalendarSlots = async (date: any) => {
+  try {
+    const url = apiEndpoints.gettingSideInvitesSlots(date)
+
+    const response = await axiosClient.get(url)
+
+    return response.data
+  } catch (error) {
+    console.error('Tender Responce API error:', error)
+
+    throw error
+  }
+}
 
 export const videoCallsInvite = async (
   date: string,
   day_id: number,
   slot_id: any,
   pma_user_ids: number[] | number,
-  message: string
+  message: string,
+  tender_id: number
 ) => {
   try {
     const url = apiEndpoints.rmcVideoCallInvite()
 
     const payload = {
       date,
+
+      // tender_id: 7,
       day_id,
       slot_id,
       pma_user_ids,
-      message
+      message,
+      tender_id
+    }
+
+    const response = await axiosClient.post(url, payload)
+
+    return response.data
+  } catch (error) {
+    console.error('RTM setup API error:', error)
+    throw error
+  }
+}
+
+export const SideVisitInvite = async (
+  date: string,
+  day_id: number,
+  slot_id: any,
+  pma_user_ids: number[] | number,
+  message: string,
+  tender_id: number,
+  location: string
+) => {
+  try {
+    const url = apiEndpoints.rmcSideVisitInvite()
+
+    const payload = {
+      date,
+
+      // tender_id: 7,
+      day_id,
+      slot_id,
+      pma_user_ids,
+      message,
+      tender_id,
+      location
     }
 
     const response = await axiosClient.post(url, payload)
@@ -186,8 +234,6 @@ export const rmcsendContactpma = async (pma_user_id: number, message: string) =>
 }
 
 export const rmcExtendThreeDays = async (tender_id: number, pma_user_id: number) => {
-  debugger
-
   try {
     const url = apiEndpoints.rmcExtendDays(tender_id)
 

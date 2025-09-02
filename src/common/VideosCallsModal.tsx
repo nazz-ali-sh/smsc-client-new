@@ -32,8 +32,11 @@ import { object, string, optional, any } from 'valibot'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
+import { useSelector } from 'react-redux'
+
 import ConfirmationModal from './ConfirmationModal'
 import { getSlotsAndDay, videoCallsInvite } from '@/services/tender_result-apis/tender-result-api'
+import type { RootState } from '@/redux-store'
 
 interface Guest {
   id: string
@@ -45,6 +48,8 @@ interface OnlineCallsModalProps {
   open: boolean
   onClose: () => void
   shorlistedPmas: any
+  siteVisitshorlistedPmas?: any
+  mainSiteVisitVideoCalls: any
 }
 
 interface Slot {
@@ -61,7 +66,13 @@ export const videoCallSchema = object({
   additionalNotes: optional(string())
 })
 
-const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({ open, onClose, shorlistedPmas }) => {
+const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
+  open,
+  onClose,
+  shorlistedPmas,
+  siteVisitshorlistedPmas,
+  mainSiteVisitVideoCalls
+}) => {
   const theme = useTheme()
   const [dayId, setDayId] = useState('')
   const [finalSelectedSlots, setFinalSelectedSlots] = useState<Slot[]>([])
@@ -144,7 +155,8 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({ open, onClose, shor
     error
   } = useQuery<SlotsApiResponse, Error>({
     queryKey: ['AvailableSlotsAndDays', value?.format('YYYY-MM-DD')],
-    queryFn: () => getSlotsAndDay(value!.format('YYYY-MM-DD'))
+    queryFn: () => getSlotsAndDay(value!.format('YYYY-MM-DD')),
+    enabled: open && !!value
   })
 
   // Handle dayId and slots updates
@@ -165,22 +177,25 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({ open, onClose, shor
     }
   }, [isError, error])
 
+  const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+
   const videoCallInviteMutation = useMutation({
     mutationFn: ({
       value,
       day_id,
       slot_ids,
       pma_user_ids,
-      message
+      message,
+      tender_id
     }: {
       value: any | string
       day_id: number
       slot_ids: number
       pma_user_ids: number[] | number
       message: string
-    }) => videoCallsInvite(value, day_id, slot_ids, pma_user_ids, message),
+      tender_id: number
+    }) => videoCallsInvite(value, day_id, slot_ids, pma_user_ids, message, tender_id),
     onSuccess: (data: any) => {
-      debugger
       setInviteData(data?.data?.invites)
       toast.success(data?.message || 'Invite sent successfully!')
       reset()
@@ -200,11 +215,35 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({ open, onClose, shor
       day_id: Number(dayId),
       slot_ids: Number(formData.availableSlots),
       pma_user_ids: formData.pmaGuest.map((g: Guest) => g.id),
-      message: formData.additionalNotes
+      message: formData.additionalNotes,
+      tender_id: tender_id
     })
   }
 
   const type = 'videoCall'
+
+  const normalizedOptions = [
+    // From shorlistedPmas
+    ...(shorlistedPmas || []).map((item: any) => ({
+      id: item.pma_user.id,
+      pma_number: item.pma_user.pma_number
+    })),
+
+    // From siteVisitshorlistedPmas
+    ...(siteVisitshorlistedPmas || []).flatMap(
+      (item: any) =>
+        item?.siteCompleted?.data?.invites?.map((invite: any) => ({
+          id: invite.pma_user_id,
+          pma_number: invite.pma_name
+        })) || []
+    ),
+
+    // From mainSiteVisitVideoCalls
+    ...(mainSiteVisitVideoCalls?.data?.invites || []).map((invite: any) => ({
+      id: invite.pma_user_id,
+      pma_number: invite.pma_name
+    }))
+  ]
 
   return (
     <Dialog
@@ -317,8 +356,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({ open, onClose, shor
                         paddingTop: '20',
                         height: '200px',
                         overflowY: 'auto'
-
-                        // width: '100%'
                       }}
                     >
                       {gettingSlotsAndDays?.data?.slots?.map(item => (
@@ -350,7 +387,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({ open, onClose, shor
                 />
               </Grid>
 
-              {/* Button */}
               <Grid item>
                 <Button
                   variant='contained'
@@ -381,20 +417,15 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({ open, onClose, shor
               render={({ field }) => (
                 <Autocomplete
                   multiple
-                  options={shorlistedPmas || []}
-                  getOptionLabel={option => option.pma_user?.pma_number || ''}
-                  isOptionEqualToValue={(option, value) => String(option.pma_user?.id) === String((value as any)?.id)}
+                  options={normalizedOptions}
+                  getOptionLabel={(option: any) => option.pma_number || ''}
+                  isOptionEqualToValue={(option, value) => String(option.id) === String((value as any)?.id)}
                   getOptionDisabled={option =>
-                    (field.value || []).some((guest: any) => String(guest.id) === String(option.pma_user?.id))
+                    (field.value || []).some((guest: any) => String(guest.id) === String(option.id))
                   }
                   value={field.value || []}
                   onChange={(_, newValue) => {
-                    const mapped = newValue.map((item: any) => ({
-                      id: item.pma_user.id,
-                      pma_number: item.pma_user.pma_number
-                    }))
-
-                    field.onChange(mapped)
+                    field.onChange(newValue)
                   }}
                   renderInput={params => <TextField {...params} placeholder='Select guests...' variant='outlined' />}
                   renderTags={(value: any[], getTagProps) =>

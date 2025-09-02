@@ -14,6 +14,7 @@ type SuccessModalProps = {
   buttonText?: string
   confirmButtonText?: string
   loading?: boolean
+  cancelButton: string
 }
 
 const SuccessModal = ({
@@ -23,7 +24,8 @@ const SuccessModal = ({
   message = 'The operation was successful.',
   title = 'Success',
   confirmButtonText,
-  loading = false
+  loading = false,
+  cancelButton
 }: SuccessModalProps) => {
   return (
     <Dialog open={open} onClose={onClose}>
@@ -45,7 +47,13 @@ const SuccessModal = ({
       <DialogContent>
         <DialogContentText sx={{ color: '#696969', fontSize: '16px' }}>{message}</DialogContentText>
       </DialogContent>
-      <DialogActions>
+      <DialogActions className='flex justify-between items-center'>
+        {cancelButton && (
+          <Button variant='outlined' onClick={onConfirm} disabled={loading} autoFocus>
+            {cancelButton}
+          </Button>
+        )}
+
         {onConfirm && (
           <Button
             sx={{

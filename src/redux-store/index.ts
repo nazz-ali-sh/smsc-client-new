@@ -10,6 +10,7 @@ import branchReducer from '@/redux-store/slices/branchSlice'
 import userReducer from '@/redux-store/slices/userSlice'
 import calendarReducer from '@/redux-store/slices/calendar'
 import rmcCalendarReducer from '@/redux-store/slices/rmcCalendar'
+import siteVisitAndCallStatsReducer from '@/redux-store/slices/sideVisitAndCallStatsSlice'
 
 const persistConfig = {
   key: 'root',
@@ -25,7 +26,8 @@ const rootReducer = combineReducers({
   branches: branchReducer,
   users: userReducer,
   calendarReducer: calendarReducer,
-  rmcCalendarReducer: rmcCalendarReducer
+  rmcCalendarReducer: rmcCalendarReducer,
+  siteVisitAndCallStats: siteVisitAndCallStatsReducer
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

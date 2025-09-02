@@ -5,44 +5,38 @@ import React, { useState } from 'react'
 import { Box } from '@mui/material'
 import { createColumnHelper } from '@tanstack/react-table'
 
-import { useMutation } from '@tanstack/react-query'
-
-import { toast } from 'react-toastify'
-
-import { useSelector } from 'react-redux'
-
 import CommonTable from '@/common/CommonTable'
-
 import RejectModal from '@/common/RejectModal'
 import SiteVisitsModal from '@/common/SiteVisitsModal'
 import SuccessModal from '@/common/SucessModal'
-import { reSchedualAccepted } from '@/services/site_visit_apis/site_visit_api'
-
-import type { RootState } from '@/redux-store'
 
 interface RescheduledCallType {
+  data: any
   pmaId: string
+  invite_id: number
   yearTrading: string
   unitsManaged: number
   quotations: string
   videoCallLink: string
   timeline: string
   rescheduled: string
-  invite_id: number
+  InviteAndCalls?: { [key: string]: any }
 }
 
 const columnHelper = createColumnHelper<RescheduledCallType>()
 
-const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
+interface InvitePendingCallsProps {
+  pendingInviteData: RescheduledCallType
+}
+
+const InvitePendingCalls: React.FC<InvitePendingCallsProps> = ({ pendingInviteData }) => {
   const [confirmOpen, setConfirmOpen] = useState(false)
-  const [SuccessOpen, setSuccessOpen] = useState(false)
+  const [successOpen, setSuccessOpen] = useState(false)
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
   const [visitsSchedualInviteId, setVisitsSchedualInviteId] = useState<number | undefined>(undefined)
 
-  const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
-
   const tableData: RescheduledCallType[] =
-    rescheduaInviteData?.data?.invites?.map(
+    pendingInviteData?.data?.invites?.map(
       (invite: {
         pma_name: any
         id: number
@@ -62,32 +56,6 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
         rescheduled: invite.status_label ?? ''
       })
     ) || []
-
-  const reschedual_inviteId = (tableData ?? [])[0]?.invite_id || '0'
-
-  console.log(reschedual_inviteId)
-
-  const rechedualRmcAgain = useMutation({
-    mutationFn: ({ visitsSchedualInviteId, rmctender_id }: { visitsSchedualInviteId: any; rmctender_id: number }) =>
-      reSchedualAccepted(visitsSchedualInviteId, rmctender_id),
-    onSuccess: (data: any) => {
-      toast.success(data?.message || 'Invite sent successfully!')
-      setSuccessOpen(true)
-    },
-    onError: (error: any) => {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to send invite'
-
-      toast.error(errorMessage)
-      console.error('Failed to send invite:', error)
-    }
-  })
-
-  const handleAgainReschedual = () => {
-    rechedualRmcAgain.mutate({
-      visitsSchedualInviteId,
-      rmctender_id: tender_id
-    })
-  }
 
   const columns = [
     columnHelper.accessor((row, index) => index + 1, {
@@ -123,16 +91,17 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
     }),
     columnHelper.accessor('videoCallLink', {
       header: 'Video Call Link',
-      cell: info => (
-        <a
-          href={info.getValue()}
-          target='_blank'
-          rel='noopener noreferrer'
-          className='text-[#26C6F9] text-[13px] underline'
-        >
-          {info.getValue()}
-        </a>
-      ),
+      cell: info => {
+        const link = info.getValue()
+
+        return link ? (
+          <a href={link} target='_blank' rel='noopener noreferrer' className='text-[#26C6F9] text-[13px] underline'>
+            Link
+          </a>
+        ) : (
+          '-'
+        )
+      },
       size: 200,
       enableSorting: false
     }),
@@ -156,23 +125,12 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
           <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#F5DADB] text-[#DE481A] flex justify-center items-center'>
             <i
               onClick={() => {
-                setVisitsSchedualInviteId(row?.original?.invite_id)
+                setVisitsSchedualInviteId(row.original.invite_id)
                 setConfirmOpen(true)
               }}
               className='ri-close-line'
             />
           </span>
-
-          <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'>
-            <i
-              onClick={() => {
-                setVisitsSchedualInviteId(row.original.invite_id)
-                setSuccessOpen(true)
-              }}
-              className='ri-check-line '
-            />
-          </span>
-
           <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'>
             <i
               onClick={() => {
@@ -205,10 +163,10 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
         title='Reschedule Request Rejected!'
         description='You have rejected the reschedule request from [PMA Name]. The meeting will not be updated.Please provide a reason for the rejection in the box below. This explanation will be sent to the managing agent.'
         onClose={() => setConfirmOpen(false)}
+        onConfirm={() => {}}
+        RejectInviteData={tableData}
         VideoCallInviteId={visitsSchedualInviteId}
-        onConfirm={function (): void {}}
-        RejectInviteData={undefined}
-        types={undefined}
+        types='SiteVisit'
         sitePendingData={undefined}
         SideVisitsSchedualInviteId={undefined}
       />
@@ -217,26 +175,25 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
         open={siteVisitsModalOpen}
         onClose={() => setSiteVisitsModalOpen(false)}
         shorlistedPmas={undefined}
-        Reschedual={tableData}
         VideoCallInviteId={visitsSchedualInviteId}
         types='Reschedual'
+        Reschedual={undefined}
         siteVisitDate={undefined}
         SideVisitsSchedualInviteId={undefined}
         completedShorlistedPmas={undefined}
       />
 
       <SuccessModal
-        open={SuccessOpen}
+        open={successOpen}
         onClose={() => setSuccessOpen(false)}
-        onConfirm={handleAgainReschedual} //
+        onConfirm={() => setSuccessOpen(false)}
         cancelButton='Ok'
         message='Success! You have Sent the new meeting time.'
         title='Reschedule Request Accepted!'
         confirmButtonText='Confirm'
-        loading={rechedualRmcAgain.isPending}
       />
     </Box>
   )
 }
 
-export default InviteRescheduleTab
+export default InvitePendingCalls

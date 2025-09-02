@@ -1,0 +1,176 @@
+'use client'
+
+import { useEffect } from 'react'
+
+import Card from '@mui/material/Card'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
+
+import { useSelector, useDispatch } from 'react-redux'
+
+import { useQuery } from '@tanstack/react-query'
+
+import { getrmcshortlistStats } from '@/services/tender_result-apis/tender-result-api'
+import type { RootState } from '@/redux-store'
+
+import { fetchStatsSuccess } from '../../redux-store/slices/sideVisitAndCallStatsSlice'
+
+const VisitAndCallStats = () => {
+  const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+  const dispatch = useDispatch()
+
+  interface shortListedFinalAgent {
+    data: any
+    shortlist_id: number
+    tender_id: number
+    tender_name: string
+    shortlisted_pma_count: number
+    shortlisted_pma_users: {
+      id: number
+      pma_number: string
+      full_name: string
+      email: string
+      mobile_number: string
+      company_name: string
+    }[]
+    shortlisted_by: {
+      id: number
+      name: string | null
+      email: string
+    }
+  }
+
+  const { data: rmcShortlistStats } = useQuery<shortListedFinalAgent, Error>({
+    queryKey: ['shortlistData', tender_id],
+    queryFn: () => getrmcshortlistStats(Number(tender_id)),
+    enabled: !!tender_id
+  })
+
+  useEffect(() => {
+    dispatch(fetchStatsSuccess(rmcShortlistStats?.data))
+  }, [rmcShortlistStats, dispatch])
+
+  return (
+    <Grid container spacing={7} className='mbe-6'>
+      <Grid item xs={6} md={3}>
+        <Card className='p-4 py-6'>
+          <Box className='flex items-center gap-3'>
+            <Box
+              className='size-10  rounded-xl flex items-center justify-center'
+              sx={{ backgroundColor: 'customColors.cyan1' }}
+            >
+              <i className='ri-customer-service-2-line text-xl text-[#35C0ED] ' />
+            </Box>
+            <Box>
+              <Typography
+                variant='h6'
+                sx={{ fontWeight: 700, fontSize: '18px', color: 'customColors.darkGray1' }}
+                className='leading-[28px]'
+              >
+                {rmcShortlistStats?.data?.scheduled_calls}
+              </Typography>
+              <Typography
+                variant='caption'
+                color='text.secondary'
+                className='leading-[22px]'
+                sx={{ fontSize: '15px', fontWeight: 400, color: 'customColors.gray7' }}
+              >
+                Scheduled Calls
+              </Typography>
+            </Box>
+          </Box>
+        </Card>
+      </Grid>
+      <Grid item xs={6} md={3}>
+        <Card className='p-4 py-6'>
+          <Box className='flex items-center gap-3'>
+            <Box
+              className='size-10 rounded-xl flex items-center justify-center'
+              sx={{ backgroundColor: 'customColors.green6' }}
+            >
+              <i className='ri-phone-line text-xl text-[#72E128]' />
+            </Box>
+            <Box>
+              <Typography
+                variant='h6'
+                className='leading-[28px]'
+                sx={{ fontWeight: 700, fontSize: '18px', color: 'customColors.darkGray1' }}
+              >
+                {rmcShortlistStats?.data?.completed_calls}
+              </Typography>
+              <Typography
+                variant='caption'
+                color='text.secondary'
+                className='leading-[22px]'
+                sx={{ fontSize: '15px', fontWeight: 400, color: 'customColors.gray7' }}
+              >
+                Completed Calls
+              </Typography>
+            </Box>
+          </Box>
+        </Card>
+      </Grid>
+      <Grid item xs={6} md={3}>
+        <Card className='p-4 py-6'>
+          <Box className='flex items-center gap-3'>
+            <Box
+              className='size-10  rounded-xl flex items-center justify-center'
+              sx={{ backgroundColor: 'customColors.cyan1' }}
+            >
+              <i className='ri-map-pin-line text-xl  text-[#35C0ED]' />
+            </Box>
+            <Box>
+              <Typography
+                variant='h6'
+                className='leading-[28px]'
+                sx={{ fontWeight: 700, fontSize: '18px', color: 'customColors.darkGray1' }}
+              >
+                {rmcShortlistStats?.data?.scheduled_visits}
+              </Typography>
+              <Typography
+                variant='caption'
+                color='text.secondary'
+                className='leading-[22px]'
+                sx={{ fontSize: '15px', fontWeight: 400, color: 'customColors.gray7' }}
+              >
+                Scheduled Visits
+              </Typography>
+            </Box>
+          </Box>
+        </Card>
+      </Grid>
+      <Grid item xs={6} md={3}>
+        <Card className='p-4 py-6'>
+          <Box className='flex items-center gap-3'>
+            <Box
+              className='size-10 rounded-xl flex items-center justify-center'
+              sx={{ backgroundColor: 'customColors.green6' }}
+            >
+              <i className='ri-map-line text-xl text-[#72E128]' />
+            </Box>
+            <Box>
+              <Typography
+                variant='h6'
+                className='leading-[28px]'
+                sx={{ fontWeight: 700, fontSize: '18px', color: 'customColors.darkGray1' }}
+              >
+                {rmcShortlistStats?.data?.successful_visits}
+              </Typography>
+              <Typography
+                variant='caption'
+                color='text.secondary'
+                className='leading-[22px]'
+                sx={{ fontSize: '15px', fontWeight: 400, color: 'customColors.gray7' }}
+              >
+                Successful visits
+              </Typography>
+            </Box>
+          </Box>
+        </Card>
+      </Grid>
+    </Grid>
+  )
+}
+
+export default VisitAndCallStats

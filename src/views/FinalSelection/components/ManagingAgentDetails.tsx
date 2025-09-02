@@ -19,7 +19,11 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 
 import companyImage from '../../../../public/images/customImages/company.png'
 
-const ManagingAgentDetails = () => {
+interface FinalSelectionResponse {
+  finalSelection?: any
+}
+
+const ManagingAgentDetails: React.FC<FinalSelectionResponse> = ({ finalSelection }) => {
   const [numPages, setNumPages] = useState<number | null>(null)
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
@@ -40,7 +44,7 @@ const ManagingAgentDetails = () => {
             className='flex justify-center items-center text-[38px] pt-4'
             sx={{ color: 'customColors.darkGray1' }}
           >
-            PMA-SE10077
+            {finalSelection?.data?.pma_user?.pma_number}
           </Typography>
           <Box sx={{ marginX: '28px', marginTop: '12px' }}>
             <Divider />
@@ -49,7 +53,7 @@ const ManagingAgentDetails = () => {
             className='flex justify-center items-center text-[18px] pt-4 leading-[22px]'
             sx={{ color: 'customColors.darkGray1' }}
           >
-            Ouma Property Management London
+            {finalSelection?.data?.pma_user?.company_details?.name}
           </Typography>
           <Link
             href='#'
@@ -62,28 +66,28 @@ const ManagingAgentDetails = () => {
               paddingTop: '5px'
             }}
           >
-            www.oumapropertymanagement.co.uk
+            {finalSelection?.data?.pma_user?.company_details?.website}
           </Link>
         </div>
         <Stack spacing={5} sx={{ color: 'text.primary', paddingX: '28px', paddingTop: '22.5px' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <i className='ri-user-line text-[#696969]' style={iconStyle} />
-            <Typography variant='body2'>David Greenway</Typography>
+            <Typography variant='body2'> {finalSelection?.data?.pma_user?.name}</Typography>
           </Box>
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <i className='ri-mail-line text-[#696969]' style={iconStyle} />
-            <Typography variant='body2'>david@oumapropertymanagement.co.uk</Typography>
+            <Typography variant='body2'> {finalSelection?.data?.pma_user?.email}</Typography>
           </Box>
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <i className='ri-phone-line text-[#696969]' style={iconStyle} />
-            <Typography variant='body2'>07825 97 3421</Typography>
+            <Typography variant='body2'> {finalSelection?.data?.pma_user?.mobile_number}</Typography>
           </Box>
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <i className='ri-map-pin-line text-[#696969]' style={iconStyle} />
-            <Typography variant='body2'>52 Old Quay Street London SW11 6HP</Typography>
+            <Typography variant='body2'>{finalSelection?.data?.company_details?.address}</Typography>
           </Box>
         </Stack>
 

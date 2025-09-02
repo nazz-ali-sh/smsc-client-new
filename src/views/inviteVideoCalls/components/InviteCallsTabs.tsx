@@ -5,12 +5,20 @@ import React, { useMemo, useState } from 'react'
 import { Box } from '@mui/material'
 import { createColumnHelper } from '@tanstack/react-table'
 
-import CommonTable from '@/common/CommonTable'
+import { useSelector } from 'react-redux'
+
+import { useQuery } from '@tanstack/react-query'
+
 import InviteRescheduleTab from './InviteRescheduleTab'
 import InviteCompletedCalls from './InviteCompletedCalls'
 import InviteCallHeader from './InviteCallHeader'
-import { InviteTabItems, sampleTenderData } from '../data'
+import { InviteTabItems } from '../data'
 import InviteCallsTabSection, { type InviteTabItem } from './InviteCallsTabSection'
+import type { RootState } from '@/redux-store'
+import { rmcVideoCallDetails } from '@/services/site_visit_apis/site_visit_api'
+import InvitePendingCalls from './InvitePendingCalls'
+import InviteUpcomingCalls from './InviteUpcomingCalls'
+import InviteRejectedTab from './InviteRejectedTab'
 
 interface TenderType {
   tenderName: string
@@ -26,8 +34,18 @@ interface TenderType {
 const columnHelper = createColumnHelper<TenderType>()
 
 const InviteCallsTabs = () => {
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 })
   const [activeTab, setActiveTab] = useState(0)
+  const [activeStatus, setActiveStatus] = useState('')
+  const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+
+  const { data: getVideoCallsData } = useQuery({
+    queryKey: ['gettingVideoCallsDetails', tender_id, activeStatus],
+    queryFn: () => rmcVideoCallDetails(activeStatus, tender_id),
+
+    enabled: !!activeStatus
+  })
+
+  console.log(getVideoCallsData)
 
   const columns = useMemo(
     () => [
@@ -102,6 +120,18 @@ const InviteCallsTabs = () => {
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue)
+
+    if (newValue === 0) {
+      setActiveStatus('upcoming')
+    } else if (newValue === 1) {
+      setActiveStatus('rescheduled')
+    } else if (newValue === 2) {
+      setActiveStatus('accepted')
+    } else if (newValue === 3) {
+      setActiveStatus('pending')
+    } else {
+      setActiveStatus('rejected')
+    }
   }
 
   const getTitle = () => {
@@ -112,27 +142,46 @@ const InviteCallsTabs = () => {
         return 'Rescheduled Call'
       case 2:
         return 'Completed Calls'
+      case 3:
+        return 'Pending Calls'
+      case 4:
+        return 'Rejected Calls'
       default:
         return 'Video Calls'
     }
   }
 
+  const tableData: any[] =
+    getVideoCallsData?.data?.invites?.map(
+      (invite: {
+        pma_name: any
+        pma_company: { trading_years: { toString: () => any }; total_units: any }
+        quotation: { total_quote_inc_vat: any }
+        zoom_meeting_link: any
+        slot: { name: any }
+        status_label: any
+      }) => ({
+        pmaId: invite.pma_name,
+        yearTrading: invite.pma_company?.trading_years?.toString() ?? '',
+        unitsManaged: invite.pma_company?.total_units ?? 0,
+        quotations: invite.quotation?.total_quote_inc_vat ?? '',
+        videoCallLink: invite.zoom_meeting_link ?? '',
+        timeline: invite.slot?.name ?? '',
+        rescheduled: invite.status_label ?? ''
+      })
+    ) || []
+
+  console.log(tableData, columns)
+
   return (
     <Box className='p-1 bg-white rounded-lg shadow h-[70vh] overflow-y-auto'>
       <InviteCallHeader title={getTitle()} actionButton='Schedule New Calls' />
       <InviteCallsTabSection value={activeTab} onChange={handleTabChange} tabs={InviteTabItems as InviteTabItem[]} />
-      {activeTab === 0 && (
-        <CommonTable
-          data={sampleTenderData}
-          columns={columns}
-          pagination={pagination}
-          onPaginationChange={setPagination}
-          pageSizeOptions={[5, 10, 25]}
-          enableSorting={true}
-        />
-      )}
-      {activeTab === 1 && <InviteRescheduleTab />}
-      {activeTab === 2 && <InviteCompletedCalls />}
+      {activeTab === 0 && <InviteUpcomingCalls pendingInviteData={getVideoCallsData} />}
+      {activeTab === 1 && <InviteRescheduleTab rescheduaInviteData={getVideoCallsData} />}
+      {activeTab === 2 && <InviteCompletedCalls videoInviteData={getVideoCallsData} />}
+      {activeTab === 3 && <InvitePendingCalls pendingInviteData={getVideoCallsData} />}
+      {activeTab === 4 && <InviteRejectedTab rejectedInviteData={getVideoCallsData} />}
     </Box>
   )
 }

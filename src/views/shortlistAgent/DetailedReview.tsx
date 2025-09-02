@@ -33,7 +33,6 @@ import ShortListAgent from '../../common/ShortListAgent'
 import ContactModal from '@/common/ContactModal'
 import { rmcsendContactpma } from '@/services/tender_result-apis/tender-result-api'
 
-// Dynamically import react-pdf components to avoid SSR issues
 const Document = dynamic(() => import('react-pdf').then(mod => ({ default: mod.Document })), {
   ssr: false,
   loading: () => <div className='w-[160px] h-[145px] bg-gray-200 animate-pulse rounded'></div>
@@ -417,17 +416,25 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
           open={onlineCallsModalOpen}
           onClose={() => setOnlineCallsModalOpen(false)}
           shorlistedPmas={finalShortListedResponce?.data?.shortlisted_pmas}
+          mainSiteVisitVideoCalls={undefined}
         />
         <SiteVisitsModal
           open={siteVisitsModalOpen}
           onClose={() => setSiteVisitsModalOpen(false)}
+          types={null}
           shorlistedPmas={finalShortListedResponce?.data?.shortlisted_pmas}
+          Reschedual={undefined}
+          siteVisitDate={undefined}
+          SideVisitsSchedualInviteId={undefined}
+          VideoCallInviteId={undefined}
+          completedShorlistedPmas={undefined}
         />
         <AppointManagemnetModal
           open={apointAgentModalOpen}
           onClose={() => setApointAgentModalOpen(false)}
           finalShortListedResponce={finalShortListedResponce}
           pmaSelectedID={pmaSelectedID}
+          InviteCompletedCalls={undefined}
         />
 
         <ContactModal onClose={() => setContactModalOpen(false)} open={contactModalOpen} />

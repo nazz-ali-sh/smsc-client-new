@@ -5,20 +5,8 @@ import React, { useState } from 'react'
 import { Box } from '@mui/material'
 import { createColumnHelper } from '@tanstack/react-table'
 
-import { useMutation } from '@tanstack/react-query'
-
-import { toast } from 'react-toastify'
-
-import { useSelector } from 'react-redux'
-
 import CommonTable from '@/common/CommonTable'
-
-import RejectModal from '@/common/RejectModal'
 import SiteVisitsModal from '@/common/SiteVisitsModal'
-import SuccessModal from '@/common/SucessModal'
-import { reSchedualAccepted } from '@/services/site_visit_apis/site_visit_api'
-
-import type { RootState } from '@/redux-store'
 
 interface RescheduledCallType {
   pmaId: string
@@ -31,18 +19,18 @@ interface RescheduledCallType {
   invite_id: number
 }
 
+interface pendingInviteData {
+  pendingInviteData?: any
+}
+
 const columnHelper = createColumnHelper<RescheduledCallType>()
 
-const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
-  const [confirmOpen, setConfirmOpen] = useState(false)
-  const [SuccessOpen, setSuccessOpen] = useState(false)
+const InviteUpcomingCalls: React.FC<pendingInviteData> = ({ pendingInviteData }) => {
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
   const [visitsSchedualInviteId, setVisitsSchedualInviteId] = useState<number | undefined>(undefined)
 
-  const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
-
   const tableData: RescheduledCallType[] =
-    rescheduaInviteData?.data?.invites?.map(
+    pendingInviteData?.data?.invites?.map(
       (invite: {
         pma_name: any
         id: number
@@ -50,6 +38,7 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
         quotation: { total_quote_inc_vat: any }
         zoom_meeting_link: any
         slot: { name: any; id: any }
+
         status_label: any
       }) => ({
         pmaId: invite.pma_name,
@@ -59,35 +48,10 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
         quotations: invite.quotation?.total_quote_inc_vat ?? '',
         videoCallLink: invite.zoom_meeting_link ?? '',
         timeline: invite.slot?.name ?? '',
+        slot_ids: invite.slot?.id ?? '',
         rescheduled: invite.status_label ?? ''
       })
     ) || []
-
-  const reschedual_inviteId = (tableData ?? [])[0]?.invite_id || '0'
-
-  console.log(reschedual_inviteId)
-
-  const rechedualRmcAgain = useMutation({
-    mutationFn: ({ visitsSchedualInviteId, rmctender_id }: { visitsSchedualInviteId: any; rmctender_id: number }) =>
-      reSchedualAccepted(visitsSchedualInviteId, rmctender_id),
-    onSuccess: (data: any) => {
-      toast.success(data?.message || 'Invite sent successfully!')
-      setSuccessOpen(true)
-    },
-    onError: (error: any) => {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to send invite'
-
-      toast.error(errorMessage)
-      console.error('Failed to send invite:', error)
-    }
-  })
-
-  const handleAgainReschedual = () => {
-    rechedualRmcAgain.mutate({
-      visitsSchedualInviteId,
-      rmctender_id: tender_id
-    })
-  }
 
   const columns = [
     columnHelper.accessor((row, index) => index + 1, {
@@ -153,31 +117,10 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
       header: 'Action',
       cell: ({ row }) => (
         <div className='flex gap-2'>
-          <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#F5DADB] text-[#DE481A] flex justify-center items-center'>
-            <i
-              onClick={() => {
-                setVisitsSchedualInviteId(row?.original?.invite_id)
-                setConfirmOpen(true)
-              }}
-              className='ri-close-line'
-            />
-          </span>
-
           <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'>
             <i
               onClick={() => {
                 setVisitsSchedualInviteId(row.original.invite_id)
-                setSuccessOpen(true)
-              }}
-              className='ri-check-line '
-            />
-          </span>
-
-          <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'>
-            <i
-              onClick={() => {
-                setVisitsSchedualInviteId(row.original.invite_id)
-                setSiteVisitsModalOpen(true)
               }}
               className='ri-edit-box-line'
             />
@@ -200,19 +143,6 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
         enableSorting={true}
       />
 
-      <RejectModal
-        open={confirmOpen}
-        title='Reschedule Request Rejected!'
-        description='You have rejected the reschedule request from [PMA Name]. The meeting will not be updated.Please provide a reason for the rejection in the box below. This explanation will be sent to the managing agent.'
-        onClose={() => setConfirmOpen(false)}
-        VideoCallInviteId={visitsSchedualInviteId}
-        onConfirm={function (): void {}}
-        RejectInviteData={undefined}
-        types={undefined}
-        sitePendingData={undefined}
-        SideVisitsSchedualInviteId={undefined}
-      />
-
       <SiteVisitsModal
         open={siteVisitsModalOpen}
         onClose={() => setSiteVisitsModalOpen(false)}
@@ -220,23 +150,9 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
         Reschedual={tableData}
         VideoCallInviteId={visitsSchedualInviteId}
         types='Reschedual'
-        siteVisitDate={undefined}
-        SideVisitsSchedualInviteId={undefined}
-        completedShorlistedPmas={undefined}
-      />
-
-      <SuccessModal
-        open={SuccessOpen}
-        onClose={() => setSuccessOpen(false)}
-        onConfirm={handleAgainReschedual} //
-        cancelButton='Ok'
-        message='Success! You have Sent the new meeting time.'
-        title='Reschedule Request Accepted!'
-        confirmButtonText='Confirm'
-        loading={rechedualRmcAgain.isPending}
       />
     </Box>
   )
 }
 
-export default InviteRescheduleTab
+export default InviteUpcomingCalls
