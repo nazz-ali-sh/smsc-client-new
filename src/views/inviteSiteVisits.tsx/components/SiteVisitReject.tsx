@@ -1,20 +1,11 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 
 import { Box } from '@mui/material'
 import { createColumnHelper } from '@tanstack/react-table'
 
-import { useMutation } from '@tanstack/react-query'
-
-import { useSelector } from 'react-redux'
-
-import { toast } from 'react-toastify'
-
 import CommonTable from '@/common/CommonTable'
-
-import type { RootState } from '@/redux-store'
-import { rmcSideVisitAccept } from '@/services/site_visit_apis/site_visit_api'
 
 interface RescheduledCallType {
   pmaId: string
@@ -33,12 +24,6 @@ interface RescheduledCallType {
 const columnHelper = createColumnHelper<RescheduledCallType>()
 
 const SiteVisitReject = ({ siteRejectedData }: any) => {
-  const [SuccessOpen, setSuccessOpen] = useState(false)
-
-  console.log(SuccessOpen)
-
-  const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
-
   const tableData: RescheduledCallType[] =
     siteRejectedData?.data?.invites?.map(
       (invite: {
@@ -63,32 +48,6 @@ const SiteVisitReject = ({ siteRejectedData }: any) => {
         siteRejectedData
       })
     ) || []
-
-  const reschedual_inviteId = siteRejectedData?.data?.invites?.[0]?.id ?? null
-
-  const rechedualRmcAgain = useMutation({
-    mutationFn: ({ invite_id, rmctender_id }: { invite_id: number; rmctender_id: number }) =>
-      rmcSideVisitAccept(invite_id, rmctender_id),
-    onSuccess: (data: any) => {
-      toast.success(data?.message || 'Invite sent successfully!')
-      setSuccessOpen(true)
-    },
-    onError: (error: any) => {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to send invite'
-
-      toast.error(errorMessage)
-      console.error('Failed to send invite:', error)
-    }
-  })
-
-  const handleAgainReschedual = () => {
-    rechedualRmcAgain.mutate({
-      invite_id: reschedual_inviteId,
-      rmctender_id: tender_id
-    })
-  }
-
-  handleAgainReschedual()
 
   const columns = [
     columnHelper.accessor((row, index) => index + 1, {

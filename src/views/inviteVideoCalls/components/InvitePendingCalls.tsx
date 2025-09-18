@@ -6,9 +6,9 @@ import { Box } from '@mui/material'
 import { createColumnHelper } from '@tanstack/react-table'
 
 import CommonTable from '@/common/CommonTable'
-import RejectModal from '@/common/RejectModal'
 import SiteVisitsModal from '@/common/SiteVisitsModal'
 import SuccessModal from '@/common/SucessModal'
+import CancelVideoCallsAndSiteVisist from '@/common/CancelVideoCallsAndSiteVisist'
 
 interface RescheduledCallType {
   data: any
@@ -158,15 +158,15 @@ const InvitePendingCalls: React.FC<InvitePendingCallsProps> = ({ pendingInviteDa
         enableSorting={true}
       />
 
-      <RejectModal
+      <CancelVideoCallsAndSiteVisist
         open={confirmOpen}
-        title='Reschedule Request Rejected!'
+        title='Reschedule Request Cancel!'
         description='You have rejected the reschedule request from [PMA Name]. The meeting will not be updated.Please provide a reason for the rejection in the box below. This explanation will be sent to the managing agent.'
         onClose={() => setConfirmOpen(false)}
         onConfirm={() => {}}
         RejectInviteData={tableData}
         VideoCallInviteId={visitsSchedualInviteId}
-        types='SiteVisit'
+        types='VideoCallcancel'
         sitePendingData={undefined}
         SideVisitsSchedualInviteId={undefined}
       />

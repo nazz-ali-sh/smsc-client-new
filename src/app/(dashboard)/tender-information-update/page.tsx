@@ -5,7 +5,7 @@ export default function Page() {
   return (
     <>
       <section className='flex w-full'>
-        <WeeklyReport text={'Tender Information'} dashboardResponce={undefined} />
+        <WeeklyReport text={'Tender Information'} />
       </section>
       <TenderInformationView />
     </>

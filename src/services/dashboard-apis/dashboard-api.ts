@@ -4,7 +4,7 @@ import { apiEndpoints } from '../../utils/apisEndpoints'
 export const dashboardData = async (tender_id: number) => {
   try {
     // Construct URL with query param
-    const url = apiEndpoints.getDashboardData(tender_id)
+    const url = apiEndpoints.getDashboardData(Number(tender_id))
     const response = await axiosClient.get(url)
 
     return response.data

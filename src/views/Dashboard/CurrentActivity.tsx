@@ -7,7 +7,15 @@ import Image from 'next/image'
 
 import { Button, Typography } from '@mui/material'
 
+import { useSelector } from 'react-redux'
+
+import { useMutation } from '@tanstack/react-query'
+
 import line from '../../../public/images/customImages/line.svg'
+import type { RootState } from '@/redux-store'
+
+import { downloadBlindTenderPdf } from '@/services/tender_result-apis/tender-result-api'
+import { downloadFinalSeectionPDf } from '@/services/final_result_and_archeive_apis/final_results_apis'
 
 const Document = dynamic(() => import('react-pdf').then(mod => ({ default: mod.Document })), {
   ssr: false,
@@ -17,11 +25,6 @@ const Document = dynamic(() => import('react-pdf').then(mod => ({ default: mod.D
 const Page = dynamic(() => import('react-pdf').then(mod => ({ default: mod.Page })), {
   ssr: false
 })
-
-const pdfFiles = [
-  { file: '/data.pdf', label: 'Download Blind Tender Report' },
-  { file: '/data.pdf', label: ' Download Full Journey Report ' }
-]
 
 const CurrentActivity = () => {
   const [numPages, setNumPages] = useState<number | null>(null)
@@ -45,6 +48,42 @@ const CurrentActivity = () => {
     paddingX: '22px',
     fontWeight: 500
   }
+
+  const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+
+  const downloadMutation = useMutation({
+    mutationFn: (id: number) => downloadBlindTenderPdf(id),
+    onSuccess: (blob: Blob) => {
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+
+      link.href = url
+      link.download = `tender_${tender_id}.pdf`
+      link.click()
+      window.URL.revokeObjectURL(url)
+    },
+    onError: error => {
+      console.error('Download failed:', error)
+    }
+  })
+
+  // final selection
+  const downloadFinalSelectionMutation = useMutation({
+    mutationFn: (id: number) => downloadFinalSeectionPDf(id),
+    onSuccess: (blob: Blob) => {
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+
+      link.href = url
+      link.download = `tender_${tender_id}.pdf`
+      link.click()
+
+      window.URL.revokeObjectURL(url)
+    },
+    onError: error => {
+      console.error('Download failed:', error)
+    }
+  })
 
   return (
     <>
@@ -99,55 +138,86 @@ const CurrentActivity = () => {
                 </div>
               </div>
             </div>
+
             <section className='w-[50%]'>
               <div className='flex '>
                 <div>
                   <Image src={line} alt='horizontal line' height={166} />
                 </div>
-                <div className=' w-[100%] relative space-y-8 flex items-end justify-between  '>
-                  {pdfFiles.map(({ file, label }, index) => (
-                    <section key={index} className='relative flex flex-col justify-between  items-center w-[100%]'>
-                      <div
-                        className='relative cursor-pointer'
-                        onMouseEnter={() => setHoveredIndex(index)}
-                        onMouseLeave={() => setHoveredIndex(null)}
-                      >
-                        {' '}
-                        {isClient && (
-                          <Document
-                            file={file}
-                            onLoadSuccess={onDocumentLoadSuccess}
-                            onLoadError={error => console.error('Error loading PDF:', error)}
-                          >
-                            <Page pageNumber={1} width={160} height={145} />
+
+                <div className='w-[100%] relative space-y-8 flex items-end justify-between'>
+                  {/* First PDF */}
+                  <section className='relative flex flex-col justify-between items-center w-[100%]'>
+                    <div
+                      className='relative cursor-pointer'
+                      onMouseEnter={() => setHoveredIndex(0)}
+                      onMouseLeave={() => setHoveredIndex(null)}
+                    >
+                      {isClient && (
+                        <Document
+
+                          // file='/data.pdf'
+                          onLoadSuccess={onDocumentLoadSuccess}
+                          onLoadError={error => console.error('Error loading PDF:', error)}
+                        >
+                          <Page pageNumber={1} width={160} height={145} />
+                        </Document>
+                      )}
+                      {hoveredIndex === 0 && isClient && (
+                        <div className='absolute top-0 left-0 z-10 bg-white shadow-lg border border-gray-200'>
+                          <Document onLoadSuccess={onDocumentLoadSuccess}>
+                            <Page pageNumber={1} width={300} height={390} />
                           </Document>
-                        )}
-                        {hoveredIndex === index && isClient && (
-                          <div className='absolute top-0 left-0 z-10 bg-white shadow-lg border border-gray-200'>
-                            <Document
-                              file={file}
-                              onLoadSuccess={onDocumentLoadSuccess}
-                              onLoadError={error => console.error('Error loading PDF:', error)}
-                            >
-                              <Page pageNumber={1} width={300} height={390} />
-                            </Document>
-                          </div>
-                        )}
-                      </div>
-                      <section className='w-[100%]'>
-                        <Typography variant='body1' align='center' className='mt-2 cursor-pointer '>
-                          <a
-                            href={file}
-                            download
-                            className='hover:underline hover:underline-offset-4'
-                            style={{ textDecorationColor: '#35C0ED' }}
-                          >
-                            {label}
-                          </a>
-                        </Typography>
-                      </section>
+                        </div>
+                      )}
+                    </div>
+                    <section className='w-[100%]'>
+                      <Typography
+                        variant='body1'
+                        align='center'
+                        className='mt-2 cursor-pointer text-blue-500 hover:underline hover:underline-offset-4'
+                        onClick={() => downloadMutation.mutate(tender_id)}
+                      >
+                        Download Blind Tender Report
+                      </Typography>
                     </section>
-                  ))}
+                  </section>
+
+                  {/* Second PDF */}
+                  <section className='relative flex flex-col justify-between items-center w-[100%]'>
+                    <div
+                      className='relative cursor-pointer'
+                      onMouseEnter={() => setHoveredIndex(1)}
+                      onMouseLeave={() => setHoveredIndex(null)}
+                    >
+                      {isClient && (
+                        <Document
+                          file='/data.pdf'
+                          onLoadSuccess={onDocumentLoadSuccess}
+                          onLoadError={error => console.error('Error loading PDF:', error)}
+                        >
+                          <Page pageNumber={1} width={160} height={145} />
+                        </Document>
+                      )}
+                      {hoveredIndex === 1 && isClient && (
+                        <div className='absolute top-0 left-0 z-10 bg-white shadow-lg border border-gray-200'>
+                          <Document file='/data.pdf' onLoadSuccess={onDocumentLoadSuccess}>
+                            <Page pageNumber={1} width={300} height={390} />
+                          </Document>
+                        </div>
+                      )}
+                    </div>
+                    <section className='w-[100%]'>
+                      <Typography
+                        variant='body1'
+                        align='center'
+                        className='mt-2 cursor-pointer text-blue-500 hover:underline hover:underline-offset-4'
+                        onClick={() => downloadFinalSelectionMutation.mutate(tender_id)}
+                      >
+                        Download Full Journey Report
+                      </Typography>
+                    </section>
+                  </section>
                 </div>
               </div>
             </section>

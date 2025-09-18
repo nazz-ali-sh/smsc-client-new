@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux'
 import {
   reSchedualRejectInvite,
   rmcSiteVisitCancel,
-  rmcSiteVisitRejected
+  rmcVideoCallsCancel
 } from '@/services/site_visit_apis/site_visit_api'
 import type { RootState } from '@/redux-store'
 
@@ -26,10 +26,10 @@ type DeleteModalProps = {
   SideVisitsSchedualInviteId?: any
   VideoCallInviteId?: any
   setConfirmOpen?: any
-  calanderSiteVisitReject?: any
+  calanderCancelData?: any
 }
 
-const DeleteModal = ({
+const CancelVideoCallsAndSiteVisist = ({
   open,
   onClose,
   onConfirm,
@@ -39,7 +39,7 @@ const DeleteModal = ({
   SideVisitsSchedualInviteId,
   VideoCallInviteId,
   setConfirmOpen,
-  calanderSiteVisitReject,
+  calanderCancelData
 }: DeleteModalProps) => {
   const [textValue, setTextValue] = useState('')
   const [error, setError] = useState('')
@@ -74,9 +74,16 @@ const DeleteModal = ({
     }
   })
 
-  const sideVisitRejected = useMutation({
-    mutationFn: ({ invite_Id, rmctender_id, message }: { invite_Id: number; rmctender_id: number; message: string }) =>
-      rmcSiteVisitRejected(invite_Id, rmctender_id, message),
+  const videoCallCancel = useMutation({
+    mutationFn: ({
+      VideoCallInviteId,
+      rmctender_id,
+      message
+    }: {
+      VideoCallInviteId: number
+      rmctender_id: number
+      message: string
+    }) => rmcVideoCallsCancel(VideoCallInviteId, rmctender_id, message),
     onSuccess: (data: any) => {
       toast.success(data?.message || 'Invite rejected successfully!')
       if (onConfirm) onConfirm()
@@ -130,17 +137,27 @@ const DeleteModal = ({
       return
     }
 
-    if (types === 'SiteVisits' || types === 'reject' || types == 'siteVisitRejectCalander') {
-      const invite_Id = SideVisitsSchedualInviteId || calanderSiteVisitReject?.invite_Id
-
-      sideVisitRejected.mutate({
-        invite_Id,
+    if (types === 'SiteVisits' || types === 'reject') {
+      sideVisitCancel.mutate({
+        SideVisitsSchedualInviteId,
         rmctender_id,
         message: textValue
       })
-    } else if (types === 'cancel') {
+    } else if (types === 'fromSiteVisitCalander') {
       sideVisitCancel.mutate({
-        SideVisitsSchedualInviteId,
+        SideVisitsSchedualInviteId: calanderCancelData?.invite_Id,
+        rmctender_id,
+        message: textValue
+      })
+    } else if (types === 'VideoCallcancel') {
+      videoCallCancel.mutate({
+        VideoCallInviteId,
+        rmctender_id,
+        message: textValue
+      })
+    } else if (types?.trim().toLowerCase() === 'fromvideocalander') {
+      videoCallCancel.mutate({
+        VideoCallInviteId: calanderCancelData?.invite_Id,
         rmctender_id,
         message: textValue
       })
@@ -159,6 +176,7 @@ const DeleteModal = ({
       <DialogContent>
         <DialogContentText sx={{ mb: 2 }}>{description}</DialogContentText>
 
+        {/* TextArea */}
         <TextField
           multiline
           rows={4}
@@ -187,4 +205,4 @@ const DeleteModal = ({
   )
 }
 
-export default DeleteModal
+export default CancelVideoCallsAndSiteVisist

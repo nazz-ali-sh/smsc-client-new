@@ -525,6 +525,7 @@ const TenderForm = () => {
               message='Are you sure you want to submit your tender activation?'
               title='Confirm Submission'
               buttonText={isSubmitting ? 'Submitting...' : 'OK'}
+              cancelButton={''}
             />
           </form>
         )
@@ -573,6 +574,7 @@ const TenderForm = () => {
         buttonText='Cancel'
         confirmButtonText={isSubmitting ? 'Submitting...' : 'OK'}
         loading={isSubmitting}
+        cancelButton={''}
       />
     </StepperWrapper>
   )

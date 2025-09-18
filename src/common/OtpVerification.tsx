@@ -214,6 +214,7 @@ const OtpVerification = () => {
           message='Your identity has been verified. Your portal account is now active. You can now log in to complete your profile and begin receiving tenders.'
           title='Verification Successful'
           confirmButtonText='Ok'
+          cancelButton={''}
         />
       </Box>
     </div>

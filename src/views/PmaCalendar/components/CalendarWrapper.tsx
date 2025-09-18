@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import type { CalendarColors, CalendarType } from '@/types/apps/calendarTypes'
 import Calendar from './Calendar'
 import SidebarLeft from './SidebarLeft'
-import AddEventSidebar from './AddEventSidebar'
 
 const calendarsColor: CalendarColors = {
   Personal: 'primary',
@@ -57,13 +56,6 @@ const CalendarWrapper = () => {
           handleAddEventSidebarToggle={handleAddEventSidebarToggle}
         />
       </div>
-      <AddEventSidebar
-        dispatch={dispatch}
-        calendarApi={calendarApi}
-        calendarStore={calendarStore}
-        addEventSidebarOpen={addEventSidebarOpen}
-        handleAddEventSidebarToggle={handleAddEventSidebarToggle}
-      />
     </>
   )
 }

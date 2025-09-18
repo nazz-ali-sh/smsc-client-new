@@ -35,10 +35,15 @@ import { toast } from 'react-toastify'
 import { useSelector } from 'react-redux'
 
 import ConfirmationModal from './ConfirmationModal'
-import { sideVisitCalendarSlots, SideVisitInvite } from '@/services/tender_result-apis/tender-result-api'
+import {
+  AllShortlistedPmas,
+  sideVisitCalendarSlots,
+  SideVisitInvite
+} from '@/services/tender_result-apis/tender-result-api'
 import { rmcReSchedualAgain, rmcSideVisitInvites } from '@/services/site_visit_apis/site_visit_api'
 import type { RootState } from '@/redux-store'
 import SuccessModal from './SucessModal'
+import type { ShortlistedPmaResponse } from './type'
 
 interface Guest {
   id: string
@@ -49,16 +54,21 @@ interface Guest {
 interface OnlineCallsModalProps {
   open: boolean
   onClose: () => void
-  shorlistedPmas: any
+  shorlistedPmas?: any
   types: any | null
   Reschedual?: any
   siteVisitDate?: any
   SideVisitsSchedualInviteId?: any
   VideoCallInviteId?: any
   completedShorlistedPmas?: any
+  setSiteVisitsModalOpen?: any
+  defaultmultiselect?: any
+  item?: any
+  calanderReschedualData?: any
 }
 
 interface Slot {
+  [x: string]: any
   id: number | string
   slot_name: string
   start_time: string
@@ -79,15 +89,20 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
   types,
   SideVisitsSchedualInviteId,
   VideoCallInviteId,
-  completedShorlistedPmas
+  completedShorlistedPmas,
+  setSiteVisitsModalOpen,
+  defaultmultiselect,
+  calanderReschedualData
 }) => {
   const theme = useTheme()
   const [dayId, setDayId] = useState('')
   const [finalSelectedSlots, setFinalSelectedSlots] = useState<Slot[]>([])
   const [inviteData, setInviteData] = useState<[]>([])
   const [SuccessOpen, setSuccessOpen] = useState(false)
-  const [value, setValue] = useState<Dayjs | null>(dayjs())
+  const [value, setValues] = useState<Dayjs | null>(dayjs())
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)
+  const [allPmaids, setAllPmaIds] = useState<[]>([])
+  const [showSlotError, setShowSlotError] = useState(false) // New state to track slot selection error
 
   const [userSelectedSlots, setUserSelectedSlots] = useState<{ selectedIds: string; slotName: string | null }>({
     selectedIds: '',
@@ -100,6 +115,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     control,
     reset,
     handleSubmit,
+    setValue,
     formState: { errors }
   } = useForm({
     resolver: valibotResolver(videoCallSchema),
@@ -109,6 +125,12 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       pmaGuest: [],
       additionalNotes: ''
     }
+  })
+
+  const { data: allshortlsitedPmaData } = useQuery<ShortlistedPmaResponse, Error>({
+    queryKey: ['shortlisted', tender_id],
+    queryFn: () => AllShortlistedPmas(tender_id),
+    enabled: types === 'fromDashboard' || types == 'fromCalender' || types == 'sitevVisitFromCalender'
   })
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -129,27 +151,23 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       return
     }
 
-    setValue(d)
+    setValues(d)
+    setShowSlotError(false) // Reset error when date changes
   }
 
   const shouldDisableDate = (date: Date | Dayjs) => {
     const d = dayjs(date)
-
     const isWeekend = d.day() === 0 || d.day() === 6
     const isPastDate = d.isBefore(dayjs(), 'day')
 
     return isWeekend || isPastDate
   }
 
-  const defaultSelection =
-    shorlistedPmas?.length > 0
-      ? [{ id: shorlistedPmas[0].pma_user.id, pma_number: shorlistedPmas[0].pma_user.pma_number }]
-      : []
-
   const handleSlotSelection = (selectedId: string) => {
     const found = finalSelectedSlots.find(s => String(s.id) === String(selectedId)) ?? null
 
     setUserSelectedSlots({ selectedIds: String(selectedId), slotName: found?.slot_name || '' })
+    setShowSlotError(false) // Reset error when a slot is selected
   }
 
   interface SlotsApiResponse {
@@ -204,18 +222,26 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       toast.success(data?.message || 'Invite sent successfully!')
       reset()
       setSuccessOpen(true)
+      setSiteVisitsModalOpen(false)
     },
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || error?.message || 'Failed to send invite'
 
+      setSiteVisitsModalOpen(false)
       toast.error(errorMessage)
       console.error('Failed to send invite:', error)
     }
   })
 
   const handleAgainReschedual = (formData: any) => {
+    if (!formData.availableSlots) {
+      setShowSlotError(true)
+
+      return
+    }
+
     rechedualRmcAgain.mutate({
-      invite_id: VideoCallInviteId,
+      invite_id: VideoCallInviteId || SideVisitsSchedualInviteId,
       rmctender_id: tender_id,
       date: value!.format('YYYY-MM-DD'),
       day_id: Number(dayId),
@@ -224,6 +250,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     })
   }
 
+  //  site visit
   const sideVisitrechedualRmcAgain = useMutation({
     mutationFn: ({
       invite_id,
@@ -245,18 +272,35 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       toast.success(data?.message || 'Invite sent successfully!')
       reset()
       setSuccessOpen(true)
+      setSiteVisitsModalOpen(false)
     },
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || error?.message || 'Failed to send invite'
 
+      setSiteVisitsModalOpen(false)
       toast.error(errorMessage)
       console.error('Failed to send invite:', error)
     }
   })
 
   const handleSiteVisitReschedual = (formData: any) => {
+    if (!formData.availableSlots) {
+      setShowSlotError(true)
+
+      return
+    }
+
+    const invite_id = SideVisitsSchedualInviteId || calanderReschedualData?.invite_Id
+
+    if (!invite_id) {
+      console.error('Invite ID is required')
+      setShowSlotError(true)
+
+      return
+    }
+
     sideVisitrechedualRmcAgain.mutate({
-      invite_id: SideVisitsSchedualInviteId,
+      invite_id,
       rmctender_id: tender_id,
       date: value!.format('YYYY-MM-DD'),
       day_id: Number(dayId),
@@ -290,16 +334,30 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       toast.success(data?.message || 'Invite sent successfully!')
       reset()
       setConfirmationModalOpen(true)
+      setSiteVisitsModalOpen(false)
     },
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || error?.message || 'Failed to send invite'
 
+      setSiteVisitsModalOpen(false)
       toast.error(errorMessage)
       console.error('Failed to send invite:', error)
     }
   })
 
+  useEffect(() => {
+    const pmaIds = shorlistedPmas?.map((item: { pma_user: { id: any } }) => item.pma_user.id)
+
+    setAllPmaIds(pmaIds)
+  }, [shorlistedPmas])
+
   const handleSendVideoCall = (formData: any) => {
+    if (!formData.availableSlots) {
+      setShowSlotError(true)
+
+      return
+    }
+
     videoCallInviteMutation.mutate({
       value: value!.format('YYYY-MM-DD'),
       day_id: Number(dayId),
@@ -311,9 +369,27 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     })
   }
 
+  const handleSendVideoCalls = (formData: any) => {
+    if (!formData.availableSlots) {
+      setShowSlotError(true)
+
+      return
+    }
+
+    videoCallInviteMutation.mutate({
+      value: value!.format('YYYY-MM-DD'),
+      day_id: Number(dayId),
+      slot_ids: Number(formData.availableSlots),
+      pma_user_ids: allPmaids,
+      message: formData.additionalNotes,
+      rmctender_id: tender_id,
+      location
+    })
+  }
+
   const type = 'siteVisit'
 
-  const normalizedOptions = [
+  const normalizedOptionsRaw = [
     ...(shorlistedPmas || []).map((item: any) => ({
       id: item.pma_user.id,
       pma_number: item.pma_user.pma_number
@@ -321,8 +397,28 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     ...(completedShorlistedPmas || []).map((item: any) => ({
       id: item.pma_user_ids,
       pma_number: item.pmaId
-    }))
+    })),
+    ...(allshortlsitedPmaData?.data?.shortlisted_pma_users || []).map((pma: any) => ({
+      id: pma.id,
+      pma_number: pma.pma_number
+    })),
+    ...(defaultmultiselect ? [defaultmultiselect] : [])
   ]
+
+  const normalizedOptions = Array.from(new Map(normalizedOptionsRaw.map(item => [String(item.id), item])).values())
+
+  useEffect(() => {
+    if (calanderReschedualData) {
+      const normalizedSelection = {
+        id: calanderReschedualData.pma_user_id,
+        pma_number: calanderReschedualData.pma_username
+      }
+
+      setValue('pmaGuest', [normalizedSelection], { shouldValidate: true })
+    } else if (defaultmultiselect) {
+      setValue('pmaGuest', [defaultmultiselect], { shouldValidate: true })
+    }
+  }, [calanderReschedualData, defaultmultiselect, setValue])
 
   return (
     <Dialog
@@ -350,10 +446,10 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
               }}
             >
               {types == 'Reschedual'
-                ? 'Reschedule Video Call Invites'
+                ? 'Reschedule Site Visit Invites'
                 : types == 'SiteVisits'
                   ? 'Reschedule Site Visit'
-                  : '  Video Call Invites'}
+                  : '  Reschedule Site Visit'}
             </Typography>
             <Typography variant='body2' sx={{ paddingY: '12px' }}>
               Use this section to invite PMAs to meeting
@@ -401,8 +497,18 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                       handleSlotSelection(value)
                     }}
                   >
+                    {showSlotError && (
+                      <MenuItem value='' disabled sx={{ color: 'error.main' }}>
+                        Please select a slot
+                      </MenuItem>
+                    )}
                     {finalSelectedSlots.map((item, index) => (
-                      <MenuItem key={index} value={String(item.id)}>
+                      <MenuItem
+                        key={index}
+                        value={String(item.id)}
+                        disabled={item?.booked}
+                        className={`${item?.booked ? 'bg-gray-400' : ''} my-2 `}
+                      >
                         {item.slot_name}
                       </MenuItem>
                     ))}
@@ -412,6 +518,11 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                       {errors.availableSlots.message as string}
                     </Typography>
                   )}
+                  {
+                    <MenuItem value='' disabled className='text-red-500'>
+                      {showSlotError || errors.availableSlots ? 'Select the slot' : ''}
+                    </MenuItem>
+                  }
                 </FormControl>
               )}
             />
@@ -427,7 +538,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
             </Typography>
 
             <Grid container spacing={2} alignItems='center' sx={{ mb: 2 }}>
-              {/* Chip */}
               <Grid item xs={12} sm={6} sx={{ overflowY: 'auto', width: '100%' }}>
                 <Chip
                   label={
@@ -470,7 +580,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                 />
               </Grid>
 
-              {/* Button */}
               <Grid item>
                 <Button
                   variant='contained'
@@ -480,7 +589,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                     '&:hover': { backgroundColor: 'customColors.ligthBlue' }
                   }}
                 >
-                  Update Slots Slots
+                  Update Slots
                 </Button>
               </Grid>
             </Grid>
@@ -500,7 +609,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
               <Controller
                 name='pmaGuest'
                 control={control}
-                defaultValue={defaultSelection}
+                defaultValue={[]}
                 render={({ field }) => (
                   <Autocomplete
                     multiple
@@ -511,9 +620,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                       (field.value || []).some((guest: any) => String(guest.id) === String(option.id))
                     }
                     value={field.value || []}
-                    onChange={(_, newValue) => {
-                      field.onChange(newValue) // already normalized
-                    }}
+                    onChange={(_, newValue) => field.onChange(newValue)}
                     renderInput={params => <TextField {...params} placeholder='Select guests...' variant='outlined' />}
                     renderTags={(value: any[], getTagProps) =>
                       value.map((option, index) => {
@@ -573,7 +680,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
             </Button>
           </DialogActions>
         </>
-      ) : types == 'SiteVisits' ? (
+      ) : types == 'SiteVisits' || types == 'siteVisistfromCalander' ? (
         <DialogActions sx={{ px: 3, pb: 8, mt: 5 }}>
           <Button
             variant='contained'
@@ -591,7 +698,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
           <DialogActions sx={{ px: 3, pb: 8, mt: 5 }}>
             <Button
               variant='contained'
-              onClick={handleSubmit(handleSendVideoCall)}
+              onClick={handleSubmit(handleSendVideoCalls)}
               sx={{
                 backgroundColor: 'customColors.ligthBlue',
                 '&:hover': { backgroundColor: 'customColors.ligthBlue' }

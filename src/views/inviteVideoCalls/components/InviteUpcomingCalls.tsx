@@ -6,7 +6,9 @@ import { Box } from '@mui/material'
 import { createColumnHelper } from '@tanstack/react-table'
 
 import CommonTable from '@/common/CommonTable'
+import RejectModal from '@/common/RejectModal'
 import SiteVisitsModal from '@/common/SiteVisitsModal'
+import CancelVideoCallsAndSiteVisist from '@/common/CancelVideoCallsAndSiteVisist'
 
 interface RescheduledCallType {
   pmaId: string
@@ -27,6 +29,7 @@ const columnHelper = createColumnHelper<RescheduledCallType>()
 
 const InviteUpcomingCalls: React.FC<pendingInviteData> = ({ pendingInviteData }) => {
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
+  const [confirmOpen, setConfirmOpen] = useState(false)
   const [visitsSchedualInviteId, setVisitsSchedualInviteId] = useState<number | undefined>(undefined)
 
   const tableData: RescheduledCallType[] =
@@ -117,10 +120,20 @@ const InviteUpcomingCalls: React.FC<pendingInviteData> = ({ pendingInviteData })
       header: 'Action',
       cell: ({ row }) => (
         <div className='flex gap-2'>
+          <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#F5DADB] text-[#DE481A] flex justify-center items-center'>
+            <i
+              onClick={() => {
+                setVisitsSchedualInviteId(row.original.invite_id)
+                setConfirmOpen(true)
+              }}
+              className='ri-close-line'
+            />
+          </span>
           <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'>
             <i
               onClick={() => {
                 setVisitsSchedualInviteId(row.original.invite_id)
+                setSiteVisitsModalOpen(true)
               }}
               className='ri-edit-box-line'
             />
@@ -150,6 +163,32 @@ const InviteUpcomingCalls: React.FC<pendingInviteData> = ({ pendingInviteData })
         Reschedual={tableData}
         VideoCallInviteId={visitsSchedualInviteId}
         types='Reschedual'
+      />
+
+      <RejectModal
+        open={confirmOpen}
+        title='Reschedule Request Rejected!'
+        description='You have rejected the reschedule request from [PMA Name]. The meeting will not be updated.Please provide a reason for the rejection in the box below. This explanation will be sent to the managing agent.'
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={() => {}}
+        RejectInviteData={tableData}
+        VideoCallInviteId={visitsSchedualInviteId}
+        types='cancel'
+        sitePendingData={undefined}
+        SideVisitsSchedualInviteId={undefined}
+      />
+
+      <CancelVideoCallsAndSiteVisist
+        open={confirmOpen}
+        title='Reschedule Request Rejected!'
+        description='You have rejected the reschedule request from [PMA Name]. The meeting will not be updated.Please provide a reason for the rejection in the box below. This explanation will be sent to the managing agent.'
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={() => {}}
+        RejectInviteData={tableData}
+        VideoCallInviteId={visitsSchedualInviteId}
+        types='VideoCallcancel'
+        sitePendingData={undefined}
+        SideVisitsSchedualInviteId={undefined}
       />
     </Box>
   )

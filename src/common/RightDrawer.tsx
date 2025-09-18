@@ -31,36 +31,40 @@ interface AnchorTemporaryDrawerProps {
   successModalOpen: boolean
   setSuccessModalOpen: Dispatch<SetStateAction<boolean>>
   handleConfirmSelected: () => void
+  DrawerStats?: any
 }
 
 export default function AnchorTemporaryDrawer({
   open,
   onClose,
   drawerData,
-  setSuccessModalOpen
+  setSuccessModalOpen,
+  DrawerStats
 }: AnchorTemporaryDrawerProps) {
   const anchor: Anchor = 'right'
 
+  console.log()
+
   const cardsData = [
-    ,
     {
       id: 0,
-      state: '27',
+
+      state: DrawerStats?.company_metrics?.total_units_managed | 0,
       icons: <i className='ri-customer-service-2-line'></i>,
-      descrption: 'Schedule Calls'
+      descrption: 'No. of Units Managed'
     },
     {
       id: 1,
       icons: <i className='ri-phone-line'></i>,
-      state: '3',
-      descrption: 'Complete Calls'
+      state: DrawerStats?.company_metrics?.avg_units_per_manager | 0,
+      descrption: 'Quotation'
     },
 
     {
       id: 2,
       icons: <i className='ri-map-pin-2-line'></i>,
-      state: '6',
-      descrption: 'Schedule Visits'
+      state: DrawerStats?.company_metrics?.trading_years | 0,
+      descrption: 'Trading Years'
     }
   ]
 
@@ -69,7 +73,7 @@ export default function AnchorTemporaryDrawer({
   }
 
   const drawerContent = (
-    <Box sx={{ width: 786, p: 8 }} role='presentation' onKeyDown={onClose}>
+    <Box sx={{ width: 793, p: 8 }} role='presentation' onKeyDown={onClose}>
       <section className='flex items-start justify-between mt-[34px]'>
         <div className='flex items-center space-x-[14px]'>
           <Image src={avatar3} alt='avatar' className='size-[94px]' />
@@ -104,10 +108,10 @@ export default function AnchorTemporaryDrawer({
                   {items?.icons}
                 </div>
                 <div className='flex flex-col'>
-                  <Typography className='text-[17px] font-bold leading-28'>{items.state}</Typography>
                   <Typography variant='body1' color='text.primary'>
                     {items?.descrption}
                   </Typography>
+                  <Typography className='text-[17px] font-bold leading-28'>{items.state}</Typography>
                 </div>
               </CardContent>
             </Card>

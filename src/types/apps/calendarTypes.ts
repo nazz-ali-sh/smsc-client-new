@@ -19,11 +19,21 @@ export type CalendarColors = {
   'Online Calls': string
 }
 
-export interface CalendarType {
-  events: EventInput[]
-  filteredEvents: EventInput[]
-  selectedEvent: EventInput | null
-  selectedCalendars: CalendarFiltersType[]
+export type CalendarApiPayload = {
+  tenderId: number
+  status: string
+  selectedYearMonth: string | null
+  selectedFullDate: string | null
+}
+export type CalendarType = {
+  calendars?: any
+  events?: any[] // ✅ API-driven events
+  calendarApiPayload?: CalendarApiPayload
+  calendarStatus?: any
+  selectedEvent? : any
+  selectedCalendars?: any 
+  filteredEvents?: any
+
 }
 
 export interface AddEventType extends EventInput {
@@ -48,12 +58,12 @@ export interface AddEventSidebarType {
 }
 
 export interface SidebarLeftProps {
-  mdAbove: boolean
-  leftSidebarOpen: boolean
-  calendarStore: CalendarType
-  calendarsColor: CalendarColors
-  calendarApi: any
-  dispatch: any
+  mdAbove?: boolean
+  leftSidebarOpen?: boolean
+  calendarStore?: CalendarType
+  calendarsColor?: CalendarColors
+  calendarApi?: any
+  dispatch?: any
   handleLeftSidebarToggle: () => void
   handleAddEventSidebarToggle: () => void
 }

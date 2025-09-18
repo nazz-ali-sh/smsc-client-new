@@ -58,9 +58,6 @@ const CongratulationsSection = () => {
           </Grid>
         </CardContent>
       </Card>
-      <Typography variant='h3' className='text-darkblue pt-[34px] text-[18px]'>
-        RMC Service Charge Budget
-      </Typography>
     </>
   )
 }

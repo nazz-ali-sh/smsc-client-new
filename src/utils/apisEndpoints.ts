@@ -1,3 +1,4 @@
+
 export const apiEndpoints = {
   //---------------------- Login / Signup ------------------------//
 
@@ -45,8 +46,12 @@ export const apiEndpoints = {
 
   finalShortList: (id: number) => `rmc/shortlisted-pmas/${id}`,
 
+  // shortlist
+
   getShortlistedCompantDetails: (user_id: number, type: string) =>
     `rmc/pma-company-detail?pma_id=${user_id}&type=${type}`,
+
+  gettingBlindTenderPdf: (tender_id: number) => `rmc/blind-tenders/report/pdf?tender_id=${tender_id}`,
 
   // getAvailableSlots: `rmc/video-call/available-days-slots`,
   getAvailableSlots: `rmc/availability/days-slots`,
@@ -59,6 +64,8 @@ export const apiEndpoints = {
 
   // video-call/slots-for-date?date=2024-01-15
 
+  //---------------------- Short List  ------------------------------//
+
   gettingSideInvitesSlots: (date: any) => `rmc/site-visit/slots-for-date?date=${date}`,
 
   gettingrmcshortlistStats: (tender_id: number) => `rmc/shortlist-agent/stats?tender_id=${tender_id}`,
@@ -68,6 +75,10 @@ export const apiEndpoints = {
   rmcShortlistContact: `rmc/request-agent/request-contact`,
 
   rmcExtendDays: (tender_id: number) => `rmc/shortlist/${tender_id}/extend`,
+
+  rmcgetExtendExpiryDate: (tender_id: number) => `rmc/shortlist/${tender_id}/expiry`,
+
+  gettingAllShortlistedPma: (tender_id: number) => `rmc/shortlist/${tender_id}`,
 
   //---------------------- Site Visit Apis  ------------------------------//
 
@@ -84,15 +95,38 @@ export const apiEndpoints = {
 
   rmcAcceptRechedual: () => `/rmc/video-call/invites/rescheduled/accept`,
 
+  // rmcVideoCallReschedual: () => `/rmc/video-call/invites/rescheduled/accept`,
+
+  rmcVideoCallCancel: () => `/rmc/video-call/invites/cancel`,
+
   //---------------------- Site Visit  ------------------------------//
 
   rmcsiteVisitSchedualAgain: () => `rmc/site-visit/invites/rescheduled/reschedule`,
 
   rmcSiteVisityRejectInvite: () => `rmc/site-visit/invites/rescheduled/reject`,
 
+  rmcSiteVisitCancelled: () => `rmc/site-visit/invites/cancel`,
+
   rmcSiteVisitAcceptReschedual: () => `rmc/site-visit/invites/rescheduled/accept`,
 
   //---------------------- Final selection   ------------------------------//
 
-  gettingFianlSelectionDetails: (tender_id: number) => `/rmc/final-page-detail?tender_id=${tender_id}`
+  gettingFianlSelectionDetails: (tender_id: number) => `/rmc/final-page-detail?tender_id=${tender_id}`,
+
+  gettingFinalSelectionPdf: (tender_id: number) => `/rmc/final-report/pdf?tender_id=${tender_id}`,
+
+  //---------------------- Archive    ------------------------------//
+
+  gettingAchiveData: (filter: string) => `rmc/tenders/archived?filter=${filter}`,
+
+  gettingArchiveDetails: (tender_id: number, pma_user_id?: number) => {
+    return pma_user_id
+      ? `rmc/tenders/archived/${tender_id}?pma_user_id=${pma_user_id}`
+      : `rmc/tenders/archived/${tender_id}`
+  },
+
+  //---------------------- Calander    ------------------------------//
+
+  gettingCalanderData: (tender_id: number, status: string, type: string, month: string, date: string) =>
+    `rmc/calendar?tender_id=8&view=${status}&type=${type}&month=${month}&date=${date}`
 }

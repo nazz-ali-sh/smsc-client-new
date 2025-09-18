@@ -26,14 +26,13 @@ import { useSelector } from 'react-redux'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
-import menuDots from '../../../public/images/manuDots.svg'
 import pdfFrame from '../../../public/images/customImages/frame.png'
 import type { ApiResponseItem, DataType, TenderResponse } from './type'
 import ChevronRight from '@menu/svg/ChevronRight'
 import styles from '@core/styles/table.module.css'
 import AnchorTemporaryDrawer from '@/common/RightDrawer'
 import type { RootState } from '@/redux-store'
-import { ShortlistedPma, tenderResponce } from '@/services/tender_result-apis/tender-result-api'
+import { downloadBlindTenderPdf, ShortlistedPma, tenderResponce } from '@/services/tender_result-apis/tender-result-api'
 import SuccessModal from '../../common/SucessModal'
 import ShortListAgent from '@/common/ShortListAgent'
 
@@ -61,12 +60,20 @@ const KitchenSink = () => {
   const [globalFilter, setGlobalFilter] = useState('')
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [tableData, setTableData] = useState<DataType[]>([])
-  const [selectedAgentId, setSelectedAgentId] = useState<number[]>([]) // Changed to number[] for consistency
+  const [selectedAgentId, setSelectedAgentId] = useState<number[]>([])
+  const [allselectedpma, SetAllSelectedPma] = useState<number[]>([])
+
+  console.log(allselectedpma)
+
+  console.log(selectedAgentId)
 
   const router = useRouter()
   const [successModalOpen, setSuccessModalOpen] = useState(false)
   const [shortlistedModalOpen, setShortListedSuccessModalOpen] = useState(false)
   const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+  const [selectedResponse, setSelectedResponse] = useState<ApiResponseItem | null>(null)
+
+  console.log(selectedResponse)
 
   const { data: responceData } = useQuery<TenderResponse, Error>({
     queryKey: ['tendeResponce', tender_id],
@@ -75,13 +82,8 @@ const KitchenSink = () => {
   })
 
   const shortlistMutation = useMutation({
-    mutationFn: ({
-      tender_id,
-      pma_user_ids
-    }: {
-      tender_id: number
-      pma_user_ids: number[] // Changed to number[] to ensure array
-    }) => ShortlistedPma(tender_id, pma_user_ids),
+    mutationFn: ({ tender_id, pma_user_ids }: { tender_id: number; pma_user_ids: number[] }) =>
+      ShortlistedPma(tender_id, pma_user_ids),
     onSuccess: () => {
       setShortListedSuccessModalOpen(true)
       table.resetRowSelection()
@@ -95,6 +97,23 @@ const KitchenSink = () => {
     setShortListedSuccessModalOpen(false)
     router.push('/shortlist-agent')
   }
+
+  const downloadMutation = useMutation({
+    mutationFn: (id: number) => downloadBlindTenderPdf(id),
+    onSuccess: data => {
+      const blob = new Blob([data], { type: 'application/pdf' })
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+
+      link.href = url
+      link.download = `tender_${tender_id}.pdf`
+      link.click()
+      window.URL.revokeObjectURL(url)
+    },
+    onError: error => {
+      console.error('Download failed:', error)
+    }
+  })
 
   useEffect(() => {
     if (responceData?.data?.responses) {
@@ -172,7 +191,7 @@ const KitchenSink = () => {
             </div>
           </div>
         ),
-        header: 'Full Name',
+        header: 'PMA NUMBER',
         size: 200
       }),
       columnHelper.accessor('quotation', {
@@ -228,6 +247,16 @@ const KitchenSink = () => {
               onClick={() => {
                 setDrawerOpen(true)
                 setSelectedAgentId([row.original.pma_id])
+                SetAllSelectedPma([row.original.pma_id])
+
+                // ✅ set the full response object for drawer
+                const responseObj = responceData?.data?.responses.find(
+                  (item: { pma_user_id: number }) => item.pma_user_id === row.original.pma_id
+                )
+
+                console.log(responseObj)
+
+                setSelectedResponse(responseObj || null)
               }}
             >
               {row.original.Questionaire}
@@ -238,17 +267,6 @@ const KitchenSink = () => {
         enableSorting: false,
         enableColumnFilter: false,
         size: 150
-      }),
-      columnHelper.accessor('Actions', {
-        cell: () => (
-          <div>
-            <Image src={menuDots} alt='Action menu' width={24} height={24} />
-          </div>
-        ),
-        header: 'Actions',
-        enableSorting: false,
-        enableColumnFilter: false,
-        size: 50
       })
     ],
     []
@@ -277,7 +295,6 @@ const KitchenSink = () => {
     enableRowSelection: true
   })
 
-  // Handle Confirm Selected button click
   const handleConfirmSelected = () => {
     const selectedRows = table.getSelectedRowModel().rows
     const pma_user_ids = selectedRows.map(row => row.original.pma_id)
@@ -307,6 +324,8 @@ const KitchenSink = () => {
   const openModal = () => {
     const selectedRows = table.getSelectedRowModel().rows
     const allSelectedIds = [...new Set([...selectedRows.map(row => row.original.pma_id), ...selectedAgentId])]
+
+    SetAllSelectedPma(allSelectedIds)
 
     if (allSelectedIds.length === 0) {
       toast.warning('Please select at least one agent to shortlist')
@@ -345,9 +364,16 @@ const KitchenSink = () => {
             </Button>
           </div>
           <div>
-            <Button variant='contained' className='!bg-[#35C0ED] w-[280px]'>
+            <Button
+              variant='contained'
+              className='!bg-[#35C0ED] w-[280px]'
+              onClick={() => downloadMutation.mutate(tender_id)}
+              disabled={downloadMutation.isPending}
+            >
               <i className='ri-download-2-fill bg-white size-[18px] pr-[5px]'></i>
-              <span className='pl-[5px]'>Download Tender Response</span>
+              <span className='pl-[5px]'>
+                {downloadMutation.isPending ? 'Downloading...' : 'Download Tender Response'}
+              </span>
             </Button>
           </div>
         </section>
@@ -435,6 +461,7 @@ const KitchenSink = () => {
         successModalOpen={successModalOpen}
         setSuccessModalOpen={setSuccessModalOpen}
         handleConfirmSelected={handleConfirmSelected}
+        DrawerStats={selectedResponse}
       />
       <TablePagination
         rowsPerPageOptions={[7, 10, 25, { label: 'All', value: tableData.length }]}
@@ -453,6 +480,7 @@ const KitchenSink = () => {
           Shorlisted
         </Button>
       </section>
+
       <SuccessModal
         open={successModalOpen}
         onClose={() => setSuccessModalOpen(false)}
@@ -464,8 +492,9 @@ const KitchenSink = () => {
           setSuccessModalOpen(false)
           handleConfirmSelected()
         }}
+        cancelButton={''}
       />
-      <ShortListAgent open={shortlistedModalOpen} onClose={handleCloseAndNavigate} pmaSelectedID={0} />
+      <ShortListAgent open={shortlistedModalOpen} onClose={handleCloseAndNavigate} pmaSelectedID={allselectedpma} />
     </Card>
   )
 }

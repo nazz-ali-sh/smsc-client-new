@@ -8,7 +8,7 @@ import pmaRegistrationReducer from '@/redux-store/slices/pmaRegistrationSlice'
 import pmaOnboardingFormReducer from '@/redux-store/slices/pmaOnboardingFormSlice'
 import branchReducer from '@/redux-store/slices/branchSlice'
 import userReducer from '@/redux-store/slices/userSlice'
-import calendarReducer from '@/redux-store/slices/calendar'
+import calendarReducer from '@/redux-store/slices/rmcCalendar'
 import rmcCalendarReducer from '@/redux-store/slices/rmcCalendar'
 import siteVisitAndCallStatsReducer from '@/redux-store/slices/sideVisitAndCallStatsSlice'
 

@@ -91,15 +91,15 @@ export default function Pages() {
   ]
 
   return (
-    <div>
+    <>
       <section className='flex w-full'>
-        <WeeklyReport text='Welcome' dashboardResponce={[]} />
+        <WeeklyReport text='Welcome' />
       </section>
       <div className='my-[50px]'>
         <HorizontalLinearStepper />
       </div>
 
-      <section className='shadow-xl p-5 rounded-xl '>
+      <section className='shadow-xl p-5 rounded-xl bg-white'>
         <Typography variant='h5' className='pl-6 font-bold  text-buttonPrimary'>
           SMSC Recommended Steps for Shortlisted Agents
           <Button
@@ -181,6 +181,6 @@ export default function Pages() {
           'Data Not Found'
         )}
       </section>
-    </div>
+    </>
   )
 }

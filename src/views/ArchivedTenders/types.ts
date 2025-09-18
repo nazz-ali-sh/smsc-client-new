@@ -1,18 +1,3 @@
-export interface ArchivedTenderType {
-  id: string
-  tenderName: string
-  tenderId: string
-  status: 'Appointed' | 'Expired' | 'Shortlisted' | 'Won' | 'Not Shortlisted'
-  totalResponses: number
-  shortlisted: number
-  meetingHeld: {
-    videoCalls: number
-    siteVisits: number
-  }
-  submittedDate: string
-  closedDate: string
-}
-
 export interface SummaryStats {
   totalArchived: number
   expired: number
@@ -20,3 +5,54 @@ export interface SummaryStats {
   won: number
   notShortlisted: number
 }
+
+export interface TenderApi {
+  tender_name: string
+  tender_number: string
+  status: string
+  total_responses: number
+  total_shortlisted: number
+  meeting_held_count: number
+  site_visit_count: number
+  submitted_date: string | null
+  closed_date: string | null
+}
+
+export interface ArchivedTenderType {
+  id: string
+  tenders?: any
+  status?: any
+  tenderId?: string
+  tenderName?: string
+  totalResponses: number
+  shortlisted: number
+  meetingHeld: {
+    videoCalls: number
+    siteVisits: number
+  }
+  submittedDate: string | null
+  closedDate: string | null
+}
+
+export interface ArchiveDataResponse {
+  data?: {
+    tenders?: TenderApi[]
+  }
+}
+
+// export interface ArchivedTenderType {
+//   id: string
+//   tenderName: string
+//   tenderId: string
+//   status: any
+//   totalResponses: number
+//   shortlisted: number
+//   meetingHeld: {
+//     videoCalls: number
+//     siteVisits: number
+//   }
+//   submittedDate: any
+//   closedDate: any
+//   tenders: any
+//   tender: any
+// }

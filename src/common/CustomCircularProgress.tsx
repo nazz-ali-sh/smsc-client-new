@@ -3,7 +3,7 @@
 import { Box, Typography } from '@mui/material'
 
 export interface CustomCircularProgressProps {
-  progress?: number
+  progress?: any
   size?: number
   strokeWidth?: number
   backgroundColor?: string
@@ -12,7 +12,7 @@ export interface CustomCircularProgressProps {
 }
 
 const CustomCircularProgress = ({
-  progress = 10,
+  progress,
   size = 100,
   strokeWidth = 20,
   backgroundColor = '#C7F3A9',

@@ -8,9 +8,20 @@ interface SummaryCardProps {
   iconClass: string
   color: string
   bgColor: string
+  tenderStatusdetails?: any
 }
 
-const SummaryCard: React.FC<SummaryCardProps> = ({ title, count, iconClass, color, bgColor }) => (
+interface SummaryStatus {
+  tenderStatusdetails?: any
+}
+
+const SummaryCardsDetails: React.FC<SummaryCardProps> = ({
+  title,
+  count,
+  iconClass,
+  color,
+  bgColor,
+}) => (
   <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
     <Box
       sx={{
@@ -37,7 +48,8 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ title, count, iconClass, colo
   </div>
 )
 
-const SummaryCards = () => {
+const SummaryCards: React.FC<SummaryStatus> = ({ tenderStatusdetails }) => {
+
   return (
     <Card sx={{ p: 2 }}>
       <div className='mb-3 px-[25px]'>
@@ -56,34 +68,34 @@ const SummaryCards = () => {
       <CardContent>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6} md={2.4}>
-            <SummaryCard
+            <SummaryCardsDetails
               title='Total Archived'
-              count='54 Tenders'
+              count={`${tenderStatusdetails?.data?.totals?.total_archived | 0} Tenders`}
               iconClass='ri-macbook-line'
               color='customColors.purple2'
               bgColor='customColors.purple1'
             />
           </Grid>
           <Grid item xs={12} sm={6} md={2.4}>
-            <SummaryCard
+            <SummaryCardsDetails
               title='Expired'
-              count='4 Tenders'
+              count={`${tenderStatusdetails?.data?.totals?.total_expired | 0} Tenders`}
               iconClass='ri-lightbulb-flash-line'
               color='customColors.red3'
               bgColor='customColors.red4'
             />
           </Grid>
           <Grid item xs={12} sm={6} md={2.4}>
-            <SummaryCard
+            <SummaryCardsDetails
               title='Shortlisted'
-              count='3 Tenders'
+              count={`${tenderStatusdetails?.data?.totals?.total_shortlisted | 0} Tenders`}
               iconClass='ri-list-check'
               color='customColors.cyan2'
               bgColor='customColors.cyan1'
             />
           </Grid>
           <Grid item xs={12} sm={6} md={2.4}>
-            <SummaryCard
+            <SummaryCardsDetails
               title='Won'
               count='3 Tenders'
               iconClass='ri-medal-line'
@@ -92,7 +104,7 @@ const SummaryCards = () => {
             />
           </Grid>
           <Grid item xs={12} sm={6} md={2.4}>
-            <SummaryCard
+            <SummaryCardsDetails
               title='Not Shortlisted'
               count='3 Tenders'
               iconClass='ri-close-circle-line'

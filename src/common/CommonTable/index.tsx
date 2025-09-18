@@ -50,11 +50,12 @@ function CommonTable<T>({
     data,
     columns,
     state: { pagination, sorting },
-    onPaginationChange: updater => {
-      const newPagination = typeof updater === 'function' ? updater(pagination) : updater
 
-      setPagination(newPagination)
-    },
+    // onPaginationChange: updater => {
+    //   const newPagination = typeof updater === 'function' ? updater(pagination) : updater
+
+    //   setPagination(newPagination)
+    // },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

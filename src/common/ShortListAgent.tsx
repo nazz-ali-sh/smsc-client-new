@@ -22,7 +22,7 @@ type ShortListAgentProps = {
   confirmText?: string
   cancelText?: string
   confirmColor?: 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success'
-  pmaSelectedID: number
+  pmaSelectedID?: any
 }
 
 const ShortListAgent = ({ open, onClose, onConfirm, confirmColor = 'primary', pmaSelectedID }: ShortListAgentProps) => {

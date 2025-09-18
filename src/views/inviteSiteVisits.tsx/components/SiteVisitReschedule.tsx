@@ -74,11 +74,12 @@ const SiteVisitReschedule = ({ siteRechedual }: any) => {
       rmcSideVisitAccept(invite_id, rmctender_id),
     onSuccess: (data: any) => {
       toast.success(data?.message || 'Invite sent successfully!')
-      setSuccessOpen(true)
+      setSuccessOpen(false)
     },
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || error?.message || 'Failed to send invite'
 
+      setSuccessOpen(false)
       toast.error(errorMessage)
       console.error('Failed to send invite:', error)
     }
@@ -202,6 +203,7 @@ const SiteVisitReschedule = ({ siteRechedual }: any) => {
 
       <RejectModal
         open={confirmOpen}
+        setConfirmOpen={setConfirmOpen}
         title='Reschedule Request Rejected!'
         description='You have rejected the reschedule request from [PMA Name]. The meeting will not be updated.Please provide a reason for the rejection in the box below. This explanation will be sent to the managing agent.'
         onClose={() => setConfirmOpen(false)}
@@ -213,6 +215,7 @@ const SiteVisitReschedule = ({ siteRechedual }: any) => {
       />
 
       <SiteVisitsModal
+        setSiteVisitsModalOpen={setSiteVisitsModalOpen}
         open={siteVisitsModalOpen}
         onClose={() => setSiteVisitsModalOpen(false)}
         shorlistedPmas={undefined}

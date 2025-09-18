@@ -31,8 +31,8 @@ import type { RootState } from '@/redux-store'
 interface SiteVisitsModalProps {
   open: boolean
   onClose: () => void
-  finalShortListedResponce: any | null
-  pmaSelectedID: number | null
+  finalShortListedResponce?: any | null
+  pmaSelectedID?: number | null
   InviteCompletedCalls: any
 }
 
@@ -122,11 +122,9 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
   const handleSendInvites = () => {
     const appointmentMessage = 'Congratulations on your appointment as the managing agent!'
 
-    // Get shortlisted_pmas safely
     const shortlistedPmas =
       finalShortListedResponce?.data?.shortlisted_pmas || pmaShortlistedData?.data?.shortlisted_pmas || []
 
-    // Build feedback for all PMAs except the selected one
     const otherPmaFeedbacks = shortlistedPmas
       .filter((pma: any) => pma?.pma_user?.id !== (pmaSelectedID || reschedual_pma_user_id))
       .map((pma: any) => ({

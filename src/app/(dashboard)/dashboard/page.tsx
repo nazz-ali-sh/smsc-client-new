@@ -43,28 +43,21 @@ interface DashboardResponse {
 }
 
 export default function Page() {
-  const rmcTenderId = useSelector((state: RootState) => state?.users?.tenderId)
+  const rmcTenderId = useSelector((state: RootState) => state?.tenderForm?.tender_id)
 
-  const { data: dashboardResponce, error } = useQuery<DashboardResponse, Error>({
+  const { data: dashboardResponce } = useQuery<DashboardResponse, Error>({
     queryKey: ['dashboardDatas', rmcTenderId],
     queryFn: () => dashboardData(Number(rmcTenderId)),
-    enabled: !!rmcTenderId,
-    retry: false,
-    refetchOnWindowFocus: false
+    enabled: !!rmcTenderId
   })
-
-  // Handle loading and error states
-  if (error) {
-    console.error('Dashboard data error:', error)
-  }
 
   return (
     <>
       <section className='flex w-full'>
-        <WeeklyReport text={'Welcome Back'} dashboardResponce={dashboardResponce} />
+        <WeeklyReport text={'Welcome Back'} />
       </section>
       <div className='mt-3'>
-        <TenderCards />
+        <TenderCards dashboardResponce={dashboardResponce} />
       </div>
 
       <div className='mt-[36px]'>

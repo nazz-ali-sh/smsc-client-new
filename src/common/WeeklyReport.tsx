@@ -1,5 +1,7 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+
 import Image from 'next/image'
 
 import Divider from '@mui/material/Divider'
@@ -8,27 +10,55 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import { Box } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
+import { useQuery } from '@tanstack/react-query'
+
 import CustomAvatar from '@core/components/mui/Avatar'
 import CustomCircularProgress from './CustomCircularProgress'
 
 import tendersend from '../../public/images/dashboardImages/tenderSend.svg'
 import tenderResponce from '../../public/images/dashboardImages/tenderResponce.svg'
 import tenderExpire from '../../public/images/dashboardImages/tenderExpire.svg'
+import { dashboardData } from '@/services/dashboard-apis/dashboard-api'
 
-const WeeklyReport = ({
-  text,
-  dashboardResponce,
-  progress = 10
-}: {
-  text?: string
+interface DashboardResponse {
   dashboardResponce?: any
-  progress?: number
-}) => {
-  console.log(dashboardResponce)
+  data?: any
+}
+
+const WeeklyReport = ({ text }: { text?: string }) => {
   const theme = useTheme()
   const belowMdScreen = useMediaQuery(theme.breakpoints.down('md'))
+  const [percentagevalue, setpercentagevalue] = useState(0)
+
+  const rmcTenderId = 8
+
+  const { data: dashboardResponce, error } = useQuery<DashboardResponse, Error>({
+    queryKey: ['dashboardDatas', rmcTenderId],
+    queryFn: () => dashboardData(Number(rmcTenderId)),
+    enabled: !!rmcTenderId
+  })
+
+  if (error) {
+    console.error('Dashboard data error:', error)
+  }
 
   const tenderExpireDaat = dashboardResponce?.data?.tender_end_date?.date
+
+  useEffect(() => {
+    const stages = dashboardResponce?.data?.tender_stage_progress?.stages
+
+    if (stages) {
+      const stageValues = Object.values(stages)
+      const totalStages = 6
+
+      const completedStages = stageValues.slice(0, totalStages).filter((stage: any) => stage?.is_completed).length
+
+      const step = 100 / totalStages
+      const progressPercentage = +(completedStages * step).toFixed(2)
+
+      setpercentagevalue(progressPercentage)
+    }
+  }, [dashboardResponce])
 
   return (
     <div className='flex max-md:flex-col md:items-center gap-6 plb-5 w-full'>
@@ -111,12 +141,12 @@ const WeeklyReport = ({
               variant='body1'
               sx={{ fontSize: '15px', fontWeight: 400, paddingTop: '6px', color: 'customColors.gray7' }}
             >
-              Went Live on 17/5/2025
+              {dashboardResponce?.data?.tender_stage_progress?.current_stage?.stage} on 17/5/2025
             </Typography>
           </div>
         </div>
         <div className='flex justify-center items-center mr-5'>
-          <CustomCircularProgress progress={progress} size={100} strokeWidth={12} />
+          <CustomCircularProgress progress={percentagevalue} size={100} strokeWidth={12} />
         </div>
       </div>
     </div>

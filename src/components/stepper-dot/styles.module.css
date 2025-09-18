@@ -16,3 +16,7 @@
 .completedStepperCustomDot {
   background-color: #35c0ed;
 }
+
+.fc .fc-timegrid-event {
+  min-height: 50px !important;
+}

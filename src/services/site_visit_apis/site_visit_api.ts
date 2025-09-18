@@ -87,6 +87,7 @@ export const rmcSideVisitInvites = async (
   }
 }
 
+//  vidoe call Reject
 export const reSchedualRejectInvite = async (invite_id: number, tender_id: number, message: string) => {
   try {
     const url = apiEndpoints.rmcRejectInvite()
@@ -106,10 +107,49 @@ export const reSchedualRejectInvite = async (invite_id: number, tender_id: numbe
   }
 }
 
-//  site visit rejected
+//  videoCancel
+export const rmcVideoCallsCancel = async (invite_id: number, tender_id: number, message: string) => {
+  try {
+    const url = apiEndpoints.rmcVideoCallCancel()
+
+    const payload = {
+      invite_id,
+      tender_id,
+      message
+    }
+
+    const response = await axiosClient.post(url, payload)
+
+    return response.data
+  } catch (error) {
+    console.error('RTM setup API error:', error)
+    throw error
+  }
+}
+
 export const rmcSiteVisitRejected = async (invite_id: number, tender_id: number, message: string) => {
   try {
     const url = apiEndpoints.rmcSiteVisityRejectInvite()
+
+    const payload = {
+      invite_id,
+      tender_id,
+      message
+    }
+
+    const response = await axiosClient.post(url, payload)
+
+    return response.data
+  } catch (error) {
+    console.error('RTM setup API error:', error)
+    throw error
+  }
+}
+
+//  cancel
+export const rmcSiteVisitCancel = async (invite_id: number, tender_id: number, message: string) => {
+  try {
+    const url = apiEndpoints.rmcSiteVisitCancelled()
 
     const payload = {
       invite_id,

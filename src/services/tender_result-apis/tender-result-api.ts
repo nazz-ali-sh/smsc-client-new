@@ -50,6 +50,24 @@ export const finalShortListedAgent = async (tender_id: number) => {
   }
 }
 
+export const downloadBlindTenderPdf = async (tender_id: number) => {
+  try {
+    const url = apiEndpoints.gettingBlindTenderPdf(tender_id)
+
+    const response = await axiosClient.get(url, {
+      responseType: 'blob', // 👈 ensure PDF is returned as Blob
+      headers: {
+        Accept: 'application/pdf'
+      }
+    })
+
+    return response.data as Blob // ✅ return Blob directly
+  } catch (error) {
+    console.error('Tender Response API error:', error)
+    throw error
+  }
+}
+
 export const getPmaCompanyDetails = async (user_id: number, type?: string) => {
   try {
     const query = type ? `&type=${encodeURIComponent(type)}` : ''
@@ -242,6 +260,36 @@ export const rmcExtendThreeDays = async (tender_id: number, pma_user_id: number)
     }
 
     const response = await axiosClient.post(url, payload)
+
+    return response.data
+  } catch (error) {
+    console.error('Tender Responce API error:', error)
+
+    throw error
+  }
+}
+
+export const getExtendExpireDate = async (tender_id: number) => {
+  try {
+    const url = apiEndpoints.rmcgetExtendExpiryDate(tender_id)
+
+    const response = await axiosClient.post(url)
+
+    return response.data
+  } catch (error) {
+    console.error('Tender Responce API error:', error)
+
+    throw error
+  }
+}
+
+
+
+export const AllShortlistedPmas = async (tender_id: number) => {
+  try {
+    const url = apiEndpoints.gettingAllShortlistedPma(tender_id)
+
+    const response = await axiosClient.get(url)
 
     return response.data
   } catch (error) {

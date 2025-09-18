@@ -165,12 +165,13 @@ const SiteVisitPending = ({ sitePendingData }: any) => {
 
       <RejectModal
         open={confirmOpen}
-        title='Reschedule Request Rejected!'
+        setConfirmOpen={setConfirmOpen}
+        title='Reschedule Request Cancel!'
         description='You have rejected the reschedule request from [PMA Name]. The meeting will not be updated.Please provide a reason for the rejection in the box below. This explanation will be sent to the managing agent.'
         onClose={() => setConfirmOpen(false)}
         onConfirm={function (): void {}}
         RejectInviteData={tableData}
-        types='SiteVisits'
+        types='cancel'
         SideVisitsSchedualInviteId={visitsSchedualInviteId}
         sitePendingData={undefined}
         VideoCallInviteId={undefined}
@@ -178,6 +179,7 @@ const SiteVisitPending = ({ sitePendingData }: any) => {
 
       <SiteVisitsModal
         open={siteVisitsModalOpen}
+        setSiteVisitsModalOpen={setSiteVisitsModalOpen}
         onClose={() => setSiteVisitsModalOpen(false)}
         shorlistedPmas={undefined}
         siteVisitDate={tableData}

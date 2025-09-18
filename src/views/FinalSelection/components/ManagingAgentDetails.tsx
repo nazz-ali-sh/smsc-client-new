@@ -17,7 +17,14 @@ import 'react-pdf/dist/Page/TextLayer.css'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`
 
+import { useMutation } from '@tanstack/react-query'
+
+import { useSelector } from 'react-redux'
+
 import companyImage from '../../../../public/images/customImages/company.png'
+import type { RootState } from '@/redux-store'
+
+import { downloadFinalSeectionPDf } from '@/services/final_result_and_archeive_apis/final_results_apis'
 
 interface FinalSelectionResponse {
   finalSelection?: any
@@ -32,6 +39,30 @@ const ManagingAgentDetails: React.FC<FinalSelectionResponse> = ({ finalSelection
 
   console.log(numPages, 'numPages')
   const iconStyle = { fontSize: '17px' }
+
+  const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+
+  const downloadMutation = useMutation({
+    mutationFn: (id: number) => downloadFinalSeectionPDf(id),
+    onSuccess: data => {
+      const blob = new Blob([data], { type: 'application/pdf' })
+
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+
+      link.href = url
+      link.download = `tender_${tender_id}.pdf`
+      link.click()
+      window.URL.revokeObjectURL(url)
+    },
+    onError: error => {
+      console.error('Download failed:', error)
+    }
+  })
+
+  const handlePdfClick = () => {
+    downloadMutation.mutate(tender_id)
+  }
 
   return (
     <Card>
@@ -92,21 +123,17 @@ const ManagingAgentDetails: React.FC<FinalSelectionResponse> = ({ finalSelection
         </Stack>
 
         <section className='flex flex-col items-center gap-4 pt-4'>
-          <div className='border rounded shadow-md'>
+          <div className='border rounded shadow-md cursor-pointer' onClick={handlePdfClick}>
             <Document
-              file='/data.pdf'
               onLoadSuccess={onDocumentLoadSuccess}
               onLoadError={error => console.error('Error loading PDF:', error)}
               loading={<Typography>Loading PDF preview...</Typography>}
-              className='cursor-pointer'
             >
               <Page pageNumber={1} width={100} />
             </Document>
           </div>
           <Typography variant='body1' align='center'>
-            <a href='data.pdf' download className='hover:underline hover:underline-offset-4'>
-              Download PDF
-            </a>
+            Download PDF
           </Typography>
         </section>
       </CardContent>
