@@ -36,12 +36,11 @@ import { useSelector } from 'react-redux'
 
 import ConfirmationModal from './ConfirmationModal'
 import {
-  AllShortlistedPmas,
+  shortlistedPmas,
   sideVisitCalendarSlots,
   SideVisitInvite
 } from '@/services/tender_result-apis/tender-result-api'
 import { rmcReSchedualAgain, rmcSideVisitInvites } from '@/services/site_visit_apis/site_visit_api'
-import type { RootState } from '@/redux-store'
 import SuccessModal from './SucessModal'
 import type { ShortlistedPmaResponse } from './type'
 
@@ -109,7 +108,10 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     slotName: ''
   })
 
-  const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+  console.log(shorlistedPmas)
+
+  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
+  const tender_id = rmcData?.tender_id
 
   const {
     control,
@@ -129,7 +131,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
 
   const { data: allshortlsitedPmaData } = useQuery<ShortlistedPmaResponse, Error>({
     queryKey: ['shortlisted', tender_id],
-    queryFn: () => AllShortlistedPmas(tender_id),
+    queryFn: () => shortlistedPmas(tender_id),
     enabled: types === 'fromDashboard' || types == 'fromCalender' || types == 'sitevVisitFromCalender'
   })
 
@@ -346,7 +348,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
   })
 
   useEffect(() => {
-    const pmaIds = shorlistedPmas?.map((item: { pma_user: { id: any } }) => item.pma_user.id)
+    const pmaIds = shorlistedPmas?.map((item: { pma_user: { id: any } }) => item?.pma_user?.id)
 
     setAllPmaIds(pmaIds)
   }, [shorlistedPmas])
@@ -391,8 +393,8 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
 
   const normalizedOptionsRaw = [
     ...(shorlistedPmas || []).map((item: any) => ({
-      id: item.pma_user.id,
-      pma_number: item.pma_user.pma_number
+      id: item?.pma_user?.id || item?.id,
+      pma_number: item?.pma_user?.pma_number || item?.pma_number
     })),
     ...(completedShorlistedPmas || []).map((item: any) => ({
       id: item.pma_user_ids,
@@ -583,7 +585,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
               <Grid item>
                 <Button
                   variant='contained'
-                  onClick={handleSubmit(handleSendVideoCall)}
                   sx={{
                     backgroundColor: 'customColors.ligthBlue',
                     '&:hover': { backgroundColor: 'customColors.ligthBlue' }

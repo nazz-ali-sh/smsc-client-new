@@ -26,14 +26,14 @@ import { toast } from 'react-toastify'
 
 import ConfirmationModal from './ConfirmationModal'
 import { finalShortListedAgent, gettingRmcAppoint } from '@/services/tender_result-apis/tender-result-api'
-import type { RootState } from '@/redux-store'
 
 interface SiteVisitsModalProps {
   open: boolean
   onClose: () => void
   finalShortListedResponce?: any | null
-  pmaSelectedID?: number | null
+  pmaSelectedID?: any
   InviteCompletedCalls: any
+  setpmaValue?: any
 }
 
 interface shortListedFinalAgent {
@@ -62,13 +62,16 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
   onClose,
   finalShortListedResponce,
   pmaSelectedID,
-  InviteCompletedCalls
+  InviteCompletedCalls,
+  setpmaValue
 }) => {
   const theme = useTheme()
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)
+
   const [feedbacks, setFeedbacks] = useState<{ [key: number]: { feedback: string; noFeedback: boolean } }>({})
 
-  const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
+  const tender_id = rmcData?.tender_id
 
   const reschedual_pma_user_id = (InviteCompletedCalls ?? [])[0]?.pma_user_ids || '0'
 
@@ -95,6 +98,7 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
     onSuccess: data => {
       toast.success(data?.message)
       setConfirmationModalOpen(true)
+      setpmaValue('')
     },
 
     onError: (error: any) => {
@@ -102,6 +106,8 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
 
       console.error('About API error:', errorMessage)
       toast.error(errorMessage)
+      setpmaValue('')
+      onClose()
     }
   })
 
@@ -118,6 +124,8 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
       [pmaId]: { ...prev[pmaId], feedback: '', noFeedback: checked }
     }))
   }
+
+  console.log(finalShortListedResponce)
 
   const handleSendInvites = () => {
     const appointmentMessage = 'Congratulations on your appointment as the managing agent!'

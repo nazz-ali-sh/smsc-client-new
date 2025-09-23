@@ -12,6 +12,8 @@ import { useTheme } from '@mui/material/styles'
 
 import { useQuery } from '@tanstack/react-query'
 
+import { useSelector } from 'react-redux'
+
 import CustomAvatar from '@core/components/mui/Avatar'
 import CustomCircularProgress from './CustomCircularProgress'
 
@@ -19,6 +21,7 @@ import tendersend from '../../public/images/dashboardImages/tenderSend.svg'
 import tenderResponce from '../../public/images/dashboardImages/tenderResponce.svg'
 import tenderExpire from '../../public/images/dashboardImages/tenderExpire.svg'
 import { dashboardData } from '@/services/dashboard-apis/dashboard-api'
+import type { RootState } from '@/redux-store'
 
 interface DashboardResponse {
   dashboardResponce?: any
@@ -30,19 +33,50 @@ const WeeklyReport = ({ text }: { text?: string }) => {
   const belowMdScreen = useMediaQuery(theme.breakpoints.down('md'))
   const [percentagevalue, setpercentagevalue] = useState(0)
 
-  const rmcTenderId = 8
+  console.log(percentagevalue)
+
+  const rmcData = useSelector((state: RootState) => state?.rmcOnboarding?.rmcData)
 
   const { data: dashboardResponce, error } = useQuery<DashboardResponse, Error>({
-    queryKey: ['dashboardDatas', rmcTenderId],
-    queryFn: () => dashboardData(Number(rmcTenderId)),
-    enabled: !!rmcTenderId
+    queryKey: ['dashboardDatas', rmcData?.tender_id],
+    queryFn: () => dashboardData(Number(rmcData?.tender_id)),
+    enabled: !!rmcData?.tender_id
   })
+
 
   if (error) {
     console.error('Dashboard data error:', error)
   }
 
   const tenderExpireDaat = dashboardResponce?.data?.tender_end_date?.date
+  const value = dashboardResponce?.data?.tender_stage_progress?.progress_percentage
+
+  type StageKey =
+    | 'date_registered'
+    | 'went_live'
+    | 'result_received'
+    | 'shortlisted'
+    | 'video_call'
+    | 'site_visit'
+    | 'appointment'
+
+  const stages = dashboardResponce?.data?.tender_stage_progress?.stages
+
+  const currentStage: StageKey | undefined = dashboardResponce?.data?.tender_stage_progress?.current_stage?.stage
+
+  const stageDates: Record<StageKey, string | undefined> = {
+    date_registered: stages?.date_registered?.completed_at,
+    went_live: stages?.went_live?.completed_at,
+    result_received: stages?.result_received?.completed_at,
+    shortlisted: stages?.shortlisted?.completed_at,
+    video_call: stages?.video_call?.completed_at,
+    site_visit: stages?.site_visit?.completed_at,
+    appointment: stages?.appointment?.completed_at
+  }
+
+  const completedAtDate = (currentStage && stageDates[currentStage]) || 'No date'
+
+
 
   useEffect(() => {
     const stages = dashboardResponce?.data?.tender_stage_progress?.stages
@@ -59,6 +93,20 @@ const WeeklyReport = ({ text }: { text?: string }) => {
       setpercentagevalue(progressPercentage)
     }
   }, [dashboardResponce])
+
+  const formatDate = (dateString?: string | null): string => {
+    if (!dateString) return '--'
+
+    const date = new Date(dateString)
+
+    if (isNaN(date.getTime())) return '--'
+
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    const year = date.getFullYear()
+
+    return `${month}-${day}-${year}`
+  }
 
   return (
     <div className='flex max-md:flex-col md:items-center gap-6 plb-5 w-full'>
@@ -126,27 +174,28 @@ const WeeklyReport = ({ text }: { text?: string }) => {
         <div className='flex flex-col justify-between gap-x-6 p-[25px]'>
           <div>
             <Typography variant='h4' sx={{ fontSize: '18px', fontWeight: 700 }}>
-              Tender
+              Tender Id
             </Typography>
             <Typography variant='body1' sx={{ fontSize: '15px', fontWeight: 400, paddingTop: '6px' }}>
-              Tender Details ( Number ETC )
+              {rmcData?.tender_id}
             </Typography>
             <Typography variant='h5' sx={{ paddingTop: '18px', fontWeight: 700 }}>
               Tender Stage
             </Typography>
           </div>
-          <div className='flex items-center gap-1'>
+          <div className='flex items-baseline gap-1'>
             <div className='size-[10px] border-2 mt-2 border-red-400 bg-white rounded-full'></div>
+
             <Typography
               variant='body1'
               sx={{ fontSize: '15px', fontWeight: 400, paddingTop: '6px', color: 'customColors.gray7' }}
             >
-              {dashboardResponce?.data?.tender_stage_progress?.current_stage?.stage} on 17/5/2025
+              {dashboardResponce?.data?.tender_progress} on {formatDate(completedAtDate)}
             </Typography>
           </div>
         </div>
         <div className='flex justify-center items-center mr-5'>
-          <CustomCircularProgress progress={percentagevalue} size={100} strokeWidth={12} />
+          <CustomCircularProgress progress={value} size={100} strokeWidth={12} />
         </div>
       </div>
     </div>

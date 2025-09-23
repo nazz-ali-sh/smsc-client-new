@@ -18,7 +18,7 @@ const OnboardingLeaseholderSelection = () => {
   }
 
   return (
-    <div className='flex flex-col items-center pt-10'>
+    <div className='flex flex-col items-center pt-10 mb-20'>
       <h1 className='text-[48px] font-bold text-[#262B43E5]'>RMC Onboarding</h1>
       <div className='bg-white p-8 pt-10 w-full max-w-7xl mt-6'>
         <Typography
@@ -30,7 +30,7 @@ const OnboardingLeaseholderSelection = () => {
         </Typography>
 
         <div className='flex justify-center py-6'>
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-16 pb-10'>
+          <div className='grid md:grid-cols-2 sm:grid-cols-1 gap-16 pb-10'>
             <div
               onClick={handleCardClick}
               className='group flex flex-col items-center p-6 shadow-sm rounded-md bg-[#F3FCFE] border border-blue-100 cursor-pointer w-[280px] h-[318px] justify-between transition-all duration-300 hover:bg-[#D7F2FB]'

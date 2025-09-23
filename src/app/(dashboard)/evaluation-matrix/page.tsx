@@ -1,5 +1,5 @@
-import EvaluationMatrix from '@/views/EvaluationMatrix'
+import EvaluationMatrixWrapper from '@/views/EvaluationMatrix/EvaluationMatrixWrapper'
 
 export default function EvaluationMatrixPage() {
-  return <EvaluationMatrix />
+  return <EvaluationMatrixWrapper />
 }

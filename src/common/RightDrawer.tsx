@@ -1,8 +1,11 @@
+'use client'
 import * as React from 'react'
 
 import type { Dispatch, SetStateAction } from 'react'
 
 import Image from 'next/image'
+
+import { useRouter } from 'next/navigation'
 
 import {
   Card,
@@ -44,6 +47,7 @@ export default function AnchorTemporaryDrawer({
   const anchor: Anchor = 'right'
 
   console.log()
+  const router = useRouter()
 
   const cardsData = [
     {
@@ -360,7 +364,11 @@ export default function AnchorTemporaryDrawer({
       })}
       <section className='flex items-center justify-end py-[12px] space-x-[24px]'>
         <div>
-          <Button variant='contained' className='!bg-[#35C0ED] w-[280px]'>
+          <Button
+            onClick={() => router.push('/tender-result/1')}
+            variant='contained'
+            className='!bg-[#35C0ED] w-[280px]'
+          >
             <i className='ri-user-line bg-white size-[18px] pr-[5px]'></i> View Full profile
           </Button>
         </div>

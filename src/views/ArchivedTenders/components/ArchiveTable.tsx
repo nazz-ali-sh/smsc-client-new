@@ -14,7 +14,6 @@ import { useSelector } from 'react-redux'
 import type { ArchiveDataResponse, ArchivedTenderType, TenderApi } from '../types'
 import CommonTable from '@/common/CommonTable'
 import { archiveData } from '@/services/final_result_and_archeive_apis/final_results_apis'
-import type { RootState } from '@/redux-store'
 import SummaryCards from '@/common/SummaryCardsDetails'
 
 const columnHelper = createColumnHelper<ArchivedTenderType>()
@@ -30,7 +29,8 @@ const ArchiveTable = () => {
     enabled: !!value
   })
 
-  const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
+  const tender_id = rmcData?.tender_id
 
   const archivedTendersData: ArchivedTenderType[] =
     (gettingArchiveData as ArchiveDataResponse)?.data?.tenders?.map(

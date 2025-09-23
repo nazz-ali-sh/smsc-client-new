@@ -4,7 +4,7 @@ import type React from 'react'
 
 import Image from 'next/image'
 
-import { Box, Card, CardContent, Typography, Grid, Button } from '@mui/material'
+import { Box, Card, CardContent, Typography, Grid} from '@mui/material'
 
 import { iconMap } from '@/common/data'
 
@@ -175,22 +175,6 @@ const ProjectMetrics: React.FC<FinalSelectionResponse> = ({ finalSelection }) =>
               </Grid>
             ))}
           </section>
-        </Box>
-
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button
-            variant='contained'
-            sx={{
-              backgroundColor: 'customColors.ligthBlue',
-              marginTop: 16,
-              '&:hover': {
-                backgroundColor: 'customColors.ligthBlue'
-              }
-            }}
-            startIcon={<i className='ri-download-line' style={{ fontSize: 18, color: 'white' }} />}
-          >
-            Download Evaluation Matrix
-          </Button>
         </Box>
       </CardContent>
     </Card>

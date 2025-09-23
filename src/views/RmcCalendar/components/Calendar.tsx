@@ -14,7 +14,6 @@ import { useMutation } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
 import type { CalendarColors, CalendarType } from '@/types/apps/calendarTypes'
-import type { RootState } from '@/redux-store'
 import VideosCallsModal from '@/common/VideosCallsModal'
 import PendingModal from '@/common/PendingModals'
 import SiteVisitsModal from '@/common/SiteVisitsModal'
@@ -56,12 +55,12 @@ const Calendar = (props: CalenderProps) => {
     status?: any
     zoom_link: string
     calendartype?: any
-
   }
 
   const calendarRef = useRef<FullCalendar>(null)
 
-  const rmctender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
+  const rmctender_id = rmcData?.tender_id
 
   useEffect(() => {
     if (calendarApi === null) {
@@ -146,7 +145,6 @@ const Calendar = (props: CalenderProps) => {
     window.open(selectedPillsData.zoom_link, '_blank', 'noopener,noreferrer')
   }
 
-
   const calendarOptions: CalendarOptions = {
     events: calenderEventData,
     plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin],
@@ -176,7 +174,6 @@ const Calendar = (props: CalenderProps) => {
       const status = calendarEvent._def.extendedProps?.status
 
       setCallsAndSiteStatus(status)
-
 
       if (status === 'pending') {
         classes.push('bg-gray-300')

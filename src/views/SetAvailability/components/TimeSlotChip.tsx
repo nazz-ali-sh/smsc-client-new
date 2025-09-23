@@ -13,10 +13,10 @@ const TimeSlotChip = ({ startTime, endTime, onDelete, formatTimeForDisplay }: Ti
       label={`${formatTimeForDisplay(startTime)} to ${formatTimeForDisplay(endTime)}`}
       sx={{
         backgroundColor: '#DDF6FE',
+        width: 180,
         color: '#35C0ED',
         borderRadius: '16px',
-        padding: '8px 12px',
-        width: 'fit-content',
+        padding: '8px 8px',
         '& .MuiChip-label': {
           fontSize: '14px',
           fontWeight: 500

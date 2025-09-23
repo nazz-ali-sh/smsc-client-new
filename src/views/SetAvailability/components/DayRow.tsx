@@ -34,9 +34,9 @@ const DayRow = ({
       <Box
         sx={{
           display: 'flex',
-          alignItems: 'start',
-          padding: '20px 0',
-          gap: '24px'
+          alignItems: 'center',
+          padding: '6px 0',
+          gap: '3px'
         }}
       >
         <Box sx={{ minWidth: '100px' }}>
@@ -52,15 +52,32 @@ const DayRow = ({
           </Typography>
         </Box>
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1, minWidth: 0 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            gap: '8px',
+            flex: 1,
+            minWidth: 0
+          }}
+        >
           {slots.map(slot => (
-            <TimeSlotChip
+            <Box
               key={slot.id}
-              startTime={slot.startTime}
-              endTime={slot.endTime}
-              onDelete={() => onRemoveSlot(day, slot.id)}
-              formatTimeForDisplay={formatTimeForDisplay}
-            />
+              sx={{
+                flex: '1 1 1',
+                display: 'flex',
+                justifyContent: 'center'
+              }}
+            >
+              <TimeSlotChip
+                startTime={slot.startTime}
+                endTime={slot.endTime}
+                onDelete={() => onRemoveSlot(day, slot.id)}
+                formatTimeForDisplay={formatTimeForDisplay}
+              />
+            </Box>
           ))}
         </Box>
 

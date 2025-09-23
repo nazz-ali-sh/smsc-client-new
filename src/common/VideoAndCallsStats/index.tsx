@@ -12,12 +12,13 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useQuery } from '@tanstack/react-query'
 
 import { getrmcshortlistStats } from '@/services/tender_result-apis/tender-result-api'
-import type { RootState } from '@/redux-store'
 
 import { fetchStatsSuccess } from '../../redux-store/slices/sideVisitAndCallStatsSlice'
 
 const VisitAndCallStats = () => {
-  const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
+  const tender_id = rmcData?.tender_id
+
   const dispatch = useDispatch()
 
   interface shortListedFinalAgent {

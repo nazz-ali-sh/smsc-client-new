@@ -6,15 +6,37 @@ const axiosClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || ''
 })
 
+const getTokenFromCookie = () => {
+  try {
+    if (typeof document !== 'undefined') {
+      const cookies = document.cookie.split(';')
+      const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('rmc-token='))
+
+      if (tokenCookie) {
+        return tokenCookie.split('=')[1]
+      }
+    }
+
+    return null
+  } catch (error) {
+    console.error('Error getting token from cookie:', error)
+
+    return null
+  }
+}
+
 axiosClient.interceptors.request.use(
   (config: any) => {
-    const token = `27|Izo2erPzI9N80qow35uKm2jw3A8Cno6trt1vPdId378f2c3c`
+    const token = getTokenFromCookie()
 
     if (!config.headers) {
       config.headers = {}
     }
 
-    config.headers['Tender-ID'] = TENDER_ID
+    // Only add Tender-ID header for non-auth endpoints
+    if (!config.url?.includes('/api/auth/')) {
+      config.headers['Tender-ID'] = TENDER_ID
+    }
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`

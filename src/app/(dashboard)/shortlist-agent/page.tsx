@@ -4,28 +4,31 @@ import { useState } from 'react'
 
 import Image from 'next/image'
 
+import { useRouter } from 'next/navigation'
+
 import { Button, Card, CardContent, Typography } from '@mui/material'
 
 import { useSelector } from 'react-redux'
 
 import { useQuery } from '@tanstack/react-query'
 
-import HorizontalLinearStepper from '@/views/Dashboard/HorizontalLinearStepper'
+import HorizontalLinearStepper from '@/common/HorizontalLinearStepper'
 import WeeklyReport from '@/common/WeeklyReport'
 
 import DetailedReview from '../../../views/shortlistAgent/DetailedReview'
 
 import successVisit from '../../../../public/images/customImages/sucess.svg'
 
-import type { RootState } from '@/redux-store'
 import { finalShortListedAgent, getrmcshortlistStats } from '@/services/tender_result-apis/tender-result-api'
 import ToolTipModal from '@/common/ToolTipModal'
 
 export default function Pages() {
+  const router = useRouter()
+
   interface shortListedFinalAgent {
     data: any
     shortlist_id: number
-    tender_id: number
+    tender_id?: number
     tender_name: string
     shortlisted_pma_count: number
     shortlisted_pma_users: {
@@ -43,21 +46,22 @@ export default function Pages() {
     }
   }
 
-  const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
+
   const [open, setOpen] = useState(false)
   const [modalType, setModalType] = useState<'shortList_agent' | 'shortList_agent_info' | string>('')
 
   const { data: finalShortListedResponce } = useQuery<shortListedFinalAgent, Error>({
-    queryKey: ['finalAgents', tender_id],
-    queryFn: () => finalShortListedAgent(Number(tender_id)),
-    enabled: !!tender_id,
+    queryKey: ['finalAgents', rmcData?.tender_id],
+    queryFn: () => finalShortListedAgent(Number(rmcData?.tender_id)),
+    enabled: !!rmcData?.tender_id,
     refetchOnWindowFocus: false
   })
 
   const { data: rmcShortlistStats } = useQuery<shortListedFinalAgent, Error>({
-    queryKey: ['shortlistData', tender_id],
-    queryFn: () => getrmcshortlistStats(Number(tender_id)),
-    enabled: !!tender_id,
+    queryKey: ['shortlistData', rmcData?.tender_id],
+    queryFn: () => getrmcshortlistStats(Number(rmcData?.tender_id)),
+    enabled: !!rmcData?.tender_id,
     refetchOnWindowFocus: false
   })
 
@@ -99,30 +103,43 @@ export default function Pages() {
         <HorizontalLinearStepper />
       </div>
 
-      <section className='shadow-xl p-5 rounded-xl bg-white'>
-        <Typography variant='h5' className='pl-6 font-bold  text-buttonPrimary'>
-          SMSC Recommended Steps for Shortlisted Agents
-          <Button
-            onClick={() => {
-              setOpen(true)
-              setModalType('shortList_agent')
-            }}
-          >
-            <i className='ri-information-line bg-buttonPrimary'></i>
-          </Button>
-        </Typography>
+      <section className='shadow-xl p-5 rounded-xl bg-white w-full'>
+        <div className='flex justify-between items-center w-full'>
+          <div>
+            <Typography variant='h5' className='pl-6 font-bold  text-buttonPrimary'>
+              SMSC Recommended Steps for Shortlisted Agents
+              <Button
+                onClick={() => {
+                  setOpen(true)
+                  setModalType('shortList_agent')
+                }}
+              >
+                <i className='ri-information-line bg-buttonPrimary'></i>
+              </Button>
+            </Typography>
 
-        <Typography variant='h2' className='pl-6 font-bold'>
-          Shortlisted Agents
-          <Button
-            onClick={() => {
-              setOpen(true)
-              setModalType('shortList_agent_info')
-            }}
-          >
-            <i className='ri-information-line bg-[#262B43E5]'></i>
-          </Button>
-        </Typography>
+            <Typography variant='h2' className='pl-6 font-bold'>
+              Shortlisted Agents
+              <Button
+                onClick={() => {
+                  setOpen(true)
+                  setModalType('shortList_agent_info')
+                }}
+              >
+                <i className='ri-information-line bg-[#262B43E5]'></i>
+              </Button>
+            </Typography>
+          </div>
+          <div>
+            <Button
+              onClick={() => router.push('/evaluation-matrix')}
+              variant='contained'
+              className='bg-buttonPrimary gap-x-3'
+            >
+              <i className='ri-eye-line size-[22px]'></i> Evaluation Metric
+            </Button>
+          </div>
+        </div>
 
         <ToolTipModal open={open} onClose={() => setOpen(false)} type={modalType} />
 

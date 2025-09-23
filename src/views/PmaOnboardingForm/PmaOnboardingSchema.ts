@@ -1,4 +1,38 @@
-import { object, string, boolean, union, literal, optional, pipe, minLength, email, number } from 'valibot'
+import { object, string, boolean, union, literal, optional, pipe, minLength, email, number, custom } from 'valibot'
+
+const validateUKPhoneNumber = (value: unknown): boolean => {
+  if (typeof value !== 'string') {
+    return false
+  }
+
+  const cleanNumber = value.replace(/\D/g, '')
+
+  console.log('Validating UK phone number:', value, '-> Clean:', cleanNumber, 'Length:', cleanNumber.length)
+
+  const ukPatterns = [
+    /^44\d{10}$/,
+    /^44\d{9}$/,
+
+    /^07\d{9}$/,
+    /^01\d{8,9}$/,
+    /^02\d{8,9}$/,
+    /^03\d{8,9}$/,
+
+    /^0\d{9,10}$/
+  ]
+
+  const matchesPattern = ukPatterns.some(pattern => {
+    const matches = pattern.test(cleanNumber)
+
+    return matches
+  })
+
+  const isValidLength = cleanNumber.length >= 10 && cleanNumber.length <= 13
+
+  console.log('Final result - matchesPattern:', matchesPattern, 'isValidLength:', isValidLength)
+
+  return matchesPattern && isValidLength
+}
 
 export const businessProfileSchema = object({
   yearsTrading: optional(number('Enter how many years you have been trading')),
@@ -7,14 +41,21 @@ export const businessProfileSchema = object({
 })
 
 export const communicationPreferencesSchema = object({
-  primaryContactNumber: optional(pipe(string('Primary contact number is required'))),
+  primaryContactNumber: optional(
+    pipe(
+      string('Primary contact number is required'),
+      custom(validateUKPhoneNumber, 'Please enter a valid UK phone number')
+    )
+  ),
   secondaryContact: optional(
     object({
       fullName: optional(
         pipe(string('Full name is required'), minLength(2, 'Full name must be at least 2 characters'))
       ),
       email: optional(pipe(string('Email is required'), email('Must be a valid email address'))),
-      phone: optional(pipe(string('Phone number is required'), minLength(10, 'Must be a valid phone number'))),
+      phone: optional(
+        pipe(string('Phone number is required'), custom(validateUKPhoneNumber, 'Please enter a valid UK phone number'))
+      ),
       preferredContact: optional(
         union([literal('Mobile'), literal('Landline')], 'Please select a preferred contact method')
       )
@@ -62,7 +103,9 @@ export const branchLocationSchema = object({
   lng: optional(string('Longitude is required')),
   contactName: optional(string('Contact name is required')),
   contactEmail: optional(pipe(string('Contact email is required'), email('Enter a valid contact email'))),
-  contactPhone: optional(string('Contact phone is required')),
+  contactPhone: optional(
+    pipe(string('Contact phone is required'), custom(validateUKPhoneNumber, 'Please enter a valid UK phone number'))
+  ),
   useHeadOfficeContact: optional(boolean()),
   tenderRecipient: optional(
     union([literal('Branch Contact'), literal('Primary/Secondary User'), literal('Both')], 'Please select a recipient')

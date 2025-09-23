@@ -1,7 +1,7 @@
 import type { FinalSelectionData } from './types'
 
 export const finalSelectionData: FinalSelectionData = {
-  startDate: '21/08/2025',
+  startDate: '2025-09-29',
   managingAgent: {
     id: 'PMA-SE10077',
     companyName: 'Ouma Property Management London',

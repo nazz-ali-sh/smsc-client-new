@@ -12,7 +12,6 @@ import {
   rmcSiteVisitCancel,
   rmcVideoCallsCancel
 } from '@/services/site_visit_apis/site_visit_api'
-import type { RootState } from '@/redux-store'
 
 type DeleteModalProps = {
   open: boolean
@@ -44,7 +43,8 @@ const CancelVideoCallsAndSiteVisist = ({
   const [textValue, setTextValue] = useState('')
   const [error, setError] = useState('')
 
-  const rmctender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
+  const rmctender_id = rmcData?.tender_id
 
   const rechedualRmcAgain = useMutation({
     mutationFn: ({

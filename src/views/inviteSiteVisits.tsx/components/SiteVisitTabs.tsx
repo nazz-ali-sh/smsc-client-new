@@ -14,7 +14,6 @@ import SiteVisitHeader from './SiteVisitHeader'
 import SiteReschedule from './SiteVisitReschedule'
 import SiteVisitCompletedCalls from './SiteVisitCompletedCalls'
 import SiteVisitPending from './SiteVisitPending'
-import type { RootState } from '@/redux-store'
 import { rmcSiteVisitDetails } from '@/services/site_visit_apis/site_visit_api'
 import SiteVisitUpcoming from './SiteVisitUpcoming'
 import SiteVisitReject from './SiteVisitReject'
@@ -22,7 +21,9 @@ import SiteVisitReject from './SiteVisitReject'
 const SiteVisitTabs = () => {
   const [activeTab, setActiveTab] = useState(0)
   const [activeStatus, setActiveStatus] = useState('')
-  const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+
+  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
+  const tender_id = rmcData?.tender_id
 
   useEffect(() => {
     if (activeTab === 0) {

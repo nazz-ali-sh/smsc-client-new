@@ -10,7 +10,6 @@ import { useSelector } from 'react-redux'
 
 import { dashboardFaqs } from '@/services/dashboard-apis/dashboard-api'
 
-import type { RootState } from '@/redux-store'
 
 interface Faq {
   id: number
@@ -30,12 +29,12 @@ interface DashboardFaqsResponse {
 }
 
 export default function AccordionExpand() {
-  const rmcTenderId = useSelector((state: RootState) => state?.users?.tenderId)
+  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
 
   const { data, isLoading, error } = useQuery<DashboardFaqsResponse, Error>({
-    queryKey: ['dashboardFaqs', rmcTenderId],
-    queryFn: () => dashboardFaqs(Number(rmcTenderId)),
-    enabled: !!rmcTenderId
+    queryKey: ['dashboardFaqs', rmcData?.tender_id],
+    queryFn: () => dashboardFaqs(Number(rmcData?.tender_id)),
+    enabled: !!rmcData?.tender_id
   })
 
   if (isLoading) {

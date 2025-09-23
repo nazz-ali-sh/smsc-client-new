@@ -51,7 +51,7 @@ export type Config = {
 
 const themeConfig: Config = {
   templateName: 'SMSC',
-  homePageUrl: '/home',
+  homePageUrl: '/login',
   settingsCookieName: 'materialize-mui-next-demo-1',
   mode: 'light', // 'system', 'light', 'dark'
   skin: 'default', // 'default', 'bordered'

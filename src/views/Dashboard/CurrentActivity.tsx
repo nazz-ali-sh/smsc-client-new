@@ -1,7 +1,6 @@
 'use client'
-import { useState, useEffect } from 'react'
 
-import dynamic from 'next/dynamic'
+import { useRouter } from 'next/navigation'
 
 import Image from 'next/image'
 
@@ -12,34 +11,26 @@ import { useSelector } from 'react-redux'
 import { useMutation } from '@tanstack/react-query'
 
 import line from '../../../public/images/customImages/line.svg'
-import type { RootState } from '@/redux-store'
+import demePfd from '../../../public/images/dashboardImages/demePdfImage.png'
 
 import { downloadBlindTenderPdf } from '@/services/tender_result-apis/tender-result-api'
 import { downloadFinalSeectionPDf } from '@/services/final_result_and_archeive_apis/final_results_apis'
 
-const Document = dynamic(() => import('react-pdf').then(mod => ({ default: mod.Document })), {
-  ssr: false,
-  loading: () => <div className='w-[160px] h-[145px] bg-gray-200 animate-pulse rounded'></div>
-})
+interface DashboardResponseProps {
+  dashboardResponce?: any
+}
 
-const Page = dynamic(() => import('react-pdf').then(mod => ({ default: mod.Page })), {
-  ssr: false
-})
+const CurrentActivity: React.FC<DashboardResponseProps> = ({ dashboardResponce }) => {
+  console.log(dashboardResponce)
+  const router = useRouter()
 
-const CurrentActivity = () => {
-  const [numPages, setNumPages] = useState<number | null>(null)
-  const [isClient, setIsClient] = useState(false)
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
+  
+  const stages = dashboardResponce?.data?.tender_stage_progress?.current_stage?.stage
 
-  console.log(numPages, 'numPages')
+  const allowedStages = ['result_received', 'shortlisted', 'video_call', 'site_visit', 'appointment']
 
-  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-    setNumPages(numPages)
-  }
+  const isClickable = allowedStages.includes(stages ?? '')
 
   const headingStyle = {
     fontSize: '30px',
@@ -49,7 +40,8 @@ const CurrentActivity = () => {
     fontWeight: 500
   }
 
-  const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
+  const tender_id = rmcData?.tender_id
 
   const downloadMutation = useMutation({
     mutationFn: (id: number) => downloadBlindTenderPdf(id),
@@ -87,7 +79,7 @@ const CurrentActivity = () => {
 
   return (
     <>
-      <div className='bg-white p-4 md:p-8 shadow-xl  rounded-lg h-[288px]'>
+      <div className='bg-white p-4 md:p-8 shadow-xl  rounded-lg '>
         <div className=''>
           <section className='flex justify-between items-start w-[100%] '>
             <Typography variant='h3' className='w-[50%]' sx={headingStyle}>
@@ -99,7 +91,7 @@ const CurrentActivity = () => {
           </section>
           <div className='flex items-start justify-between pt-3'>
             <div className=' w-[50%]'>
-              <div className='flex gap-x-[70px] items-center '>
+              <div className='flex gap-x-[70px] items-center mt-[30px] '>
                 <div className='bg-white rounded-lg shadow-sm border border-gray-200 px-[20px] py-[20px] w-[259px] h-[145px]'>
                   <div className='flex items-center justify-between mb-4'>
                     <div className='flex items-center space-x-4'>
@@ -107,13 +99,19 @@ const CurrentActivity = () => {
                         <i className='ri-customer-service-2-line bg-buttonPrimary'></i>
                       </div>
                       <div>
-                        <div className=' font-bold text-gray-900 text-[15px]'>27</div>
+                        <div className=' font-bold text-gray-900 text-[15px]'>
+                          {dashboardResponce?.data?.schedule_calls || '0'}
+                        </div>
                         <div className='text-textGray text-[14px]'>Scheduled Calls</div>
                       </div>
                     </div>
                   </div>
                   <section className='flex justify-end items-end mt-5 mb-2 mr-2'>
-                    <Button variant='contained' className='bg-buttonPrimary w-[110px] text-[11px] whitespace-nowrap'>
+                    <Button
+                      onClick={() => router.push('/invites-video-calls')}
+                      variant='contained'
+                      className='bg-buttonPrimary w-[110px] text-[11px] whitespace-nowrap'
+                    >
                       View List <i className='ri-arrow-right-line bg-white ml-1 size-[12px]'></i>
                     </Button>
                   </section>
@@ -125,13 +123,19 @@ const CurrentActivity = () => {
                         <i className='ri-user-3-line bg-[#666CFF]'></i>
                       </div>
                       <div>
-                        <div className='text-[15px] font-bold text-gray-900'>6</div>
+                        <div className='text-[15px] font-bold text-gray-900'>
+                          {dashboardResponce?.data?.shortlisted_pma || '0'}
+                        </div>
                         <div className='text-[14px] text-textGray '>Shortlisted Agents</div>
                       </div>
                     </div>
                   </div>
                   <section className='flex justify-end items-end mt-5 mb-2 mr-2'>
-                    <Button variant='contained' className='bg-buttonPrimary w-[110px] text-[11px] whitespace-nowrap'>
+                    <Button
+                      onClick={() => router.push('/shortlist-agent')}
+                      variant='contained'
+                      className='bg-buttonPrimary w-[110px] text-[11px] whitespace-nowrap'
+                    >
                       View List <i className='ri-arrow-right-line bg-white ml-1 size-[12px]'></i>
                     </Button>
                   </section>
@@ -142,79 +146,59 @@ const CurrentActivity = () => {
             <section className='w-[50%]'>
               <div className='flex '>
                 <div>
-                  <Image src={line} alt='horizontal line' height={166} />
+                  <Image src={line} alt='horizontal line' height={260} />
                 </div>
 
                 <div className='w-[100%] relative space-y-8 flex items-end justify-between'>
                   {/* First PDF */}
                   <section className='relative flex flex-col justify-between items-center w-[100%]'>
-                    <div
-                      className='relative cursor-pointer'
-                      onMouseEnter={() => setHoveredIndex(0)}
-                      onMouseLeave={() => setHoveredIndex(null)}
-                    >
-                      {isClient && (
-                        <Document
-
-                          // file='/data.pdf'
-                          onLoadSuccess={onDocumentLoadSuccess}
-                          onLoadError={error => console.error('Error loading PDF:', error)}
-                        >
-                          <Page pageNumber={1} width={160} height={145} />
-                        </Document>
-                      )}
-                      {hoveredIndex === 0 && isClient && (
-                        <div className='absolute top-0 left-0 z-10 bg-white shadow-lg border border-gray-200'>
-                          <Document onLoadSuccess={onDocumentLoadSuccess}>
-                            <Page pageNumber={1} width={300} height={390} />
-                          </Document>
-                        </div>
-                      )}
-                    </div>
+                    <Image src={demePfd} alt='pdf download' />
                     <section className='w-[100%]'>
                       <Typography
                         variant='body1'
                         align='center'
-                        className='mt-2 cursor-pointer text-blue-500 hover:underline hover:underline-offset-4'
-                        onClick={() => downloadMutation.mutate(tender_id)}
+                        className={`mt-2 text-[#696969] ${
+                          isClickable
+                            ? 'cursor-pointer hover:underline hover:underline-offset-4'
+                            : 'cursor-not-allowed opacity-50'
+                        }`}
+                        onClick={() => {
+                          if (isClickable) {
+                            downloadMutation.mutate(tender_id)
+                          }
+                        }}
                       >
                         Download Blind Tender Report
+                      </Typography>
+
+                      <Typography
+                        variant='body1'
+                        align='center'
+                        className='mt-2 cursor-pointer text-[#696969] hover:underline hover:underline-offset-4 '
+                      >
+                        Unlocked After Receiving PMA Responses
                       </Typography>
                     </section>
                   </section>
 
                   {/* Second PDF */}
                   <section className='relative flex flex-col justify-between items-center w-[100%]'>
-                    <div
-                      className='relative cursor-pointer'
-                      onMouseEnter={() => setHoveredIndex(1)}
-                      onMouseLeave={() => setHoveredIndex(null)}
-                    >
-                      {isClient && (
-                        <Document
-                          file='/data.pdf'
-                          onLoadSuccess={onDocumentLoadSuccess}
-                          onLoadError={error => console.error('Error loading PDF:', error)}
-                        >
-                          <Page pageNumber={1} width={160} height={145} />
-                        </Document>
-                      )}
-                      {hoveredIndex === 1 && isClient && (
-                        <div className='absolute top-0 left-0 z-10 bg-white shadow-lg border border-gray-200'>
-                          <Document file='/data.pdf' onLoadSuccess={onDocumentLoadSuccess}>
-                            <Page pageNumber={1} width={300} height={390} />
-                          </Document>
-                        </div>
-                      )}
-                    </div>
+                    <Image src={demePfd} alt='pdf download' />
                     <section className='w-[100%]'>
                       <Typography
                         variant='body1'
                         align='center'
-                        className='mt-2 cursor-pointer text-blue-500 hover:underline hover:underline-offset-4'
+                        className='mt-2 cursor-pointer text-[#696969] hover:underline hover:underline-offset-4'
                         onClick={() => downloadFinalSelectionMutation.mutate(tender_id)}
                       >
-                        Download Full Journey Report
+                        {stages == 'result_received'} Download Full Journey Report
+                      </Typography>
+                      <Typography
+                        variant='body1'
+                        align='center'
+                        className='mt-2 cursor-pointer text-[#696969] hover:underline hover:underline-offset-4'
+                      >
+                        Unlocked After Successful Selection of Agent
                       </Typography>
                     </section>
                   </section>

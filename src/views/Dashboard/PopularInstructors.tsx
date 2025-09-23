@@ -5,7 +5,23 @@ import Image from 'next/image'
 
 import { useRouter } from 'next/navigation'
 
-import { Grid, Card, CardContent, Typography, Divider, Box  } from '@mui/material'
+import {
+  Grid,
+  Card,
+  CardContent,
+  Typography,
+  Divider,
+  Box,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormControl,
+  FormHelperText
+} from '@mui/material'
+
+import { useSelector } from 'react-redux'
+
+import { useQuery } from '@tanstack/react-query'
 
 import phone from '../../../public/images/dashboardImages/phone.svg'
 import phonewhite from '../../../public/images/dashboardImages/phoneWhiteIcon.svg'
@@ -16,6 +32,9 @@ import CustomTooltip from '../../common/CustomTooltip'
 import VideosCallsModal from '@/common/VideosCallsModal'
 import SiteVisitsModal from '@/common/SiteVisitsModal'
 import AppointManagemnetModal from '@/common/AppointManagemnetAgent'
+import { shortlistedPmas } from '@/services/tender_result-apis/tender-result-api'
+import CommonModal from '@/common/CommonModal'
+import CustomButton from '@/common/CustomButton'
 
 interface dashboardResponceprops {
   dashboardResponce?: any
@@ -25,22 +44,73 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
   const [onlineCallsModalOpen, setOnlineCallsModalOpen] = useState(false)
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
   const [apointAgentModalOpen, setApointAgentModalOpen] = useState(false)
+  const [openPmaDropdown, setOpenPmaDropdown] = useState(false)
+  const [pmaValue, setpmaValue] = useState('')
+  const [error, setError] = useState(false)
+
+  const handleChange = (event: any) => {
+    const newValue = event.target.value
+
+    setpmaValue(newValue)
+
+    setError(newValue === '')
+  }
 
   const stages = dashboardResponce?.data?.tender_stage_progress?.stages
+
+  console.log(stages)
   const router = useRouter()
 
   const bookedCall = dashboardResponce?.data?.days_since_last_video_call
   const bookedsiteVisit = dashboardResponce?.data?.days_since_last_site_visit
 
+  console.log(dashboardResponce)
+
+  const formatDate = (dateString?: string | null): string => {
+    if (!dateString) return '--'
+
+    const date = new Date(dateString)
+
+    if (isNaN(date.getTime())) return '--'
+
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    const year = date.getFullYear()
+
+    return `${month}-${day}-${year}`
+  }
+
+  interface ShortlistedPmas {
+    data?: any
+  }
+
+  interface PmaUser {
+    id: number
+    full_name: string
+  }
+
+  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
+  const rmcTenderId = rmcData?.tender_id
+
+  const { data: finalShortListedResponce } = useQuery<ShortlistedPmas, Error>({
+    queryKey: ['shortlist', rmcTenderId],
+    queryFn: () => shortlistedPmas(Number(rmcTenderId)),
+    enabled: !!rmcTenderId
+  })
+
+  const handleAppointAgentSelection = () => {
+    setApointAgentModalOpen(true)
+    setOpenPmaDropdown(false)
+  }
+
   return (
     <>
       <Grid container spacing={8}>
         <Grid item xs={12} sm={6} md={4}>
-          <Card elevation={0} sx={{ borderRadius: 1, height: '370px' }} className='shadow-lg'>
+          <Card elevation={0} sx={{ borderRadius: 1, height: '370px' }} className=' relative'>
             <div className='bg-[#c4edfa] mx-[22px] p-2 rounded-full flex items-center justify-center mt-[24px] size-[44px]'>
               <i style={{ color: '#35c0ed' }} className='ri-eye-2-line size-[24px]' />
             </div>
-
             <Typography
               sx={{
                 fontSize: '30px',
@@ -64,7 +134,6 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
               View and edit information on your tender
             </Typography>
             <Divider sx={{ height: '2px', backgroundColor: '#D9D9D9', my: 1, marginTop: '14px' }} />
-
             {stages?.went_live?.is_completed && stages?.went_live?.details ? (
               <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
                 <Typography
@@ -92,7 +161,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                     paddingTop: '2px'
                   }}
                 >
-                  Submitted On: {stages?.went_live?.details?.tender_creation_date}
+                  Submitted On: {formatDate(stages?.went_live?.details?.tender_creation_date)}
                 </Typography>
                 <Typography
                   sx={{
@@ -103,7 +172,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                     paddingTop: '2px'
                   }}
                 >
-                  Deadline: {stages?.went_live?.details?.tender_expiry_date}
+                  Tender ends on : {formatDate(dashboardResponce?.data?.tender_end_date?.date)}
                 </Typography>
               </CardContent>
             ) : (
@@ -117,7 +186,8 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
             )}
             <Box
               onClick={!stages?.went_live?.is_completed ? undefined : () => router.push('/tender-information-update')}
-              sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '30px' }}
+              sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '30px', marginTop: '75px' }}
+              className=' absolute bottom-[18px] right-2'
             >
               <CustomTooltip text='View Tender Results' position='left' align='left'>
                 <Box
@@ -140,7 +210,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
         </Grid>
 
         <Grid item xs={12} sm={6} md={4}>
-          <Card elevation={0} sx={{ borderRadius: 1, height: '370PX' }} className='shadow-lg'>
+          <Card elevation={0} sx={{ borderRadius: 1, height: '370PX' }} className=' relative'>
             <div className='bg-[#c4edfa] mx-[22px]  p-2 rounded-full flex items-center justify-center mt-[24px] size-[44px]'>
               <i
                 className={`ri-database-line size-[24px] ${stages?.result_received?.is_completed ? 'text-[#26C6F9]' : 'text-white'} `}
@@ -187,7 +257,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                       lineHeight: '22px'
                     }}
                   >
-                    Tender ended on : {stages?.result_received?.details?.tender_end_date}
+                    Tender ended on : {formatDate(stages?.result_received?.details?.tender_end_date)}
                   </Typography>
                   <Typography
                     sx={{
@@ -198,7 +268,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                       paddingTop: '2px'
                     }}
                   >
-                    Results received on : 2{stages?.result_received?.details?.tender_response_date}
+                    Results received on : 2{formatDate(stages?.result_received?.details?.tender_response_date)}
                   </Typography>
                   <Typography
                     sx={{
@@ -244,8 +314,9 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
             )}
 
             <Box
-              onClick={!stages?.result_received?.is_completed ? undefined : () => router.push('/tender-information')}
-              sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '30px' }}
+              onClick={!stages?.result_received?.is_completed ? undefined : () => router.push('/tender-result')}
+              sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px' }}
+              className=' absolute bottom-[18px] right-2'
             >
               <CustomTooltip text='View Tender Results' position='left' align='left'>
                 <Box
@@ -270,7 +341,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
         </Grid>
 
         <Grid item xs={12} sm={6} md={4}>
-          <Card elevation={0} sx={{ borderRadius: 1, height: '370PX' }} className='shadow-lg'>
+          <Card elevation={0} sx={{ borderRadius: 1, height: '370PX' }} className=' relative'>
             <div className='bg-[#c4edfa] mx-[22px] p-2 rounded-full flex items-center justify-center mt-[24px] size-[44px]'>
               <i
                 className={`ri-list-check-2 size-[24px] ${stages?.shortlisted?.is_completed ? 'text-[#26C6F9]' : 'text-white'} `}
@@ -308,7 +379,10 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                   : 'You’ve had your results for X days — shortlist now to move forward.  '}
               </Typography>
             </CardContent>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px' }}>
+            <Box
+              sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px' }}
+              className=' absolute bottom-[18px] right-2'
+            >
               <CustomTooltip text='Short List Agent ' position='left' align='left'>
                 <Box
                   onClick={!stages?.shortlisted?.is_completed ? undefined : () => router.push('/shortlist-agent')}
@@ -331,7 +405,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
 
               <CustomTooltip text='Blnd tender ' position='left' align='left'>
                 <Box
-                  onClick={!stages?.shortlisted?.is_completed ? undefined : () => router.push('/tender-information')}
+                  onClick={!stages?.shortlisted?.is_completed ? undefined : () => router.push('/tender-result')}
                   sx={{
                     width: '36px',
                     height: '36px',
@@ -352,8 +426,10 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
           </Card>
         </Grid>
 
+        {/*  Vidoe call*/}
+
         <Grid item xs={12} sm={6} md={4}>
-          <Card elevation={0} sx={{ borderRadius: 1, height: '370PX' }} className='shadow-lg'>
+          <Card elevation={0} sx={{ borderRadius: 1, height: '370PX' }} className=' relative'>
             <div className='bg-[#c4edfa] mx-[22px] p-2 rounded-full flex items-center justify-center mt-[24px] size-[44px]'>
               <Image src={stages?.video_call?.is_completed ? phone : phonewhite} alt='phone-image' />
             </div>
@@ -402,7 +478,10 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                 </Typography>
               </CardContent>
             )}
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px' }}>
+            <Box
+              sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px' }}
+              className=' absolute bottom-[18px] right-2'
+            >
               <CustomTooltip text='View All Video Calls' position='left' align='left'>
                 <Box
                   onClick={!stages?.shortlisted?.is_completed ? undefined : () => router.push('/invites-video-calls')}
@@ -425,7 +504,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
 
               <CustomTooltip text='Schedual New Video call' position='left' align='left'>
                 <Box
-                  onClick={stages?.shortlisted?.is_completed ? undefined : () => setOnlineCallsModalOpen(true)}
+                  onClick={!stages?.shortlisted?.is_completed ? undefined : () => setOnlineCallsModalOpen(true)}
                   sx={{
                     width: '36px',
                     height: '36px',
@@ -443,17 +522,13 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                 </Box>
               </CustomTooltip>
             </Box>
-            <VideosCallsModal
-              open={onlineCallsModalOpen}
-              onClose={() => setOnlineCallsModalOpen(false)}
-              mainSiteVisitVideoCalls={undefined}
-              types='fromDashboard'
-            />
           </Card>
         </Grid>
 
+        {/* site visst  */}
+
         <Grid item xs={12} sm={6} md={4}>
-          <Card elevation={0} sx={{ borderRadius: 1, height: '370PX' }} className='shadow-lg'>
+          <Card elevation={0} sx={{ borderRadius: 1, height: '370PX' }} className=' relative '>
             <div className='bg-[#c4edfa] mx-[22px] p-2 rounded-full flex items-center justify-center mt-[24px] size-[44px]'>
               {/* <Image src={person} alt='site-visit-image' /> */}
               <i
@@ -505,7 +580,10 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                 </Typography>
               </CardContent>
             )}
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px' }}>
+            <Box
+              sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px' }}
+              className=' absolute bottom-[18px] right-2'
+            >
               <CustomTooltip text='View Tender Results' position='left' align='left'>
                 <Box
                   sx={{
@@ -566,20 +644,11 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                 </Box>
               </CustomTooltip>
             </Box>
-
-            <SiteVisitsModal
-              open={siteVisitsModalOpen}
-              // defaultmultiselect={selectedPma}
-              onClose={() => setSiteVisitsModalOpen(false)}
-              types={null}
-
-              // shorlistedPmas={finalShortListedResponce?.data?.shortlisted_pmas}
-            />
           </Card>
         </Grid>
 
         <Grid item xs={12} sm={6} md={4}>
-          <Card elevation={0} sx={{ borderRadius: 1, height: '370PX' }} className='shadow-lg'>
+          <Card elevation={0} sx={{ borderRadius: 1, height: '370PX' }} className=' relative'>
             <div className='bg-[#c4edfa] mx-[22px] p-2 rounded-full flex items-center justify-center mt-[24px] size-[44px]'>
               <Image src={stages?.appointment?.is_completed ? roundStar : star} alt='appointment-image' />
             </div>
@@ -616,7 +685,10 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                   'Once you’ve had meaningful discussions or met with agents, you’ll be able to appoint  your chosen managing agent here.'}
               </Typography>
             </CardContent>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px' }}>
+            <Box
+              sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px' }}
+              className=' absolute bottom-[18px] right-2'
+            >
               <CustomTooltip text='View Final Seletion ' position='left' align='left'>
                 <Box
                   sx={{
@@ -638,7 +710,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
 
               <CustomTooltip text='Appoint The Agent ' position='left' align='left'>
                 <Box
-                  onClick={stages?.appointment?.is_completed ? undefined : () => setApointAgentModalOpen(true)}
+                  onClick={!stages?.appointment?.is_completed ? undefined : () => setOpenPmaDropdown(true)}
                   sx={{
                     width: '36px',
                     height: '36px',
@@ -658,15 +730,63 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                 </Box>
               </CustomTooltip>
             </Box>
-            <AppointManagemnetModal
-              open={apointAgentModalOpen}
-              onClose={() => setApointAgentModalOpen(false)}
-              // finalShortListedResponce={finalShortListedResponce}
-              // pmaSelectedID={pmaSelectedID}
-              InviteCompletedCalls={undefined}
-            />
           </Card>
         </Grid>
+
+        <VideosCallsModal
+          open={onlineCallsModalOpen}
+          onClose={() => setOnlineCallsModalOpen(false)}
+          mainSiteVisitVideoCalls={finalShortListedResponce?.data?.shortlisted_pma_users}
+          types='fromDashboard'
+        />
+
+        <SiteVisitsModal
+          open={siteVisitsModalOpen}
+          // defaultmultiselect={selectedPma}
+          onClose={() => setSiteVisitsModalOpen(false)}
+          types={null}
+          shorlistedPmas={finalShortListedResponce?.data?.shortlisted_pma_users}
+        />
+
+        <AppointManagemnetModal
+          open={apointAgentModalOpen}
+          onClose={() => setApointAgentModalOpen(false)}
+          finalShortListedResponce={finalShortListedResponce?.data?.shortlisted_pma_users}
+          pmaSelectedID={pmaValue}
+          setpmaValue={setpmaValue}
+          InviteCompletedCalls={undefined}
+        />
+
+        <CommonModal
+          isOpen={openPmaDropdown}
+          handleClose={() => setOpenPmaDropdown(false)}
+          header='Plese select the Pma for Appointment'
+          maxWidth='sm'
+          fullWidth
+        >
+          <div className='mt-6'>
+            <FormControl fullWidth error={error}>
+              <InputLabel id='dropdown-label'>Choose Option</InputLabel>
+              <Select labelId='dropdown-label' value={pmaValue} onChange={handleChange}>
+                {finalShortListedResponce?.data?.shortlisted_pma_users?.map((item: PmaUser) => (
+                  <MenuItem key={item.id} value={item.id}>
+                    {item.full_name}
+                  </MenuItem>
+                ))}
+              </Select>
+              {error && <FormHelperText>Please select a value</FormHelperText>}
+            </FormControl>
+          </div>
+          <div className='mt-8 flex justify-end'>
+            <CustomButton
+              disabled={!pmaValue}
+              onClick={handleAppointAgentSelection}
+              sx={{ fontSize: '14px', fontWeight: 700 }}
+            >
+              Select the Pma
+            </CustomButton>
+          </div>
+        </CommonModal>
       </Grid>
     </>
   )

@@ -14,7 +14,6 @@ import InviteCompletedCalls from './InviteCompletedCalls'
 import InviteCallHeader from './InviteCallHeader'
 import { InviteTabItems } from '../data'
 import InviteCallsTabSection, { type InviteTabItem } from './InviteCallsTabSection'
-import type { RootState } from '@/redux-store'
 import { rmcVideoCallDetails } from '@/services/site_visit_apis/site_visit_api'
 import InvitePendingCalls from './InvitePendingCalls'
 import InviteUpcomingCalls from './InviteUpcomingCalls'
@@ -36,7 +35,9 @@ const columnHelper = createColumnHelper<TenderType>()
 const InviteCallsTabs = () => {
   const [activeTab, setActiveTab] = useState(0)
   const [activeStatus, setActiveStatus] = useState('')
-  const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+
+  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
+  const tender_id = rmcData?.tender_id
 
   const { data: getVideoCallsData } = useQuery({
     queryKey: ['gettingVideoCallsDetails', tender_id, activeStatus],

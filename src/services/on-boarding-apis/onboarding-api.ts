@@ -27,7 +27,7 @@ interface RtmRole {
  */
 export const onBoardingFlow = async (step: number, data: Record<string, any>) => {
   try {
-    const url = apiEndpoints.onboarding(step)
+    const url = apiEndpoints.rmcOnboarding()
     const response = await axiosClient.post(url, data)
 
     return response.data
@@ -74,7 +74,7 @@ export const getRtmRoles = async (): Promise<RtmRole[]> => {
 
 export const Verification = async (data: { user_id: number; otp: string }) => {
   try {
-    const url = apiEndpoints.otpVerification(data.user_id, data.otp as any)
+    const url = apiEndpoints.otpVerification()
 
     const response = await axiosClient.post(url, {
       user_id: data.user_id,

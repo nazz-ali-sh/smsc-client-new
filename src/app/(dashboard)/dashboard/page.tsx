@@ -4,12 +4,12 @@ import { useQuery } from '@tanstack/react-query'
 
 import { useSelector } from 'react-redux'
 
-import type { RootState } from '@/redux-store'
 import { dashboardData } from '@/services/dashboard-apis/dashboard-api'
 import AccordionExpand from '@/views/Dashboard/AccordionExpand'
 import CurrentActivity from '@/views/Dashboard/CurrentActivity'
 import { TenderCards } from '@/views/Dashboard/PopularInstructors'
 import WeeklyReport from '@/common/WeeklyReport'
+import HorizontalLinearStepper from '@/common/HorizontalLinearStepper'
 
 interface Stage {
   stage: string
@@ -43,12 +43,12 @@ interface DashboardResponse {
 }
 
 export default function Page() {
-  const rmcTenderId = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
 
   const { data: dashboardResponce } = useQuery<DashboardResponse, Error>({
-    queryKey: ['dashboardDatas', rmcTenderId],
-    queryFn: () => dashboardData(Number(rmcTenderId)),
-    enabled: !!rmcTenderId
+    queryKey: ['dashboardDatas', rmcData?.tender_id],
+    queryFn: () => dashboardData(Number(rmcData?.tender_id)),
+    enabled: !!rmcData?.tender_id
   })
 
   return (
@@ -56,12 +56,16 @@ export default function Page() {
       <section className='flex w-full'>
         <WeeklyReport text={'Welcome Back'} />
       </section>
+
+      <section>
+        <HorizontalLinearStepper />
+      </section>
       <div className='mt-3'>
         <TenderCards dashboardResponce={dashboardResponce} />
       </div>
 
       <div className='mt-[36px]'>
-        <CurrentActivity />
+        <CurrentActivity dashboardResponce={dashboardResponce} />
       </div>
       <div className='mt-[70px] mb-[60px]'>
         <AccordionExpand />

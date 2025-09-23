@@ -1,10 +1,19 @@
-
 export const apiEndpoints = {
   //---------------------- Login / Signup ------------------------//
+  login: () => `/auth/login`,
+  forgotPassword: () => `/auth/forgot-password`,
+  resetPassword: () => `/auth/reset-password`,
+  meWithOnboarding: () => `/auth/me-with-onboarding`,
 
   //---------------------- Onboarding Stepper----------------------//
   // onboarding: (step: any) => `rmc-onboarding?step=${step}`,
-  onboarding: (step: any) => `/rmc/onboarding/step-${step}`,
+  rmcOnboarding: () => `/rmc/onboarding`,
+  rmcOnboardingVerification: () => `/rmc/verification`,
+
+  rmcBudget: () => `/rmc/tender-onboarding`,
+  rmcStep5Status: () => `/rmc/tender-onboarding/step-5/status`,
+  rmcPriorities: () => `/rmc/tender-onboarding`,
+  rmcBlockDetails: () => `/rmc/tender-onboarding`,
 
   ballParkQuote: (session_Id: number | string) => `/rmc/ball-park-quote/${session_Id}`,
 
@@ -12,6 +21,8 @@ export const apiEndpoints = {
   getRoleRtm: `/rmc/rtm/setup`,
 
   setRtmRole: () => `/rmc/rtm/setup`,
+
+  rtmNonDirector: () => `/rmc/non-director`,
 
   nearByPma: (lat: number, lng: number, radius = 10) =>
     `/rmc/rtm/nearby?lat=${lat}&lng=${lng}&radius=${radius}&limit=20`,
@@ -36,7 +47,13 @@ export const apiEndpoints = {
 
   //---------------------- Otp verification  ------------------------------//
 
-  otpVerification: (user_id: number, otp: number | string) => `verify-email-otp?user_id=${user_id}&otp=${otp}`,
+  otpVerification: () => `/rmc/otp-verification`,
+
+  resendCode: () => `/rmc/tender-onboarding/resend-code`,
+
+  //---------------------- Postcode lookup  ------------------------------//
+
+  postcodeLookup: (postcode: string) => `https://api.ideal-postcodes.co.uk/v1/postcodes/${postcode}`,
 
   //---------------------- Tender Result  ------------------------------//
 
@@ -113,6 +130,10 @@ export const apiEndpoints = {
 
   gettingFianlSelectionDetails: (tender_id: number) => `/rmc/final-page-detail?tender_id=${tender_id}`,
 
+  //---------------------- Tender Information   ------------------------------//
+
+  getTenderDetail: () => `/rmc/tender/detail`,
+
   gettingFinalSelectionPdf: (tender_id: number) => `/rmc/final-report/pdf?tender_id=${tender_id}`,
 
   //---------------------- Archive    ------------------------------//
@@ -122,11 +143,22 @@ export const apiEndpoints = {
   gettingArchiveDetails: (tender_id: number, pma_user_id?: number) => {
     return pma_user_id
       ? `rmc/tenders/archived/${tender_id}?pma_user_id=${pma_user_id}`
-      : `rmc/tenders/archived/${tender_id}`
+      : `rmc/tenders/
+      archived/${tender_id}`
   },
 
-  //---------------------- Calander    ------------------------------//
+  //---------------------- Eveluation  ------------------------------//
+
+  eveluationCatagories: (tender_id: number) => `rmc/evaluation-categories?tender_id=${tender_id}`,
 
   gettingCalanderData: (tender_id: number, status: string, type: string, month: string, date: string) =>
-    `rmc/calendar?tender_id=8&view=${status}&type=${type}&month=${month}&date=${date}`
+    `rmc/calendar?tender_id=8&view=${status}&type=${type}&month=${month}&date=${date}`,
+
+  addEvaluationMetric: () => 'rmc/evaluation-categories',
+
+  editEvaluationMetric: (id: number) => `rmc/evaluation-categories/${id}`,
+
+  removeEvaluationCatagory: (id: number, tender_id: number) => `rmc/evaluation-categories/${id}?tender_id=${tender_id}`
+
+  // api/rmc/evaluation-categories
 }

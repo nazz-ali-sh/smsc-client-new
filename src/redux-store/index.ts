@@ -11,11 +11,23 @@ import userReducer from '@/redux-store/slices/userSlice'
 import calendarReducer from '@/redux-store/slices/rmcCalendar'
 import rmcCalendarReducer from '@/redux-store/slices/rmcCalendar'
 import siteVisitAndCallStatsReducer from '@/redux-store/slices/sideVisitAndCallStatsSlice'
+import rmcOnboardingReducer from '@/redux-store/slices/rmcOnboardingSlice'
+import rtmNonDirectorReducer from '@/redux-store/slices/rtmNonDirectorSlice'
+import postcodeReducer from '@/redux-store/slices/postcodeSlice'
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['form', 'tenderForm', 'pmaRegistration', 'pmaOnboardingForm', 'branches', 'users']
+  whitelist: [
+    'form',
+    'tenderForm',
+    'pmaRegistration',
+    'pmaOnboardingForm',
+    'branches',
+    'users',
+    'rmcOnboarding',
+    'rtmNonDirector'
+  ]
 }
 
 const rootReducer = combineReducers({
@@ -27,7 +39,10 @@ const rootReducer = combineReducers({
   users: userReducer,
   calendarReducer: calendarReducer,
   rmcCalendarReducer: rmcCalendarReducer,
-  siteVisitAndCallStats: siteVisitAndCallStatsReducer
+  siteVisitAndCallStats: siteVisitAndCallStatsReducer,
+  rmcOnboarding: rmcOnboardingReducer,
+  rtmNonDirector: rtmNonDirectorReducer,
+  postcode: postcodeReducer
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

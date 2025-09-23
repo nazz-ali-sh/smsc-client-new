@@ -3,92 +3,166 @@ import React, { useState } from 'react'
 
 import { useRouter } from 'next/navigation'
 
-import { TextField, Typography } from '@mui/material'
+import { useDispatch, useSelector } from 'react-redux'
+import { useForm } from 'react-hook-form'
+import { valibotResolver } from '@hookform/resolvers/valibot'
+import { useMutation } from '@tanstack/react-query'
+import { toast } from 'react-toastify'
+
+import { Typography, Grid, Box } from '@mui/material'
+
+import type { InferOutput } from 'valibot'
 
 import CustomButton from '@/common/CustomButton'
+import FormInput from '@/components/form-components/FormInput'
+import { rtmNonDirectorSchema } from '@/schemas/validation-schemas'
+import { submitRtmNonDirector, type RtmNonDirectorPayload } from '@/services/rmc-onboarding-apis/rmc-onboarding-api'
+import { setPersonalInfo, clearRtmNonDirectorData } from '@/redux-store/slices/rtmNonDirectorSlice'
 
-interface InputField {
-  name: string
-  placeholder: string
-}
-
-const inputFields: InputField[] = [
-  { name: 'fullName', placeholder: 'Full Name' },
-  { name: 'email', placeholder: 'Email' },
-  { name: 'phoneNumber', placeholder: 'Phone Number' }
-]
+type RtmFormData = InferOutput<typeof rtmNonDirectorSchema>
 
 const OnboardingRtmForm = () => {
   const router = useRouter()
+  const dispatch = useDispatch()
+  const { rtmSetup, questions, personalInfo } = useSelector((state: any) => state?.rtmNonDirector)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const [formData, setFormData] = useState<Record<string, string>>({
-    fullName: '',
-    email: '',
-    phoneNumber: ''
+  const { control, handleSubmit } = useForm<RtmFormData>({
+    resolver: valibotResolver(rtmNonDirectorSchema),
+    defaultValues: {
+      name: personalInfo?.name,
+      email: personalInfo?.email,
+      phone_no: personalInfo?.phone_no
+    },
+    mode: 'onChange'
   })
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
+  const mutation = useMutation({
+    mutationFn: submitRtmNonDirector,
+    onSuccess: data => {
+      if (data) {
+        dispatch(clearRtmNonDirectorData())
+        router.replace('/rmc-onboarding')
+      }
 
-    setFormData(prev => ({ ...prev, [name]: value }))
+      setIsSubmitting(false)
+    },
+    onError: (error: any) => {
+      const errorMessage = error?.response?.data?.message || 'Failed to submit RTM setup. Please try again.'
+
+      toast.error(errorMessage)
+      setIsSubmitting(false)
+    }
+  })
+
+  const handleFormSubmit = (data: RtmFormData) => {
+    if (isSubmitting || mutation.isPending) {
+      return
+    }
+
+    setIsSubmitting(true)
+
+    dispatch(
+      setPersonalInfo({
+        name: data.name,
+        email: data.email,
+        phone_no: data.phone_no
+      })
+    )
+
+    const payload: RtmNonDirectorPayload = {
+      name: data.name,
+      email: data.email,
+      phone_no: data.phone_no,
+      rtm_setup: rtmSetup || '',
+      q_independent_redevelopment: questions?.q_independent_redevelopment || '',
+      q_separable_shared_services: questions?.q_separable_shared_services || '',
+      q_units_are_flats: questions?.q_units_are_flats || '',
+      q_two_thirds_leasehold_over_21_years: questions?.q_two_thirds_leasehold_over_21_years || '',
+      q_at_least_50_percent_residential: questions?.q_at_least_50_percent_residential || ''
+    }
+
+    mutation.mutate(payload)
   }
 
-  const handleNavigate = () => {
-    router.push('rmc-onboarding-questions')
+  const handleNext = () => {
+    handleSubmit(handleFormSubmit)()
+  }
+
+  const handleBackStep = () => {
+    router.push('/rmc-onboarding-five')
   }
 
   return (
-    <div className='flex flex-col items-center pt-10'>
-      <h1 className='text-[48px] font-bold text-[#262B43E5]'>RMC Onboarding</h1>
-      <div className='bg-white p-8 pt-10 w-full max-w-7xl mt-6'>
-        <Typography
-          variant='h6'
-          sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1' }}
-          className=' mb-6'
-        >
-          Setup An RTM
-        </Typography>
+    <>
+      <h1 className='text-[48px] text-center font-bold text-[#262B43E5] mt-8'>RMC Onboarding</h1>
+      <div className='flex items-center justify-center p-4 bg-white mt-8 mb-20'>
+        <div className='p-4 rounded-lg w-full max-w-7xl'>
+          <div className='pt-16'>
+            <Box component='form'>
+              <Typography
+                variant='h6'
+                sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1', mb: 3 }}
+              >
+                Setup An RTM
+              </Typography>
 
-        <div className='py-6'>
-          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-10'>
-            {inputFields.map(field => (
-              <TextField
-                key={field.name}
-                name={field.name}
-                value={formData[field.name]}
-                onChange={handleChange}
-                fullWidth
-                placeholder={field.placeholder}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '6px',
-                    '&.Mui-focused fieldset': {
-                      borderColor: '#35C0ED'
-                    }
-                  },
-                  '& .MuiInputBase-input::placeholder': {
-                    color: 'customColors.textGray',
-                    opacity: 1
-                  }
-                }}
-              />
-            ))}
+              <Grid container spacing={6}>
+                <Grid item xs={12} md={4}>
+                  <FormInput
+                    name='name'
+                    control={control}
+                    placeholder='Full Name'
+                    type='text'
+                    required
+                    disabled={isSubmitting || mutation.isPending}
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={4}>
+                  <FormInput
+                    name='email'
+                    control={control}
+                    placeholder='Email'
+                    type='email'
+                    required
+                    disabled={isSubmitting || mutation.isPending}
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={4}>
+                  <FormInput
+                    name='phone_no'
+                    control={control}
+                    placeholder='Phone Number'
+                    type='tel'
+                    required
+                    disabled={isSubmitting || mutation.isPending}
+                  />
+                </Grid>
+              </Grid>
+            </Box>
+
+            <div className='flex justify-between gap-2 items-center mt-40'>
+              <CustomButton
+                onClick={handleBackStep}
+                startIcon={<i className='ri-arrow-left-line'></i>}
+                variant='outlined'
+              >
+                Back
+              </CustomButton>
+              <CustomButton
+                endIcon={<i className='ri-arrow-right-line'></i>}
+                onClick={handleNext}
+                disabled={isSubmitting || mutation.isPending}
+              >
+                {isSubmitting || mutation.isPending ? 'Submitting...' : 'Submit'}
+              </CustomButton>
+            </div>
           </div>
         </div>
-        <div className='flex justify-end gap-4 mt-44 pb-10'>
-          <CustomButton sx={{ fontSize: '16px', fontWeight: 700 }} startIcon={<i className='ri-arrow-left-line'></i>}>
-            Back
-          </CustomButton>
-          <CustomButton
-            onClick={handleNavigate}
-            sx={{ fontSize: '16px', fontWeight: 700 }}
-            endIcon={<i className='ri-arrow-right-line'></i>}
-          >
-            Next
-          </CustomButton>
-        </div>
       </div>
-    </div>
+    </>
   )
 }
 

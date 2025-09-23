@@ -42,28 +42,9 @@ const Page = dynamic(() => import('react-pdf').then(mod => ({ default: mod.Page 
   ssr: false
 })
 
-interface agenetProps {
-  data: any
-  shortlist_id: number
-  tender_id: number
-  tender_name: string
-  shortlisted_pma_count: number
-  shortlisted_pma_users: {
-    id: number
-    pma_number: string
-    full_name: string
-    email: string
-    mobile_number: string
-    company_name: string
-  }[]
-  shortlisted_by: {
-    id: number
-    name: string | null
-    email: string
-  }
-}
 
-const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce: agenetProps }) => {
+
+const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce: any }) => {
   const router = useRouter()
   const [numPages, setNumPages] = useState<number | null>(null)
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)

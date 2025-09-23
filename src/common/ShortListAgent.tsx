@@ -11,7 +11,6 @@ import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
 import { rmcExtendThreeDays } from '@/services/tender_result-apis/tender-result-api'
-import type { RootState } from '@/redux-store'
 
 type ShortListAgentProps = {
   open: boolean
@@ -29,7 +28,8 @@ const ShortListAgent = ({ open, onClose, onConfirm, confirmColor = 'primary', pm
   const [seconds, setSeconds] = useState(24 * 60 * 60)
   const router = useRouter()
 
-  const rmcTenderId = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
+  const rmcTenderId = rmcData?.tender_id
 
   // Define the mutation
   const mutation = useMutation({

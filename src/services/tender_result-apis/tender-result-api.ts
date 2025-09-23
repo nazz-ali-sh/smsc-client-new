@@ -269,23 +269,20 @@ export const rmcExtendThreeDays = async (tender_id: number, pma_user_id: number)
   }
 }
 
-export const getExtendExpireDate = async (tender_id: number) => {
+// Get saved evaluation data
+export const getSavedEvaluationData = async (tender_id: number) => {
   try {
-    const url = apiEndpoints.rmcgetExtendExpiryDate(tender_id)
-
-    const response = await axiosClient.post(url)
+    const url = `/rmc/evaluation-matrix/scores?tender_id=${tender_id}`
+    const response = await axiosClient.get(url)
 
     return response.data
   } catch (error) {
-    console.error('Tender Responce API error:', error)
-
+    console.error('Get saved evaluation data API error:', error)
     throw error
   }
 }
 
-
-
-export const AllShortlistedPmas = async (tender_id: number) => {
+export const shortlistedPmas = async (tender_id: number) => {
   try {
     const url = apiEndpoints.gettingAllShortlistedPma(tender_id)
 

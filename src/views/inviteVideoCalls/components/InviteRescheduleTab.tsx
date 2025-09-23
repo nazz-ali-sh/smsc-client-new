@@ -18,8 +18,6 @@ import SiteVisitsModal from '@/common/SiteVisitsModal'
 import SuccessModal from '@/common/SucessModal'
 import { reSchedualAccepted } from '@/services/site_visit_apis/site_visit_api'
 
-import type { RootState } from '@/redux-store'
-
 interface RescheduledCallType {
   pmaId: string
   yearTrading: string
@@ -39,7 +37,8 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
   const [visitsSchedualInviteId, setVisitsSchedualInviteId] = useState<number | undefined>(undefined)
 
-  const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
+  const tender_id = rmcData?.tender_id
 
   const tableData: RescheduledCallType[] =
     rescheduaInviteData?.data?.invites?.map(

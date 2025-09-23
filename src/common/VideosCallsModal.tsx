@@ -38,8 +38,7 @@ import { toast } from 'react-toastify'
 import { useSelector } from 'react-redux'
 
 import ConfirmationModal from './ConfirmationModal'
-import { AllShortlistedPmas, getSlotsAndDay, videoCallsInvite } from '@/services/tender_result-apis/tender-result-api'
-import type { RootState } from '@/redux-store'
+import { getSlotsAndDay, shortlistedPmas, videoCallsInvite } from '@/services/tender_result-apis/tender-result-api'
 import type { ShortlistedPmaResponse } from './type'
 import { rmcReSchedualAgain } from '@/services/site_visit_apis/site_visit_api'
 
@@ -107,7 +106,9 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
 
   const [value, setValues] = useState<Dayjs | null>(dayjs())
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)
-  const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+
+  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
+  const tender_id = rmcData?.tender_id
 
   const {
     control,
@@ -166,10 +167,9 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
 
   const { data: allshortlsitedPmaData } = useQuery<ShortlistedPmaResponse, Error>({
     queryKey: ['shortlisted', tender_id],
-    queryFn: () => AllShortlistedPmas(tender_id),
+    queryFn: () => shortlistedPmas(tender_id),
     enabled: types === 'fromDashboard' || componentTypes == 'fromCalender'
   })
-
 
   const {
     data: gettingSlotsAndDays,
@@ -279,6 +279,8 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     }
   }
 
+  console.log(mainSiteVisitVideoCalls)
+
   const type = 'videoCall'
 
   const normalizedOptionsRaw = [
@@ -295,13 +297,24 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
         })) || []
     ),
 
-    ...(mainSiteVisitVideoCalls?.data?.invites || []).map((invite: any) => ({
+    ...(mainSiteVisitVideoCalls?.data?.invites || [])?.map((invite: any) => ({
       id: invite.pma_user_id,
       pma_number: invite.pma_name
     })),
 
-    ...(allshortlsitedPmaData?.data?.shortlisted_pma_users || []).map((pma: any) => { 
+    // ...(mainSiteVisitVideoCalls || [])?.map((item: any) => ({
+    //   id: item?.id,
+    //   pma_number: item?.pma_number
+    // })),
 
+    ...(Array.isArray(mainSiteVisitVideoCalls)
+      ? mainSiteVisitVideoCalls.map((item: any) => ({
+          id: item?.id,
+          pma_number: item?.pma_number
+        }))
+      : []),
+
+    ...(allshortlsitedPmaData?.data?.shortlisted_pma_users || [])?.map((pma: any) => {
       return {
         id: pma.id,
         pma_number: pma.pma_number
@@ -331,7 +344,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       toast.success(data?.message || 'Invite sent successfully!')
       reset()
 
-      
       setConfirmationModalOpen(true)
       setSlotError('')
     },
@@ -343,7 +355,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       setSlotError('')
     }
   })
-
 
   const handleReschedualaModal = async (formData: any) => {
     if (!formData.availableSlots) {
@@ -531,7 +542,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
             <Box sx={{ display: 'flex', justifyContent: 'end', mt: 4 }}>
               <Button
                 variant='contained'
-                onClick={handleSubmit(handleSendVideoCall)}
                 sx={{
                   backgroundColor: 'customColors.ligthBlue',
                   '&:hover': { backgroundColor: 'customColors.ligthBlue' }
@@ -618,8 +628,12 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
               variant='contained'
               onClick={handleSubmit(handleSendVideoCalls)}
               disabled={videoCallInviteMutation.isPending}
+              sx={{
+                backgroundColor: 'customColors.ligthBlue',
+                '&:hover': { backgroundColor: 'customColors.ligthBlue' }
+              }}
             >
-              {videoCallInviteMutation.isPending ? 'Sending...' : 'Send To All Shortlisted Agents'}
+              {'Send To All Shortlisted Agents'}
             </Button>
             <Button
               variant='contained'

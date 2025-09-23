@@ -10,10 +10,10 @@ import CongratulationsSection from './components/CongratulationsSection'
 import ManagingAgentDetails from './components/ManagingAgentDetails'
 import ProjectMetrics from './components/ProjectMetrics'
 import { fianlResults } from '@/services/final_result_and_archeive_apis/final_results_apis'
-import type { RootState } from '@/redux-store'
 
 const FinalSelection = () => {
-  const rmcTenderId = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
+  const rmcTenderId = rmcData?.tender_id
 
   interface finalResultResponceData {
     finalResultResponce: any

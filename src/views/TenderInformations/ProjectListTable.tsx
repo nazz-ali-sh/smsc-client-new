@@ -31,10 +31,10 @@ import type { ApiResponseItem, DataType, TenderResponse } from './type'
 import ChevronRight from '@menu/svg/ChevronRight'
 import styles from '@core/styles/table.module.css'
 import AnchorTemporaryDrawer from '@/common/RightDrawer'
-import type { RootState } from '@/redux-store'
 import { downloadBlindTenderPdf, ShortlistedPma, tenderResponce } from '@/services/tender_result-apis/tender-result-api'
 import SuccessModal from '../../common/SucessModal'
 import ShortListAgent from '@/common/ShortListAgent'
+import ViewPmaFullProfile from './ViewPmaFullProfile'
 
 const columnHelper = createColumnHelper<DataType>()
 
@@ -70,7 +70,10 @@ const KitchenSink = () => {
   const router = useRouter()
   const [successModalOpen, setSuccessModalOpen] = useState(false)
   const [shortlistedModalOpen, setShortListedSuccessModalOpen] = useState(false)
-  const tender_id = useSelector((state: RootState) => state?.tenderForm?.tender_id)
+
+  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
+  const tender_id = rmcData?.tender_id
+
   const [selectedResponse, setSelectedResponse] = useState<ApiResponseItem | null>(null)
 
   console.log(selectedResponse)
@@ -336,6 +339,8 @@ const KitchenSink = () => {
     setSuccessModalOpen(true)
   }
 
+  console.log(selectedResponse)
+
   return (
     <Card>
       <div className='text-[#35C0ED] text-[16px] font-semibold pl-[20px] py-[20px]'>
@@ -463,6 +468,9 @@ const KitchenSink = () => {
         handleConfirmSelected={handleConfirmSelected}
         DrawerStats={selectedResponse}
       />
+
+      <ViewPmaFullProfile />
+
       <TablePagination
         rowsPerPageOptions={[7, 10, 25, { label: 'All', value: tableData.length }]}
         component='div'

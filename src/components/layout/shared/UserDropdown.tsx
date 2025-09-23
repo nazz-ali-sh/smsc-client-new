@@ -19,8 +19,15 @@ import MenuList from '@mui/material/MenuList'
 import Typography from '@mui/material/Typography'
 import MenuItem from '@mui/material/MenuItem'
 
+// Redux Imports
+import { useDispatch } from 'react-redux'
+
 // Hook Imports
 import { useSettings } from '@core/hooks/useSettings'
+
+// Utils Imports
+import { clearTokenCookie } from '@/utils/tokenSync'
+import { clearRmcData } from '@/redux-store/slices/rmcOnboardingSlice'
 
 // Styled component for badge content
 const BadgeContentSpan = styled('span')({
@@ -41,6 +48,7 @@ const UserDropdown = () => {
 
   // Hooks
   const router = useRouter()
+  const dispatch = useDispatch()
 
   const { settings } = useSettings()
 
@@ -58,6 +66,13 @@ const UserDropdown = () => {
     }
 
     setOpen(false)
+  }
+
+  const handleSignOut = () => {
+    clearTokenCookie()
+    dispatch(clearRmcData())
+    setOpen(false)
+    router.push('/login')
   }
 
   return (
@@ -107,7 +122,7 @@ const UserDropdown = () => {
                   <MenuItem className='gap-3 pli-4' onClick={e => handleDropdownClose(e)}>
                     <Typography color='text.primary'>Insurance Registration</Typography>
                   </MenuItem>
-                  <MenuItem className='gap-3 pli-4' onClick={e => handleDropdownClose(e)}>
+                  <MenuItem className='gap-3 pli-4' onClick={handleSignOut}>
                     <Typography color='text.primary'>Sign out</Typography>
                   </MenuItem>
                 </MenuList>

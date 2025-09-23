@@ -3,12 +3,20 @@ import React from 'react'
 
 import { Box, Card, Grid, Typography } from '@mui/material'
 
-import { tenderInformationData } from '../data'
+import type { PrioritiesSectionProps } from '../types'
 
-const PrioritiesSection = () => {
+const PrioritiesSection: React.FC<PrioritiesSectionProps> = ({ priorities }) => {
   return (
     <Box sx={{ marginBottom: 4 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, marginBottom: 3, marginTop: '34px' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1,
+          marginBottom: 3,
+          marginTop: '34px'
+        }}
+      >
         <Typography
           color='#1F4E8D'
           sx={{
@@ -21,10 +29,17 @@ const PrioritiesSection = () => {
         </Typography>
       </Box>
       <Grid container spacing={4} sx={{ marginTop: '24px' }}>
-        {tenderInformationData.priorities.map(priority => (
-          <Grid item xs={12} sm={6} md={3} key={priority.id}>
-            <Card sx={{ height: '100px' }} className='border-l-2 border-l-[#35C0ED] '>
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, height: '100%' }}>
+        {priorities?.map(priority => (
+          <Grid item xs={12} sm={6} md={3} key={priority?.id}>
+            <Card sx={{ height: '100px' }} className='border-l-[4px] border-l-[#35C0ED]'>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: 2,
+                  height: '100%'
+                }}
+              >
                 <Box
                   sx={{
                     flex: 1,
@@ -43,15 +58,15 @@ const PrioritiesSection = () => {
                       color: '#1F4E8D'
                     }}
                   >
-                    {priority.id}. {priority.title}
+                    {priority?.id}. {priority?.name}
                   </Typography>
                   <Typography
                     variant='body2'
                     color='text.secondary'
-                    sx={{ lineHeight: 1.4, fontSize: '10px' }}
+                    sx={{ lineHeight: 1.4, fontSize: '12px' }}
                     className='leading-[22px]'
                   >
-                    {priority.description}
+                    {priority?.description || 'I want to reduce my service charges and get better value for money.'}
                   </Typography>
                 </Box>
               </Box>
