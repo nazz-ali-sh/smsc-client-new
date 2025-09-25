@@ -1,18 +1,16 @@
 // // Next Imports
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 
 import Image from 'next/image'
 
-import { FormControl, InputLabel, Select, MenuItem, Grid, Button } from '@mui/material'
+import { FormControl, InputLabel, Select, MenuItem, Grid, Button, type SelectChangeEvent } from '@mui/material'
 
 import classnames from 'classnames'
 
 import { useQuery } from '@tanstack/react-query'
-
-import { useDispatch } from 'react-redux'
 
 import type { Locale } from '@configs/i18n'
 import type { NotificationsType } from '@components/layout/shared/NotificationsDropdown'
@@ -30,7 +28,6 @@ import { getLocalizedUrl } from '@/utils/i18n'
 
 import { gettingRmcTenderId } from '@/services/dashboard-apis/dashboard-api'
 
-import { setTenderId } from '../../../redux-store/slices/userSlice'
 import appLogo from '../../../../public/images/customImages/appLogo.png'
 
 const notifications: NotificationsType[] = [
@@ -95,25 +92,26 @@ interface TenderIdResponse {
 }
 
 const NavbarContent = () => {
-  const dispatch = useDispatch()
-
   const { isBreakpointReached } = useHorizontalNav()
   const { lang: locale } = useParams()
 
-  const [rmctenderId, setRmcTenderId] = useState<number | ''>('')
-
-  const handleTenderChange = (event: any) => {
-    const newTenderId = event.target.value as number
-
-    dispatch(setTenderId(newTenderId))
-
-    setRmcTenderId(newTenderId)
-  }
+  const [rmctenderId, setRmctenderId] = useState<string>('')
 
   const { data: rmcTenderIDData, isLoading } = useQuery<TenderIdResponse, Error>({
     queryKey: ['rmcTenderIds'],
-    queryFn: gettingRmcTenderId
+    queryFn: gettingRmcTenderId,
+    retry: 2
   })
+
+  useEffect(() => {
+    if (rmcTenderIDData?.data?.tenders?.length && !rmctenderId) {
+      setRmctenderId(rmcTenderIDData.data.tenders[0].id as any)
+    }
+  }, [rmcTenderIDData, rmctenderId])
+
+  const handleTenderChange = (event: SelectChangeEvent) => {
+    setRmctenderId(event.target.value as any)
+  }
 
   return (
     <div
@@ -183,9 +181,9 @@ const NavbarContent = () => {
                 }}
               >
                 {isLoading ? (
-                  <div className='text-center'> Loading.... </div>
+                  <MenuItem disabled>Loading...</MenuItem>
                 ) : rmcTenderIDData?.data?.tenders?.length ? (
-                  rmcTenderIDData?.data?.tenders?.map(tender => (
+                  rmcTenderIDData.data.tenders.map(tender => (
                     <MenuItem key={tender.id} value={tender.id}>
                       {tender.name}
                     </MenuItem>

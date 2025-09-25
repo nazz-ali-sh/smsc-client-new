@@ -243,7 +243,7 @@ const OnboardingBlockDetails = () => {
                   key={field?.name}
                   name={field?.name}
                   control={control}
-                  placeholder={field?.placeholder}
+                  label={field?.placeholder}
                   icon={field?.icon}
                   onIconHover={(event: React.MouseEvent<HTMLElement>) =>
                     handleIconHover(field.name as keyof typeof tooltipContent, event)

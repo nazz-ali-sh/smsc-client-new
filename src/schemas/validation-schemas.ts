@@ -11,6 +11,10 @@ const validateUKPhoneNumber = (value: string): boolean => {
     return true
   }
 
+  if (/^\d{7,10}$/.test(cleanNumber)) {
+    return true
+  }
+
   if (/^07\d{9}$/.test(cleanNumber)) {
     return true
   }
@@ -26,14 +30,19 @@ export const directorOfRMCSchema = pipe(
   object({
     fullName: pipe(
       string(),
-      nonEmpty('Full name is required'),
-      minLength(2, 'Full name must be at least 2 characters')
+      nonEmpty('First name is required'),
+      minLength(2, 'First name must be at least 2 characters')
+    ),
+    lastName: pipe(
+      string(),
+      nonEmpty('Last name is required'),
+      minLength(2, 'Last name must be at least 2 characters')
     ),
     email: pipe(string(), nonEmpty('Email is required'), email('Please enter a valid email address')),
     phoneNumber: pipe(
       string(),
       nonEmpty('Phone number is required'),
-      check(validateUKPhoneNumber, 'Please enter a valid UK phone number (e.g., +447123456789)')
+      check(validateUKPhoneNumber, 'Please enter a valid UK phone number (e.g., 07123456789 )')
     ),
     password: pipe(
       string(),
@@ -257,7 +266,7 @@ export const rtmNonDirectorSchema = pipe(
     phone_no: pipe(
       string(),
       nonEmpty('Phone number is required'),
-      check(validateUKPhoneNumber, 'Please enter a valid UK phone number (e.g., 07123456789 or +447123456789)')
+      check(validateUKPhoneNumber, 'Please enter a valid UK phone number (e.g., 07123456789)')
     )
   })
 )

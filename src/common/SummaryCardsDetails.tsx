@@ -15,13 +15,7 @@ interface SummaryStatus {
   tenderStatusdetails?: any
 }
 
-const SummaryCardsDetails: React.FC<SummaryCardProps> = ({
-  title,
-  count,
-  iconClass,
-  color,
-  bgColor,
-}) => (
+const SummaryCardsDetails: React.FC<SummaryCardProps> = ({ title, count, iconClass, color, bgColor }) => (
   <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
     <Box
       sx={{
@@ -49,7 +43,6 @@ const SummaryCardsDetails: React.FC<SummaryCardProps> = ({
 )
 
 const SummaryCards: React.FC<SummaryStatus> = ({ tenderStatusdetails }) => {
-
   return (
     <Card sx={{ p: 2 }}>
       <div className='mb-3 px-[25px]'>
@@ -96,7 +89,7 @@ const SummaryCards: React.FC<SummaryStatus> = ({ tenderStatusdetails }) => {
           </Grid>
           <Grid item xs={12} sm={6} md={2.4}>
             <SummaryCardsDetails
-              title='Won'
+              title='Appointed'
               count='3 Tenders'
               iconClass='ri-medal-line'
               color='customColors.green2'

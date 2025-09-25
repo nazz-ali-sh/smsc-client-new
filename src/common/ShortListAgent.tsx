@@ -1,5 +1,4 @@
 'use client'
-import React, { useState, useEffect } from 'react'
 
 import { useRouter } from 'next/navigation'
 
@@ -22,16 +21,22 @@ type ShortListAgentProps = {
   cancelText?: string
   confirmColor?: 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success'
   pmaSelectedID?: any
+  fianlExpireDate?: any
 }
 
-const ShortListAgent = ({ open, onClose, onConfirm, confirmColor = 'primary', pmaSelectedID }: ShortListAgentProps) => {
-  const [seconds, setSeconds] = useState(24 * 60 * 60)
+const ShortListAgent = ({
+  open,
+  onClose,
+  onConfirm,
+  confirmColor = 'primary',
+  pmaSelectedID,
+  fianlExpireDate
+}: ShortListAgentProps) => {
   const router = useRouter()
 
   const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
   const rmcTenderId = rmcData?.tender_id
 
-  // Define the mutation
   const mutation = useMutation({
     mutationFn: () => rmcExtendThreeDays(Number(rmcTenderId), pmaSelectedID),
     onSuccess: data => {
@@ -47,28 +52,6 @@ const ShortListAgent = ({ open, onClose, onConfirm, confirmColor = 'primary', pm
     }
   })
 
-  useEffect(() => {
-    let timerId: NodeJS.Timeout
-
-    if (open) {
-      timerId = setInterval(() => {
-        setSeconds(prevSeconds => prevSeconds - 1)
-      }, 1000)
-    }
-
-    return () => clearInterval(timerId)
-  }, [open])
-
-  // Function to format seconds into HH:MM:SS
-  const formatTime = (totalSeconds: number) => {
-    const hours = Math.floor(totalSeconds / 3600)
-    const minutes = Math.floor((totalSeconds % 3600) / 60)
-    const remainingSeconds = totalSeconds % 60
-
-    const pad = (num: number) => num.toString().padStart(2, '0')
-
-    return `${pad(hours)}:${pad(minutes)}:${pad(remainingSeconds)}`
-  }
 
   const handleCloseAndNavigate = () => {
     router.push('/shortlist-agent')
@@ -93,7 +76,15 @@ const ShortListAgent = ({ open, onClose, onConfirm, confirmColor = 'primary', pm
         </DialogContentText>
       </DialogContent>
       <section className='px-[20px] text-[#1F4E8D] text-[18px] leading-[33px]'>
-        <p style={{ fontWeight: 'bold' }}>{formatTime(seconds)}</p>
+        <p style={{ fontWeight: 'bold' }}>
+          {fianlExpireDate ? (
+            <span>
+              {fianlExpireDate.days} days {fianlExpireDate.hours} hour {fianlExpireDate.minutes} minutes
+            </span>
+          ) : (
+            ''
+          )}
+        </p>
       </section>
       <DialogActions className='flex justify-between'>
         <Button

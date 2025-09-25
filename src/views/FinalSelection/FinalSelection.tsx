@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Container, Grid } from '@mui/material'
+import { Box, Container, Grid, Typography, Card, CardContent } from '@mui/material'
 
 import { useQuery } from '@tanstack/react-query'
 
@@ -16,22 +16,49 @@ const FinalSelection = () => {
   const rmcTenderId = rmcData?.tender_id
 
   interface finalResultResponceData {
-    finalResultResponce: any
+    data?: {
+      pma_start_date?: string
+      [key: string]: any
+    }
+    [key: string]: any
   }
 
-  const { data: finalResultResponce } = useQuery<finalResultResponceData, Error>({
+  const {
+    data: finalResultResponce,
+    error,
+    isError
+  } = useQuery<finalResultResponceData, Error>({
     queryKey: ['finalResultData', rmcTenderId],
     queryFn: () => fianlResults(Number(rmcTenderId)),
     enabled: !!rmcTenderId,
-    retry: false
+    retry: 2
   })
+
+  if (isError && error) {
+    return (
+      <Container maxWidth={false} sx={{ py: 4 }}>
+        <Box>
+          <Card>
+            <CardContent sx={{ textAlign: 'center', py: 8 }}>
+              <Typography variant='h4' sx={{ color: 'error.main', mb: 2 }}>
+                No Appointment Found
+              </Typography>
+              <Typography variant='body1' sx={{ color: 'text.secondary' }}>
+                {(error as any)?.response?.data?.message || 'No appointment found for this tender'}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Box>
+      </Container>
+    )
+  }
 
   return (
     <Container maxWidth={false} sx={{ py: 4 }}>
       <Box>
         <Grid container spacing={8}>
           <Grid item xs={12}>
-            <CongratulationsSection />
+            <CongratulationsSection startDate={finalResultResponce?.data?.pma_start_date} />
           </Grid>
           <Grid item xs={12} md={4}>
             <ManagingAgentDetails finalSelection={finalResultResponce} />

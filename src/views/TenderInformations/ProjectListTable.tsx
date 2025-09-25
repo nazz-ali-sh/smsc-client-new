@@ -26,6 +26,7 @@ import { useSelector } from 'react-redux'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
+
 import pdfFrame from '../../../public/images/customImages/frame.png'
 import type { ApiResponseItem, DataType, TenderResponse } from './type'
 import ChevronRight from '@menu/svg/ChevronRight'
@@ -34,7 +35,8 @@ import AnchorTemporaryDrawer from '@/common/RightDrawer'
 import { downloadBlindTenderPdf, ShortlistedPma, tenderResponce } from '@/services/tender_result-apis/tender-result-api'
 import SuccessModal from '../../common/SucessModal'
 import ShortListAgent from '@/common/ShortListAgent'
-import ViewPmaFullProfile from './ViewPmaFullProfile'
+import CustomButton from '@/common/CustomButton'
+import { calculateTimeLeft } from '@/utils/dateFormater'
 
 const columnHelper = createColumnHelper<DataType>()
 
@@ -63,20 +65,15 @@ const KitchenSink = () => {
   const [selectedAgentId, setSelectedAgentId] = useState<number[]>([])
   const [allselectedpma, SetAllSelectedPma] = useState<number[]>([])
 
-  console.log(allselectedpma)
-
-  console.log(selectedAgentId)
-
   const router = useRouter()
   const [successModalOpen, setSuccessModalOpen] = useState(false)
   const [shortlistedModalOpen, setShortListedSuccessModalOpen] = useState(false)
+  const [shortlistedResponce, setshortlistedResponce] = useState('')
 
   const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
   const tender_id = rmcData?.tender_id
 
   const [selectedResponse, setSelectedResponse] = useState<ApiResponseItem | null>(null)
-
-  console.log(selectedResponse)
 
   const { data: responceData } = useQuery<TenderResponse, Error>({
     queryKey: ['tendeResponce', tender_id],
@@ -87,7 +84,12 @@ const KitchenSink = () => {
   const shortlistMutation = useMutation({
     mutationFn: ({ tender_id, pma_user_ids }: { tender_id: number; pma_user_ids: number[] }) =>
       ShortlistedPma(tender_id, pma_user_ids),
-    onSuccess: () => {
+    onSuccess: data => {
+      // 🔹 Extract expiry date from response
+      debugger
+      const expiryAt = data?.data?.expiry_at || ''
+
+      setshortlistedResponce(expiryAt)
       setShortListedSuccessModalOpen(true)
       table.resetRowSelection()
     },
@@ -96,27 +98,49 @@ const KitchenSink = () => {
     }
   })
 
+  const fianlExpireDate = calculateTimeLeft(shortlistedResponce)
+
+  console.log(fianlExpireDate)
+
   const handleCloseAndNavigate = () => {
     setShortListedSuccessModalOpen(false)
     router.push('/shortlist-agent')
   }
 
-  const downloadMutation = useMutation({
-    mutationFn: (id: number) => downloadBlindTenderPdf(id),
-    onSuccess: data => {
+  
+  const downloadMutation = useMutation<
+    Blob, 
+    Error, 
+    { id: number; open?: boolean } 
+  >({
+    mutationFn: async ({ id }) => {
+      
+      return await downloadBlindTenderPdf(id)
+    },
+    onSuccess: (data, variables) => {
       const blob = new Blob([data], { type: 'application/pdf' })
       const url = window.URL.createObjectURL(blob)
+
+      // Always download
       const link = document.createElement('a')
 
       link.href = url
-      link.download = `tender_${tender_id}.pdf`
+      link.download = `tender_${variables.id}.pdf`
       link.click()
+
+    
+      if (variables.open) {
+        window.open(url, '_blank')
+      }
+
       window.URL.revokeObjectURL(url)
     },
     onError: error => {
       console.error('Download failed:', error)
     }
   })
+
+
 
   useEffect(() => {
     if (responceData?.data?.responses) {
@@ -150,6 +174,15 @@ const KitchenSink = () => {
               checked={table.getIsAllRowsSelected()}
               indeterminate={table.getIsSomeRowsSelected()}
               onChange={table.getToggleAllRowsSelectedHandler()}
+              sx={{
+                color: '#26C6F9', 
+                '&.Mui-checked': {
+                  color: '#26C6F9'
+                },
+                '&.MuiCheckbox-indeterminate': {
+                  color: '#26C6F9' 
+                }
+              }}
             />
           </div>
         ),
@@ -160,6 +193,15 @@ const KitchenSink = () => {
               disabled={!row.getCanSelect()}
               indeterminate={row.getIsSomeSelected()}
               onChange={row.getToggleSelectedHandler()}
+              sx={{
+                color: '#26C6F9',
+                '&.Mui-checked': {
+                  color: '#26C6F9'
+                },
+                '&.MuiCheckbox-indeterminate': {
+                  color: '#26C6F9'
+                }
+              }}
             />
           </div>
         ),
@@ -167,6 +209,7 @@ const KitchenSink = () => {
         enableColumnFilter: false,
         size: 50
       },
+
       columnHelper.accessor('fullName', {
         cell: ({ row }) => (
           <div className='flex space-x-3'>
@@ -195,22 +238,30 @@ const KitchenSink = () => {
           </div>
         ),
         header: 'PMA NUMBER',
-        size: 200
+        size: 200,
+        enableSorting: false,
+        enableColumnFilter: false
       }),
       columnHelper.accessor('quotation', {
         cell: info => info.getValue() || 'N/A',
         header: 'Quotation',
-        size: 100
+        size: 100,
+        enableSorting: false,
+        enableColumnFilter: false
       }),
       columnHelper.accessor('location', {
         cell: info => info.getValue() || 'N/A',
         header: 'Location',
-        size: 150
+        size: 150,
+        enableSorting: false,
+        enableColumnFilter: false
       }),
       columnHelper.accessor('NoOfUnits', {
         cell: info => info.getValue() || 'N/A',
         header: 'No. of Units',
-        size: 80
+        size: 80,
+        enableSorting: false,
+        enableColumnFilter: false
       }),
       columnHelper.accessor('googleReview', {
         cell: ({ row }) => {
@@ -234,25 +285,21 @@ const KitchenSink = () => {
       columnHelper.accessor('tradingYears', {
         cell: info => info.getValue() || 'N/A',
         header: 'Trading Years',
-        size: 100
+        size: 100,
+        enableSorting: false,
+        enableColumnFilter: false
       }),
       columnHelper.accessor('Questionaire', {
         cell: ({ row }) => (
           <div className='min-w-[180px] max-w-[190px]'>
-            <Button
-              sx={{
-                backgroundColor: 'customColors.ligthBlue',
-                '&:hover': {
-                  backgroundColor: 'customColors.ligthBlue'
-                }
-              }}
+            <CustomButton
               variant='contained'
               onClick={() => {
                 setDrawerOpen(true)
                 setSelectedAgentId([row.original.pma_id])
                 SetAllSelectedPma([row.original.pma_id])
 
-                // ✅ set the full response object for drawer
+                
                 const responseObj = responceData?.data?.responses.find(
                   (item: { pma_user_id: number }) => item.pma_user_id === row.original.pma_id
                 )
@@ -263,7 +310,7 @@ const KitchenSink = () => {
               }}
             >
               {row.original.Questionaire}
-            </Button>
+            </CustomButton>
           </div>
         ),
         header: 'Questionnaire',
@@ -339,8 +386,6 @@ const KitchenSink = () => {
     setSuccessModalOpen(true)
   }
 
-  console.log(selectedResponse)
-
   return (
     <Card>
       <div className='text-[#35C0ED] text-[16px] font-semibold pl-[20px] py-[20px]'>
@@ -364,22 +409,26 @@ const KitchenSink = () => {
         </section>
         <section className='flex flex-col py-[12px]'>
           <div className='pb-[12px]'>
-            <Button variant='contained' className='!bg-[#35C0ED] w-[280px]'>
-              <i className='ri-eye-line bg-white size-[18px] pr-[5px]'></i> View Results Online
-            </Button>
-          </div>
-          <div>
-            <Button
+            <CustomButton
               variant='contained'
               className='!bg-[#35C0ED] w-[280px]'
-              onClick={() => downloadMutation.mutate(tender_id)}
+              onClick={() => downloadMutation.mutate({ id: tender_id, open: true })}
+              disabled={downloadMutation.isPending}
+            >
+              <i className='ri-eye-line bg-white size-[18px] pr-[5px]'></i>
+              <span className='pl-[5px]'>{'View Results Online'}</span>
+            </CustomButton>
+          </div>
+          <div>
+            <CustomButton
+              variant='contained'
+              className='!bg-[#35C0ED] w-[280px]'
+              onClick={() => downloadMutation.mutate({ id: tender_id })}
               disabled={downloadMutation.isPending}
             >
               <i className='ri-download-2-fill bg-white size-[18px] pr-[5px]'></i>
-              <span className='pl-[5px]'>
-                {downloadMutation.isPending ? 'Downloading...' : 'Download Tender Response'}
-              </span>
-            </Button>
+              <span className='pl-[5px]'>{'Download Tender Response'}</span>
+            </CustomButton>
           </div>
         </section>
       </section>
@@ -467,9 +516,10 @@ const KitchenSink = () => {
         setSuccessModalOpen={setSuccessModalOpen}
         handleConfirmSelected={handleConfirmSelected}
         DrawerStats={selectedResponse}
+
       />
 
-      <ViewPmaFullProfile />
+     
 
       <TablePagination
         rowsPerPageOptions={[7, 10, 25, { label: 'All', value: tableData.length }]}
@@ -502,7 +552,12 @@ const KitchenSink = () => {
         }}
         cancelButton={''}
       />
-      <ShortListAgent open={shortlistedModalOpen} onClose={handleCloseAndNavigate} pmaSelectedID={allselectedpma} />
+      <ShortListAgent
+        open={shortlistedModalOpen}
+        onClose={handleCloseAndNavigate}
+        pmaSelectedID={allselectedpma}
+        fianlExpireDate={fianlExpireDate}
+      />
     </Card>
   )
 }

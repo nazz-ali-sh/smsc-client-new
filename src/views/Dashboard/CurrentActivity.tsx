@@ -21,11 +21,8 @@ interface DashboardResponseProps {
 }
 
 const CurrentActivity: React.FC<DashboardResponseProps> = ({ dashboardResponce }) => {
-  console.log(dashboardResponce)
   const router = useRouter()
 
-
-  
   const stages = dashboardResponce?.data?.tender_stage_progress?.current_stage?.stage
 
   const allowedStages = ['result_received', 'shortlisted', 'video_call', 'site_visit', 'appointment']
@@ -59,7 +56,6 @@ const CurrentActivity: React.FC<DashboardResponseProps> = ({ dashboardResponce }
     }
   })
 
-  // final selection
   const downloadFinalSelectionMutation = useMutation({
     mutationFn: (id: number) => downloadFinalSeectionPDf(id),
     onSuccess: (blob: Blob) => {
@@ -150,25 +146,18 @@ const CurrentActivity: React.FC<DashboardResponseProps> = ({ dashboardResponce }
                 </div>
 
                 <div className='w-[100%] relative space-y-8 flex items-end justify-between'>
-                  {/* First PDF */}
                   <section className='relative flex flex-col justify-between items-center w-[100%]'>
                     <Image src={demePfd} alt='pdf download' />
                     <section className='w-[100%]'>
                       <Typography
                         variant='body1'
                         align='center'
-                        className={`mt-2 text-[#696969] ${
-                          isClickable
-                            ? 'cursor-pointer hover:underline hover:underline-offset-4'
-                            : 'cursor-not-allowed opacity-50'
-                        }`}
+                        className={`mt-2 text-[#696969] ${'cursor-pointer hover:underline hover:underline-offset-4'}`}
                         onClick={() => {
-                          if (isClickable) {
-                            downloadMutation.mutate(tender_id)
-                          }
+                          downloadMutation.mutate(tender_id)
                         }}
                       >
-                        Download Blind Tender Report
+                        {isClickable ? ' Download Blind Tender Report ' : ''}
                       </Typography>
 
                       <Typography
@@ -176,7 +165,7 @@ const CurrentActivity: React.FC<DashboardResponseProps> = ({ dashboardResponce }
                         align='center'
                         className='mt-2 cursor-pointer text-[#696969] hover:underline hover:underline-offset-4 '
                       >
-                        Unlocked After Receiving PMA Responses
+                        {isClickable ? '' : 'Unlock After Receiving PMA Responses'}
                       </Typography>
                     </section>
                   </section>
@@ -191,14 +180,14 @@ const CurrentActivity: React.FC<DashboardResponseProps> = ({ dashboardResponce }
                         className='mt-2 cursor-pointer text-[#696969] hover:underline hover:underline-offset-4'
                         onClick={() => downloadFinalSelectionMutation.mutate(tender_id)}
                       >
-                        {stages == 'result_received'} Download Full Journey Report
+                        {stages == 'appointment' ? 'Download Full Journey Report' : ''}
                       </Typography>
                       <Typography
                         variant='body1'
                         align='center'
                         className='mt-2 cursor-pointer text-[#696969] hover:underline hover:underline-offset-4'
                       >
-                        Unlocked After Successful Selection of Agent
+                        {stages == 'appointment' ? '' : ' Unlock After Successful Selection of Agent'}
                       </Typography>
                     </section>
                   </section>

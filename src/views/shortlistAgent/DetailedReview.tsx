@@ -2,8 +2,6 @@
 
 import React, { useState, useEffect } from 'react'
 
-import dynamic from 'next/dynamic'
-
 import Image from 'next/image'
 
 import { useRouter } from 'next/navigation'
@@ -22,9 +20,8 @@ import phoneCalls from '../../../public/images/tenderShortlisted/phoneCalls.svg'
 import videoCalls from '../../../public/images/tenderShortlisted/videoCall.svg'
 import visitLocation from '../../../public/images/tenderShortlisted/visitLocation.svg'
 import visitPerson from '../../../public/images/tenderShortlisted/visitPerson.svg'
-import extend3days from '../../../public/images/tenderShortlisted/extend3days.svg'
 import person from '../../../public/images/tenderShortlisted/person.svg'
-import eye from '../../../public/images/tenderShortlisted/eye.svg'
+import whiteperson from '../../../public/images/dashboardImages/appintagentIcon.svg'
 
 import VideosCallsModal from '@/common/VideosCallsModal'
 import SiteVisitsModal from '@/common/SiteVisitsModal'
@@ -32,29 +29,17 @@ import AppointManagemnetModal from '@/common/AppointManagemnetAgent'
 import ShortListAgent from '../../common/ShortListAgent'
 import ContactModal from '@/common/ContactModal'
 import { rmcsendContactpma } from '@/services/tender_result-apis/tender-result-api'
-
-const Document = dynamic(() => import('react-pdf').then(mod => ({ default: mod.Document })), {
-  ssr: false,
-  loading: () => <div className='w-[160px] h-[145px] bg-gray-200 animate-pulse rounded'></div>
-})
-
-const Page = dynamic(() => import('react-pdf').then(mod => ({ default: mod.Page })), {
-  ssr: false
-})
-
-
+import demePfd from '../../../public/images/dashboardImages/demePdfImage.png'
+import CustomButton from '@/common/CustomButton'
 
 const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce: any }) => {
   const router = useRouter()
-  const [numPages, setNumPages] = useState<number | null>(null)
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const [onlineCallsModalOpen, setOnlineCallsModalOpen] = useState(false)
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
   const [apointAgentModalOpen, setApointAgentModalOpen] = useState(false)
   const [contactModalOpen, setContactModalOpen] = useState(false)
   const [shortlistedModalOpen, setShortListedSuccessModalOpen] = useState(false)
   const [pmaSelectedID, setPmaSelectedID] = useState<number | any>()
-  const [isClient, setIsClient] = useState(false)
 
   const [expireDates, setExpireDates] = useState<{ days: string; hours: string; minutes: string }[]>([])
 
@@ -82,16 +67,6 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
 
     setExpireDates(calculated)
   }, [finalShortListedResponce])
-
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
-
-  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-    setNumPages(numPages)
-  }
-
-  console.log(numPages)
 
   const handkeAppointAgnet = (selected_pma_id: any) => {
     setPmaSelectedID(selected_pma_id)
@@ -162,7 +137,12 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                   />
 
                   <div className='mt-[19px] text-[12px] text-buttonPrimary font-bold text-center flex items-center justify-center '>
-                    <Image src={eye} alt='eye' className='size-[18px] mr-[12px]' /> View Full Profile
+                    <div onClick={() => handleExtendByThree(company?.pma_user?.id)} className='flex items-center'>
+                      <CustomButton>
+                        <Image src={whiteperson} alt='person' className='mr-[10px]' />
+                        Appoint the agent
+                      </CustomButton>
+                    </div>
                   </div>
                 </div>
 
@@ -170,47 +150,80 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                   <Typography variant='h3' className='text-[#1F4E8D] text-[34px] font-bold py-1'>
                     €150
                   </Typography>
-                  <div className='text-[20px] font-bold leading-[42px]'>{company?.company_details?.name}</div>
+                  <div className='text-[20px] font-bold leading-[32px]'>{company?.company_details?.name}</div>
                   <div className='text-[12px] font-normal leading-[32px] text-buttonPrimary'>
-                    {company?.company_details?.website}
+                    {company?.company_details?.website || 'No Website'}
                   </div>
 
-                  <section className='pb-4'>
+                  <section className='pb-4 mt-2.5'>
                     <div className='flex space-x-4'>
-                      <div className='flex items-center space-x-2 px-[15px] py-0 rounded-full bg-[#DDF6FE]  font-semibold '>
-                        <span className='w-2 h-2 bg-[#26C6F9] rounded-full pt-1'></span>
-                        <span className='text-[#26C6F9] font-medium text-xs '>Call Booked</span>
+                      <div
+                        className={`flex items-center space-x-2 px-[15px] py-0 rounded-full ${!company?.video_call_booked && !company?.video_call_booked ? 'bg-[#6969691A]' : 'bg-[#DDF6FE]'} font-semibold `}
+                      >
+                        <span
+                          className={`w-2 h-2  ${!company?.video_call_booked && !company?.video_call_booked ? 'bg-[#595a5a] ' : 'bg-[#26C6F9]'} rounded-full pt-1`}
+                        ></span>
+                        <span
+                          className={` ${company?.video_call_booked ? 'text-[#26C6F9]' : 'bg-[#6969691A]'} font-medium text-xs `}
+                        >
+                          {!company?.video_call_booked && !company?.video_call_booked ? 'Not Contacted' : ' Contacted'}
+                        </span>
                       </div>
 
-                      <button className='px-6 py-1 rounded-full bg-[#6969691A] text-gray-400 font-medium text-xs'>
-                        Visit medium
-                      </button>
+                      <div
+                        className={`flex items-center space-x-2 px-[15px] py-0 rounded-full ${company?.video_call_booked ? 'bg-[#DDF6FE]' : 'bg-[#6969691A] '}   font-semibold `}
+                      >
+                        <span
+                          className={`w-2 h-2 ${company?.video_call_booked ? 'bg-[#26C6F9]' : 'bg-[#6969691A] '}  rounded-full pt-1`}
+                        ></span>
+                        <span
+                          className={` ${company?.video_call_booked ? 'text-[#26C6F9]' : 'text-[#69696966]'} font-medium text-xs py-1 `}
+                        >
+                          Call Booked
+                        </span>
+                      </div>
 
-                      <button className='px-6 py-1 rounded-full bg-[#6969691A] text-gray-400 font-medium text-xs'>
-                        Video Call
-                      </button>
+                      <div
+                        className={`flex items-center space-x-2 px-[15px] py-0 rounded-full ${company?.site_visit_booked ? 'bg-[#DDF6FE]' : 'bg-[#6969691A] '} font-semibold `}
+                      >
+                        <span
+                          className={`w-2 h-2 ${company?.site_visit_booked ? 'bg-[#26C6F9]' : 'bg-[#6969691A]'}  rounded-full pt-1`}
+                        ></span>
+                        <span
+                          className={` ${company?.site_visit_booked ? 'text-[#26C6F9]' : 'text-[#6969691A]'} font-medium text-xs `}
+                        >
+                          Visit Arranged
+                        </span>
+                      </div>
                     </div>
                   </section>
 
                   <Typography variant='h3' className='text-[#1F4E8D] text-[21px] font-bold py-1'>
                     {expireDates[index]?.days} days _ {expireDates[index]?.hours} hours _ {expireDates[index]?.minutes}{' '}
                   </Typography>
+
+                  <div className='mt-[20px]'>
+                    <CustomButton variant='outlined'>Extend by 3 days </CustomButton>
+                  </div>
                 </div>
                 <div className='pl-10'>
-                  <div className='flex items-center gap-x-[30px]'>
+                  <Typography variant='h3'>Contact Details</Typography>
+
+                  <div className='flex items-center gap-x-[30px] mt-[20px]'>
                     <span>
                       <Image src={person} alt='person' />
                     </span>
                     <Typography variant='body2'>{company?.pma_user?.full_name}</Typography>
                   </div>
-                  <div className='flex items-center gap-x-[30px]'>
+
+                  <div className='flex items-center gap-x-[30px] mt-[20px]'>
                     <span>
                       <i className='ri-mail-line size-[14px]'></i>
                     </span>
                     <Typography variant='body2'>{company?.pma_user?.email}</Typography>
                   </div>
 
-                  <div className='flex items-center gap-x-[30px]'>
+                  <div className='flex items-center gap-x-[30px] mt-[20px]'>
                     <span>
                       <Image src={phone} alt='phone' className='size-[14px]' />
                     </span>
@@ -228,44 +241,16 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
 
               <div className='flex items-start'>
                 <section className='relative flex flex-col justify-between items-center w-[100%]'>
-                  <section>
-                    <div
-                      className='relative cursor-pointer'
-                      onMouseEnter={() => setHoveredIndex(index)}
-                      onMouseLeave={() => setHoveredIndex(null)}
-                    >
-                      {isClient && (
-                        <Document
-                          file={`/${company.pdf}`}
-                          onLoadSuccess={onDocumentLoadSuccess}
-                          onLoadError={error => console.error('Error loading PDF:', error)}
-                        >
-                          <Page pageNumber={1} width={160} height={145} />
-                        </Document>
-                      )}
-                      {hoveredIndex === index && isClient && (
-                        <div className='absolute top-0 left-0 z-10 bg-white shadow-lg border border-gray-200'>
-                          <Document
-                            file={`/${company.pdf}`}
-                            onLoadSuccess={onDocumentLoadSuccess}
-                            onLoadError={error => console.error('Error loading PDF:', error)}
-                          >
-                            <Page pageNumber={1} width={300} height={390} />
-                          </Document>
-                        </div>
-                      )}
-                    </div>
-
-                    <section className='w-[100%]'>
-                      <Typography variant='body1' align='center' className='mt-2 cursor-pointer'>
-                        <a
-                          href={`/${company.pdf}`}
-                          download
-                          className='hover:underline hover:underline-offset-4'
-                          style={{ textDecorationColor: '#35C0ED' }}
-                        >
-                          Download PDF
-                        </a>
+                  <section className='relative flex flex-col justify-between items-center w-[100%]'>
+                    <Image src={demePfd} alt='pdf download' />
+                    <section className='w-[100%] flex justify-center space-x-2.5 '>
+                      <i className='ri-download-2-fill text-[#26C6F9] mt-[2px]'></i>
+                      <Typography
+                        variant='body1'
+                        align='center'
+                        className='mt-2 cursor-pointer text-[#26C6F9] hover:underline hover:underline-offset-4 flex items-center'
+                      >
+                        Download
                       </Typography>
                     </section>
                   </section>
@@ -298,14 +283,14 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                   onClick={() => handkeAppointAgnet(company?.pma_user?.id)}
                 />
 
-                <section className='flex bg-[#26C6F93D] p-3 rounded-md'>
-                  <Image
-                    src={extend3days}
-                    alt='person'
-                    className='cursor-pointer'
-                    onClick={() => handleExtendByThree(company?.pma_user?.id)}
-                  />
-                </section>
+                {/* <section className='flex bg-[#26C6F93D] p-3 rounded-md'>
+                      <Image
+                        src={extend3days}
+                        alt='person'
+                        className='cursor-pointer'
+                        onClick={() => handleExtendByThree(company?.pma_user?.id)}
+                      />
+                    </section> */}
               </section>
             </section>
           ))}

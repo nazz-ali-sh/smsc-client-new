@@ -56,8 +56,6 @@ const OnboardingEndedQuestions = () => {
   const mutation = useMutation({
     mutationFn: submitRmcProcess,
     onSuccess: data => {
-      console.log(data, 'data')
-
       if (data) {
         dispatch(setTenderId(data?.data?.tender_id))
       }

@@ -5,8 +5,7 @@ import Image from 'next/image'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
-import Link from '@mui/material/Link'
-import { Box, Divider, Stack } from '@mui/material'
+import { Box, Divider,  } from '@mui/material'
 
 import { pdfjs } from 'react-pdf'
 
@@ -20,8 +19,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
-import companyImage from '../../../../public/images/customImages/company.png'
-import demePfd from '../../../../public/images/dashboardImages/demePdfImage.png'
+import companyImage from '../../../public/images/customImages/company.png'
 import type { RootState } from '@/redux-store'
 
 import { downloadFinalSeectionPDf } from '@/services/final_result_and_archeive_apis/final_results_apis'
@@ -29,10 +27,11 @@ import CustomButton from '@/common/CustomButton'
 
 interface FinalSelectionResponse {
   finalSelection?: any
+  DrawerStats?: any
 }
 
-const ManagingAgentDetails: React.FC<FinalSelectionResponse> = ({ finalSelection }) => {
-  const iconStyle = { fontSize: '17px' }
+const PmaDetails: React.FC<FinalSelectionResponse> = ({ finalSelection  }) => {
+    
   const tender_id = useSelector((state: RootState) => state?.rmcOnboarding?.rmcData?.tender_id)
 
   const downloadMutation = useMutation({
@@ -90,50 +89,16 @@ const ManagingAgentDetails: React.FC<FinalSelectionResponse> = ({ finalSelection
           >
             {finalSelection?.data?.pma_user?.company_details?.name}
           </Typography>
-          <Link
-            href='#'
-            underline='none'
-            sx={{
-              color: 'customColors.ligthBlue',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              paddingTop: '5px'
-            }}
-          >
-            {finalSelection?.data?.pma_user?.company_details?.website}
-          </Link>
+          
         </div>
-        <Stack spacing={5} sx={{ color: 'text.primary', paddingX: '28px', paddingTop: '22.5px' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <i className='ri-user-line text-[#696969]' style={iconStyle} />
-            <Typography variant='body2'> {finalSelection?.data?.pma_user?.name}</Typography>
-          </Box>
-
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <i className='ri-mail-line text-[#696969]' style={iconStyle} />
-            <Typography variant='body2'> {finalSelection?.data?.pma_user?.email}</Typography>
-          </Box>
-
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <i className='ri-phone-line text-[#696969]' style={iconStyle} />
-            <Typography variant='body2'> {finalSelection?.data?.pma_user?.mobile_number}</Typography>
-          </Box>
-
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <i className='ri-map-pin-line text-[#696969]' style={iconStyle} />
-            <Typography variant='body2'>{finalSelection?.data?.company_details?.address}</Typography>
-          </Box>
-        </Stack>
+      
 
         <section className='flex flex-col items-center gap-4 pt-4'>
           <div style={{ minHeight: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <section className='relative flex flex-col justify-between items-center w-[100%]'>
-              <Image src={demePfd} alt='pdf download' />
-            </section>
+          
           </div>
           <CustomButton onClick={handlePdfClick} disabled={downloadMutation.isPending} variant='contained'>
-            {downloadMutation.isPending ? 'Downloading...' : 'Download PDF'}
+            {downloadMutation.isPending ? 'Downloading...' : 'Download Tender Responce'}
           </CustomButton>
         </section>
       </CardContent>
@@ -141,4 +106,4 @@ const ManagingAgentDetails: React.FC<FinalSelectionResponse> = ({ finalSelection
   )
 }
 
-export default ManagingAgentDetails
+export default PmaDetails

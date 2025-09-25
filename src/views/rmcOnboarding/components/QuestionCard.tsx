@@ -12,14 +12,7 @@ import CustomButton from '@/common/CustomButton'
 import { setQuestionAnswer } from '@/redux-store/slices/rtmNonDirectorSlice'
 import { rtmSetupOptions } from '@/constants'
 import type { RootState } from '@/redux-store'
-
-interface QuestionCardProps {
-  question: string
-  questionKey: keyof RootState['rtmNonDirector']['questions']
-  nextRoute: string
-  backRoute: string
-  questionNumber: number
-}
+import type { QuestionCardProps } from '../types'
 
 const QuestionCard = ({ question, questionKey, nextRoute, backRoute, questionNumber }: QuestionCardProps) => {
   const router = useRouter()

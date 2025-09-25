@@ -19,6 +19,7 @@ import {
   type RmcOnboardingStep1Payload
 } from '@/services/rmc-onboarding-apis/rmc-onboarding-api'
 import { setRmcData } from '@/redux-store/slices/rmcOnboardingSlice'
+import { rmcDirectorFormInputs } from '@/constants'
 
 export default function OnboardingForm() {
   const router = useRouter()
@@ -29,6 +30,7 @@ export default function OnboardingForm() {
     resolver: valibotResolver(directorOfRMCSchema),
     defaultValues: {
       fullName: '',
+      lastName: '',
       email: '',
       phoneNumber: '',
       password: '',
@@ -75,7 +77,7 @@ export default function OnboardingForm() {
     setIsSubmitting(true)
 
     const payload: RmcOnboardingStep1Payload = {
-      name: data?.fullName,
+      name: `${data?.fullName} ${data?.lastName}`.trim(),
       email: data?.email,
       phone_no: data?.phoneNumber,
       password: data?.password,
@@ -108,62 +110,18 @@ export default function OnboardingForm() {
               </Typography>
 
               <Grid container spacing={6}>
-                <Grid item xs={12} md={4}>
-                  <FormInput
-                    name='fullName'
-                    control={control}
-                    placeholder='Full Name'
-                    type='text'
-                    required
-                    disabled={mutation.isPending}
-                  />
-                </Grid>
-
-                <Grid item xs={12} md={4}>
-                  <FormInput
-                    name='email'
-                    control={control}
-                    placeholder='Email '
-                    type='email'
-                    required
-                    disabled={mutation.isPending}
-                  />
-                </Grid>
-
-                <Grid item xs={12} md={4}>
-                  <FormInput
-                    name='phoneNumber'
-                    control={control}
-                    placeholder='Phone Number'
-                    type='tel'
-                    required
-                    disabled={mutation.isPending}
-                  />
-                </Grid>
-
-                <Grid item xs={12} md={4}>
-                  <FormInput
-                    name='password'
-                    control={control}
-                    placeholder='Password'
-                    type='password'
-                    required
-                    disabled={mutation.isPending}
-                    showPasswordToggle={true}
-                  />
-                </Grid>
-
-                <Grid item xs={12} md={4}>
-                  <FormInput
-                    name='confirmPassword'
-                    control={control}
-                    placeholder='Confirm Password'
-                    type='password'
-                    required
-                    disabled={mutation.isPending}
-                    showPasswordToggle={true}
-                  />
-                </Grid>
+                {rmcDirectorFormInputs?.map(field => (
+                  <Grid item xs={12} md={4} key={field.name}>
+                    <FormInput
+                      name={field?.name as keyof DirectorOfRMCFormData}
+                      control={control}
+                      label={field?.label}
+                      type={field?.type}
+                      disabled={mutation.isPending}
+                      showPasswordToggle={field.showPasswordToggle}
+                    />
+                  </Grid>
+                ))}
               </Grid>
             </Box>
 

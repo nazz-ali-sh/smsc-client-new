@@ -4,16 +4,18 @@ import type React from 'react'
 
 import Image from 'next/image'
 
-import { Box, Card, CardContent, Typography, Grid} from '@mui/material'
+import { Box, Card, CardContent, Typography, Grid } from '@mui/material'
 
 import { iconMap } from '@/common/data'
+import ServiceChargeBudgetSection from '@/views/TenderInformationUpdated/components/ServiceChargeBudgetSection'
+import { useTenderDetail } from '@/hooks/useTenderDetail'
 
 interface FinalSelectionResponse {
   finalSelection?: any
 }
 
 const ProjectMetrics: React.FC<FinalSelectionResponse> = ({ finalSelection }) => {
-  console.log(finalSelection)
+  const { data: tenderDetailData } = useTenderDetail()
 
   const metrics: Array<{
     title: string
@@ -87,54 +89,15 @@ const ProjectMetrics: React.FC<FinalSelectionResponse> = ({ finalSelection }) =>
               ))}
             </Grid>
           </Box>
-
-          <Typography variant='h3' className='text-darkblue pt-[34px] text-[18px]'>
-            RMC Service Charge Budget
-          </Typography>
-          <section className='flex flex-wrap pt-[28px]'>
-            {finalSelection?.data?.management_fees?.map((feeItem: any, feeIndex: any) => (
-              <Grid item xs={12} sm={6} md={4} key={feeIndex} className='w-[240px]'>
-                <>
-                  <Box sx={{ marginBottom: 4, marginTop: 4 }}>
-                    <Grid container spacing={3} className='w-[230px]'>
-                      <Grid item xs={12} sm={6} md={12}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                          <Box
-                            sx={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              width: 40,
-                              height: 40,
-                              backgroundColor: '#E3F2FD',
-                              borderRadius: '8px',
-                              flexShrink: 0
-                            }}
-                          >
-                            <Image src={iconMap[feeItem?.management_fee_slug]} alt='images' />
-                          </Box>
-                          <Box>
-                            <Typography variant='body2' sx={{ fontWeight: 500 }} className='w-[180px]'>
-                              {feeItem?.management_fee_title}
-                            </Typography>
-                            <Typography variant='caption' color='#262B43E5' className='text-[20px]'>
-                              €{feeItem?.fee_amount}
-                            </Typography>
-                          </Box>
-                        </Box>
-                      </Grid>
-                    </Grid>
-                  </Box>
-                </>
-              </Grid>
-            ))}
-          </section>
         </Box>
       </CardContent>
+      <Box sx={{ marginX: 6 }}>
+        <ServiceChargeBudgetSection budgetData={tenderDetailData?.service_charge_budget} itemsPerRow={3} />
+      </Box>
 
       <CardContent sx={{ flexGrow: 1 }}>
         <Box sx={{ mb: 4 }}>
-          <Typography variant='h3' className='text-darkblue pt-[34px] text-[18px]'>
+          <Typography sx={{ fontWeight: 700, fontSize: '24px', color: 'customColors.darkGray1', marginTop: 10 }}>
             PMA Cost Breakdown
           </Typography>
           <section className='flex flex-wrap pt-[28px]'>

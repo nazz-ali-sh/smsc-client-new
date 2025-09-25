@@ -3,4 +3,3 @@ export { default as CongratulationsSection } from './components/CongratulationsS
 export { default as ManagingAgentDetails } from './components/ManagingAgentDetails'
 export { default as ProjectMetrics } from './components/ProjectMetrics'
 export * from './types'
-export * from './data'

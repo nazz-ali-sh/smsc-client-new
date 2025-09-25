@@ -1,0 +1,86 @@
+'use client'
+
+import React from 'react'
+
+import { Box, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material'
+
+interface RmcQuestion {
+  id: number
+  question: string
+  answer: string
+}
+
+interface PainPoint {
+  response_id: number
+  onboarding_answers: {
+    rmc_questions: RmcQuestion[]
+  }
+}
+
+interface PainPointsSectionProps {
+  painPoints: PainPoint[]
+}
+
+const PainPoints: React.FC<PainPointsSectionProps> = ({ painPoints }) => {
+  
+const questions = painPoints?.[0]?.onboarding_answers?.rmc_questions || []
+
+
+  return (
+    <>
+      <Typography variant='h3' className='text-darkblue text-[18px]'>
+        RMC Pain points
+      </Typography>
+      <Box sx={{ marginBottom: 15, marginTop: '34px' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, marginTop: '18px' }}>
+          {questions.map((q, index) => (
+            <Accordion
+              key={q.id}
+              sx={{
+                marginBottom: 2,
+                border: '1px solid #E4A324 !important',
+                borderRadius: '4px',
+                '&:before': { display: 'none !important' },
+                boxShadow: 'none !important',
+                overflow: 'hidden',
+                '& .MuiAccordionDetails-root': {
+                  borderTop: '1px solid #E4A324 !important'
+                },
+                ...(index === 0 && {
+                  '&:first-of-type': {
+                    borderTopLeftRadius: '4px',
+                    borderTopRightRadius: '4px'
+                  }
+                }),
+                ...(index === questions.length - 1 && {
+                  '&:last-of-type': {
+                    borderBottomLeftRadius: '4px',
+                    borderBottomRightRadius: '4px'
+                  }
+                })
+              }}
+            >
+              <AccordionSummary
+                expandIcon={<i className='ri-arrow-down-s-line' style={{ color: '#E4A324' }} />}
+                sx={{
+                  backgroundColor: '#FFF7ED',
+                  padding: '12px 16px',
+                  '& .MuiAccordionSummary-content': { margin: 0 }
+                }}
+              >
+                <Typography sx={{ color: '#696969', fontSize: '14px' }}>{q.question}</Typography>
+              </AccordionSummary>
+              <AccordionDetails sx={{ backgroundColor: 'white', padding: '16px' }}>
+                <Typography variant='body2' color='text.secondary'>
+                  {q.answer || 'No answer provided'}
+                </Typography>
+              </AccordionDetails>
+            </Accordion>
+          ))}
+        </Box>
+      </Box>
+    </>
+  )
+}
+
+export default PainPoints

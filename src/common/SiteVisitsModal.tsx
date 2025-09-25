@@ -448,10 +448,12 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
               }}
             >
               {types == 'Reschedual'
-                ? 'Reschedule Site Visit Invites'
+                ? 'Reschedual Site Visit Invites'
                 : types == 'SiteVisits'
-                  ? 'Reschedule Site Visit'
-                  : '  Reschedule Site Visit'}
+                  ? 'Reschedual Site Visit'
+                  : types == 'fromDashboard'
+                    ? 'Site Visits Invites'
+                    : '  Reschedual Site Visit'}
             </Typography>
             <Typography variant='body2' sx={{ paddingY: '12px' }}>
               Use this section to invite PMAs to meeting

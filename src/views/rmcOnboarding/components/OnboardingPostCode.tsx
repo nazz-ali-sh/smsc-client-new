@@ -118,7 +118,7 @@ const OnboardingPostCode = () => {
         <form onSubmit={handleSubmit(handleFormSubmit)}>
           <div className='mt-20'>
             <div className='grid grid-cols-1 pb-20'>
-              <FormInput name='postcode' control={control} placeholder='Enter Postcode (e.g., SW1A 1AA)' required />
+              <FormInput name='postcode' control={control} label='Enter Postcode' />
             </div>
           </div>
           <div className='pb-20 flex  justify-end'>

@@ -37,6 +37,7 @@ export interface PrioritiesSectionProps {
 }
 
 export interface BlockDetailsData {
+  block_condition: any
   postcode?: string
   address?: string
   lat?: string
@@ -52,6 +53,8 @@ export interface BlockDetailsData {
   name?: string
   block_name?: string
   current_managing_agent?: string
+  outdoor_space?: string
+  leasehold_type?: string
 }
 
 export interface BlockDetailsSectionProps {

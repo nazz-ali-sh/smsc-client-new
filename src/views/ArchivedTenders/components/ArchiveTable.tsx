@@ -22,41 +22,36 @@ const ArchiveTable = () => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 })
   const [value, setValue] = React.useState('appoint')
   const router = useRouter()
-
-  const { data: gettingArchiveData } = useQuery<ArchivedTenderType>({
-    queryKey: ['AvailableSlotsAndDays', value],
-    queryFn: () => archiveData(value),
-    enabled: !!value
-  })
-
   const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
   const tender_id = rmcData?.tender_id
+
+  const { data: gettingArchiveData } = useQuery<ArchivedTenderType>({
+    queryKey: ['AvailableSlotsAndDays', value, tender_id],
+    queryFn: () => archiveData(value),
+    enabled: !!value,
+    retry: 2
+  })
 
   const archivedTendersData: ArchivedTenderType[] =
     (gettingArchiveData as ArchiveDataResponse)?.data?.tenders?.map(
       (tender: TenderApi): ArchivedTenderType => ({
-        id: tender.tender_number,
-        tenders: tender.tender_name,
-        status: tender.status,
-        totalResponses: tender.total_responses,
-        shortlisted: tender.total_shortlisted,
+        id: tender?.tender_number,
+        tenderId: tender?.tender_name,
+        tender_name: tender?.tender_name,
+        status: tender?.status,
+        totalResponses: tender?.total_responses,
+        shortlisted: tender?.total_shortlisted,
         meetingHeld: {
-          videoCalls: tender.meeting_held_count,
-          siteVisits: tender.site_visit_count
+          videoCalls: tender?.meeting_held_count,
+          siteVisits: tender?.site_visit_count
         },
-        submittedDate: tender.submitted_date,
-        closedDate: tender.closed_date
+        submittedDate: tender?.submitted_date,
+        closedDate: tender?.closed_date
       })
     ) || []
 
   const columns = useMemo(
     () => [
-      columnHelper.accessor('tenderName', {
-        header: 'TENDER NAME',
-        cell: info => info.getValue(),
-        size: 200,
-        enableSorting: true
-      }),
       columnHelper.accessor('tenderId', {
         header: 'TENDER ID',
         cell: info => info.getValue(),
@@ -201,7 +196,7 @@ const ArchiveTable = () => {
       <CommonTable
         data={archivedTendersData}
         columns={columns}
-        title='Archive'
+        title='Archived'
         actionButton={filterButton}
         pagination={pagination}
         onPaginationChange={setPagination}

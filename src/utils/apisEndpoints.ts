@@ -132,7 +132,7 @@ export const apiEndpoints = {
 
   //---------------------- Tender Information   ------------------------------//
 
-  getTenderDetail: () => `/rmc/tender/detail`,
+  getTenderDetail: (tender_id: number) => `/rmc/tender/detail?tender_id=${tender_id}`,
 
   gettingFinalSelectionPdf: (tender_id: number) => `/rmc/final-report/pdf?tender_id=${tender_id}`,
 
@@ -143,8 +143,7 @@ export const apiEndpoints = {
   gettingArchiveDetails: (tender_id: number, pma_user_id?: number) => {
     return pma_user_id
       ? `rmc/tenders/archived/${tender_id}?pma_user_id=${pma_user_id}`
-      : `rmc/tenders/
-      archived/${tender_id}`
+      : `rmc/tenders/archived/${tender_id}`
   },
 
   //---------------------- Eveluation  ------------------------------//

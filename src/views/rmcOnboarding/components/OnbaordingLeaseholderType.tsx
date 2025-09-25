@@ -138,17 +138,23 @@ const OnboardingLeaseholderType = () => {
         {selected === 'Others' && (
           <TextField
             fullWidth
-            placeholder='Others'
+            label='Others'
             value={value}
             onChange={e => setValue(e.target.value)}
             sx={{
               paddingRight: '13px',
               '& .MuiOutlinedInput-root': {
                 borderRadius: '6px',
+                color: '#6C6C6C',
+                fontSize: '14px',
                 '&.Mui-focused fieldset': {
                   borderColor: '#35C0ED',
                   border: '1px solid #35C0ED'
                 }
+              },
+
+              '& .MuiInputLabel-root.Mui-focused': {
+                color: '#35C0ED'
               },
               '& .MuiInputBase-input::placeholder': {
                 color: 'customColors.textGray',

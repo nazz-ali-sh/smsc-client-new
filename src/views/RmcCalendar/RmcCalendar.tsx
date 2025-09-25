@@ -9,15 +9,21 @@ import MetricCards from './components/MetricCards'
 
 import AppFullCalendar from '@/libs/styles/AppFullCalendar'
 import WeeklyReport from '@/common/WeeklyReport'
+import HorizontalLinearStepper from '@/common/HorizontalLinearStepper'
 
 const RmcCalendar = () => {
   return (
     <Box className=''>
-      <Grid container spacing={3} className='mbe-6'>
+      <Grid container spacing={3} className='mbe-2'>
         <WeeklyReport text={'Invites'} />
       </Grid>
 
-      <MetricCards />
+      <Box className='py-3'>
+        <HorizontalLinearStepper />
+      </Box>
+      <div className='mt-2'>
+        <MetricCards />
+      </div>
 
       <Card className='overflow-visible'>
         <AppFullCalendar className='app-calendar'>

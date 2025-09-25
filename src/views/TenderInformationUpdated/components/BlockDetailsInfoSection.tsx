@@ -4,7 +4,7 @@ import React from 'react'
 
 import { Box, Grid, Typography } from '@mui/material'
 
-import { getYearLabel } from '@/constants'
+import { getYearLabel, getOutdoorSpaceLabel, getLeaseholderTypeLabel, getBlockConditionLabel } from '@/constants'
 
 import type { BlockDetailsSectionProps } from '../types'
 
@@ -36,17 +36,17 @@ const BlockDetailsInfoSection = ({ blockData }: BlockDetailsSectionProps) => {
     },
     {
       label: 'Block Condition',
-      value: 'N/A',
+      value: getBlockConditionLabel(blockData?.block_condition) || 'N/A',
       icon: 'ri-shield-line'
     },
     {
       label: 'Outdoor Space',
-      value: 'N/A',
+      value: getOutdoorSpaceLabel(blockData?.outdoor_space) || 'N/A',
       icon: 'ri-plant-line'
     },
     {
       label: 'Leaseholder Type',
-      value: 'N/A',
+      value: getLeaseholderTypeLabel(blockData?.leasehold_type) || 'N/A',
       icon: 'ri-settings-3-line'
     }
   ]

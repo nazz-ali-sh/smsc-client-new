@@ -26,13 +26,13 @@ export const outdoorSpaceTypes = [
 ]
 
 export const budgetFields = [
-  { name: 'managing_fee', placeholder: 'Management Fee' },
-  { name: 'accounting_fee', placeholder: 'Accounting Fee' },
-  { name: 'cosec_fee', placeholder: 'CoSec Fee' },
-  { name: 'out_of_hours_fee', placeholder: 'Out of Hours Fee' },
-  { name: 'emergency_fee', placeholder: 'Emergency Fee' },
-  { name: 'fire_door_fee', placeholder: 'Fire Door Fee' },
-  { name: 'anti_money_fee', placeholder: 'Anti Money Laundering Fee' }
+  { name: 'managing_fee', label: 'Management Fee' },
+  { name: 'accounting_fee', label: 'Accounting Fee' },
+  { name: 'cosec_fee', label: 'CoSec Fee' },
+  { name: 'out_of_hours_fee', label: 'Out of Hours Fee' },
+  { name: 'emergency_fee', label: 'Emergency Fee' },
+  { name: 'fire_door_fee', label: 'Fire Door Fee' },
+  { name: 'anti_money_fee', label: 'Anti Money Laundering Fee' }
 ] as const
 
 export const blockOptions = [
@@ -126,3 +126,39 @@ export function getYearLabel(value?: string): string {
 
   return found ? found?.label : ''
 }
+
+export function getOutdoorSpaceLabel(value?: string): string {
+  const found = outdoorSpaceTypes?.find(option => option?.value === value)
+
+  return found ? found?.title : ''
+}
+
+export function getLeaseholderTypeLabel(value?: string): string {
+  const found = leaseholderTypes?.find(option => option?.value === value)
+
+  return found ? found?.title : ''
+}
+
+export function getBlockConditionLabel(value?: string): string {
+  const found = blockConditionTypes?.find(option => option?.value === value)
+
+  return found ? found?.title : ''
+}
+
+export const rmtFormInputs = [
+  { name: 'name', label: 'Full Name', type: 'text' as const },
+  { name: 'email', label: 'Email', type: 'email' as const },
+  { name: 'phone_no', label: 'Phone Number', type: 'tel' as const }
+]
+
+export const rmcDirectorFormInputs = [
+  { name: 'fullName', label: 'First Name', type: 'text' as const },
+  { name: 'lastName', label: 'Last Name', type: 'text' as const },
+  { name: 'email', label: 'Email', type: 'email' as const },
+  { name: 'phoneNumber', label: 'Phone Number', type: 'tel' as const },
+  { name: 'password', label: 'Password', type: 'password' as const, showPasswordToggle: true },
+  { name: 'confirmPassword', label: 'Confirm Password', type: 'password' as const, showPasswordToggle: true }
+]
+
+export const budgetText =
+  "Including your block’s service charge budget is optional, but highly recommended. Tenders that include budget information typically receive more detailed and tailored replies from Managing Agents. If you'd prefer not to upload it, you can skip this step, but please note: once your tender goes live, you won’t be able to add budget details later. The fees you enter for each fee type will be applied to the full block."

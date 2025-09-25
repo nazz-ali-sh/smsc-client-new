@@ -16,7 +16,7 @@ const RmcOnboardingFooter = () => {
         backgroundColor: '#fff',
         color: '#333',
         fontSize: '12px',
-        gap: 4,
+        gap: 16,
         marginTop: 2
       }}
     >
@@ -24,11 +24,11 @@ const RmcOnboardingFooter = () => {
         <Image src={'/svgs/rmcLogo.svg'} alt={'image'} width={100} height={100} />
 
         <Box className='px-8 py-4 bg-[#F4F5F9]'>
-          <Typography variant='body2' sx={{ marginBottom: '8px', fontWeight: 700, color: '#262B43E5' }}>
+          <Typography variant='body2' sx={{ marginBottom: '8px', fontWeight: 700, color: '#262B43E5', paddingY: 2 }}>
             Subscribe
           </Typography>
 
-          <Box sx={{ position: 'relative', width: '200px' }}>
+          <Box sx={{ position: 'relative', width: '230px' }}>
             <TextField
               variant='outlined'
               placeholder='Email address'
@@ -70,7 +70,7 @@ const RmcOnboardingFooter = () => {
             </Button>
           </Box>
 
-          <Typography variant='body2' sx={{ marginBottom: '16px', textAlign: 'left', marginTop: 1, color: '#424242' }}>
+          <Typography variant='body2' sx={{ marginBottom: '16px', textAlign: 'left', marginTop: 6, color: '#424242' }}>
             The UK’s first service charge comparison site, solely for leaseholders. We’re experts in helping owners’
             associations and leaseholders estimate.
           </Typography>
@@ -88,33 +88,39 @@ const RmcOnboardingFooter = () => {
         }}
       >
         <Typography variant='body2' sx={{ fontWeight: 'bold', marginBottom: '8px', fontSize: '16px' }}>
-          Contact us
+          Contact Us
         </Typography>
 
         <Typography variant='body2' className='flex items-center gap-2' sx={{ paddingTop: '10px' }}>
           <i className='ri-phone-line'></i>
-          <span className='text-base'> 0800 690 6300</span>
+          <span className='font-normal text-base'> 0800 690 6300</span>
         </Typography>
         <Typography variant='body2' className='flex items-center gap-2'>
-          <i className='ri-map-pin-line'></i> <span>5, The Square, Bagshot, Surrey GU19 5AX</span>
+          <i className='ri-map-pin-line'></i>{' '}
+          <span className='font-normal text-base'>5, The Square, Bagshot, Surrey GU19 5AX</span>
         </Typography>
         <Typography variant='body2' className='flex items-center gap-2'>
-          <i className='ri-mail-line'></i> <span>info@saveservicecharge.co.uk</span>
+          <i className='ri-mail-line'></i> <span className='font-normal text-base'>info@saveservicecharge.co.uk</span>
         </Typography>
         <Typography variant='body2' className='flex items-center gap-2'>
-          <i className='ri-time-line'></i> <span>Mon - Fri 10:00 - 20:00</span>
+          <i className='ri-time-line'></i> <span className='font-normal text-base'>Mon - Fri 10:00 - 20:00</span>
         </Typography>
 
         <Typography variant='body2' sx={{ marginBottom: '8px', fontSize: '14px', marginTop: '8px' }}>
           Save My Service Charge Ltd. Registered in England & Wales, Company No. 12969517. Registered office: 5 The
           Square, Bagshot, Surrey GU19 5AX
         </Typography>
+        <div className='border-b-[3px] border-b-gray-300 w-full'></div>
 
-        <div className='flex justify-between w-full items-center'>
+        <div className='flex justify-between w-full items-center mt-12'>
           <div className='flex gap-6 items-center'>
             <p className='text-[#262B43E5] text-[14px] font-bold'>Terms</p>
             <p className='text-[#262B43E5] text-[14px] font-bold'>Privacy</p>
             <p className='text-[#262B43E5] text-[14px] font-bold'>Cookies</p>
+          </div>
+          <div className='flex items-center gap-4 mr-10'>
+            <Image src={'/svgs/linkdin.svg'} width={40} height={40} alt='linkding-img' />
+            <Image src={'/svgs/facebook.svg'} width={40} height={40} alt='linkding-img' />
           </div>
         </div>
       </Box>

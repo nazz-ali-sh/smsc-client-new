@@ -4,7 +4,7 @@ declare global {
   interface FormInputProps<T extends FieldValues = FieldValues> {
     name: FieldPath<T>
     control: Control<T>
-    type?: 'text' | 'email' | 'password' | 'tel' | 'number'
+    type?: 'text' | 'email' | 'password' | 'tel' | 'number' | 'string'
     placeholder?: string
     required?: boolean
     disabled?: boolean
@@ -26,6 +26,7 @@ declare global {
 
   interface DirectorOfRMCFormData {
     fullName: string
+    lastName: string
     email: string
     phoneNumber: string
     password: string

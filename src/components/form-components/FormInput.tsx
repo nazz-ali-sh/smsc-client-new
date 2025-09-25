@@ -11,7 +11,7 @@ const FormInput = <T extends FieldValues = FieldValues>({
   name,
   control,
   type = 'text',
-  placeholder,
+  label,
   required = false,
   disabled = false,
   fullWidth = true,
@@ -29,7 +29,7 @@ const FormInput = <T extends FieldValues = FieldValues>({
   onIconLeave,
   showPasswordToggle = false,
   ...textFieldProps
-}: FormInputProps<T> & Omit<TextFieldProps, 'name' | 'control'>) => {
+}: FormInputProps<T> & Omit<TextFieldProps, 'name' | 'control' | 'placeholder'>) => {
   const background = sx?.background || 'transparent'
   const restSx = sx ? { ...sx } : {}
   const [showPassword, setShowPassword] = useState(false)
@@ -37,11 +37,10 @@ const FormInput = <T extends FieldValues = FieldValues>({
   delete restSx.background
 
   const isPasswordField = type === 'password'
+
   const inputType = isPasswordField && showPasswordToggle ? (showPassword ? 'text' : 'password') : type
 
-  const handlePasswordToggle = () => {
-    setShowPassword(!showPassword)
-  }
+  const handlePasswordToggle = () => setShowPassword(!showPassword)
 
   return (
     <Controller
@@ -53,7 +52,7 @@ const FormInput = <T extends FieldValues = FieldValues>({
             {...field}
             {...textFieldProps}
             type={inputType}
-            placeholder={placeholder}
+            label={label}
             required={required}
             disabled={disabled}
             fullWidth={fullWidth}
@@ -77,13 +76,14 @@ const FormInput = <T extends FieldValues = FieldValues>({
                 '&.Mui-focused fieldset': {
                   borderColor: '#35C0ED',
                   border: '1px solid #35C0ED'
-                },
-                '& input::placeholder': {
-                  color: '#6C6C6C',
-                  opacity: field.value ? 0 : 1,
-                  fontSize: '14px',
-                  transition: 'opacity 0.2s ease'
                 }
+              },
+              '& .MuiInputLabel-root': {
+                color: '#6C6C6C',
+                fontSize: '14px'
+              },
+              '& .MuiInputLabel-root.Mui-focused': {
+                color: '#35C0ED'
               },
               '& input:-webkit-autofill': {
                 boxShadow: '0 0 0 100px white inset !important',
@@ -93,12 +93,12 @@ const FormInput = <T extends FieldValues = FieldValues>({
               '& input:-webkit-autofill:focus': {
                 boxShadow: '0 0 0 100px white inset !important'
               },
-    '& .MuiFormHelperText-root': {
-  marginLeft: '2px',  
-  marginTop: '6px',
-  fontSize: '12px',
-  lineHeight: 1.4,
-},
+              '& .MuiFormHelperText-root': {
+                marginLeft: '2px',
+                marginTop: '6px',
+                fontSize: '12px',
+                lineHeight: 1.4
+              },
               ...restSx
             }}
             error={error || !!fieldError}
@@ -106,9 +106,6 @@ const FormInput = <T extends FieldValues = FieldValues>({
             value={field?.value || ''}
             onChange={e => field.onChange(e.target.value)}
             onBlur={field.onBlur}
-            InputLabelProps={{
-              shrink: false
-            }}
           />
           {(icon || (isPasswordField && showPasswordToggle)) && (
             <Box
@@ -132,21 +129,16 @@ const FormInput = <T extends FieldValues = FieldValues>({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                border: 'none',
-                boxShadow: 'none',
-                transition: 'top 0.2s ease, background-color 0.2s ease',
                 cursor: onIconClick || onIconHover || (isPasswordField && showPasswordToggle) ? 'pointer' : 'default',
                 '&:hover':
                   onIconClick || onIconHover || (isPasswordField && showPasswordToggle)
-                    ? {
-                        backgroundColor: '#e5e5e5'
-                      }
+                    ? { backgroundColor: '#e5e5e5' }
                     : {}
               }}
             >
               {isPasswordField && showPasswordToggle ? (
-                <i 
-                  className={showPassword ? 'ri-eye-line' : 'ri-eye-off-line'} 
+                <i
+                  className={showPassword ? 'ri-eye-line' : 'ri-eye-off-line'}
                   style={{ fontSize: '16px', color: '#6B7280' }}
                 />
               ) : (

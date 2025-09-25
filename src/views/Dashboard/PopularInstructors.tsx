@@ -25,6 +25,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import phone from '../../../public/images/dashboardImages/phone.svg'
 import phonewhite from '../../../public/images/dashboardImages/phoneWhiteIcon.svg'
+import personWhiteIcon from '../../../public/images/dashboardImages/personWhiteIcon.svg'
 import roundStar from '../../../public/images/dashboardImages/roundStar.svg'
 import personTodo from '../../../public/images/dashboardImages/persontodo.svg'
 import star from '../../../public/images/dashboardImages/star.svg'
@@ -35,6 +36,7 @@ import AppointManagemnetModal from '@/common/AppointManagemnetAgent'
 import { shortlistedPmas } from '@/services/tender_result-apis/tender-result-api'
 import CommonModal from '@/common/CommonModal'
 import CustomButton from '@/common/CustomButton'
+import { formatDate, getDaysPassed } from '@/utils/dateFormater'
 
 interface dashboardResponceprops {
   dashboardResponce?: any
@@ -58,27 +60,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
 
   const stages = dashboardResponce?.data?.tender_stage_progress?.stages
 
-  console.log(stages)
   const router = useRouter()
-
-  const bookedCall = dashboardResponce?.data?.days_since_last_video_call
-  const bookedsiteVisit = dashboardResponce?.data?.days_since_last_site_visit
-
-  console.log(dashboardResponce)
-
-  const formatDate = (dateString?: string | null): string => {
-    if (!dateString) return '--'
-
-    const date = new Date(dateString)
-
-    if (isNaN(date.getTime())) return '--'
-
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-    const year = date.getFullYear()
-
-    return `${month}-${day}-${year}`
-  }
 
   interface ShortlistedPmas {
     data?: any
@@ -102,6 +84,15 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
     setApointAgentModalOpen(true)
     setOpenPmaDropdown(false)
   }
+
+  const sinceLastVideoCall = dashboardResponce?.data?.days_since_last_video_call
+  const CallCurrentStage = stages?.video_call?.is_completed
+
+  const sinceLastSiteVisit = dashboardResponce?.data?.days_since_last_site_visit
+  const siteVistCurrentStage = stages?.site_visit?.is_completed
+
+  const shortlistedCompletedAtDate = stages?.shortlisted?.completed_at
+  const daysSinceShortlist = getDaysPassed(shortlistedCompletedAtDate)
 
   return (
     <>
@@ -139,7 +130,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                 <Typography
                   sx={{ color: 'customColors.textGray', fontSize: '13px', fontWeight: 400, lineHeight: '22px' }}
                 >
-                  Reference Number: {stages?.went_live?.details?.tender_number}
+                  Reference Number: {dashboardResponce?.tender_name}
                 </Typography>
                 <Typography
                   sx={{
@@ -242,7 +233,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                 fontWeight: 300
               }}
             >
-              Your tender was sent to {stages?.result_received?.details?.pma_count} PMCs. You have received{' '}
+              Your tender was sent to {stages?.result_received?.details?.pma_count} PMAs. You have received{' '}
               {stages?.result_received?.details?.total_response_count} responses
             </Typography>
             <Divider sx={{ height: '2px', backgroundColor: '#D9D9D9', my: 1, marginTop: '14px' }} />
@@ -268,7 +259,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                       paddingTop: '2px'
                     }}
                   >
-                    Results received on : 2{formatDate(stages?.result_received?.details?.tender_response_date)}
+                    Results received on : {formatDate(stages?.result_received?.details?.tender_response_date)}
                   </Typography>
                   <Typography
                     sx={{
@@ -279,7 +270,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                       paddingTop: '2px'
                     }}
                   >
-                    Tender sent to : {stages?.result_received?.details?.pma_count} PMCs
+                    Tender sent to : {stages?.result_received?.details?.pma_count} PMAs
                   </Typography>
                   <Typography
                     sx={{
@@ -290,7 +281,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                       paddingTop: '2px'
                     }}
                   >
-                    Total results received : {stages?.result_received?.details?.total_response_count} PMCs
+                    Total results received : {stages?.result_received?.details?.total_response_count} PMAs
                   </Typography>
                 </CardContent>
               </>
@@ -367,7 +358,9 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                 fontWeight: 300
               }}
             >
-              {stages?.shortlisted?.is_completed ? 'You’ve shortlisted X agents.' : 'No shortlisted agents yet'}
+              {stages?.shortlisted?.is_completed
+                ? `You’ve shortlisted ${dashboardResponce?.data?.shortlisted_pma} agents.`
+                : 'No shortlisted agents yet'}
             </Typography>
             <Divider sx={{ height: '2px', backgroundColor: '#D9D9D9', my: 1, marginTop: '14px' }} />
             <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
@@ -431,7 +424,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
         <Grid item xs={12} sm={6} md={4}>
           <Card elevation={0} sx={{ borderRadius: 1, height: '370PX' }} className=' relative'>
             <div className='bg-[#c4edfa] mx-[22px] p-2 rounded-full flex items-center justify-center mt-[24px] size-[44px]'>
-              <Image src={stages?.video_call?.is_completed ? phone : phonewhite} alt='phone-image' />
+              <Image src={stages?.video_call?.is_current ? phone : phonewhite} alt='phone-image' />
             </div>
             <Typography
               sx={{
@@ -444,39 +437,102 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
             >
               Video Calls
             </Typography>
-            <Typography
-              sx={{
-                paddingTop: '8px',
-                color: stages?.video_call?.is_completed ? 'customColors.green5' : 'customColors.textGray',
-                paddingX: '22px',
-                fontSize: '12px',
-                fontWeight: 300
-              }}
-            >
-              {bookedCall == null
-                ? 'Shortlist Agent to unlock this section.'
-                : bookedCall > 0
-                  ? `You’ve invited ${dashboardResponce?.data?.schedule_calls} agents to video calls. `
-                  : 'No video calls booked yet.'}
-            </Typography>
-            <Divider sx={{ height: '2px', backgroundColor: '#D9D9D9', my: 1, marginTop: '14px' }} />
-            {stages?.video_call?.is_completed ? (
-              <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
-                <Typography sx={{ color: 'customColors.textGray', fontSize: '13px', fontWeight: 400 }}>
-                  Next Scheduled Call : {stages?.video_call?.details?.upcoming?.date || 'N/A'} (
-                  {stages?.video_call?.details?.upcoming?.slot || '-'})
-                </Typography>
-                <Typography sx={{ color: 'customColors.textGray', fontSize: '13px', fontWeight: 400 }}>
-                  Last Completed Call : {stages?.video_call?.details?.completed?.date || 'N/A'} (
-                  {stages?.video_call?.details?.completed?.slot || '-'})
-                </Typography>
-              </CardContent>
+
+            {!CallCurrentStage && sinceLastVideoCall == '0' ? (
+              <Typography
+                sx={{
+                  paddingTop: '8px',
+                  color: 'customColors.textGray',
+                  fontSize: '12px',
+                  paddingX: '24px',
+                  fontWeight: 300
+                }}
+              >
+                Shortlist Agent to unlock this section
+              </Typography>
+            ) : CallCurrentStage && sinceLastVideoCall == '0' ? (
+              <Typography
+                sx={{
+                  paddingTop: '8px',
+                  color: stages?.video_call?.is_completed ? 'customColors.green5' : 'customColors.textGray',
+                  fontSize: '12px',
+                  paddingX: '24px',
+                  fontWeight: 300
+                }}
+              >
+                You’ve invited {dashboardResponce?.data?.schedule_calls} agents to video calls.
+              </Typography>
+            ) : !CallCurrentStage && Number(sinceLastVideoCall) >= 1 ? (
+              <Typography
+                sx={{
+                  paddingTop: '8px',
+                  color: 'customColors.green5',
+                  fontSize: '12px',
+                  fontWeight: 300
+                }}
+              >
+                'No video calls booked yet.'
+              </Typography>
             ) : (
+              ''
+            )}
+
+            <Divider sx={{ height: '2px', backgroundColor: '#D9D9D9', my: 1, marginTop: '14px' }} />
+
+            {!CallCurrentStage && sinceLastVideoCall == '0' ? (
+              <Typography
+                sx={{
+                  color: 'customColors.textGray',
+                  fontSize: '13px',
+                  fontWeight: 400,
+                  paddingX: '22px',
+                  marginTop: '14px'
+                }}
+              >
+                You’ll be able to invite agents to video calls once you have shortlisted from your results.
+              </Typography>
+            ) : CallCurrentStage && sinceLastVideoCall == '0' ? (
               <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
-                <Typography sx={{ color: 'customColors.textGray', fontSize: '13px', fontWeight: 400 }}>
-                  You’ll be able to invite agents to video calls once you have shortlisted from your results.
+                <Typography
+                  sx={{
+                    color: 'customColors.textGray',
+                    fontSize: '13px',
+                    fontWeight: 400,
+                    paddingX: '22px',
+                    marginTop: '14px'
+                  }}
+                >
+                  Next Scheduled Call : {stages?.video_call?.details?.upcoming?.date || ''} (
+                  {stages?.video_call?.details?.upcoming?.slot || ''})
+                </Typography>
+                <Typography
+                  sx={{
+                    color: 'customColors.textGray',
+                    fontSize: '13px',
+                    fontWeight: 400,
+                    paddingX: '22px',
+                    marginTop: '14px'
+                  }}
+                >
+                  Last Completed Call : {stages?.video_call?.details?.completed?.date || ''} (
+                  {stages?.video_call?.details?.completed?.slot || ''})
                 </Typography>
               </CardContent>
+            ) : !CallCurrentStage && Number(sinceLastVideoCall) >= 1 ? (
+              <Typography
+                sx={{
+                  color: 'red',
+                  fontSize: '13px',
+                  fontWeight: 400,
+                  marginTop: '15px',
+                  paddingX: '24px'
+                }}
+              >
+                It’s been {daysSinceShortlist} days since you shortlisted agents – invite them to a video call to help
+                decide who to progress to a site visit
+              </Typography>
+            ) : (
+              ''
             )}
             <Box
               sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px' }}
@@ -484,7 +540,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
             >
               <CustomTooltip text='View All Video Calls' position='left' align='left'>
                 <Box
-                  onClick={!stages?.shortlisted?.is_completed ? undefined : () => router.push('/invites-video-calls')}
+                  onClick={!stages?.shortlisted?.is_current ? undefined : () => router.push('/invites-video-calls')}
                   sx={{
                     width: '36px',
                     height: '36px',
@@ -497,14 +553,14 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                   }}
                 >
                   <i
-                    className={` ${stages?.video_call?.is_completed ? ' text-[#26C6F9]' : 'text-white'} ri-eye-line w-[14px] h-[14px]`}
+                    className={` ${stages?.video_call?.is_current ? ' text-[#26C6F9]' : 'text-white'} ri-eye-line w-[14px] h-[14px]`}
                   ></i>
                 </Box>
               </CustomTooltip>
 
               <CustomTooltip text='Schedual New Video call' position='left' align='left'>
                 <Box
-                  onClick={!stages?.shortlisted?.is_completed ? undefined : () => setOnlineCallsModalOpen(true)}
+                  onClick={!stages?.shortlisted?.is_current ? undefined : () => setOnlineCallsModalOpen(true)}
                   sx={{
                     width: '36px',
                     height: '36px',
@@ -517,7 +573,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                   }}
                 >
                   <i
-                    className={`ri-group-fill w-[14px] h-[14px] ${stages?.video_call?.is_completed ? ' text-[#26C6F9]' : 'text-white'}`}
+                    className={`ri-group-fill w-[14px] h-[14px] ${stages?.video_call?.is_current ? ' text-[#26C6F9]' : 'text-white'}`}
                   ></i>
                 </Box>
               </CustomTooltip>
@@ -532,7 +588,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
             <div className='bg-[#c4edfa] mx-[22px] p-2 rounded-full flex items-center justify-center mt-[24px] size-[44px]'>
               {/* <Image src={person} alt='site-visit-image' /> */}
               <i
-                className={`ri-user-location-line ${stages?.site_visit?.is_completed ? 'text-[#26C6F9]' : 'text-white'}   `}
+                className={`ri-user-location-line ${stages?.site_visit?.is_current ? 'text-[#26C6F9]' : 'text-white'}   `}
               ></i>
             </div>
             <Typography
@@ -546,39 +602,94 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
             >
               Site Visits
             </Typography>
-            <Typography
-              sx={{
-                paddingTop: '8px',
-                color: stages?.site_visit?.is_completed ? 'customColors.green5' : 'customColors.textGray',
-                paddingX: '22px',
-                fontSize: '12px',
-                fontWeight: 300
-              }}
-            >
-              {bookedsiteVisit == null
-                ? 'Shortlist Agent to unlock this section.'
-                : bookedsiteVisit > 0
-                  ? ` You’ve invited ${dashboardResponce?.data?.schedule_calls} agents to Site visit.  `
-                  : 'No site visits booked yet.'}
-            </Typography>
-            <Divider sx={{ height: '2px', backgroundColor: '#D9D9D9', my: 1, marginTop: '14px' }} />
-            {stages?.site_visit?.is_completed ? (
-              <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
-                <Typography sx={{ color: 'customColors.textGray', fontSize: '13px', fontWeight: 400 }}>
-                  Next Scheduled Visit : {stages?.site_visit?.details?.upcoming?.date || 'N/A'} (
-                  {stages?.site_visit?.details?.upcoming?.slot || '-'})
-                </Typography>
-                <Typography sx={{ color: 'customColors.textGray', fontSize: '13px', fontWeight: 400 }}>
-                  Last Completed Visit : {stages?.site_visit?.details?.completed?.date || 'N/A'} (
-                  {stages?.site_visit?.details?.completed?.slot || '-'})
-                </Typography>
-              </CardContent>
+
+            {!siteVistCurrentStage && sinceLastSiteVisit == '0' ? (
+              <Typography
+                sx={{
+                  paddingTop: '8px',
+                  color: 'customColors.textGray',
+                  fontSize: '12px',
+                  paddingX: '24px',
+                  fontWeight: 300
+                }}
+              >
+                Shortlist Agent to unlock this section
+              </Typography>
+            ) : siteVistCurrentStage && sinceLastSiteVisit == '0' ? (
+              <Typography
+                sx={{
+                  paddingTop: '8px',
+                  color: stages?.video_call?.is_completed ? 'customColors.green5' : 'customColors.textGray',
+                  fontSize: '12px',
+                  paddingX: '24px',
+                  fontWeight: 300
+                }}
+              >
+                You’ve invited {dashboardResponce?.data?.schedule_calls} agents to video calls.
+              </Typography>
+            ) : !siteVistCurrentStage && Number(sinceLastSiteVisit) >= 1 ? (
+              <Typography
+                sx={{
+                  paddingTop: '8px',
+                  color: 'customColors.green5',
+                  fontSize: '12px',
+                  fontWeight: 300
+                }}
+              >
+                'No video calls booked yet.'
+              </Typography>
             ) : (
-              <CardContent>
-                <Typography sx={{ color: 'customColors.textGray', fontSize: '13px', fontWeight: 400 }}>
-                  You’ll be able to invite agents to site visits once you have shortlisted from your results.
+              ''
+            )}
+
+            <Divider sx={{ height: '2px', backgroundColor: '#D9D9D9', my: 1, marginTop: '14px' }} />
+
+            {!siteVistCurrentStage && sinceLastSiteVisit == '0' ? (
+              <Typography
+                sx={{
+                  color: 'customColors.textGray',
+                  fontSize: '13px',
+                  fontWeight: 400,
+                  marginTop: '14px',
+                  paddingX: '24px'
+                }}
+              >
+                You’ll be able to invite agents to video calls once you have shortlisted from your results.
+              </Typography>
+            ) : siteVistCurrentStage && sinceLastSiteVisit == '0' ? (
+              <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
+                <Typography
+                  sx={{
+                    color: 'customColors.textGray',
+                    fontSize: '13px',
+                    fontWeight: 400,
+                    marginTop: '14px',
+                    paddingX: '24px'
+                  }}
+                >
+                  Next Scheduled Visit : {stages?.site_visit?.details?.upcoming?.date || ''} (
+                  {stages?.site_visit?.details?.upcoming?.slot || ''})
+                </Typography>
+                <Typography
+                  sx={{
+                    color: 'customColors.textGray',
+                    fontSize: '13px',
+                    fontWeight: 400,
+                    marginTop: '14px',
+                    paddingX: '24px'
+                  }}
+                >
+                  Last Completed Visit : {stages?.site_visit?.details?.completed?.date || ''} (
+                  {stages?.site_visit?.details?.completed?.slot || ''})
                 </Typography>
               </CardContent>
+            ) : !siteVistCurrentStage && Number(sinceLastSiteVisit) >= 1 ? (
+              <Typography sx={{ color: 'red', fontSize: '13px', fontWeight: 400, marginTop: '20px', paddingX: '24px' }}>
+                You shortlisted agents {daysSinceShortlist} days ago — invite them to a site visit to make your final
+                decision easier.
+              </Typography>
+            ) : (
+              ''
             )}
             <Box
               sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px' }}
@@ -598,14 +709,14 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                   }}
                 >
                   <i
-                    className={`ri-eye-line w-[14px] h-[14px] ${stages?.site_visit?.is_completed ? 'text-[#26C6F9]' : 'text-white'} `}
+                    className={`ri-eye-line w-[14px] h-[14px] ${stages?.site_visit?.is_current ? 'text-[#26C6F9]' : 'text-white'} `}
                   ></i>
                 </Box>
               </CustomTooltip>
 
               <CustomTooltip text='View All Site Visits' position='left' align='left'>
                 <Box
-                  onClick={!stages?.shortlisted?.is_completed ? undefined : () => router.push('/invites-side-visits')}
+                  onClick={!stages?.shortlisted?.is_current ? undefined : () => router.push('/invites-side-visits')}
                   sx={{
                     width: '36px',
                     height: '36px',
@@ -618,15 +729,15 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                   }}
                 >
                   <Image
-                    src={personTodo}
+                    src={stages?.site_visit?.is_current ? personTodo : personWhiteIcon}
                     alt='personTodo'
-                    className={`w-[14px] h-[14px] text-[#26C6F9] ${stages?.site_visit?.is_completed ? 'text-[#26C6F9]' : 'text-white'}  `}
+                    className={`w-[14px] h-[14px] text-[#26C6F9]   `}
                   />
                 </Box>
               </CustomTooltip>
-              <CustomTooltip text='View All Site Visits' position='left' align='left'>
+              <CustomTooltip text='Schedual New Site Visits' position='left' align='left'>
                 <Box
-                  onClick={!stages?.site_visit?.is_completed ? undefined : () => setSiteVisitsModalOpen(true)}
+                  onClick={!stages?.site_visit?.is_current ? undefined : () => setSiteVisitsModalOpen(true)}
                   sx={{
                     width: '36px',
                     height: '36px',
@@ -639,7 +750,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                   }}
                 >
                   <i
-                    className={`ri-group-fill w-[14px] h-[14px] text-[#26C6F9] ${stages?.site_visit?.is_completed ? 'text-[#26C6F9]' : 'text-white'}  `}
+                    className={`ri-group-fill w-[14px] h-[14px] text-[#26C6F9] ${stages?.site_visit?.is_current ? 'text-[#26C6F9]' : 'text-white'}  `}
                   ></i>
                 </Box>
               </CustomTooltip>
@@ -650,7 +761,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
         <Grid item xs={12} sm={6} md={4}>
           <Card elevation={0} sx={{ borderRadius: 1, height: '370PX' }} className=' relative'>
             <div className='bg-[#c4edfa] mx-[22px] p-2 rounded-full flex items-center justify-center mt-[24px] size-[44px]'>
-              <Image src={stages?.appointment?.is_completed ? roundStar : star} alt='appointment-image' />
+              <Image src={stages?.appointment?.is_current ? roundStar : star} alt='appointment-image' />
             </div>
             <Typography
               sx={{
@@ -677,13 +788,23 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                 : 'You can choose an agent after one call or visit is done.'}
             </Typography>
             <Divider sx={{ height: '2px', backgroundColor: '#D9D9D9', my: 1, marginTop: '14px' }} />
+
             <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
-              <Typography
-                sx={{ color: 'customColors.textGray', fontSize: '13px', fontWeight: 400, lineHeight: '22px' }}
-              >
-                {stages?.appointment?.details?.message ||
-                  'Once you’ve had meaningful discussions or met with agents, you’ll be able to appoint  your chosen managing agent here.'}
-              </Typography>
+              {!stages?.appointment?.is_completed ? (
+                <Typography
+                  sx={{ color: 'customColors.textGray', fontSize: '13px', fontWeight: 400, lineHeight: '22px' }}
+                >
+                  Once you’ve had meaningful discussions or met with agents, you’ll be able to appoint your chosen
+                  managing agent here.
+                </Typography>
+              ) : (
+                <Typography
+                  sx={{ color: 'customColors.textGray', fontSize: '13px', fontWeight: 400, lineHeight: '22px' }}
+                >
+                  <span className='font-bold'>Congratulations, you’ve appointed a new managing agent.</span> We’ll now
+                  archive this tender in X Days.
+                </Typography>
+              )}
             </CardContent>
             <Box
               sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px' }}
@@ -703,14 +824,14 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                   }}
                 >
                   <i
-                    className={`ri-eye-line w-[14px] h-[14px] ${stages?.appointment?.is_completed ? 'text-[#26C6F9]' : 'text-white'} `}
+                    className={`ri-eye-line w-[14px] h-[14px] ${stages?.appointment?.is_current ? 'text-[#26C6F9]' : 'text-white'} `}
                   ></i>
                 </Box>
               </CustomTooltip>
 
               <CustomTooltip text='Appoint The Agent ' position='left' align='left'>
                 <Box
-                  onClick={!stages?.appointment?.is_completed ? undefined : () => setOpenPmaDropdown(true)}
+                  onClick={!stages?.appointment?.is_current ? undefined : () => setOpenPmaDropdown(true)}
                   sx={{
                     width: '36px',
                     height: '36px',
@@ -723,9 +844,9 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                   }}
                 >
                   <Image
-                    src={personTodo}
+                    src={stages?.appointment?.is_current ? personTodo : personWhiteIcon}
                     alt='personTodo'
-                    className={`w-[14px] h-[14px] ${stages?.appointment?.is_completed ? 'text-[#26C6F9]' : 'text-white'} `}
+                    className={`w-[14px] h-[14px]  `}
                   />
                 </Box>
               </CustomTooltip>
@@ -742,9 +863,8 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
 
         <SiteVisitsModal
           open={siteVisitsModalOpen}
-          // defaultmultiselect={selectedPma}
           onClose={() => setSiteVisitsModalOpen(false)}
-          types={null}
+          types='fromDashboard'
           shorlistedPmas={finalShortListedResponce?.data?.shortlisted_pma_users}
         />
 

@@ -8,7 +8,7 @@ export default function Page() {
       <section className='flex w-full'>
         <WeeklyReport text={'Tender Information'} />
       </section>
-      <div className='my-[50px]'>
+      <div className='py-5'>
         <HorizontalLinearStepper />
       </div>
       <div>

@@ -302,9 +302,9 @@ export interface TenderDetailResponse {
   data?: any
 }
 
-export const getTenderDetail = async (): Promise<TenderDetailResponse> => {
+export const getTenderDetail = async (tender_id: number): Promise<TenderDetailResponse> => {
   try {
-    const url = apiEndpoints.getTenderDetail()
+    const url = apiEndpoints.getTenderDetail(tender_id)
     const response = await axiosClient.get(url)
 
     return response.data

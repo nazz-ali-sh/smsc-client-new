@@ -1,4 +1,5 @@
 import { parseISO, format } from 'date-fns'
+import dayjs from 'dayjs'
 
 export const formatDate = (isoDateString: string) => {
   try {
@@ -9,5 +10,40 @@ export const formatDate = (isoDateString: string) => {
     console.error('Invalid date format:', error)
 
     return null
+  }
+}
+
+export function getDaysPassed(dateString?: string): number {
+  if (!dateString) return 0
+
+  const completedDate = new Date(dateString)
+  const today = new Date()
+
+  const diffTime = today.getTime() - completedDate.getTime()
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+
+  return diffDays > 0 ? diffDays : 0
+}
+
+
+ export function calculateTimeLeft(expiryAt: string) {
+  if (!expiryAt) return { days: "0", hours: "0", minutes: "0" }
+
+  const now = dayjs()
+  const target = dayjs(expiryAt)
+  const diff = target.diff(now)
+
+  if (diff <= 0) {
+    return { days: "0", hours: "0", minutes: "0" }
+  }
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+
+  return {
+    days: days.toString(),
+    hours: hours.toString(),
+    minutes: minutes.toString()
   }
 }

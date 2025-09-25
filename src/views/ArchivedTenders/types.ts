@@ -7,7 +7,7 @@ export interface SummaryStats {
 }
 
 export interface TenderApi {
-  tender_name: string
+  tender_name?: string
   tender_number: string
   status: string
   total_responses: number
@@ -24,6 +24,7 @@ export interface ArchivedTenderType {
   status?: any
   tenderId?: string
   tenderName?: string
+  tender_name?: string
   totalResponses: number
   shortlisted: number
   meetingHeld: {
@@ -39,20 +40,3 @@ export interface ArchiveDataResponse {
     tenders?: TenderApi[]
   }
 }
-
-// export interface ArchivedTenderType {
-//   id: string
-//   tenderName: string
-//   tenderId: string
-//   status: any
-//   totalResponses: number
-//   shortlisted: number
-//   meetingHeld: {
-//     videoCalls: number
-//     siteVisits: number
-//   }
-//   submittedDate: any
-//   closedDate: any
-//   tenders: any
-//   tender: any
-// }

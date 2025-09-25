@@ -48,7 +48,8 @@ export default function Page() {
   const { data: dashboardResponce } = useQuery<DashboardResponse, Error>({
     queryKey: ['dashboardDatas', rmcData?.tender_id],
     queryFn: () => dashboardData(Number(rmcData?.tender_id)),
-    enabled: !!rmcData?.tender_id
+    enabled: !!rmcData?.tender_id,
+    retry: 2
   })
 
   return (
@@ -57,7 +58,7 @@ export default function Page() {
         <WeeklyReport text={'Welcome Back'} />
       </section>
 
-      <section>
+      <section className='py-4'>
         <HorizontalLinearStepper />
       </section>
       <div className='mt-3'>

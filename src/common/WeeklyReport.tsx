@@ -1,7 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-
 import Image from 'next/image'
 
 import Divider from '@mui/material/Divider'
@@ -26,23 +24,21 @@ import type { RootState } from '@/redux-store'
 interface DashboardResponse {
   dashboardResponce?: any
   data?: any
+  tender_name?: any
 }
 
 const WeeklyReport = ({ text }: { text?: string }) => {
   const theme = useTheme()
   const belowMdScreen = useMediaQuery(theme.breakpoints.down('md'))
-  const [percentagevalue, setpercentagevalue] = useState(0)
-
-  console.log(percentagevalue)
 
   const rmcData = useSelector((state: RootState) => state?.rmcOnboarding?.rmcData)
 
   const { data: dashboardResponce, error } = useQuery<DashboardResponse, Error>({
     queryKey: ['dashboardDatas', rmcData?.tender_id],
     queryFn: () => dashboardData(Number(rmcData?.tender_id)),
-    enabled: !!rmcData?.tender_id
+    enabled: !!rmcData?.tender_id,
+    retry: 2
   })
-
 
   if (error) {
     console.error('Dashboard data error:', error)
@@ -76,31 +72,27 @@ const WeeklyReport = ({ text }: { text?: string }) => {
 
   const completedAtDate = (currentStage && stageDates[currentStage]) || 'No date'
 
+  const stageLabels: Record<string, string> = {
+    date_registered: 'Date Registered',
+    result_received: 'Result Received',
+    video_call: 'Video Call',
+    site_visit: 'Site Visit'
+  }
 
+  function getStageLabel(stageKey?: string): string {
+    if (!stageKey) return ''
 
-  useEffect(() => {
-    const stages = dashboardResponce?.data?.tender_stage_progress?.stages
+    return stageLabels[stageKey] || stageKey
+  }
 
-    if (stages) {
-      const stageValues = Object.values(stages)
-      const totalStages = 6
-
-      const completedStages = stageValues.slice(0, totalStages).filter((stage: any) => stage?.is_completed).length
-
-      const step = 100 / totalStages
-      const progressPercentage = +(completedStages * step).toFixed(2)
-
-      setpercentagevalue(progressPercentage)
-    }
-  }, [dashboardResponce])
+  const aLLStages = dashboardResponce?.data?.tender_progress
+  const currentTenderStage = getStageLabel(aLLStages)
 
   const formatDate = (dateString?: string | null): string => {
-    if (!dateString) return '--'
-
+    if (!dateString) return ''
     const date = new Date(dateString)
 
-    if (isNaN(date.getTime())) return '--'
-
+    if (isNaN(date.getTime())) return ''
     const month = String(date.getMonth() + 1).padStart(2, '0')
     const day = String(date.getDate()).padStart(2, '0')
     const year = date.getFullYear()
@@ -138,7 +130,7 @@ const WeeklyReport = ({ text }: { text?: string }) => {
             <div>
               <Typography sx={{ fontSize: '14px', fontWeight: 400 }}>Tender Sent to</Typography>
               <Typography variant='h5' sx={{ color: 'customColors.purple2', fontSize: '18px', fontWeight: 700 }}>
-                {dashboardResponce?.data?.pma_count} MPAs
+                {dashboardResponce?.data?.pma_count} PMAs
               </Typography>
             </div>
           </div>
@@ -177,7 +169,7 @@ const WeeklyReport = ({ text }: { text?: string }) => {
               Tender Id
             </Typography>
             <Typography variant='body1' sx={{ fontSize: '15px', fontWeight: 400, paddingTop: '6px' }}>
-              {rmcData?.tender_id}
+              {dashboardResponce?.tender_name}
             </Typography>
             <Typography variant='h5' sx={{ paddingTop: '18px', fontWeight: 700 }}>
               Tender Stage
@@ -190,7 +182,7 @@ const WeeklyReport = ({ text }: { text?: string }) => {
               variant='body1'
               sx={{ fontSize: '15px', fontWeight: 400, paddingTop: '6px', color: 'customColors.gray7' }}
             >
-              {dashboardResponce?.data?.tender_progress} on {formatDate(completedAtDate)}
+              {currentTenderStage} on {formatDate(completedAtDate)}
             </Typography>
           </div>
         </div>

@@ -99,7 +99,7 @@ export default function Pages() {
       <section className='flex w-full'>
         <WeeklyReport text='Welcome' />
       </section>
-      <div className='my-[50px]'>
+      <div className='py-5'>
         <HorizontalLinearStepper />
       </div>
 

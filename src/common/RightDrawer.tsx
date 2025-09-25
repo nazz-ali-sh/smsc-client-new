@@ -5,25 +5,16 @@ import type { Dispatch, SetStateAction } from 'react'
 
 import Image from 'next/image'
 
-import { useRouter } from 'next/navigation'
 
-import {
-  Card,
-  CardContent,
-  AccordionDetails,
-  AccordionSummary,
-  Accordion,
-  Divider,
-  Typography,
-  Drawer,
-  Box,
-  Grid,
-  Button
-} from '@mui/material'
+import {Divider, Typography, Drawer, Box,  Button } from '@mui/material'
 
 import avatar3 from '../../public/images/dashboardImages/Avartar3.png'
 
-import { iconMap } from './data'
+import PainPoints from '@/views/TenderInformations/PainPoints'
+import ServiceChargeBudget from '@/views/TenderInformations/ServiceChargeBudget'
+import PmaCostbreakdown from '@/views/TenderInformations/PmaCostbreakdown'
+import DrawerWidget from '@/views/TenderInformations/DrawerWidget'
+import ResponceandBio from '@/views/TenderInformations/ResponceandBio'
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right'
 
@@ -46,8 +37,6 @@ export default function AnchorTemporaryDrawer({
 }: AnchorTemporaryDrawerProps) {
   const anchor: Anchor = 'right'
 
-  console.log()
-  const router = useRouter()
 
   const cardsData = [
     {
@@ -77,7 +66,7 @@ export default function AnchorTemporaryDrawer({
   }
 
   const drawerContent = (
-    <Box sx={{ width: 793, p: 8 }} role='presentation' onKeyDown={onClose}>
+    <Box sx={{ width: 830, p: 8 }} role='presentation' onKeyDown={onClose}>
       <section className='flex items-start justify-between mt-[34px]'>
         <div className='flex items-center space-x-[14px]'>
           <Image src={avatar3} alt='avatar' className='size-[94px]' />
@@ -99,279 +88,22 @@ export default function AnchorTemporaryDrawer({
 
       <Divider sx={{ mt: 9 }} />
 
-      <div className='flex justify-between items-center mt-[34px]'>
-        {cardsData.map((items: any, index) => (
-          <div className='w-[227px]' key={index}>
-            <Card color={'primary'}>
-              <CardContent className='flex items-center gap-x-[16px]'>
-                <div
-                  className={`flex items-center gap-4 ${
-                    index === 0 ? 'bg-sky' : index === 1 ? 'bg-[#e3f9d4]' : index === 2 ? 'bg-purple1' : ''
-                  } size-[40px] justify-center rounded-lg`}
-                >
-                  {items?.icons}
-                </div>
-                <div className='flex flex-col'>
-                  <Typography variant='body1' color='text.primary'>
-                    {items?.descrption}
-                  </Typography>
-                  <Typography className='text-[17px] font-bold leading-28'>{items.state}</Typography>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        ))}
-      </div>
+      <DrawerWidget cardsData={cardsData} />
 
       {drawerData?.responses?.map((item: any, index: any) => {
         return (
           <React.Fragment key={index}>
             <section className='mt-[38px]'>
-              <Typography variant='h3' className='text-darkblue text-[18px]'>
-                RMC Pain points
-              </Typography>
-
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, marginTop: '34px' }}>
-                <Accordion
-                  sx={{
-                    border: '2px solid #E4A324 !important',
-                    borderRadius: '8px',
-                    '&:before': { display: 'none !important' },
-                    boxShadow: 'none !important',
-                    '& .MuiAccordion-root': {
-                      border: '2px solid #E4A324 !important'
-                    },
-                    '& .MuiAccordionDetails-root': {
-                      borderTop: '1px solid #E4A324 !important'
-                    }
-                  }}
-                >
-                  <AccordionSummary
-                    expandIcon={<i className='ri-arrow-down-s-line' style={{ color: '#E4A324' }} />}
-                    sx={{
-                      backgroundColor: '#FFF7ED',
-                      padding: '12px 16px',
-                      '& .MuiAccordionSummary-content': {
-                        margin: 0
-                      }
-                    }}
-                  >
-                    <Typography sx={{ color: '#696969', fontSize: '14px' }}>
-                      What would you like to see done differently by a new managing agent?
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails sx={{ backgroundColor: 'white', padding: '16px' }}>
-                    <Typography variant='body2' color='text.secondary'>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
-                      labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                      nisi ut aliquip ex ea commodo consequat.
-                    </Typography>
-                  </AccordionDetails>
-                </Accordion>
-
-                <Accordion
-                  sx={{
-                    border: '2px solid #E4A324 !important',
-                    borderRadius: '8px',
-                    '&:before': { display: 'none !important' },
-                    boxShadow: 'none !important',
-                    '& .MuiAccordion-root': {
-                      border: '2px solid #E4A324 !important'
-                    },
-                    '& .MuiAccordionDetails-root': {
-                      borderTop: '1px solid #E4A324 !important'
-                    }
-                  }}
-                >
-                  <AccordionSummary
-                    expandIcon={<i className='ri-arrow-down-s-line' style={{ color: '#E4A324' }} />}
-                    sx={{
-                      backgroundColor: '#FFF7ED',
-                      padding: '12px 16px',
-                      '& .MuiAccordionSummary-content': {
-                        margin: 0
-                      }
-                    }}
-                  >
-                    <Typography variant='body1' sx={{ color: '#696969' }}>
-                      Are there any systems, tools, or financial reporting features that would improve how your block is
-                      managed?
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails sx={{ backgroundColor: 'white', padding: '16px' }}>
-                    <Typography variant='body2' color='text.secondary'>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
-                      labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                      nisi ut aliquip ex ea commodo consequat.
-                    </Typography>
-                  </AccordionDetails>
-                </Accordion>
-
-                <Accordion
-                  sx={{
-                    border: '2px solid #E4A324 !important',
-                    borderRadius: '8px',
-                    '&:before': { display: 'none !important' },
-                    boxShadow: 'none !important',
-                    '& .MuiAccordion-root': {
-                      border: '2px solid #E4A324 !important'
-                    },
-                    '& .MuiAccordionDetails-root': {
-                      borderTop: '1px solid #E4A324 !important'
-                    }
-                  }}
-                >
-                  <AccordionSummary
-                    expandIcon={<i className='ri-arrow-down-s-line' style={{ color: '#E4A324' }} />}
-                    sx={{
-                      backgroundColor: '#FFF7ED',
-                      padding: '12px 16px',
-                      '& .MuiAccordionSummary-content': {
-                        margin: 0
-                      }
-                    }}
-                  >
-                    <Typography variant='body1' sx={{ color: '#696969' }}>
-                      What service challenges have you experienced with your current managing agent?
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails sx={{ backgroundColor: 'white', padding: '16px' }}>
-                    <Typography variant='body2' color='text.secondary'>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
-                      labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                      nisi ut aliquip ex ea commodo consequat.
-                    </Typography>
-                  </AccordionDetails>
-                </Accordion>
-              </Box>
+              <PainPoints painPoints={drawerData?.responses} />
             </section>
-
-            <Box sx={{ display: 'flex', alignItems: 'center', rowGap: '20px' }}>
-              <Typography variant='h3' className='text-darkblue pt-[34px] text-[18px]'>
-                Building Height:
-              </Typography>
-
-              <Typography variant='h3' className=' pt-[34px] text-[18px] text-[#696969] pl-[20px]'>
-                11
-              </Typography>
-            </Box>
-
-            <Typography variant='h3' className='text-darkblue pt-[34px] text-[18px]'>
-              RMC Service Charge Budget
-            </Typography>
-            <section className='flex flex-wrap pt-[28px]'>
-              {item.management_fees?.map((feeItem: any, feeIndex: any) => (
-                <Grid item xs={12} sm={6} md={4} key={feeIndex} className='w-[240px]'>
-                  <>
-                    <Box sx={{ marginBottom: 4, marginTop: 4 }}>
-                      <Grid container spacing={3} className='w-[230px]'>
-                        <Grid item xs={12} sm={6} md={12}>
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                            <Box
-                              sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                width: 40,
-                                height: 40,
-                                backgroundColor: '#E3F2FD',
-                                borderRadius: '8px',
-                                flexShrink: 0
-                              }}
-                            >
-                              <Image src={iconMap[feeItem?.management_fee_slug]} alt='images' />
-                            </Box>
-                            <Box>
-                              <Typography variant='body2' sx={{ fontWeight: 500 }} className='w-[180px]'>
-                                {feeItem?.management_fee_title}
-                              </Typography>
-                              <Typography variant='caption' color='#262B43E5' className='text-[20px]'>
-                                €{feeItem?.fee_amount}
-                              </Typography>
-                            </Box>
-                          </Box>
-                        </Grid>
-                      </Grid>
-                    </Box>
-                  </>
-                </Grid>
-              ))}
-            </section>
-
-            <Typography variant='h3' className='text-darkblue pt-[34px] text-[18px]'>
-              Cost breakdown
-            </Typography>
-            <section className='flex flex-wrap pt-[28px]'>
-              {item.management_fees?.map((feeItem: any, feeIndex: any) => (
-                <Grid item xs={12} sm={6} md={4} key={feeIndex} className='w-[240px]'>
-                  <>
-                    <Box sx={{ marginBottom: 4, marginTop: 4 }}>
-                      <Grid container spacing={3} className='w-[230px]'>
-                        <Grid item xs={12} sm={6} md={12}>
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                            <Box
-                              sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                width: 40,
-                                height: 40,
-                                backgroundColor: '#E3F2FD',
-                                borderRadius: '8px',
-                                flexShrink: 0
-                              }}
-                            >
-                              <Image src={iconMap[feeItem?.management_fee_slug]} alt='images' />
-                            </Box>
-                            <Box>
-                              <Typography variant='body2' sx={{ fontWeight: 500 }} className='w-[180px]'>
-                                {feeItem?.management_fee_title}
-                              </Typography>
-                              <Typography variant='caption' color='#262B43E5' className='text-[20px]'>
-                                €{feeItem?.fee_amount}
-                              </Typography>
-                            </Box>
-                          </Box>
-                        </Grid>
-                      </Grid>
-                    </Box>
-                  </>
-                </Grid>
-              ))}
-            </section>
-
-            <section>
-              <section>
-                <Typography variant='h3' className='text-darkblue mt-[34px] text-[18px]'>
-                  Bio
-                </Typography>
-                <Typography variant='h5' className='text-[#AEAEAE] mt-[10px] text-[14px]'>
-                  {item?.company_bio?.bio}
-                </Typography>
-              </section>
-
-              <section className=' bg-white px-1 pb-[60px]'>
-                <Typography variant='h3' className='text-darkblue  pt-[50px] text-[18px] '>
-                  Response
-                </Typography>
-                <Typography variant='h5' className='text-[#AEAEAE] mt-[20px] text-[14px] '>
-                  {item?.response_details?.message}
-                </Typography>
-              </section>
-            </section>
+            <ServiceChargeBudget servicesbuget={item?.management_fees} />
+            <PmaCostbreakdown pmaCostBreakDown={item?.management_fees} />
+            <ResponceandBio boi={item?.company_bio?.bio} responce={item?.response_details?.message} />
           </React.Fragment>
         )
       })}
+
       <section className='flex items-center justify-end py-[12px] space-x-[24px]'>
-        <div>
-          <Button
-            onClick={() => router.push('/tender-result/1')}
-            variant='contained'
-            className='!bg-[#35C0ED] w-[280px]'
-          >
-            <i className='ri-user-line bg-white size-[18px] pr-[5px]'></i> View Full profile
-          </Button>
-        </div>
         <div>
           <Button variant='contained' className='!bg-[#35C0ED] w-[280px]' onClick={handleUpdateID}>
             <i className='ri-user-line bg-white size-[18px] pr-[5px]'></i>

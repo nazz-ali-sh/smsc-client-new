@@ -8,9 +8,7 @@ import { useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
-
 import { Typography, Grid, Box } from '@mui/material'
-
 import type { InferOutput } from 'valibot'
 
 import CustomButton from '@/common/CustomButton'
@@ -18,6 +16,7 @@ import FormInput from '@/components/form-components/FormInput'
 import { rtmNonDirectorSchema } from '@/schemas/validation-schemas'
 import { submitRtmNonDirector, type RtmNonDirectorPayload } from '@/services/rmc-onboarding-apis/rmc-onboarding-api'
 import { setPersonalInfo, clearRtmNonDirectorData } from '@/redux-store/slices/rtmNonDirectorSlice'
+import { rmtFormInputs } from '@/constants'
 
 type RtmFormData = InferOutput<typeof rtmNonDirectorSchema>
 
@@ -56,10 +55,7 @@ const OnboardingRtmForm = () => {
   })
 
   const handleFormSubmit = (data: RtmFormData) => {
-    if (isSubmitting || mutation.isPending) {
-      return
-    }
-
+    if (isSubmitting || mutation.isPending) return
     setIsSubmitting(true)
 
     dispatch(
@@ -71,9 +67,9 @@ const OnboardingRtmForm = () => {
     )
 
     const payload: RtmNonDirectorPayload = {
-      name: data.name,
-      email: data.email,
-      phone_no: data.phone_no,
+      name: data?.name,
+      email: data?.email,
+      phone_no: data?.phone_no,
       rtm_setup: rtmSetup || '',
       q_independent_redevelopment: questions?.q_independent_redevelopment || '',
       q_separable_shared_services: questions?.q_separable_shared_services || '',
@@ -85,13 +81,8 @@ const OnboardingRtmForm = () => {
     mutation.mutate(payload)
   }
 
-  const handleNext = () => {
-    handleSubmit(handleFormSubmit)()
-  }
-
-  const handleBackStep = () => {
-    router.push('/rmc-onboarding-five')
-  }
+  const handleNext = () => handleSubmit(handleFormSubmit)()
+  const handleBackStep = () => router.push('/rmc-onboarding-five')
 
   return (
     <>
@@ -108,38 +99,17 @@ const OnboardingRtmForm = () => {
               </Typography>
 
               <Grid container spacing={6}>
-                <Grid item xs={12} md={4}>
-                  <FormInput
-                    name='name'
-                    control={control}
-                    placeholder='Full Name'
-                    type='text'
-                    required
-                    disabled={isSubmitting || mutation.isPending}
-                  />
-                </Grid>
-
-                <Grid item xs={12} md={4}>
-                  <FormInput
-                    name='email'
-                    control={control}
-                    placeholder='Email'
-                    type='email'
-                    required
-                    disabled={isSubmitting || mutation.isPending}
-                  />
-                </Grid>
-
-                <Grid item xs={12} md={4}>
-                  <FormInput
-                    name='phone_no'
-                    control={control}
-                    placeholder='Phone Number'
-                    type='tel'
-                    required
-                    disabled={isSubmitting || mutation.isPending}
-                  />
-                </Grid>
+                {rmtFormInputs?.map(field => (
+                  <Grid item xs={12} md={4} key={field?.name}>
+                    <FormInput
+                      name={field?.name as keyof RtmFormData}
+                      control={control}
+                      label={field?.label}
+                      type={field?.type}
+                      disabled={isSubmitting || mutation.isPending}
+                    />
+                  </Grid>
+                ))}
               </Grid>
             </Box>
 

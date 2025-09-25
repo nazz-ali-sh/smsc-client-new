@@ -7,13 +7,6 @@ import fireDoor from '../../public/images/tenderShortlisted/fireDoor.svg'
 import amlcheck from '../../public/images/tenderShortlisted/amlChecks.svg'
 import total from '../../public/images/tenderShortlisted/total.svg'
 
-import locationsIcons from '../../public/images/archiveImages/locationIcon.svg'
-import blocks from '../../public/images/archiveImages/blocks.svg'
-import blockCondations from '../../public/images/archiveImages/blockCondation.svg'
-import outdoorspace from '../../public/images/archiveImages/outdoorspace.svg'
-import unitCounts from '../../public/images/archiveImages/unitsCount.svg'
-import buildingHeight from '../../public/images/archiveImages/buildiungHeight.svg'
-
 export const daysWithSlots = [
   { id: 1, day: 'Monday' },
   { id: 2, day: 'Tuesday' },
@@ -31,15 +24,4 @@ export const iconMap: any = {
   fire_door_inspection: fireDoor,
   aml_checks: amlcheck,
   total: total
-}
-
-export const iconMaps: any = {
-  location: locationsIcons,
-  units_count: unitCounts,
-  number_of_blocks: blocks,
-  outdoor_space: outdoorspace,
-  year_built: emergency,
-  block_condition: blockCondations,
-  building_height: buildingHeight,
-  product_type: buildingHeight
 }

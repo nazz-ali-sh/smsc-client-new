@@ -4,9 +4,11 @@ import Image from 'next/image'
 
 import { Box, Card, CardContent, Grid, Typography } from '@mui/material'
 
-import { finalSelectionData } from '../data'
+interface CongratulationsSectionProps {
+  startDate?: string
+}
 
-const CongratulationsSection = () => {
+const CongratulationsSection = ({ startDate }: CongratulationsSectionProps) => {
   return (
     <>
       <Card>
@@ -46,7 +48,7 @@ const CongratulationsSection = () => {
                   }}
                 >
                   Start Date:
-                  <span className='font-normal pl-1'>{finalSelectionData.startDate}</span>
+                  <span className='font-normal pl-1'>{startDate || 'TBD'}</span>
                 </Typography>
               </Box>
             </Grid>
