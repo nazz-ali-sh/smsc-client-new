@@ -33,20 +33,32 @@ export const directorOfRMCSchema = pipe(
       nonEmpty('First name is required'),
       minLength(2, 'First name must be at least 2 characters'),
       check((value: string) => value.length <= 15, 'First name cannot exceed 15 characters'),
-      check((value: string) => /^[a-zA-Z\s'-]+$/.test(value.trim()), 'First name can only contain letters, spaces, hyphens, and apostrophes'),
+      check(
+        (value: string) => /^[a-zA-Z\s'-]+$/.test(value.trim()),
+        'First name can only contain letters, spaces, hyphens, and apostrophes'
+      ),
       check((value: string) => !/^\s|\s$/.test(value), 'First name cannot start or end with spaces'),
       check((value: string) => !/\d/.test(value), 'First name cannot contain numbers'),
-      check((value: string) => !/[!@#$%^&*()_+=\[\]{};':"\\|,.<>\/?]/.test(value), 'First name cannot contain special characters')
+      check(
+        (value: string) => !/[!@#$%^&*()_+=\[\]{};':"\\|,.<>\/?]/.test(value),
+        'First name cannot contain special characters'
+      )
     ),
     lastName: pipe(
       string(),
       nonEmpty('Last name is required'),
       minLength(2, 'Last name must be at least 2 characters'),
       check((value: string) => value.length <= 15, 'Last name cannot exceed 15 characters'),
-      check((value: string) => /^[a-zA-Z\s'-]+$/.test(value.trim()), 'Last name can only contain letters, spaces, hyphens, and apostrophes'),
+      check(
+        (value: string) => /^[a-zA-Z\s'-]+$/.test(value.trim()),
+        'Last name can only contain letters, spaces, hyphens, and apostrophes'
+      ),
       check((value: string) => !/^\s|\s$/.test(value), 'Last name cannot start or end with spaces'),
       check((value: string) => !/\d/.test(value), 'Last name cannot contain numbers'),
-      check((value: string) => !/[!@#$%^&*()_+=\[\]{};':"\\|,.<>\/?]/.test(value), 'Last name cannot contain special characters')
+      check(
+        (value: string) => !/[!@#$%^&*()_+=\[\]{};':"\\|,.<>\/?]/.test(value),
+        'Last name cannot contain special characters'
+      )
     ),
     email: pipe(string(), nonEmpty('Email is required'), email('Please enter a valid email address')),
     phoneNumber: pipe(
@@ -140,7 +152,9 @@ export const budgetSchema = pipe(
       check((value: string) => /^\d+(\.\d{1,2})?$/.test(value.trim()), 'Management Fee must be a valid number'),
       check((value: string) => {
         const numValue = parseFloat(value.trim())
-        return numValue <= 9999
+
+        
+return numValue <= 9999
       }, 'Management Fee cannot exceed 9999')
     ),
     accounting_fee: pipe(
@@ -149,7 +163,9 @@ export const budgetSchema = pipe(
       check((value: string) => /^\d+(\.\d{1,2})?$/.test(value.trim()), 'Accounting Fee must be a valid number'),
       check((value: string) => {
         const numValue = parseFloat(value.trim())
-        return numValue <= 9999
+
+        
+return numValue <= 9999
       }, 'Accounting Fee cannot exceed 9999')
     ),
     cosec_fee: pipe(
@@ -158,7 +174,9 @@ export const budgetSchema = pipe(
       check((value: string) => /^\d+(\.\d{1,2})?$/.test(value.trim()), 'CoSec Fee must be a valid number'),
       check((value: string) => {
         const numValue = parseFloat(value.trim())
-        return numValue <= 9999
+
+        
+return numValue <= 9999
       }, 'CoSec Fee cannot exceed 9999')
     ),
     out_of_hours_fee: pipe(
@@ -167,7 +185,9 @@ export const budgetSchema = pipe(
       check((value: string) => /^\d+(\.\d{1,2})?$/.test(value.trim()), 'Out of Hours Fee must be a valid number'),
       check((value: string) => {
         const numValue = parseFloat(value.trim())
-        return numValue <= 9999
+
+        
+return numValue <= 9999
       }, 'Out of Hours Fee cannot exceed 9999')
     ),
     emergency_fee: pipe(
@@ -176,7 +196,9 @@ export const budgetSchema = pipe(
       check((value: string) => /^\d+(\.\d{1,2})?$/.test(value.trim()), 'Emergency Fee must be a valid number'),
       check((value: string) => {
         const numValue = parseFloat(value.trim())
-        return numValue <= 9999
+
+        
+return numValue <= 9999
       }, 'Emergency Fee cannot exceed 9999')
     ),
     fire_door_fee: pipe(
@@ -185,7 +207,9 @@ export const budgetSchema = pipe(
       check((value: string) => /^\d+(\.\d{1,2})?$/.test(value.trim()), 'Fire Door Fee must be a valid number'),
       check((value: string) => {
         const numValue = parseFloat(value.trim())
-        return numValue <= 9999
+
+        
+return numValue <= 9999
       }, 'Fire Door Fee cannot exceed 9999')
     ),
     anti_money_fee: pipe(
@@ -197,7 +221,9 @@ export const budgetSchema = pipe(
       ),
       check((value: string) => {
         const numValue = parseFloat(value.trim())
-        return numValue <= 9999
+
+        
+return numValue <= 9999
       }, 'Anti Money Laundering Fee cannot exceed 9999')
     )
   })
