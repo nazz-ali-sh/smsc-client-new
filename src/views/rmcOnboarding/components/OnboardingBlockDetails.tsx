@@ -223,11 +223,9 @@ const OnboardingBlockDetails = () => {
           </Typography>
 
           <div className='flex gap-3 items-center'>
-            <Typography sx={{ color: 'customColors.textGray', fontSize: '20px', fontWeight: 500 }}>
-              Postcode:
-            </Typography>
+            <Typography sx={{ color: 'customColors.textGray', fontSize: '20px', fontWeight: 500 }}>Address:</Typography>
             <Typography sx={{ color: 'customColors.textGray', fontSize: '20px', fontWeight: 300 }}>
-              {selectedAddress?.postcode || 'No postcode selected'}
+              {existingBlockData?.address} {existingBlockData?.address_line2}, {existingBlockData?.county}
             </Typography>
           </div>
           <div className='flex justify-end'>
@@ -253,7 +251,7 @@ const OnboardingBlockDetails = () => {
               ))}
             </div>
 
-            <div className='grid xs:grid-col-1  md:grid-cols-2 gap-4 mt-8'>
+            <div className='grid xs:grid-col-1  md:grid-cols-3 gap-4 mt-8'>
               <FormSelect
                 name='number_of_blocks'
                 control={control}

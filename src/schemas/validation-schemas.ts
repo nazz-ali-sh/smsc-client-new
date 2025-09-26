@@ -127,32 +127,56 @@ export const budgetSchema = pipe(
     managing_fee: pipe(
       string(),
       nonEmpty('Management Fee is required'),
-      check((value: string) => /^\d+(\.\d{1,2})?$/.test(value.trim()), 'Management Fee must be a valid number')
+      check((value: string) => /^\d+(\.\d{1,2})?$/.test(value.trim()), 'Management Fee must be a valid number'),
+      check((value: string) => {
+        const numValue = parseFloat(value.trim())
+        return numValue <= 9999
+      }, 'Management Fee cannot exceed 9999')
     ),
     accounting_fee: pipe(
       string(),
       nonEmpty('Accounting Fee is required'),
-      check((value: string) => /^\d+(\.\d{1,2})?$/.test(value.trim()), 'Accounting Fee must be a valid number')
+      check((value: string) => /^\d+(\.\d{1,2})?$/.test(value.trim()), 'Accounting Fee must be a valid number'),
+      check((value: string) => {
+        const numValue = parseFloat(value.trim())
+        return numValue <= 9999
+      }, 'Accounting Fee cannot exceed 9999')
     ),
     cosec_fee: pipe(
       string(),
       nonEmpty('CoSec Fee is required'),
-      check((value: string) => /^\d+(\.\d{1,2})?$/.test(value.trim()), 'CoSec Fee must be a valid number')
+      check((value: string) => /^\d+(\.\d{1,2})?$/.test(value.trim()), 'CoSec Fee must be a valid number'),
+      check((value: string) => {
+        const numValue = parseFloat(value.trim())
+        return numValue <= 9999
+      }, 'CoSec Fee cannot exceed 9999')
     ),
     out_of_hours_fee: pipe(
       string(),
       nonEmpty('Out of Hours Fee is required'),
-      check((value: string) => /^\d+(\.\d{1,2})?$/.test(value.trim()), 'Out of Hours Fee must be a valid number')
+      check((value: string) => /^\d+(\.\d{1,2})?$/.test(value.trim()), 'Out of Hours Fee must be a valid number'),
+      check((value: string) => {
+        const numValue = parseFloat(value.trim())
+        return numValue <= 9999
+      }, 'Out of Hours Fee cannot exceed 9999')
     ),
     emergency_fee: pipe(
       string(),
       nonEmpty('Emergency Fee is required'),
-      check((value: string) => /^\d+(\.\d{1,2})?$/.test(value.trim()), 'Emergency Fee must be a valid number')
+      check((value: string) => /^\d+(\.\d{1,2})?$/.test(value.trim()), 'Emergency Fee must be a valid number'),
+      check((value: string) => {
+        const numValue = parseFloat(value.trim())
+        return numValue <= 9999
+      }, 'Emergency Fee cannot exceed 9999')
     ),
     fire_door_fee: pipe(
       string(),
       nonEmpty('Fire Door Fee is required'),
-      check((value: string) => /^\d+(\.\d{1,2})?$/.test(value.trim()), 'Fire Door Fee must be a valid number')
+      check((value: string) => /^\d+(\.\d{1,2})?$/.test(value.trim()), 'Fire Door Fee must be a valid number'),
+      check((value: string) => {
+        const numValue = parseFloat(value.trim())
+        return numValue <= 9999
+      }, 'Fire Door Fee cannot exceed 9999')
     ),
     anti_money_fee: pipe(
       string(),
@@ -160,7 +184,11 @@ export const budgetSchema = pipe(
       check(
         (value: string) => /^\d+(\.\d{1,2})?$/.test(value.trim()),
         'Anti Money Laundering Fee must be a valid number'
-      )
+      ),
+      check((value: string) => {
+        const numValue = parseFloat(value.trim())
+        return numValue <= 9999
+      }, 'Anti Money Laundering Fee cannot exceed 9999')
     )
   })
 )

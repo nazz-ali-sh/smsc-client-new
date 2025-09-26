@@ -24,7 +24,6 @@ export const useTenderDetail = () => {
     })
   }
 
-  // tender_id
   return {
     ...query,
     data: query?.data?.data,

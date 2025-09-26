@@ -123,9 +123,7 @@ const UserDropdown = () => {
                   <MenuItem className='gap-3 pli-4' onClick={e => handleDropdownClose(e, '/set-availability')}>
                     <Typography color='text.primary'>Set Availability </Typography>
                   </MenuItem>
-                  <MenuItem className='gap-3 pli-4' onClick={e => handleDropdownClose(e)}>
-                    <Typography color='text.primary'>Insurance Registration</Typography>
-                  </MenuItem>
+
                   <MenuItem className='gap-3 pli-4' onClick={hanldeArchive}>
                     <Typography color='text.primary'>Archive</Typography>
                   </MenuItem>

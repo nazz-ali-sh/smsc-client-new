@@ -290,7 +290,11 @@ export default function OnboardingOtp() {
             If you're having trouble receiving the code, please check your spam folder or contact support.
           </Typography>
           <div className='flex justify-end mt-10 '>
-            <CustomButton sx={{ fontSize: '12px', borderRadius: '4px' }} onClick={handleBack}>
+            <CustomButton
+              disabled={mutation?.isPending || resendMutation?.isPending || isResendDisabled}
+              sx={{ fontSize: '12px', borderRadius: '4px' }}
+              onClick={handleBack}
+            >
               Back
             </CustomButton>
           </div>

@@ -191,7 +191,25 @@ const OnboardingBudget = () => {
         <form onSubmit={handleSubmit(handleFormSubmit)}>
           <div className='grid sm:grid-cols-1 lg:grid-cols-3 gap-6 mt-10'>
             {budgetFields?.map(({ name, label }) => (
-              <FormInput key={name} name={name} control={control} label={label} type='text' />
+              <FormInput
+                key={name}
+                name={name}
+                control={control}
+                label={label}
+                type='text'
+                inputProps={{
+                  maxLength: 6,
+                  pattern: '[0-9]*',
+                  inputMode: 'numeric'
+                }}
+                onInput={(e: any) => {
+                  const value = parseFloat(e.target.value)
+
+                  if (value > 9999) {
+                    return
+                  }
+                }}
+              />
             ))}
           </div>
 
