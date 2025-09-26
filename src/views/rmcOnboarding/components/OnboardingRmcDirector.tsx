@@ -110,18 +110,35 @@ export default function OnboardingForm() {
               </Typography>
 
               <Grid container spacing={6}>
-                {rmcDirectorFormInputs?.map(field => (
-                  <Grid item xs={12} md={4} key={field.name}>
-                    <FormInput
-                      name={field?.name as keyof DirectorOfRMCFormData}
-                      control={control}
-                      label={field?.label}
-                      type={field?.type}
-                      disabled={mutation.isPending}
-                      showPasswordToggle={field.showPasswordToggle}
-                    />
-                  </Grid>
-                ))}
+                {rmcDirectorFormInputs?.map(field => {
+                  // Add specific input restrictions for first name and last name
+                  const getInputProps = () => {
+                    if (field.name === 'fullName' || field.name === 'lastName') {
+                      return {
+                        maxLength: 15,
+                        inputMode: 'text' as const,
+                        onInput: (e: any) => {
+                          e.target.value = e.target.value.replace(/[^a-zA-Z\s'-]/g, '')
+                        }
+                      }
+                    }
+                    return {}
+                  }
+
+                  return (
+                    <Grid item xs={12} md={4} key={field.name}>
+                      <FormInput
+                        name={field?.name as keyof DirectorOfRMCFormData}
+                        control={control}
+                        label={field?.label}
+                        type={field?.type}
+                        disabled={mutation.isPending}
+                        showPasswordToggle={field.showPasswordToggle}
+                        inputProps={getInputProps()}
+                      />
+                    </Grid>
+                  )
+                })}
               </Grid>
             </Box>
 

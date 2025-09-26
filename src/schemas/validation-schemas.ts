@@ -31,12 +31,22 @@ export const directorOfRMCSchema = pipe(
     fullName: pipe(
       string(),
       nonEmpty('First name is required'),
-      minLength(2, 'First name must be at least 2 characters')
+      minLength(2, 'First name must be at least 2 characters'),
+      check((value: string) => value.length <= 15, 'First name cannot exceed 15 characters'),
+      check((value: string) => /^[a-zA-Z\s'-]+$/.test(value.trim()), 'First name can only contain letters, spaces, hyphens, and apostrophes'),
+      check((value: string) => !/^\s|\s$/.test(value), 'First name cannot start or end with spaces'),
+      check((value: string) => !/\d/.test(value), 'First name cannot contain numbers'),
+      check((value: string) => !/[!@#$%^&*()_+=\[\]{};':"\\|,.<>\/?]/.test(value), 'First name cannot contain special characters')
     ),
     lastName: pipe(
       string(),
       nonEmpty('Last name is required'),
-      minLength(2, 'Last name must be at least 2 characters')
+      minLength(2, 'Last name must be at least 2 characters'),
+      check((value: string) => value.length <= 15, 'Last name cannot exceed 15 characters'),
+      check((value: string) => /^[a-zA-Z\s'-]+$/.test(value.trim()), 'Last name can only contain letters, spaces, hyphens, and apostrophes'),
+      check((value: string) => !/^\s|\s$/.test(value), 'Last name cannot start or end with spaces'),
+      check((value: string) => !/\d/.test(value), 'Last name cannot contain numbers'),
+      check((value: string) => !/[!@#$%^&*()_+=\[\]{};':"\\|,.<>\/?]/.test(value), 'Last name cannot contain special characters')
     ),
     email: pipe(string(), nonEmpty('Email is required'), email('Please enter a valid email address')),
     phoneNumber: pipe(
