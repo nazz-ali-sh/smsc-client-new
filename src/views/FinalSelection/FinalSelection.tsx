@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Container, Grid, Typography, Card, CardContent } from '@mui/material'
+import { Box, Container, Grid, Typography } from '@mui/material'
 
 import { useQuery } from '@tanstack/react-query'
 
@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux'
 import CongratulationsSection from './components/CongratulationsSection'
 import ManagingAgentDetails from './components/ManagingAgentDetails'
 import ProjectMetrics from './components/ProjectMetrics'
+import CustomLoader from '@/common/CustomLoader'
 import { fianlResults } from '@/services/final_result_and_archeive_apis/final_results_apis'
 
 const FinalSelection = () => {
@@ -26,7 +27,8 @@ const FinalSelection = () => {
   const {
     data: finalResultResponce,
     error,
-    isError
+    isError,
+    isLoading
   } = useQuery<finalResultResponceData, Error>({
     queryKey: ['finalResultData', rmcTenderId],
     queryFn: () => fianlResults(Number(rmcTenderId)),
@@ -34,20 +36,23 @@ const FinalSelection = () => {
     retry: 2
   })
 
-  if (isError && error) {
+  if (isLoading) {
     return (
       <Container maxWidth={false} sx={{ py: 4 }}>
         <Box>
-          <Card>
-            <CardContent sx={{ textAlign: 'center', py: 8 }}>
-              <Typography variant='h4' sx={{ color: 'error.main', mb: 2 }}>
-                No Appointment Found
-              </Typography>
-              <Typography variant='body1' sx={{ color: 'text.secondary' }}>
-                {(error as any)?.response?.data?.message || 'No appointment found for this tender'}
-              </Typography>
-            </CardContent>
-          </Card>
+          <CustomLoader message='Loading final selection results...' size='large' />
+        </Box>
+      </Container>
+    )
+  }
+
+  if (isError && error) {
+    return (
+      <Container maxWidth={false} sx={{ py: 4 }}>
+        <Box className='flex justify-center items-center h-[80vh]'>
+          <Typography variant='body1' sx={{ color: 'text.secondary', fontSize: 18 }}>
+            {(error as any)?.response?.data?.message || 'No appointment found for this tender'}
+          </Typography>
         </Box>
       </Container>
     )

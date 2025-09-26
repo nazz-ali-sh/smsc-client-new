@@ -135,8 +135,8 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
     },
     {
       image: <i className='ri-bar-chart-2-line'></i>,
-      menuItem: 'Archive',
-      href: '/archive'
+      menuItem: 'Insurance',
+      href: '/insurance'
     }
   ])
 
