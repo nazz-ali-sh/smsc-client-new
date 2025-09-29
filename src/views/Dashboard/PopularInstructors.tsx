@@ -222,9 +222,9 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
               sx={{
                 paddingTop: '8px',
                 color:
-                  stages?.result_received?.is_completed === true
+                  stages?.result_received?.is_completed == true
                     ? 'customColors.green5'
-                    : stages?.result_received?.is_completed === false
+                    : stages?.result_received?.is_completed == false
                       ? 'ustomColors.textGray'
                       : 'customColors.textGray',
                 paddingX: '22px',
@@ -801,7 +801,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                   sx={{ color: 'customColors.textGray', fontSize: '13px', fontWeight: 400, lineHeight: '22px' }}
                 >
                   <span className='font-bold'>Congratulations, you’ve appointed a new managing agent.</span> We’ll now
-                  archive this tender in X Days.
+                  archive this tender in 30 Days.
                 </Typography>
               )}
             </CardContent>

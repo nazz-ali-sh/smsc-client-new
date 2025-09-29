@@ -7,7 +7,8 @@ import { Typography, Box, Grid } from '@mui/material'
 import { iconMap } from '@/common/data'
 
 interface servicesBudget {
-    servicesbuget?: any
+  servicesbuget?: any
+  servicesbudgets?: any
 }
 
 const ServiceChargeBudget: React.FC<servicesBudget> = ({ servicesbuget }) => {

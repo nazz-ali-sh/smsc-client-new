@@ -41,6 +41,8 @@ import ConfirmationModal from './ConfirmationModal'
 import { getSlotsAndDay, shortlistedPmas, videoCallsInvite } from '@/services/tender_result-apis/tender-result-api'
 import type { ShortlistedPmaResponse } from './type'
 import { rmcReSchedualAgain } from '@/services/site_visit_apis/site_visit_api'
+import { useDashboardData } from '@/hooks/useDashboardData'
+import CustomButton from './CustomButton'
 
 interface Guest {
   id: string
@@ -105,6 +107,8 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     selectedIds: '',
     slotName: ''
   })
+
+  const { invalidateCache } = useDashboardData()
 
   const [value, setValues] = useState<Dayjs | null>(dayjs())
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)
@@ -222,6 +226,10 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       queryClient.invalidateQueries({
         queryKey: ['shortlistData', tender_id]
       })
+      queryClient.invalidateQueries({
+        queryKey: ['dashboardDatas']
+      })
+      invalidateCache()
       setConfirmationModalOpen(true)
       setOnlineCallsModalOpen(false)
       setSlotError('')
@@ -806,27 +814,17 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
           </>
         ) : (
           <>
-            <Button
+            <CustomButton
               variant='contained'
               onClick={handleSubmit(handleSendVideoCalls)}
               disabled={videoCallInviteMutation.isPending}
-              sx={{
-                backgroundColor: 'customColors.ligthBlue',
-                '&:hover': { backgroundColor: 'customColors.ligthBlue' }
-              }}
             >
               {'Send To All Shortlisted Agents'}
-            </Button>
-            <Button
-              variant='contained'
-              onClick={handleSubmit(handleSendVideoCall)}
-              sx={{
-                backgroundColor: 'customColors.ligthBlue',
-                '&:hover': { backgroundColor: 'customColors.ligthBlue' }
-              }}
-            >
+            </CustomButton>
+
+            <CustomButton variant='contained' onClick={handleSubmit(handleSendVideoCall)}>
               Send To Selected Agents
-            </Button>
+            </CustomButton>
           </>
         )}
       </DialogActions>
@@ -836,7 +834,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
         inviteData={inviteData}
         open={confirmationModalOpen}
         onClose={() => {
-          debugger
           setConfirmationModalOpen(false)
           onClose()
         }}

@@ -43,6 +43,8 @@ import {
 import { rmcReSchedualAgain, rmcSideVisitInvites } from '@/services/site_visit_apis/site_visit_api'
 import SuccessModal from './SucessModal'
 import type { ShortlistedPmaResponse } from './type'
+import { useDashboardData } from '@/hooks/useDashboardData'
+import CustomButton from './CustomButton'
 
 interface Guest {
   id: string
@@ -107,6 +109,8 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     selectedIds: '',
     slotName: ''
   })
+
+  const { invalidateCache } = useDashboardData()
 
   console.log(shorlistedPmas)
   const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
@@ -332,13 +336,16 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       location: string
     }) => SideVisitInvite(value, day_id, slot_ids, pma_user_ids, message, rmctender_id, location),
     onSuccess: (data: any) => {
-      debugger
       setInviteData(data?.data?.invites)
       toast.success(data?.message || 'Invite sent successfully!')
       reset()
       queryClient.invalidateQueries({
         queryKey: ['shortlistData', tender_id]
       })
+      queryClient.invalidateQueries({
+        queryKey: ['dashboardDatas']
+      })
+      invalidateCache()
       setConfirmationModalOpen(true)
       onClose()
     },
@@ -876,26 +883,13 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       ) : (
         <>
           <DialogActions sx={{ px: 3, pb: 8, mt: 5 }}>
-            <Button
-              variant='contained'
-              onClick={handleSubmit(handleSendVideoCalls)}
-              sx={{
-                backgroundColor: 'customColors.ligthBlue',
-                '&:hover': { backgroundColor: 'customColors.ligthBlue' }
-              }}
-            >
+            <CustomButton variant='contained' onClick={handleSubmit(handleSendVideoCalls)}>
               Send To All Shortlisted Agents
-            </Button>
-            <Button
-              variant='contained'
-              onClick={handleSubmit(handleSendVideoCall)}
-              sx={{
-                backgroundColor: 'customColors.ligthBlue',
-                '&:hover': { backgroundColor: 'customColors.ligthBlue' }
-              }}
-            >
+            </CustomButton>
+
+            <CustomButton variant='contained' onClick={handleSubmit(handleSendVideoCall)}>
               Send To Selected Agents
-            </Button>
+            </CustomButton>
           </DialogActions>
         </>
       )}

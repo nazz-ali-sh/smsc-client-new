@@ -20,7 +20,7 @@ export const useDashboardData = () => {
 
   const invalidateCache = () => {
     queryClient.invalidateQueries({
-      queryKey: ['dashboard-response', tender_id]
+      queryKey: ['dashboard-data', tender_id]
     })
   }
 

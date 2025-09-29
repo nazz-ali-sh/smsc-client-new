@@ -5,13 +5,11 @@ import type { Dispatch, SetStateAction } from 'react'
 
 import Image from 'next/image'
 
-
-import {Divider, Typography, Drawer, Box,  Button } from '@mui/material'
+import { Divider, Typography, Drawer, Box, Button } from '@mui/material'
 
 import avatar3 from '../../public/images/dashboardImages/Avartar3.png'
 
 import PainPoints from '@/views/TenderInformations/PainPoints'
-import ServiceChargeBudget from '@/views/TenderInformations/ServiceChargeBudget'
 import PmaCostbreakdown from '@/views/TenderInformations/PmaCostbreakdown'
 import DrawerWidget from '@/views/TenderInformations/DrawerWidget'
 import ResponceandBio from '@/views/TenderInformations/ResponceandBio'
@@ -36,7 +34,6 @@ export default function AnchorTemporaryDrawer({
   DrawerStats
 }: AnchorTemporaryDrawerProps) {
   const anchor: Anchor = 'right'
-
 
   const cardsData = [
     {
@@ -65,6 +62,8 @@ export default function AnchorTemporaryDrawer({
     setSuccessModalOpen(true)
   }
 
+  const response = drawerData?.responses?.[0]
+
   const drawerContent = (
     <Box sx={{ width: 830, p: 8 }} role='presentation' onKeyDown={onClose}>
       <section className='flex items-start justify-between mt-[34px]'>
@@ -72,10 +71,10 @@ export default function AnchorTemporaryDrawer({
           <Image src={avatar3} alt='avatar' className='size-[94px]' />
           <div>
             <Typography variant='h3' className='font-bold'>
-              PMA1xxxx
+              {response?.pma_number}
             </Typography>
             <Typography variant='h5' className=''>
-              PMA ID - xxxxxxxxxx
+              PMA ID - {response?.pma_user_id}
             </Typography>
           </div>
         </div>
@@ -90,18 +89,17 @@ export default function AnchorTemporaryDrawer({
 
       <DrawerWidget cardsData={cardsData} />
 
-      {drawerData?.responses?.map((item: any, index: any) => {
-        return (
-          <React.Fragment key={index}>
-            <section className='mt-[38px]'>
-              <PainPoints painPoints={drawerData?.responses} />
-            </section>
-            <ServiceChargeBudget servicesbuget={item?.management_fees} />
-            <PmaCostbreakdown pmaCostBreakDown={item?.management_fees} />
-            <ResponceandBio boi={item?.company_bio?.bio} responce={item?.response_details?.message} />
-          </React.Fragment>
-        )
-      })}
+      {response && (
+        <React.Fragment>
+          <section className='mt-[38px]'>
+            <PainPoints painPoints={response?.onboarding_answers?.pain_points} />
+          </section>
+          {/* <ServiceChargeBudget servicesbudget={drawerData?.service_charge_budget} /> */}
+          <PmaCostbreakdown pmaCostBreakDown={response?.management_fees} />
+
+          <ResponceandBio boi={response?.company_bio?.bio} responce={response?.response_details?.message} />
+        </React.Fragment>
+      )}
 
       <section className='flex items-center justify-end py-[12px] space-x-[24px]'>
         <div>

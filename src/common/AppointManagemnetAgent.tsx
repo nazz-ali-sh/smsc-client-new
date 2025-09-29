@@ -7,7 +7,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button,
   TextField,
   Typography,
   Box,
@@ -18,7 +17,7 @@ import {
   FormControlLabel,
   Checkbox
 } from '@mui/material'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { useSelector } from 'react-redux'
 
@@ -26,6 +25,8 @@ import { toast } from 'react-toastify'
 
 import ConfirmationModal from './ConfirmationModal'
 import { finalShortListedAgent, gettingRmcAppoint } from '@/services/tender_result-apis/tender-result-api'
+import { useDashboardData } from '@/hooks/useDashboardData'
+import CustomButton from './CustomButton'
 
 interface SiteVisitsModalProps {
   open: boolean
@@ -71,6 +72,10 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
   const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
   const reschedual_pma_user_id = (InviteCompletedCalls ?? [])[0]?.pma_user_ids || '0'
 
+  const queryClient = useQueryClient()
+
+  const { invalidateCache } = useDashboardData()
+
   const { data: pmaShortlistedData } = useQuery<shortListedFinalAgent, Error>({
     queryKey: ['finalAgents', tender_id],
     queryFn: () => finalShortListedAgent(Number(tender_id)),
@@ -93,6 +98,10 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
 
     onSuccess: data => {
       toast.success(data?.message)
+      queryClient.invalidateQueries({
+        queryKey: ['dashboardDatas']
+      })
+      invalidateCache()
       setConfirmationModalOpen(true)
       setpmaValue('')
     },
@@ -100,7 +109,6 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || ''
 
-      console.error('About API error:', errorMessage)
       toast.error(errorMessage)
       setpmaValue('')
       onClose()
@@ -121,8 +129,6 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
     }))
   }
 
-  console.log(finalShortListedResponce)
-
   const handleSendInvites = () => {
     const appointmentMessage = 'Congratulations on your appointment as the managing agent!'
 
@@ -130,8 +136,8 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
       finalShortListedResponce?.data?.shortlisted_pmas || pmaShortlistedData?.data?.shortlisted_pmas || []
 
     const otherPmaFeedbacks = shortlistedPmas
-      .filter((pma: any) => pma?.pma_user?.id !== (pmaSelectedID || reschedual_pma_user_id))
-      .map((pma: any) => ({
+      ?.filter((pma: any) => pma?.pma_user?.id !== (pmaSelectedID || reschedual_pma_user_id))
+      ?.map((pma: any) => ({
         pma_user_id: pma?.pma_user?.id,
         feedback: feedbacks[pma?.pma_user?.id]?.noFeedback
           ? 'Thank you for your proposal, but we have decided to go with another agent.'
@@ -254,21 +260,13 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
       </DialogContent>
 
       <DialogActions sx={{ p: 3, pt: 1 }}>
-        <Button onClick={onClose} sx={{ color: 'customColors.textGray' }}>
+        <CustomButton onClick={onClose} variant='outlined'>
           Cancel
-        </Button>
-        <Button
-          variant='contained'
-          onClick={handleSendInvites}
-          sx={{
-            backgroundColor: 'customColors.ligthBlue',
-            '&:hover': {
-              backgroundColor: 'customColors.ligthBlue'
-            }
-          }}
-        >
+        </CustomButton>
+
+        <CustomButton variant='contained' onClick={handleSendInvites}>
           Appoint Managing Agent
-        </Button>
+        </CustomButton>
       </DialogActions>
 
       <ConfirmationModal

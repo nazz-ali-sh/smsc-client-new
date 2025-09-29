@@ -7,6 +7,8 @@ interface cardsData {
 }
 
 const DrawerWidget: React.FC<cardsData> = ({ cardsData }) => {
+  console.log(cardsData)
+
   return (
     <>
       <div className='flex justify-between items-center mt-[34px]'>

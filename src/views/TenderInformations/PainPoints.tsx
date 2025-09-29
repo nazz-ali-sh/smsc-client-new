@@ -4,17 +4,10 @@ import React from 'react'
 
 import { Box, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material'
 
-interface RmcQuestion {
-  id: number
+interface PainPoint {
+  question_id: number
   question: string
   answer: string
-}
-
-interface PainPoint {
-  response_id: number
-  onboarding_answers: {
-    rmc_questions: RmcQuestion[]
-  }
 }
 
 interface PainPointsSectionProps {
@@ -22,20 +15,17 @@ interface PainPointsSectionProps {
 }
 
 const PainPoints: React.FC<PainPointsSectionProps> = ({ painPoints }) => {
-  
-const questions = painPoints?.[0]?.onboarding_answers?.rmc_questions || []
-
-
   return (
     <>
       <Typography variant='h3' className='text-darkblue text-[18px]'>
         RMC Pain points
       </Typography>
+
       <Box sx={{ marginBottom: 15, marginTop: '34px' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, marginTop: '18px' }}>
-          {questions.map((q, index) => (
+          {painPoints?.map((q, index) => (
             <Accordion
-              key={q.id}
+              key={q.question_id}
               sx={{
                 marginBottom: 2,
                 border: '1px solid #E4A324 !important',
@@ -52,7 +42,7 @@ const questions = painPoints?.[0]?.onboarding_answers?.rmc_questions || []
                     borderTopRightRadius: '4px'
                   }
                 }),
-                ...(index === questions.length - 1 && {
+                ...(index === painPoints.length - 1 && {
                   '&:last-of-type': {
                     borderBottomLeftRadius: '4px',
                     borderBottomRightRadius: '4px'
@@ -68,11 +58,12 @@ const questions = painPoints?.[0]?.onboarding_answers?.rmc_questions || []
                   '& .MuiAccordionSummary-content': { margin: 0 }
                 }}
               >
-                <Typography sx={{ color: '#696969', fontSize: '14px' }}>{q.question}</Typography>
+                <Typography sx={{ color: '#696969', fontSize: '14px' }}>{q?.question}</Typography>
               </AccordionSummary>
+
               <AccordionDetails sx={{ backgroundColor: 'white', padding: '16px' }}>
                 <Typography variant='body2' color='text.secondary'>
-                  {q.answer || 'No answer provided'}
+                  {q?.answer || 'No answer provided'}
                 </Typography>
               </AccordionDetails>
             </Accordion>

@@ -71,21 +71,11 @@ const WeeklyReport = ({ text }: { text?: string }) => {
 
   const completedAtDate = (currentStage && stageDates[currentStage]) || 'No date'
 
-  const stageLabels: Record<string, string> = {
-    date_registered: 'Date Registered',
-    result_received: 'Result Received',
-    video_call: 'Video Call',
-    site_visit: 'Site Visit'
+  function getCurrentStageDisplayName(dashboardResponce: any): string {
+    return dashboardResponce?.data?.tender_stage_progress?.current_stage?.display_name || ''
   }
 
-  function getStageLabel(stageKey?: string): string {
-    if (!stageKey) return ''
-
-    return stageLabels[stageKey] || stageKey
-  }
-
-  const aLLStages = dashboardResponce?.data?.tender_progress
-  const currentTenderStage = getStageLabel(aLLStages)
+  const currentStageLabel = getCurrentStageDisplayName(dashboardResponce)
 
   const formatDate = (dateString?: string | null): string => {
     if (!dateString) return ''
@@ -174,16 +164,19 @@ const WeeklyReport = ({ text }: { text?: string }) => {
               Tender Stage
             </Typography>
           </div>
-          <div className='flex items-baseline gap-1'>
-            <div className='size-[10px] border-2 mt-2 border-red-400 bg-white rounded-full'></div>
 
-            <Typography
-              variant='body1'
-              sx={{ fontSize: '15px', fontWeight: 400, paddingTop: '6px', color: 'customColors.gray7' }}
-            >
-              {currentTenderStage} on {formatDate(completedAtDate)}
-            </Typography>
-          </div>
+          {currentStageLabel && (
+            <div className='flex items-baseline gap-1'>
+              <div className='size-[10px] border-2 mt-2 border-red-400 bg-white rounded-full'></div>
+
+              <Typography
+                variant='body1'
+                sx={{ fontSize: '15px', fontWeight: 400, paddingTop: '6px', color: 'customColors.gray7' }}
+              >
+                {currentStageLabel} on {formatDate(completedAtDate)}
+              </Typography>
+            </div>
+          )}
         </div>
         <div className='flex justify-center items-center mr-5'>
           <CustomCircularProgress progress={value} size={100} strokeWidth={12} />

@@ -37,6 +37,7 @@ import ShortListAgent from '@/common/ShortListAgent'
 import CustomButton from '@/common/CustomButton'
 import CommonModal from '@/common/CommonModal'
 import { calculateTimeLeft } from '@/utils/dateFormater'
+import { useDashboardData } from '@/hooks/useDashboardData'
 
 const columnHelper = createColumnHelper<DataType>()
 
@@ -74,6 +75,8 @@ const KitchenSink = () => {
 
   const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
+  const { invalidateCache } = useDashboardData()
+
   const [selectedResponse, setSelectedResponse] = useState<ApiResponseItem | null>(null)
 
   const { data: responceData } = useQuery<TenderResponse, Error>({
@@ -87,9 +90,9 @@ const KitchenSink = () => {
       ShortlistedPma(tender_id, pma_user_ids),
     onSuccess: data => {
       // 🔹 Extract expiry date from response
-      debugger
       const expiryAt = data?.data?.expiry_at || ''
 
+      invalidateCache()
       setshortlistedResponce(expiryAt)
       setShortListedSuccessModalOpen(true)
       table.resetRowSelection()

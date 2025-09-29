@@ -68,7 +68,6 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
     }
   })
 
-  
   const handlecontactAgent = (selected_pma_id: number) => {
     setPmaSelectedID(selected_pma_id)
 
@@ -123,7 +122,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
 
                 <div>
                   <Typography variant='h3' className='text-[#1F4E8D] text-[34px] font-bold py-1'>
-                    €150
+                    €{company?.fee_amount}
                   </Typography>
                   <div className='text-[20px] font-bold leading-[32px]'>{company?.company_details?.name}</div>
                   <div className='text-[12px] font-normal leading-[32px] text-buttonPrimary'>
@@ -180,7 +179,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
 
                   <div className='mt-[20px]'>
                     <CustomButton onClick={() => handleExtendByThree(company?.pma_user?.id)} variant='outlined'>
-                      Extend by 3 days{' '}
+                      Extend by 3 days
                     </CustomButton>
                   </div>
                 </div>

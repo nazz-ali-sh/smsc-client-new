@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material'
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material'
 import { useMutation } from '@tanstack/react-query'
 
 import { useSelector } from 'react-redux'
@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
 import { rmcExtendThreeDays } from '@/services/tender_result-apis/tender-result-api'
+import CustomButton from './CustomButton'
 
 type ShortListAgentProps = {
   open: boolean
@@ -28,7 +29,6 @@ const ShortListAgent = ({
   open,
   onClose,
   onConfirm,
-  confirmColor = 'primary',
   pmaSelectedID,
   fianlExpireDate
 }: ShortListAgentProps) => {
@@ -50,7 +50,6 @@ const ShortListAgent = ({
       toast.error(errorMessage)
     }
   })
-
 
   const handleCloseAndNavigate = () => {
     router.push('/shortlist-agent')
@@ -86,33 +85,13 @@ const ShortListAgent = ({
         </p>
       </section>
       <DialogActions className='flex justify-between'>
-        <Button
-          sx={{
-            backgroundColor: 'customColors.ligthBlue',
-            '&:hover': { backgroundColor: 'customColors.ligthBlue' }
-          }}
-          variant='contained'
-          color={confirmColor}
-          onClick={() => mutation.mutate()}
-          disabled={mutation.isPending}
-        >
-          {mutation.isPending ? 'Extending...' : 'Extend by 3 days'}
-        </Button>
-
-        <Button
-          sx={{
-            color: '#35C0ED8C',
-            borderColor: 'customColors.ligthBlue',
-            '&:hover': {
-              backgroundColor: 'customColors.ligthBlue',
-              borderColor: 'customColors.ligthBlue'
-            }
-          }}
-          variant='outlined'
-          onClick={handleCloseAndNavigate}
-        >
+        <CustomButton variant='outlined' onClick={handleCloseAndNavigate}>
           Close
-        </Button>
+        </CustomButton>
+
+        <CustomButton variant='contained' onClick={() => mutation.mutate()} disabled={mutation.isPending}>
+          {mutation.isPending ? 'Extending...' : 'Extend by 3 days'}
+        </CustomButton>
       </DialogActions>
     </Dialog>
   )
