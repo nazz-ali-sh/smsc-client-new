@@ -190,7 +190,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                     justifyContent: 'center',
                     alignItems: 'center',
                     backgroundColor: 'customColors.cyan3',
-                    marginX: '22px'
+                    marginX: '6px'
                   }}
                 >
                   <i className='ri-eye-line w-[14px] h-[14px] text-[#26C6F9]'></i>
@@ -319,7 +319,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                     justifyContent: 'center',
                     alignItems: 'center',
                     backgroundColor: 'customColors.cyan3',
-                    marginX: '22px'
+                    marginX: '6px'
                   }}
                 >
                   <i
@@ -387,7 +387,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                     justifyContent: 'center',
                     alignItems: 'center',
                     backgroundColor: 'customColors.cyan3',
-                    marginX: '22px'
+                    marginX: '6px'
                   }}
                 >
                   <i
@@ -407,7 +407,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                     justifyContent: 'center',
                     alignItems: 'center',
                     backgroundColor: 'customColors.cyan3',
-                    marginX: '22px'
+                    marginX: '6px'
                   }}
                 >
                   <i
@@ -549,7 +549,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                     justifyContent: 'center',
                     alignItems: 'center',
                     backgroundColor: 'customColors.cyan3',
-                    marginX: '22px'
+                    marginX: '6px'
                   }}
                 >
                   <i
@@ -569,7 +569,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                     justifyContent: 'center',
                     alignItems: 'center',
                     backgroundColor: 'customColors.cyan3',
-                    marginX: '22px'
+                    marginX: '6px'
                   }}
                 >
                   <i
@@ -705,7 +705,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                     justifyContent: 'center',
                     alignItems: 'center',
                     backgroundColor: 'customColors.cyan3',
-                    marginX: '22px'
+                    marginX: '6px'
                   }}
                 >
                   <i
@@ -725,7 +725,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                     justifyContent: 'center',
                     alignItems: 'center',
                     backgroundColor: 'customColors.cyan3',
-                    marginX: '22px'
+                    marginX: '6px'
                   }}
                 >
                   <Image
@@ -746,7 +746,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                     justifyContent: 'center',
                     alignItems: 'center',
                     backgroundColor: 'customColors.cyan3',
-                    marginX: '22px'
+                    marginX: '6px'
                   }}
                 >
                   <i
@@ -820,7 +820,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                     justifyContent: 'center',
                     alignItems: 'center',
                     backgroundColor: 'customColors.cyan3',
-                    marginX: '22px'
+                    marginX: '6px'
                   }}
                 >
                   <i
@@ -840,7 +840,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                     justifyContent: 'center',
                     alignItems: 'center',
                     backgroundColor: 'customColors.cyan3',
-                    marginX: '22px'
+                    marginX: '6px'
                   }}
                 >
                   <Image

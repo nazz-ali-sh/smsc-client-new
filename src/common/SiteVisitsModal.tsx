@@ -475,17 +475,122 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
 
       <DialogContent sx={{ px: 3, py: 2 }} className='mt-10'>
         <Grid container spacing={6} className='mt-[40px]'>
-          <Grid item xs={12} sm={12}>
+          <Grid item xs={12} sm={6}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label='Select date'
-                value={value}
-                onChange={handleDateChange}
-                shouldDisableDate={shouldDisableDate}
-                slotProps={{
-                  textField: { fullWidth: true }
-                }}
-              />
+              <Box sx={{ 
+                '& *': {
+                  '&.MuiOutlinedInput-root': {
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#35C0ED !important',
+                      borderWidth: '2px !important'
+                    },
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#35C0ED !important',
+                      borderWidth: '2px !important'
+                    },
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#35C0ED !important',
+                      borderWidth: '2px !important'
+                    }
+                  },
+                  '&.MuiInputLabel-root': {
+                    color: '#35C0ED !important',
+                    '&.Mui-focused': {
+                      color: '#35C0ED !important'
+                    }
+                  }
+                },
+                '& .MuiTextField-root': {
+                  '& .MuiOutlinedInput-root': {
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#35C0ED !important',
+                      borderWidth: '2px !important'
+                    },
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#35C0ED !important',
+                      borderWidth: '2px !important'
+                    },
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#35C0ED !important',
+                      borderWidth: '2px !important'
+                    }
+                  },
+                  '& .MuiInputLabel-root': {
+                    color: '#35C0ED !important',
+                    '&.Mui-focused': {
+                      color: '#35C0ED !important'
+                    }
+                  }
+                },
+                '& .MuiOutlinedInput-root': {
+                  '&.Mui-focused': {
+                    borderColor: '#35C0ED !important',
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#35C0ED !important',
+                      borderWidth: '2px !important'
+                    }
+                  },
+                  '&:hover': {
+                    borderColor: '#35C0ED !important',
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#35C0ED !important',
+                      borderWidth: '2px !important'
+                    }
+                  },
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#35C0ED !important',
+                    borderWidth: '2px !important'
+                  }
+                }
+              }}>
+                <DatePicker
+                  label='Select date'
+                  value={value}
+                  onChange={handleDateChange}
+                  shouldDisableDate={shouldDisableDate}
+                  slotProps={{
+                    textField: { 
+                      fullWidth: true,
+                      sx: {
+                        '& .MuiOutlinedInput-root': {
+                          '&.Mui-focused': {
+                            borderColor: '#35C0ED !important',
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: '#35C0ED !important',
+                              borderWidth: '2px !important'
+                            }
+                          },
+                          '&:hover': {
+                            borderColor: '#35C0ED !important',
+                            '& .MuiOutlinedInput-notchedOutline': {
+                              borderColor: '#35C0ED !important',
+                              borderWidth: '2px !important'
+                            }
+                          },
+                          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#35C0ED !important',
+                            borderWidth: '2px !important'
+                          },
+                          '&:hover .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#35C0ED !important',
+                            borderWidth: '2px !important'
+                          },
+                          '& .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#35C0ED !important',
+                            borderWidth: '2px !important'
+                          }
+                        },
+                        '& .MuiInputLabel-root': {
+                          color: '#35C0ED !important',
+                          '&.Mui-focused': {
+                            color: '#35C0ED !important'
+                          }
+                        }
+                      }
+                    }
+                  }}
+                />
+              </Box>
             </LocalizationProvider>
           </Grid>
 
@@ -495,7 +600,19 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
               control={control}
               render={({ field }) => (
                 <FormControl fullWidth error={!!errors.availableSlots}>
-                  <InputLabel>Available Slots</InputLabel>
+                  <InputLabel 
+                    sx={{ 
+                      '&.Mui-focused': { 
+                        color: 'customColors.ligthBlue',
+                        backgroundColor: 'white',
+                        padding: '0 4px'
+                      },
+                      backgroundColor: 'white',
+                      padding: '0 4px'
+                    }}
+                  >
+                    Available Slots
+                  </InputLabel>
                   <Select
                     {...field}
                     value={field.value || ''}
@@ -504,6 +621,33 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
 
                       field.onChange(value)
                       handleSlotSelection(value)
+                    }}
+                    sx={{
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'customColors.ligthBlue'
+                      },
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'customColors.ligthBlue'
+                      }
+                    }}
+                    MenuProps={{
+                      PaperProps: {
+                        sx: {
+                          zIndex: 9999,
+                          maxHeight: 300,
+                          '& .MuiMenuItem-root': {
+                            padding: '8px 16px'
+                          }
+                        }
+                      },
+                      anchorOrigin: {
+                        vertical: 'bottom',
+                        horizontal: 'left'
+                      },
+                      transformOrigin: {
+                        vertical: 'top',
+                        horizontal: 'left'
+                      }
                     }}
                   >
                     {showSlotError && (
@@ -538,120 +682,133 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
           </Grid>
 
           <Grid item xs={12}>
-            <Box sx={{ paddingY: '12px' }}>
-              <Divider />
-            </Box>
-
             <Typography variant='h6' sx={{ mb: 2, color: '#333', fontWeight: '600' }}>
               Availability Set for
             </Typography>
 
-            <Grid container spacing={2} alignItems='center' sx={{ mb: 2 }}>
-              <Grid item xs={12} sm={6} sx={{ overflowY: 'auto', width: '100%' }}>
-                <Chip
-                  label={
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'flex-start',
-                        paddingTop: '20',
-                        height: '200px',
-                        overflowY: 'auto'
-                      }}
-                    >
-                      {gettingSlotsAndDays?.data?.slots?.map(item => (
-                        <span
-                          className={`pt-[10px] ${userSelectedSlots?.selectedIds == item?.id ? 'bg-buttonPrimary' : ''} `}
-                          key={item?.id}
-                        >
-                          {item.slot_name}
-                        </span>
-                      ))}
-                    </Box>
-                  }
-                  sx={{
-                    backgroundColor: theme => theme.colorSchemes.light.palette.customColors.darkGray,
-                    color: 'white',
-                    '& .MuiChip-label': {
-                      px: 2,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'flex-start',
-                      paddingTop: '20'
-                    },
-                    height: 'auto',
-                    borderRadius: '5px',
-                    justifyContent: 'space-between',
-                    width: '100%',
-                    paddingY: '8px'
-                  }}
-                />
-              </Grid>
-
-              <Grid item>
-                <Button
-                  variant='contained'
-                  sx={{
-                    backgroundColor: 'customColors.ligthBlue',
-                    '&:hover': { backgroundColor: 'customColors.ligthBlue' }
-                  }}
-                >
-                  Update Slots
-                </Button>
+            <Grid container spacing={2} alignItems='center' sx={{ mb: 2, mt: 6 }}>
+              <Grid container spacing={4} alignItems='center' sx={{ mb: 2 }}>
+                {gettingSlotsAndDays?.data?.slots?.map(item => {
+                  const isSelected = userSelectedSlots?.selectedIds === String(item.id)
+                  return (
+                    <Grid item xs={12} sm={6} key={item?.id}>
+                      <Chip
+                        label={
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              alignItems: 'flex-start'
+                            }}
+                          >
+                            <Typography variant='body1' fontWeight='bold' sx={{ color: 'white' }}>
+                              {item.slot_name.split('from')[0]}
+                            </Typography>
+                            <Typography sx={{ color: 'white' }} variant='body2'>
+                              {item.slot_name.split('from')[1]}
+                            </Typography>
+                          </Box>
+                        }
+                        onClick={() => handleSlotSelection(String(item.id))}
+                        sx={{
+                          backgroundColor: isSelected
+                            ? 'customColors.ligthBlue'
+                            : theme => theme.colorSchemes.light.palette.customColors.darkGray,
+                          color: 'white',
+                          '& .MuiChip-label': {
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'flex-start'
+                          },
+                          borderRadius: '5px',
+                          width: '100%',
+                          py: 2,
+                          px: 2,
+                          cursor: 'pointer',
+                          justifyContent: 'flex-start',
+                          border: isSelected ? '2px solid' : 'none',
+                          borderColor: isSelected ? 'customColors.ligthBlue' : 'transparent'
+                        }}
+                      />
+                    </Grid>
+                  )
+                })}
               </Grid>
             </Grid>
-
-            <Box sx={{ paddingY: '12px' }}>
-              <Divider />
+            <Box sx={{ display: 'flex', justifyContent: 'end', mt: 4 }}>
+              <Button
+                variant='contained'
+                sx={{
+                  backgroundColor: 'customColors.ligthBlue',
+                  '&:hover': { backgroundColor: 'customColors.ligthBlue' }
+                }}
+              >
+                Update Slot
+              </Button>
             </Box>
           </Grid>
 
           {types == 'Reschedual' || types == 'SiteVisits' ? (
             ''
           ) : (
-            <Grid item xs={12}>
-              <Typography variant='h6' sx={{ mb: 2, color: '#333', fontWeight: '600' }}>
-                Add Guests
-              </Typography>
-              <Controller
-                name='pmaGuest'
-                control={control}
-                defaultValue={[]}
-                render={({ field }) => (
-                  <Autocomplete
-                    multiple
-                    options={normalizedOptions}
-                    getOptionLabel={(option: any) => option.pma_number || ''}
-                    isOptionEqualToValue={(option, value) => String(option.id) === String((value as any)?.id)}
-                    getOptionDisabled={option =>
-                      (field.value || []).some((guest: any) => String(guest.id) === String(option.id))
-                    }
-                    value={field.value || []}
-                    onChange={(_, newValue) => field.onChange(newValue)}
-                    renderInput={params => <TextField {...params} placeholder='Select guests...' variant='outlined' />}
-                    renderTags={(value: any[], getTagProps) =>
-                      value.map((option, index) => {
-                        const { key, ...tagProps } = getTagProps({ index })
+          <Grid item xs={12}>
+            <Typography variant='h6' sx={{ mb: 2, color: 'customColors.ligthBlue', fontWeight: '600' }}>
+              Add Guests
+            </Typography>
+            <Controller
+              name='pmaGuest'
+              control={control}
+              defaultValue={[]}
+              render={({ field }) => (
+                <Autocomplete
+                  multiple
+                  options={normalizedOptions}
+                  getOptionLabel={(option: any) => option.pma_number || ''}
+                  isOptionEqualToValue={(option, value) => String(option.id) === String((value as any)?.id)}
+                  getOptionDisabled={option =>
+                    (field.value || []).some((guest: any) => String(guest.id) === String(option.id))
+                  }
+                  value={field.value || []}
+                  onChange={(_, newValue) => field.onChange(newValue)}
+                  renderInput={params => (
+                    <TextField 
+                      {...params} 
+                      placeholder='Select guests...' 
+                      variant='outlined'
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                            borderColor: 'customColors.ligthBlue'
+                          },
+                          '&:hover .MuiOutlinedInput-notchedOutline': {
+                            borderColor: 'customColors.ligthBlue'
+                          }
+                        }
+                      }}
+                    />
+                  )}
+                  renderTags={(value: any[], getTagProps) =>
+                    value.map((option, index) => {
+                      const { key, ...tagProps } = getTagProps({ index })
 
-                        return (
-                          <Chip
-                            key={option.id ?? key}
-                            {...tagProps}
-                            label={option.pma_number}
-                            sx={{
-                              backgroundColor: 'customColors.darkGray',
-                              color: 'white',
-                              '& .MuiChip-deleteIcon': { color: 'white' }
-                            }}
-                          />
-                        )
-                      })
-                    }
-                  />
-                )}
-              />
-            </Grid>
+                      return (
+                        <Chip
+                          key={option.id ?? key}
+                          {...tagProps}
+                          label={option.pma_number}
+                          sx={{
+                            backgroundColor: 'customColors.darkGray',
+                            color: 'white',
+                            '& .MuiChip-deleteIcon': { color: 'white' }
+                          }}
+                        />
+                      )
+                    })
+                  }
+                />
+              )}
+            />
+          </Grid>
           )}
 
           <Grid item xs={12}>
@@ -666,6 +823,19 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                   multiline
                   rows={4}
                   placeholder='Enter additional notes...'
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'customColors.ligthBlue'
+                      },
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'customColors.ligthBlue'
+                      }
+                    },
+                    '& .MuiInputLabel-root.Mui-focused': {
+                      color: 'customColors.ligthBlue'
+                    }
+                  }}
                 />
               )}
             />
