@@ -305,6 +305,7 @@ const OnboardingAddress = () => {
         <div className='pb-3 flex justify-end mt-6'>
           <CustomButton
             onClick={handleNavigate}
+            isLoading={mutation.isPending}
             disabled={mutation.isPending}
             sx={{ fontSize: '16px', fontWeight: 700 }}
             endIcon={<i className='ri-arrow-right-line'></i>}

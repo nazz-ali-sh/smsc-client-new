@@ -34,8 +34,7 @@ const ShortListAgent = ({
 }: ShortListAgentProps) => {
   const router = useRouter()
 
-  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
-  const rmcTenderId = rmcData?.tender_id
+  const rmcTenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   const mutation = useMutation({
     mutationFn: () => rmcExtendThreeDays(Number(rmcTenderId), pmaSelectedID),

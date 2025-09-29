@@ -6,7 +6,7 @@ import CustomButton from '@/common/CustomButton'
 import CommonModal from '@/common/CommonModal'
 import type { BudgetSkipModalProps } from '../types'
 
-const BudgetSkipModal = ({ isOpen, onClose, onSkipAnyway, onBackToEdit }: BudgetSkipModalProps) => {
+const BudgetSkipModal = ({ isOpen, onClose, onSkipAnyway, onBackToEdit, isLoading }: BudgetSkipModalProps) => {
   return (
     <CommonModal
       isOpen={isOpen}
@@ -30,7 +30,9 @@ const BudgetSkipModal = ({ isOpen, onClose, onSkipAnyway, onBackToEdit }: Budget
             Back To Edit
           </CustomButton>
 
-          <CustomButton onClick={onSkipAnyway}>Skip Anyway</CustomButton>
+          <CustomButton disabled={isLoading} isLoading={isLoading} onClick={onSkipAnyway}>
+            Skip Anyway
+          </CustomButton>
         </div>
       </div>
     </CommonModal>

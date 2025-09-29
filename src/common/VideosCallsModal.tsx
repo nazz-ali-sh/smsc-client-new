@@ -108,8 +108,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
 
   const [value, setValues] = useState<Dayjs | null>(dayjs())
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)
-  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
-  const tender_id = rmcData?.tender_id
+  const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
   const queryClient = useQueryClient()
 
   const {

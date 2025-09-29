@@ -32,7 +32,7 @@ interface FinalSelectionResponse {
 
 const PmaDetails: React.FC<FinalSelectionResponse> = ({ finalSelection  }) => {
     
-  const tender_id = useSelector((state: RootState) => state?.rmcOnboarding?.rmcData?.tender_id)
+  const tender_id = useSelector((state: RootState) => state?.rmcOnboarding?.tenderId)
 
   const downloadMutation = useMutation({
     mutationFn: (id: number) => downloadFinalSeectionPDf(id),

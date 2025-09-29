@@ -29,7 +29,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { useForm, Controller } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { object, string, optional, any } from 'valibot'
-import {  useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
 import { useSelector } from 'react-redux'
@@ -109,8 +109,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
   })
 
   console.log(shorlistedPmas)
-  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
-  const tender_id = rmcData?.tender_id
+  const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
   const queryClient = useQueryClient()
 
   const {
@@ -477,79 +476,81 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
         <Grid container spacing={6} className='mt-[40px]'>
           <Grid item xs={12} sm={6}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <Box sx={{ 
-                '& *': {
-                  '&.MuiOutlinedInput-root': {
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#35C0ED !important',
-                      borderWidth: '2px !important'
+              <Box
+                sx={{
+                  '& *': {
+                    '&.MuiOutlinedInput-root': {
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#35C0ED !important',
+                        borderWidth: '2px !important'
+                      },
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#35C0ED !important',
+                        borderWidth: '2px !important'
+                      },
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#35C0ED !important',
+                        borderWidth: '2px !important'
+                      }
                     },
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#35C0ED !important',
-                      borderWidth: '2px !important'
-                    },
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#35C0ED !important',
-                      borderWidth: '2px !important'
+                    '&.MuiInputLabel-root': {
+                      color: '#35C0ED !important',
+                      '&.Mui-focused': {
+                        color: '#35C0ED !important'
+                      }
                     }
                   },
-                  '&.MuiInputLabel-root': {
-                    color: '#35C0ED !important',
-                    '&.Mui-focused': {
-                      color: '#35C0ED !important'
+                  '& .MuiTextField-root': {
+                    '& .MuiOutlinedInput-root': {
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#35C0ED !important',
+                        borderWidth: '2px !important'
+                      },
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#35C0ED !important',
+                        borderWidth: '2px !important'
+                      },
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#35C0ED !important',
+                        borderWidth: '2px !important'
+                      }
+                    },
+                    '& .MuiInputLabel-root': {
+                      color: '#35C0ED !important',
+                      '&.Mui-focused': {
+                        color: '#35C0ED !important'
+                      }
                     }
-                  }
-                },
-                '& .MuiTextField-root': {
+                  },
                   '& .MuiOutlinedInput-root': {
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#35C0ED !important',
-                      borderWidth: '2px !important'
-                    },
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#35C0ED !important',
-                      borderWidth: '2px !important'
-                    },
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#35C0ED !important',
-                      borderWidth: '2px !important'
-                    }
-                  },
-                  '& .MuiInputLabel-root': {
-                    color: '#35C0ED !important',
                     '&.Mui-focused': {
-                      color: '#35C0ED !important'
-                    }
-                  }
-                },
-                '& .MuiOutlinedInput-root': {
-                  '&.Mui-focused': {
-                    borderColor: '#35C0ED !important',
+                      borderColor: '#35C0ED !important',
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#35C0ED !important',
+                        borderWidth: '2px !important'
+                      }
+                    },
+                    '&:hover': {
+                      borderColor: '#35C0ED !important',
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#35C0ED !important',
+                        borderWidth: '2px !important'
+                      }
+                    },
                     '& .MuiOutlinedInput-notchedOutline': {
                       borderColor: '#35C0ED !important',
                       borderWidth: '2px !important'
                     }
-                  },
-                  '&:hover': {
-                    borderColor: '#35C0ED !important',
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#35C0ED !important',
-                      borderWidth: '2px !important'
-                    }
-                  },
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#35C0ED !important',
-                    borderWidth: '2px !important'
                   }
-                }
-              }}>
+                }}
+              >
                 <DatePicker
                   label='Select date'
                   value={value}
                   onChange={handleDateChange}
                   shouldDisableDate={shouldDisableDate}
                   slotProps={{
-                    textField: { 
+                    textField: {
                       fullWidth: true,
                       sx: {
                         '& .MuiOutlinedInput-root': {
@@ -600,9 +601,9 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
               control={control}
               render={({ field }) => (
                 <FormControl fullWidth error={!!errors.availableSlots}>
-                  <InputLabel 
-                    sx={{ 
-                      '&.Mui-focused': { 
+                  <InputLabel
+                    sx={{
+                      '&.Mui-focused': {
                         color: 'customColors.ligthBlue',
                         backgroundColor: 'white',
                         padding: '0 4px'
@@ -690,6 +691,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
               <Grid container spacing={4} alignItems='center' sx={{ mb: 2 }}>
                 {gettingSlotsAndDays?.data?.slots?.map(item => {
                   const isSelected = userSelectedSlots?.selectedIds === String(item.id)
+
                   return (
                     <Grid item xs={12} sm={6} key={item?.id}>
                       <Chip
@@ -751,64 +753,64 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
           {types == 'Reschedual' || types == 'SiteVisits' ? (
             ''
           ) : (
-          <Grid item xs={12}>
-            <Typography variant='h6' sx={{ mb: 2, color: 'customColors.ligthBlue', fontWeight: '600' }}>
-              Add Guests
-            </Typography>
-            <Controller
-              name='pmaGuest'
-              control={control}
-              defaultValue={[]}
-              render={({ field }) => (
-                <Autocomplete
-                  multiple
-                  options={normalizedOptions}
-                  getOptionLabel={(option: any) => option.pma_number || ''}
-                  isOptionEqualToValue={(option, value) => String(option.id) === String((value as any)?.id)}
-                  getOptionDisabled={option =>
-                    (field.value || []).some((guest: any) => String(guest.id) === String(option.id))
-                  }
-                  value={field.value || []}
-                  onChange={(_, newValue) => field.onChange(newValue)}
-                  renderInput={params => (
-                    <TextField 
-                      {...params} 
-                      placeholder='Select guests...' 
-                      variant='outlined'
-                      sx={{
-                        '& .MuiOutlinedInput-root': {
-                          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                            borderColor: 'customColors.ligthBlue'
-                          },
-                          '&:hover .MuiOutlinedInput-notchedOutline': {
-                            borderColor: 'customColors.ligthBlue'
+            <Grid item xs={12}>
+              <Typography variant='h6' sx={{ mb: 2, color: 'customColors.ligthBlue', fontWeight: '600' }}>
+                Add Guests
+              </Typography>
+              <Controller
+                name='pmaGuest'
+                control={control}
+                defaultValue={[]}
+                render={({ field }) => (
+                  <Autocomplete
+                    multiple
+                    options={normalizedOptions}
+                    getOptionLabel={(option: any) => option.pma_number || ''}
+                    isOptionEqualToValue={(option, value) => String(option.id) === String((value as any)?.id)}
+                    getOptionDisabled={option =>
+                      (field.value || []).some((guest: any) => String(guest.id) === String(option.id))
+                    }
+                    value={field.value || []}
+                    onChange={(_, newValue) => field.onChange(newValue)}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        placeholder='Select guests...'
+                        variant='outlined'
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                              borderColor: 'customColors.ligthBlue'
+                            },
+                            '&:hover .MuiOutlinedInput-notchedOutline': {
+                              borderColor: 'customColors.ligthBlue'
+                            }
                           }
-                        }
-                      }}
-                    />
-                  )}
-                  renderTags={(value: any[], getTagProps) =>
-                    value.map((option, index) => {
-                      const { key, ...tagProps } = getTagProps({ index })
+                        }}
+                      />
+                    )}
+                    renderTags={(value: any[], getTagProps) =>
+                      value.map((option, index) => {
+                        const { key, ...tagProps } = getTagProps({ index })
 
-                      return (
-                        <Chip
-                          key={option.id ?? key}
-                          {...tagProps}
-                          label={option.pma_number}
-                          sx={{
-                            backgroundColor: 'customColors.darkGray',
-                            color: 'white',
-                            '& .MuiChip-deleteIcon': { color: 'white' }
-                          }}
-                        />
-                      )
-                    })
-                  }
-                />
-              )}
-            />
-          </Grid>
+                        return (
+                          <Chip
+                            key={option.id ?? key}
+                            {...tagProps}
+                            label={option.pma_number}
+                            sx={{
+                              backgroundColor: 'customColors.darkGray',
+                              color: 'white',
+                              '& .MuiChip-deleteIcon': { color: 'white' }
+                            }}
+                          />
+                        )
+                      })
+                    }
+                  />
+                )}
+              />
+            </Grid>
           )}
 
           <Grid item xs={12}>

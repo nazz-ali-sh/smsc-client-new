@@ -24,6 +24,7 @@ export interface BudgetSkipModalProps {
   onClose: () => void
   onSkipAnyway: () => void
   onBackToEdit: () => void
+  isLoading: boolean
 }
 
 export interface QuestionCardProps {

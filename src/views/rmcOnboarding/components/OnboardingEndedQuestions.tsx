@@ -17,7 +17,7 @@ import {
   type RmcProcessPayload
 } from '@/services/rmc-onboarding-apis/rmc-onboarding-api'
 import type { RootState } from '@/redux-store'
-import { setTenderId } from '@/redux-store/slices/rmcOnboardingSlice'
+import { setRmcTenderId } from '@/redux-store/slices/rmcOnboardingSlice'
 import { useRmcOnboardingData } from '@/hooks/useRmcOnboardingData'
 
 const OnboardingEndedQuestions = () => {
@@ -57,7 +57,7 @@ const OnboardingEndedQuestions = () => {
     mutationFn: submitRmcProcess,
     onSuccess: data => {
       if (data) {
-        dispatch(setTenderId(data?.data?.tender_id))
+        dispatch(setRmcTenderId(data?.data?.tender_id))
       }
 
       invalidateCache()
@@ -191,6 +191,7 @@ const OnboardingEndedQuestions = () => {
               sx={buttonStyles}
               endIcon={<i className='ri-arrow-right-line'></i>}
               onClick={handleLaunch}
+              isLoading={mutation.isPending}
               disabled={mutation.isPending}
             >
               {mutation.isPending ? 'Submitting...' : 'Launch'}

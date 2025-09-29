@@ -2,24 +2,20 @@
 
 'use client'
 
-
 import Image from 'next/image'
 
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 
-
 import pdfImage from '../../../public/images/dashboardImages/demePdfImage.png'
 
 import 'react-pdf/dist/Page/AnnotationLayer.css'
 import 'react-pdf/dist/Page/TextLayer.css'
 
-
 import companyImage from '../../../public/images/customImages/company.png'
 
 const UserProfile = ({ userData }: any) => {
-
   return (
     <>
       <Card>
@@ -80,7 +76,6 @@ const UserProfile = ({ userData }: any) => {
           </div>
 
           <section className='flex flex-col items-center gap-4'>
-          
             <Image src={pdfImage} alt='pfd demo' />
             <Typography variant='body1' align='center'>
               <a
@@ -103,7 +98,6 @@ const UserProfile = ({ userData }: any) => {
                 Download PDF
               </a>
             </Typography>
-
           </section>
         </CardContent>
       </Card>

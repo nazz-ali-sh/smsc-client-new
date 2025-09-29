@@ -36,8 +36,7 @@ const InviteCallsTabs = () => {
   const [activeTab, setActiveTab] = useState(0)
   const [activeStatus, setActiveStatus] = useState('')
 
-  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
-  const tender_id = rmcData?.tender_id
+  const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   const { data: getVideoCallsData } = useQuery({
     queryKey: ['gettingVideoCallsDetails', tender_id, activeStatus],

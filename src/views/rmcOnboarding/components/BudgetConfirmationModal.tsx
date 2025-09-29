@@ -106,7 +106,12 @@ const BudgetConfirmationModal = ({
             Back To Edit
           </CustomButton>
 
-          <CustomButton onClick={onConfirm} disabled={isLoading} endIcon={<i className='ri-arrow-right-line'></i>}>
+          <CustomButton
+            onClick={onConfirm}
+            isLoading={isLoading}
+            disabled={isLoading}
+            endIcon={<i className='ri-arrow-right-line'></i>}
+          >
             {isLoading ? 'Confirming...' : 'Confirm'}
           </CustomButton>
         </div>

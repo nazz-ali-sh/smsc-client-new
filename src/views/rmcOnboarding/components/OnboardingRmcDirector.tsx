@@ -77,7 +77,7 @@ export default function OnboardingForm() {
     setIsSubmitting(true)
 
     const payload: RmcOnboardingStep1Payload = {
-      name: `${data?.fullName} ${data?.lastName}`.trim(),
+      name: `${data?.fullName} ${data?.lastName}`?.trim(),
       email: data?.email,
       phone_no: data?.phoneNumber,
       password: data?.password,
@@ -111,17 +111,17 @@ export default function OnboardingForm() {
 
               <Grid container spacing={6}>
                 {rmcDirectorFormInputs?.map(field => {
-                  // Add specific input restrictions for first name and last name
                   const getInputProps = () => {
                     if (field.name === 'fullName' || field.name === 'lastName') {
                       return {
                         maxLength: 15,
                         inputMode: 'text' as const,
                         onInput: (e: any) => {
-                          e.target.value = e.target.value.replace(/[^a-zA-Z\s'-]/g, '')
+                          e.target.value = e.target.value?.replace(/[^a-zA-Z\s'-]/g, '')
                         }
                       }
                     }
+
                     return {}
                   }
 
@@ -153,6 +153,7 @@ export default function OnboardingForm() {
               <CustomButton
                 endIcon={<i className='ri-arrow-right-line'></i>}
                 onClick={handleNext}
+                isLoading={isSubmitting || mutation.isPending}
                 disabled={isSubmitting || mutation.isPending}
               >
                 {isSubmitting || mutation.isPending ? 'Submitting...' : 'Next'}

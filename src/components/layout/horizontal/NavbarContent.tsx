@@ -11,6 +11,7 @@ import { FormControl, InputLabel, Select, MenuItem, Grid, Button, type SelectCha
 import classnames from 'classnames'
 
 import { useQuery } from '@tanstack/react-query'
+import { useSelector, useDispatch } from 'react-redux'
 
 import type { Locale } from '@configs/i18n'
 import type { NotificationsType } from '@components/layout/shared/NotificationsDropdown'
@@ -27,6 +28,7 @@ import { horizontalLayoutClasses } from '@layouts/utils/layoutClasses'
 import { getLocalizedUrl } from '@/utils/i18n'
 
 import { gettingRmcTenderId } from '@/services/dashboard-apis/dashboard-api'
+import { setRmcTenderId } from '@/redux-store/slices/rmcOnboardingSlice'
 
 import appLogo from '../../../../public/images/customImages/appLogo.png'
 
@@ -94,8 +96,10 @@ interface TenderIdResponse {
 const NavbarContent = () => {
   const { isBreakpointReached } = useHorizontalNav()
   const { lang: locale } = useParams()
+  const dispatch = useDispatch()
 
   const [rmctenderId, setRmctenderId] = useState<string>('')
+  const currentTenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   const { data: rmcTenderIDData, isLoading } = useQuery<TenderIdResponse, Error>({
     queryKey: ['rmcTenderIds'],
@@ -104,13 +108,25 @@ const NavbarContent = () => {
   })
 
   useEffect(() => {
-    if (rmcTenderIDData?.data?.tenders?.length && !rmctenderId) {
-      setRmctenderId(rmcTenderIDData.data.tenders[0].id as any)
+    if (currentTenderId) {
+      setRmctenderId(currentTenderId?.toString())
     }
-  }, [rmcTenderIDData, rmctenderId])
+  }, [currentTenderId, rmctenderId])
+
+  useEffect(() => {
+    if (rmcTenderIDData) {
+      const firstTenderId = rmcTenderIDData?.data?.tenders[0]?.id
+
+      setRmctenderId(firstTenderId as any)
+      dispatch(setRmcTenderId(firstTenderId))
+    }
+  }, [rmcTenderIDData, rmctenderId, dispatch])
 
   const handleTenderChange = (event: SelectChangeEvent) => {
-    setRmctenderId(event.target.value as any)
+    const selectedTenderId = event.target.value as any
+
+    setRmctenderId(selectedTenderId)
+    dispatch(setRmcTenderId(Number(selectedTenderId)))
   }
 
   return (

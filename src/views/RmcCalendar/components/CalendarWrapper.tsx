@@ -92,8 +92,7 @@ const CalendarWrapper = () => {
   const mdAbove = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'))
   const handleLeftSidebarToggle = () => setLeftSidebarOpen(!leftSidebarOpen)
   const handleAddEventSidebarToggle = () => setAddEventSidebarOpen(!addEventSidebarOpen)
-  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
-  const tenderId = rmcData?.tender_id
+  const tenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
   const calendarApiPayload = useSelector((state: RootState) => state.rmcCalendarReducer.calendarApiPayload)
   const calendarActiveStatus = useSelector((state: RootState) => state.rmcCalendarReducer.calendarStatus)
 

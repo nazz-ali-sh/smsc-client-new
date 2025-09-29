@@ -231,8 +231,8 @@ const OnboardingBudget = () => {
               Back
             </CustomButton>
             <div className='pb-3 pt-3 flex gap-4 justify-end '>
-              <CustomButton variant='outlined' type='submit' disabled={mutation.isPending}>
-                {mutation.isPending ? 'Submitting...' : 'Confirm'}
+              <CustomButton variant='outlined' type='submit'>
+                Confirm
               </CustomButton>
               <CustomButton endIcon={<i className='ri-arrow-right-line'></i>} onClick={handleSkipScreen}>
                 Skip This Step
@@ -256,6 +256,7 @@ const OnboardingBudget = () => {
         onClose={() => setShowSkipModal(false)}
         onSkipAnyway={handleSkipAnyway}
         onBackToEdit={handleSkipBackToEdit}
+        isLoading={mutation.isPending}
       />
     </div>
   )

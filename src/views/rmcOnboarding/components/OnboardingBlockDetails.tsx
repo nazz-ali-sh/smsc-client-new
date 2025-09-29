@@ -282,6 +282,7 @@ const OnboardingBlockDetails = () => {
             <div className='pb-9 mt-16 flex justify-end'>
               <CustomButton
                 type='submit'
+                isLoading={mutation.isPending}
                 disabled={mutation.isPending}
                 sx={{ fontSize: '16px', fontWeight: 700 }}
                 endIcon={<i className='ri-arrow-right-line'></i>}

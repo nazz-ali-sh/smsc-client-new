@@ -46,22 +46,22 @@ export default function Pages() {
     }
   }
 
-  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
-
   const [open, setOpen] = useState(false)
   const [modalType, setModalType] = useState<'shortList_agent' | 'shortList_agent_info' | string>('')
 
+  const tenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
+
   const { data: finalShortListedResponce } = useQuery<shortListedFinalAgent, Error>({
-    queryKey: ['finalAgents', rmcData?.tender_id],
-    queryFn: () => finalShortListedAgent(Number(rmcData?.tender_id)),
-    enabled: !!rmcData?.tender_id,
+    queryKey: ['finalAgents', tenderId],
+    queryFn: () => finalShortListedAgent(Number(tenderId)),
+    enabled: !!tenderId,
     refetchOnWindowFocus: false
   })
 
   const { data: rmcShortlistStats } = useQuery<shortListedFinalAgent, Error>({
-    queryKey: ['shortlistData', rmcData?.tender_id],
-    queryFn: () => getrmcshortlistStats(Number(rmcData?.tender_id)),
-    enabled: !!rmcData?.tender_id,
+    queryKey: ['shortlistData', tenderId],
+    queryFn: () => getrmcshortlistStats(Number(tenderId)),
+    enabled: !!tenderId,
     refetchOnWindowFocus: false
   })
 

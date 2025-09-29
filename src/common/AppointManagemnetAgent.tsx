@@ -68,8 +68,7 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
   const theme = useTheme()
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)
   const [feedbacks, setFeedbacks] = useState<{ [key: number]: { feedback: string; noFeedback: boolean } }>({})
-  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
-  const tender_id = rmcData?.tender_id
+  const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
   const reschedual_pma_user_id = (InviteCompletedCalls ?? [])[0]?.pma_user_ids || '0'
 
   const { data: pmaShortlistedData } = useQuery<shortListedFinalAgent, Error>({

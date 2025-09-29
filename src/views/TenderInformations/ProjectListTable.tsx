@@ -72,8 +72,7 @@ const KitchenSink = () => {
   const [bestPracticesModalOpen, setBestPracticesModalOpen] = useState(false)
   const [tenderResponsesModalOpen, setTenderResponsesModalOpen] = useState(false)
 
-  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
-  const tender_id = rmcData?.tender_id
+  const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   const [selectedResponse, setSelectedResponse] = useState<ApiResponseItem | null>(null)
 

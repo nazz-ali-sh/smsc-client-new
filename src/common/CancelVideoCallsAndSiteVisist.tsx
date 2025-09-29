@@ -43,8 +43,7 @@ const CancelVideoCallsAndSiteVisist = ({
   const [textValue, setTextValue] = useState('')
   const [error, setError] = useState('')
 
-  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
-  const rmctender_id = rmcData?.tender_id
+  const rmctender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   const rechedualRmcAgain = useMutation({
     mutationFn: ({

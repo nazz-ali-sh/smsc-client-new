@@ -16,8 +16,7 @@ import { getrmcshortlistStats } from '@/services/tender_result-apis/tender-resul
 import { fetchStatsSuccess } from '../../redux-store/slices/sideVisitAndCallStatsSlice'
 
 const VisitAndCallStats = () => {
-  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
-  const tender_id = rmcData?.tender_id
+  const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   const dispatch = useDispatch()
 

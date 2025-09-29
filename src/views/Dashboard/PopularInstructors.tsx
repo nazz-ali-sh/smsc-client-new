@@ -71,8 +71,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
     full_name: string
   }
 
-  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
-  const rmcTenderId = rmcData?.tender_id
+  const rmcTenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   const { data: finalShortListedResponce } = useQuery<ShortlistedPmas, Error>({
     queryKey: ['shortlist', rmcTenderId],

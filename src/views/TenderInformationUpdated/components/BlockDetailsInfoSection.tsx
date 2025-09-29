@@ -52,7 +52,7 @@ const BlockDetailsInfoSection = ({ blockData }: BlockDetailsSectionProps) => {
     },
     {
       label: 'Leasehold Type',
-      value: getLeaseholderTypeLabel(blockData?.leasehold_type) || 'N/A',
+      value: getLeaseholderTypeLabel(blockData?.leasehold_type) || blockData?.leasehold_type,
       icon: 'ri-settings-3-line'
     },
     {
@@ -74,7 +74,7 @@ const BlockDetailsInfoSection = ({ blockData }: BlockDetailsSectionProps) => {
           {blockItems?.map((item, index) => {
             const isBuildingHeight = item.label === 'Building Height'
             const gridSize = isBuildingHeight ? { xs: 12, sm: 8, md: 3.5 } : { xs: 12, sm: 6, md: 2.4 }
-            
+
             return (
               <Grid item {...gridSize} key={index}>
                 <Box sx={{ display: 'flex', alignItems: 'start', gap: 2 }}>
@@ -87,22 +87,22 @@ const BlockDetailsInfoSection = ({ blockData }: BlockDetailsSectionProps) => {
                       height: 40,
                       backgroundColor: 'customColors.ligthBlue1',
                       borderRadius: '8px',
-                      flexShrink: 0 
+                      flexShrink: 0
                     }}
                   >
                     <i className={item?.icon} style={{ fontSize: '1.5rem', color: '#1976D2' }} />
                   </Box>
-                  <Box sx={{ minWidth: 0, flex: 1 }}> 
+                  <Box sx={{ minWidth: 0, flex: 1 }}>
                     <Typography color='text.secondary' sx={{ fontSize: '12px' }}>
                       {item?.label}
                     </Typography>
                     <Typography
                       variant='body2'
-                      sx={{ 
-                        fontWeight: 400, 
-                        fontSize: '20px', 
+                      sx={{
+                        fontWeight: 400,
+                        fontSize: '20px',
                         color: 'customColors.darkGray1',
-                        wordBreak: 'break-word' 
+                        wordBreak: 'break-word'
                       }}
                     >
                       {item?.value}

@@ -19,7 +19,6 @@ import tendersend from '../../public/images/dashboardImages/tenderSend.svg'
 import tenderResponce from '../../public/images/dashboardImages/tenderResponce.svg'
 import tenderExpire from '../../public/images/dashboardImages/tenderExpire.svg'
 import { dashboardData } from '@/services/dashboard-apis/dashboard-api'
-import type { RootState } from '@/redux-store'
 
 interface DashboardResponse {
   dashboardResponce?: any
@@ -31,12 +30,12 @@ const WeeklyReport = ({ text }: { text?: string }) => {
   const theme = useTheme()
   const belowMdScreen = useMediaQuery(theme.breakpoints.down('md'))
 
-  const rmcData = useSelector((state: RootState) => state?.rmcOnboarding?.rmcData)
+  const tenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   const { data: dashboardResponce, error } = useQuery<DashboardResponse, Error>({
-    queryKey: ['dashboardDatas', rmcData?.tender_id],
-    queryFn: () => dashboardData(Number(rmcData?.tender_id)),
-    enabled: !!rmcData?.tender_id,
+    queryKey: ['dashboardDatas', tenderId],
+    queryFn: () => dashboardData(Number(tenderId)),
+    enabled: !!tenderId,
     retry: 2
   })
 

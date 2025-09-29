@@ -37,8 +37,7 @@ const CurrentActivity: React.FC<DashboardResponseProps> = ({ dashboardResponce }
     fontWeight: 500
   }
 
-  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
-  const tender_id = rmcData?.tender_id
+  const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   const downloadMutation = useMutation({
     mutationFn: (id: number) => downloadBlindTenderPdf(id),

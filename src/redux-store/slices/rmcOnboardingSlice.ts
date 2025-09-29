@@ -29,6 +29,7 @@ interface RmcOnboardingState {
   verificationMethod: 'sms' | 'email' | null
   selectedAddress: any | null
   manualAddressData: AddressData
+  tenderId: number | null
 }
 
 const initialState: RmcOnboardingState = {
@@ -41,7 +42,8 @@ const initialState: RmcOnboardingState = {
     postcode: '',
     region: '',
     county: ''
-  }
+  },
+  tenderId: null
 }
 
 const rmcOnboardingSlice = createSlice({
@@ -104,10 +106,14 @@ const rmcOnboardingSlice = createSlice({
         state.rmcData.tender_id = action.payload
       }
     },
+    setRmcTenderId: (state, action: PayloadAction<number>) => {
+      state.tenderId = action.payload
+    },
     clearRmcData: state => {
       state.rmcData = null
       state.verificationMethod = null
       state.selectedAddress = null
+      state.tenderId = null
       state.manualAddressData = {
         addressLine1: '',
         addressLine2: '',
@@ -130,6 +136,7 @@ export const {
   setManualAddressData,
   clearAddressData,
   setTenderId,
+  setRmcTenderId,
   clearRmcData
 } = rmcOnboardingSlice.actions
 

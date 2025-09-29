@@ -39,8 +39,7 @@ const SiteVisitReschedule = ({ siteRechedual }: any) => {
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
   const [visitsSchedualInviteId, setVisitsSchedualInviteId] = useState<number>()
 
-  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
-  const tender_id = rmcData?.tender_id
+  const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   const tableData: RescheduledCallType[] =
     siteRechedual?.data?.invites?.map(

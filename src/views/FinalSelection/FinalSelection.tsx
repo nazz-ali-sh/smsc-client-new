@@ -13,8 +13,7 @@ import CustomLoader from '@/common/CustomLoader'
 import { fianlResults } from '@/services/final_result_and_archeive_apis/final_results_apis'
 
 const FinalSelection = () => {
-  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
-  const rmcTenderId = rmcData?.tender_id
+  const rmcTenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   interface finalResultResponceData {
     data?: {

@@ -43,12 +43,12 @@ interface DashboardResponse {
 }
 
 export default function Page() {
-  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
+  const tenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   const { data: dashboardResponce } = useQuery<DashboardResponse, Error>({
-    queryKey: ['dashboardDatas', rmcData?.tender_id],
-    queryFn: () => dashboardData(Number(rmcData?.tender_id)),
-    enabled: !!rmcData?.tender_id,
+    queryKey: ['dashboardDatas', tenderId],
+    queryFn: () => dashboardData(Number(tenderId)),
+    enabled: !!tenderId,
     retry: 2
   })
 

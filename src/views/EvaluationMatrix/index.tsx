@@ -25,8 +25,7 @@ const EvaluationMatrix = () => {
   const [isScored, setisScored] = useState(false)
   const [isOpenCatagory, setIsOpenCatagory] = useState(false)
 
-  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
-  const tender_id = rmcData?.tender_id
+  const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   const { data: shortlistedPMAs } = useQuery({
     queryKey: ['shortlistedPMAs', tender_id],

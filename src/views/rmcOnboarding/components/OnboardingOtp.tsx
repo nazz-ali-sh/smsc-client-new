@@ -281,6 +281,7 @@ export default function OnboardingOtp() {
             <CustomButton
               sx={{ width: '300px', fontSize: '14px', borderRadius: '4px' }}
               onClick={handleResendCode}
+              isLoading={resendMutation?.isPending}
               disabled={mutation?.isPending || resendMutation?.isPending || isResendDisabled}
             >
               {resendMutation.isPending ? 'Resending...' : 'Resend Code'}
@@ -289,11 +290,13 @@ export default function OnboardingOtp() {
           <Typography variant='body2' color='textSecondary' className='text-center'>
             If you're having trouble receiving the code, please check your spam folder or contact support.
           </Typography>
-          <div className='flex justify-end mt-10 '>
+          <div className='flex justify-start mt-10 '>
             <CustomButton
-              disabled={mutation?.isPending || resendMutation?.isPending || isResendDisabled}
+              variant='outlined'
+              disabled={mutation?.isPending || resendMutation?.isPending}
               sx={{ fontSize: '12px', borderRadius: '4px' }}
               onClick={handleBack}
+              startIcon={<i className='ri-arrow-left-line'></i>}
             >
               Back
             </CustomButton>

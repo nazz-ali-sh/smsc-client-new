@@ -22,8 +22,7 @@ const ArchiveTable = () => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 })
   const [value, setValue] = React.useState('appoint')
   const router = useRouter()
-  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
-  const tender_id = rmcData?.tender_id
+  const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   const { data: gettingArchiveData } = useQuery<ArchivedTenderType>({
     queryKey: ['AvailableSlotsAndDays', value, tender_id],

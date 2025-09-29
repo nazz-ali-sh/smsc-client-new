@@ -47,7 +47,7 @@ type CategoryFormValues = v.InferOutput<typeof categorySchema>
 const AddAndEditCatagoryModal: React.FC<ToolTipModalProps> = ({ open, onClose, types, categoryData }) => {
   const theme = useTheme()
 
-  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
+  const tenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   const {
     control,
@@ -85,14 +85,14 @@ const AddAndEditCatagoryModal: React.FC<ToolTipModalProps> = ({ open, onClose, t
       if (types === 'edit') {
         return editEMetric(
           categoryData?.id,
-          rmcData?.tender_id,
+          tenderId,
           data.categoryName,
           data.description,
           Number(data.weight),
           true
         )
       } else {
-        return addEMetric(rmcData?.tender_id, data.categoryName, data.description, Number(data.weight), true)
+        return addEMetric(tenderId, data.categoryName, data.description, Number(data.weight), true)
       }
     },
     onSuccess: res => {

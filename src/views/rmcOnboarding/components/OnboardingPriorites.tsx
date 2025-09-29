@@ -334,6 +334,7 @@ const OnboardingPriorities: React.FC = () => {
               <CustomButton
                 endIcon={<i className='ri-arrow-right-line'></i>}
                 onClick={handleNext}
+                isLoading={mutation.isPending}
                 disabled={mutation.isPending}
               >
                 {mutation.isPending ? 'Submitting...' : 'Next'}

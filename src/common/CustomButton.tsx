@@ -1,16 +1,25 @@
 import React from 'react'
 
 import type { ButtonProps } from '@mui/material'
-import { Button } from '@mui/material'
+import { Button, CircularProgress } from '@mui/material'
 import type { SxProps, Theme } from '@mui/system'
 
 interface CustomButtonProps extends ButtonProps {
   sx?: SxProps<Theme>
   children: React.ReactNode
   variant?: ButtonProps['variant']
+  isLoading?: boolean
 }
 
-const CustomButton: React.FC<CustomButtonProps> = ({ children, sx, variant = 'contained', ...props }) => {
+const CustomButton: React.FC<CustomButtonProps> = ({
+  children,
+  sx,
+  variant = 'contained',
+  isLoading = false,
+  ...props
+}) => {
+  const { startIcon, endIcon, ...buttonProps } = props
+
   const baseStyles: SxProps<Theme> = {
     fontSize: '14px',
     fontWeight: 700
@@ -51,13 +60,28 @@ const CustomButton: React.FC<CustomButtonProps> = ({ children, sx, variant = 'co
     <Button
       variant={variant}
       disableElevation
+      disabled={isLoading || props.disabled}
+      startIcon={isLoading ? undefined : startIcon}
+      endIcon={
+        isLoading ? (
+          <CircularProgress
+            size={20}
+            thickness={4}
+            sx={{
+              color: variant === 'outlined' ? 'customColors.ligthBlue' : '#fff'
+            }}
+          />
+        ) : (
+          endIcon
+        )
+      }
       sx={{
         ...baseStyles,
         ...(variant === 'contained' ? containedStyles : {}),
         ...(variant === 'outlined' ? outlinedStyles : {}),
         ...sx
       }}
-      {...props}
+      {...buttonProps}
     >
       {children}
     </Button>

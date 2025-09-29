@@ -22,8 +22,7 @@ const SiteVisitTabs = () => {
   const [activeTab, setActiveTab] = useState(0)
   const [activeStatus, setActiveStatus] = useState('')
 
-  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
-  const tender_id = rmcData?.tender_id
+  const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   useEffect(() => {
     if (activeTab === 0) {

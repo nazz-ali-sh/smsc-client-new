@@ -29,12 +29,12 @@ interface DashboardFaqsResponse {
 }
 
 export default function AccordionExpand() {
-  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
+  const tenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   const { data, isLoading, error } = useQuery<DashboardFaqsResponse, Error>({
-    queryKey: ['dashboardFaqs', rmcData?.tender_id],
-    queryFn: () => dashboardFaqs(Number(rmcData?.tender_id)),
-    enabled: !!rmcData?.tender_id
+    queryKey: ['dashboardFaqs', tenderId],
+    queryFn: () => dashboardFaqs(Number(tenderId)),
+    enabled: !!tenderId
   })
 
   if (isLoading) {

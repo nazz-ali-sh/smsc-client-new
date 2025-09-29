@@ -30,8 +30,7 @@ interface ToolTipModalProps {
 const DeleteCatagoryModal: React.FC<ToolTipModalProps> = ({ open, onClose, title, description, categoryid }) => {
   const theme = useTheme()
 
-  const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
-  const tender_id = rmcData?.tender_id
+  const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   // ✅ Mutation Hook
   const mutation = useMutation({
