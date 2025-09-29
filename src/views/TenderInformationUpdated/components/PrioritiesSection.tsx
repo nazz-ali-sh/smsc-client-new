@@ -29,7 +29,7 @@ const PrioritiesSection: React.FC<PrioritiesSectionProps> = ({ priorities }) => 
         </Typography>
       </Box>
       <Grid container spacing={4} sx={{ marginTop: '24px' }}>
-        {priorities?.map(priority => (
+        {priorities?.map((priority, index) => (
           <Grid item xs={12} sm={6} md={3} key={priority?.id}>
             <Card sx={{ height: '100px' }} className='border-l-[4px] border-l-[#35C0ED]'>
               <Box
@@ -58,7 +58,7 @@ const PrioritiesSection: React.FC<PrioritiesSectionProps> = ({ priorities }) => 
                       color: '#1F4E8D'
                     }}
                   >
-                    {priority?.id}. {priority?.name}
+                    {index + 1}. {priority?.name}
                   </Typography>
                   <Typography
                     variant='body2'

@@ -122,9 +122,7 @@ export default function OnboardingForm() {
                         }
                       }
                     }
-
-                    
-return {}
+                    return {}
                   }
 
                   return (
