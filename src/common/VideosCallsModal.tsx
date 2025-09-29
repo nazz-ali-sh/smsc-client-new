@@ -32,7 +32,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { useForm, Controller } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { object, string, optional, any } from 'valibot'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
 import { useSelector } from 'react-redux'
@@ -58,6 +58,7 @@ interface OnlineCallsModalProps {
   types?: any
   componentTypes?: any
   calanderReschedualData?: any
+  setOnlineCallsModalOpen?: any
 }
 
 interface Slot {
@@ -90,7 +91,8 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
   defaultmultiselect,
   types,
   componentTypes,
-  calanderReschedualData
+  calanderReschedualData,
+  setOnlineCallsModalOpen
 }) => {
   const theme = useTheme()
   const [dayId, setDayId] = useState('')
@@ -106,9 +108,9 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
 
   const [value, setValues] = useState<Dayjs | null>(dayjs())
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)
-
   const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
   const tender_id = rmcData?.tender_id
+  const queryClient = useQueryClient()
 
   const {
     control,
@@ -217,7 +219,12 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       setInviteData(data?.data?.invites)
       toast.success(data?.message || 'Invite sent successfully!')
       reset()
+
+      queryClient.invalidateQueries({
+        queryKey: ['shortlistData', tender_id]
+      })
       setConfirmationModalOpen(true)
+      setOnlineCallsModalOpen(false)
       setSlotError('')
     },
     onError: (error: any) => {
@@ -343,7 +350,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     onSuccess: (data: any) => {
       toast.success(data?.message || 'Invite sent successfully!')
       reset()
-
       setConfirmationModalOpen(true)
       setSlotError('')
     },
@@ -654,6 +660,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
         inviteData={inviteData}
         open={confirmationModalOpen}
         onClose={() => {
+          debugger
           setConfirmationModalOpen(false)
           onClose()
         }}

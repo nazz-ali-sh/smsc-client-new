@@ -7,10 +7,13 @@ import Tab from '@mui/material/Tab'
 import Box from '@mui/material/Box'
 import { Typography, useTheme } from '@mui/material'
 
+import { useDispatch } from 'react-redux'
+
 import calendar from '../../../../public/images/customImages/calander.svg'
 import timeLine from '../../../../public/images/customImages/timeLine.svg'
 import map from '../../../../public/images/customImages/map.svg'
 import useMediaQuery from '@/@menu/hooks/useMediaQuery'
+import { setActiveTab } from '@/redux-store/slices/tabSlice'
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -19,7 +22,7 @@ interface TabPanelProps {
 }
 
 interface TabsSwitchProps {
-  sendDataToParent: (selectedLabel: string) => void
+  sendDataToParent?: (selectedLabel: string) => void
   data: any
 }
 
@@ -54,8 +57,10 @@ const tabsData = [
   { label: 'Notes', mainLabel: 'Notes', iconClass: 'ri-hotel-line' }
 ]
 
-const TabsSwitch: React.FC<TabsSwitchProps> = ({ sendDataToParent, data }) => {
+const TabsSwitch: React.FC<TabsSwitchProps> = ({ data }) => {
   const [value, setValue] = React.useState(0)
+  const dispatch = useDispatch()
+
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
@@ -63,7 +68,7 @@ const TabsSwitch: React.FC<TabsSwitchProps> = ({ sendDataToParent, data }) => {
     setValue(newValue)
     const selectedLabel = tabsData[newValue].mainLabel
 
-    sendDataToParent(selectedLabel)
+    dispatch(setActiveTab(selectedLabel))
   }
 
   return (
@@ -74,9 +79,22 @@ const TabsSwitch: React.FC<TabsSwitchProps> = ({ sendDataToParent, data }) => {
           onChange={handleChange}
           aria-label='basic tabs example'
           sx={{
+            width: '100%',
+            '& .MuiTab-root': {
+              minHeight: 60,
+              textTransform: 'none',
+              fontSize: '0.875rem',
+              color: '#666',
+              flex: 1,
+              padding: '8px 16px',
+              '&.Mui-selected': {
+                color: '#35C0ED',
+                fontWeight: 600
+              }
+            },
             '& .MuiTabs-indicator': {
               backgroundColor: '#35C0ED',
-              height: 4
+              height: 3
             },
             '& .MuiTabs-flexContainer': {
               gap: '38px',
@@ -90,37 +108,47 @@ const TabsSwitch: React.FC<TabsSwitchProps> = ({ sendDataToParent, data }) => {
               key={idx}
               disableRipple
               label={
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <i className={tab.iconClass}></i>
-                  <div>{tab.mainLabel}</div>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 1,
+                    width: '100%'
+                  }}
+                >
+                  <i
+                    className={tab.iconClass}
+                    style={{
+                      fontSize: '1.25rem',
+                      color: value === idx ? '#35C0ED' : '#666'
+                    }}
+                  />
+                  <Typography
+                    variant='caption'
+                    sx={{
+                      color: value === idx ? '#35C0ED' : '#666',
+                      fontWeight: value === idx ? 600 : 400,
+                      fontSize: '0.875rem'
+                    }}
+                  >
+                    {tab.mainLabel}
+                  </Typography>
                 </Box>
               }
               {...a11yProps(idx)}
-              sx={{
-                color: '#555555',
-                minHeight: 56,
-                '&:hover': {
-                  color: '#35C0ED',
-                  backgroundColor: 'transparent',
-                  opacity: 1
-                },
-                '&.Mui-selected': {
-                  color: '#35C0ED',
-                  fontWeight: 'bold'
-                }
-              }}
             />
           ))}
         </Tabs>
       </Box>
 
-      {/* Site-visit Tab */}
       <CustomTabPanel value={value} index={0}>
         <Typography variant='h4' className='mt-[20px]'>
           Upcoming Site Visit
         </Typography>
         <Typography variant='body2' className='max-w-[65%] mt-[20px]'>
-          Meeting with PMA - 12315566 on {data?.data?.upcoming_site_visit?.date || 'Monday 25th June 2025'} at{' '}
+          Meeting with PMA - {data?.data?.pma_user?.name} on{' '}
+          {data?.data?.upcoming_site_visit?.date || 'Monday 25th June 2025'} at{' '}
           {data?.data?.upcoming_site_visit?.time || '11:00 AM'}. Location Address{' '}
           {data?.data?.company_details?.address || '123 Main Street Apt 48, Anytown, State 12345, London'}
         </Typography>
@@ -154,14 +182,26 @@ const TabsSwitch: React.FC<TabsSwitchProps> = ({ sendDataToParent, data }) => {
           Upcoming Calls
         </Typography>
         <Typography variant='body2' className='max-w-[65%] mt-[20px]'>
-          {data?.data?.calls?.length
-            ? data.data.calls.map((call: any, idx: any) => (
-                <div key={idx}>
-                  Call with {call.name || 'Unknown'} on {call.date || 'N/A'} at {call.time || 'N/A'}
-                </div>
-              ))
-            : 'No upcoming calls.'}
+          Meeting with PMA - {data?.data?.pma_user?.name} on{' '}
+          {data?.data?.upcoming_video_call?.date || 'Monday 25th June 2025'} at
+          {data?.data?.upcoming_video_call?.time || '11:00 AM'}. Location Address
+          {data?.data?.company_details?.address || '123 Main Street Apt 48, Anytown, State 12345, London'}
         </Typography>
+        <div className={`mt-5 flex ${isSmallScreen ? 'flex-col' : 'flex-row justify-center gap-x-[146px]'}`}>
+          <section className='flex flex-col items-center mb-2'>
+            <Image src={calendar} alt='calendar' />
+            <p className='text-center mt-3'>{data?.data?.upcoming_video_call?.day || 'No Data'}</p>
+            <p className='text-center'>{data?.data?.upcoming_video_call?.date || '25th June 2025'}</p>
+            <div className='h-[10px] bg-[#E1F3D7] w-[200px] rounded-xl mt-7'></div>
+          </section>
+
+          <section className='flex flex-col items-center mb-2'>
+            <Image src={timeLine} alt='calendar' />
+            <p className='text-center mt-3'>{data?.data?.upcoming_video_call?.day || 'No Data'}</p>
+            <p className='text-center'>{data?.data?.upcoming_video_call?.time || '11:00 AM'}</p>
+            <div className='h-[10px] bg-[#5e728d] w-[200px] rounded-xl mt-7'></div>
+          </section>
+        </div>
       </CustomTabPanel>
 
       {/* Chats Tab */}

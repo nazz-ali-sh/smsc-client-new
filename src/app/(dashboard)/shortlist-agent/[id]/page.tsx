@@ -1,13 +1,15 @@
 'use client'
-import { useState, type SetStateAction } from 'react'
 
 import { Grid } from '@mui/material'
 
 import { useQuery } from '@tanstack/react-query'
 
+import { useSelector } from 'react-redux'
+
 import EventDetails from '@/views/dynamicShortlist/EventDetails'
 import UserProfile from '@/views/dynamicShortlist/UserProfile'
 import { getPmaCompanyDetails } from '@/services/tender_result-apis/tender-result-api'
+import type { RootState } from '@/redux-store'
 
 interface PageProps {
   params: {
@@ -16,15 +18,12 @@ interface PageProps {
 }
 
 export default function AgentDetail({ params }: PageProps) {
-  const [dataFromsubChild, setDataFromSubChild] = useState('')
+  const activeTab = useSelector((state: RootState) => state?.tabSwitch?.activeTab)
 
-  function handleDataFromSubChild(data: SetStateAction<string>) {
-    setDataFromSubChild(data)
-  }
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['companyDetails', params.id, dataFromsubChild],
-    queryFn: () => getPmaCompanyDetails(Number(params.id), dataFromsubChild)
+    queryKey: ['companyDetails', params.id, activeTab],
+    queryFn: () => getPmaCompanyDetails(Number(params.id), activeTab)
   })
 
   if (isLoading) {
@@ -43,7 +42,7 @@ export default function AgentDetail({ params }: PageProps) {
             <UserProfile userData={data} />
           </Grid>
           <Grid item xs={12} lg={9} md={7}>
-            <EventDetails userData={data} handleDataFromSubChild={handleDataFromSubChild} />
+            <EventDetails userData={data} />
           </Grid>
         </Grid>
       </section>

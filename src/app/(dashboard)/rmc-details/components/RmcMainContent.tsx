@@ -436,6 +436,7 @@ const RmcMainContent: React.FC<RmcMainContentProps> = ({ rmcData, activeTab, onT
               </Accordion>
             </Box>
           </Box>
+          
           <Box sx={{ marginBottom: 4, marginTop: 10 }}>
             <Tabs
               value={activeTab}

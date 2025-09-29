@@ -90,7 +90,7 @@ const SummaryCards: React.FC<SummaryStatus> = ({ tenderStatusdetails }) => {
           <Grid item xs={12} sm={6} md={2.4}>
             <SummaryCardsDetails
               title='Appointed'
-              count='3 Tenders'
+              count='0 Tenders'
               iconClass='ri-medal-line'
               color='customColors.green2'
               bgColor='customColors.green1'
@@ -99,7 +99,7 @@ const SummaryCards: React.FC<SummaryStatus> = ({ tenderStatusdetails }) => {
           <Grid item xs={12} sm={6} md={2.4}>
             <SummaryCardsDetails
               title='Not Shortlisted'
-              count='3 Tenders'
+              count='0 Tenders'
               iconClass='ri-close-circle-line'
               color='customColors.orange2'
               bgColor='customColors.orange1'

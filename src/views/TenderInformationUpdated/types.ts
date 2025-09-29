@@ -37,6 +37,7 @@ export interface PrioritiesSectionProps {
 }
 
 export interface BlockDetailsData {
+  building_height(building_height: any): unknown
   block_condition: any
   postcode?: string
   address?: string

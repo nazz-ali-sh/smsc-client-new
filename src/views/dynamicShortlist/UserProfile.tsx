@@ -2,32 +2,23 @@
 
 'use client'
 
-import { useState } from 'react'
 
 import Image from 'next/image'
 
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
 
-import { Document, Page, pdfjs } from 'react-pdf'
+
+import pdfImage from '../../../public/images/dashboardImages/demePdfImage.png'
 
 import 'react-pdf/dist/Page/AnnotationLayer.css'
 import 'react-pdf/dist/Page/TextLayer.css'
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`
 
 import companyImage from '../../../public/images/customImages/company.png'
 
 const UserProfile = ({ userData }: any) => {
-  const [numPages, setNumPages] = useState<number | null>(null)
-
-  console.log(numPages, 'numPages')
-
-  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-    setNumPages(numPages)
-  }
 
   return (
     <>
@@ -86,36 +77,22 @@ const UserProfile = ({ userData }: any) => {
                 </Typography>
               </section>
             </div>
-
-            <div className='flex items-center justify-around flex-wrap gap-4'>
-              <div className='flex items-center gap-4'>
-                <Button variant='contained' className='bg-buttonPrimary gap-x-3'>
-                  <i className='ri-user-3-line size-[22px]'></i>
-                  Download Profile
-                </Button>
-              </div>
-              <div className='flex items-center gap-4'>
-                <Button variant='contained' className='bg-buttonPrimary gap-x-3'>
-                  <i className='ri-eye-line size-[22px] '></i>
-                  View Questionaire
-                </Button>
-              </div>
-            </div>
           </div>
 
           <section className='flex flex-col items-center gap-4'>
-            {/* PDF Preview */}
-            <div className='border rounded shadow-md'>
-              <Document
-                file='/data.pdf'
-                onLoadSuccess={onDocumentLoadSuccess}
-                onLoadError={error => console.error('Error loading PDF:', error)}
-                loading={<Typography>Loading PDF preview...</Typography>}
-                className='cursor-pointer'
+          
+            <Image src={pdfImage} alt='pfd demo' />
+            <Typography variant='body1' align='center'>
+              <a
+                href='data.pdf'
+                download
+                className='hover:underline hover:underline-offset-4'
+                style={{ textDecorationColor: '#35C0ED' }}
               >
-                <Page pageNumber={1} width={300} />
-              </Document>
-            </div>
+                View Managing Agents Prospectus
+              </a>
+            </Typography>
+
             <Typography variant='body1' align='center'>
               <a
                 href='data.pdf'
@@ -127,7 +104,6 @@ const UserProfile = ({ userData }: any) => {
               </a>
             </Typography>
 
-            {/* Download PDF Link */}
           </section>
         </CardContent>
       </Card>

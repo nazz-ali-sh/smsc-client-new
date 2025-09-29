@@ -14,6 +14,7 @@ import siteVisitAndCallStatsReducer from '@/redux-store/slices/sideVisitAndCallS
 import rmcOnboardingReducer from '@/redux-store/slices/rmcOnboardingSlice'
 import rtmNonDirectorReducer from '@/redux-store/slices/rtmNonDirectorSlice'
 import postcodeReducer from '@/redux-store/slices/postcodeSlice'
+import tabSlice from '@/redux-store/slices/tabSlice'
 
 const persistConfig = {
   key: 'root',
@@ -42,7 +43,8 @@ const rootReducer = combineReducers({
   siteVisitAndCallStats: siteVisitAndCallStatsReducer,
   rmcOnboarding: rmcOnboardingReducer,
   rtmNonDirector: rtmNonDirectorReducer,
-  postcode: postcodeReducer
+  postcode: postcodeReducer,
+  tabSwitch: tabSlice
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

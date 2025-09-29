@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 
 import Image from 'next/image'
 
@@ -10,8 +10,6 @@ import { Typography } from '@mui/material'
 
 import { useMutation } from '@tanstack/react-query'
 
-import dayjs from 'dayjs'
-
 import companyImage from '../../../public/images/customImages/company.png'
 
 import phone from '../../../public/images/customImages/phone.svg'
@@ -19,7 +17,6 @@ import phone from '../../../public/images/customImages/phone.svg'
 import phoneCalls from '../../../public/images/tenderShortlisted/phoneCalls.svg'
 import videoCalls from '../../../public/images/tenderShortlisted/videoCall.svg'
 import visitLocation from '../../../public/images/tenderShortlisted/visitLocation.svg'
-import visitPerson from '../../../public/images/tenderShortlisted/visitPerson.svg'
 import person from '../../../public/images/tenderShortlisted/person.svg'
 import whiteperson from '../../../public/images/dashboardImages/appintagentIcon.svg'
 
@@ -31,6 +28,7 @@ import ContactModal from '@/common/ContactModal'
 import { rmcsendContactpma } from '@/services/tender_result-apis/tender-result-api'
 import demePfd from '../../../public/images/dashboardImages/demePdfImage.png'
 import CustomButton from '@/common/CustomButton'
+import { calculateTimeLeft } from '@/utils/dateFormater'
 
 const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce: any }) => {
   const router = useRouter()
@@ -40,33 +38,11 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
   const [contactModalOpen, setContactModalOpen] = useState(false)
   const [shortlistedModalOpen, setShortListedSuccessModalOpen] = useState(false)
   const [pmaSelectedID, setPmaSelectedID] = useState<number | any>()
-
-  const [expireDates, setExpireDates] = useState<{ days: string; hours: string; minutes: string }[]>([])
-
   const [selectedPma, setSelectedPma] = useState<{ id: number; pma_number: string } | null>(null)
 
-  useEffect(() => {
-    if (!finalShortListedResponce?.data?.shortlisted_pmas) return
-
-    const now = dayjs()
-
-    const calculated = finalShortListedResponce.data.shortlisted_pmas.map((company: any) => {
-      const target = dayjs(company.shortlisting_expiry_at)
-      const diff = target.diff(now)
-
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
-
-      return {
-        days: days.toString(),
-        hours: hours.toString(),
-        minutes: minutes.toString()
-      }
-    })
-
-    setExpireDates(calculated)
-  }, [finalShortListedResponce])
+  const shortlistexpiryDate = calculateTimeLeft(
+    finalShortListedResponce?.data?.shortlisted_pmas[0]?.shortlisting_expiry_at
+  )
 
   const handkeAppointAgnet = (selected_pma_id: any) => {
     setPmaSelectedID(selected_pma_id)
@@ -92,6 +68,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
     }
   })
 
+  
   const handlecontactAgent = (selected_pma_id: number) => {
     setPmaSelectedID(selected_pma_id)
 
@@ -123,22 +100,20 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
         <section className=' mt-8 '>
           {finalShortListedResponce?.data?.shortlisted_pmas?.map((company: any, index: number) => (
             <section key={index} className='flex justify-between items-center mt-8 shadow-md  rounded-xl px-6 py-4'>
-              <div
-                onClick={() => router.push(`/shortlist-agent/${company?.pma_user?.id}`)}
-                className='flex items-start gap-6 cursor-pointer'
-              >
+              <div className='flex items-start gap-6 cursor-pointer'>
                 <div className='flex flex-col'>
                   <Image
+                    onClick={() => router.push(`/shortlist-agent/${company?.pma_user?.id}`)}
                     src={companyImage}
                     alt={`${company.title} logo`}
                     width={180}
-                    height={190}
+                    height={212}
                     className='rounded-xl'
                   />
 
                   <div className='mt-[19px] text-[12px] text-buttonPrimary font-bold text-center flex items-center justify-center '>
-                    <div onClick={() => handleExtendByThree(company?.pma_user?.id)} className='flex items-center'>
-                      <CustomButton>
+                    <div className='flex items-center'>
+                      <CustomButton onClick={() => handkeAppointAgnet(company?.pma_user?.id)}>
                         <Image src={whiteperson} alt='person' className='mr-[10px]' />
                         Appoint the agent
                       </CustomButton>
@@ -199,20 +174,23 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                   </section>
 
                   <Typography variant='h3' className='text-[#1F4E8D] text-[21px] font-bold py-1'>
-                    {expireDates[index]?.days} days _ {expireDates[index]?.hours} hours _ {expireDates[index]?.minutes}{' '}
+                    {shortlistexpiryDate?.days} days {shortlistexpiryDate?.hours} hours {shortlistexpiryDate?.minutes}{' '}
+                    minutes
                   </Typography>
 
                   <div className='mt-[20px]'>
-                    <CustomButton variant='outlined'>Extend by 3 days </CustomButton>
+                    <CustomButton onClick={() => handleExtendByThree(company?.pma_user?.id)} variant='outlined'>
+                      Extend by 3 days{' '}
+                    </CustomButton>
                   </div>
                 </div>
-                <div className='pl-10'>
-                  <Typography variant='h3'>Contact Details</Typography>
+                <div className='pl-10 pt-[50px]'>
+                  <Typography variant='h4'>Contact Details</Typography>
 
                   <div className='flex items-center gap-x-[30px] mt-[20px]'>
-                    <span>
+                    <div>
                       <Image src={person} alt='person' />
-                    </span>
+                    </div>
                     <Typography variant='body2'>{company?.pma_user?.full_name}</Typography>
                   </div>
 
@@ -230,7 +208,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                     <Typography variant='body2'>{company?.pma_user?.mobile_number}</Typography>
                   </div>
 
-                  <div className='flex items-center gap-x-[30px]'>
+                  <div className='flex items-center gap-x-[30px] mt-[20px]'>
                     <span>
                       <i className='ri-map-pin-line size-[14px]'></i>
                     </span>
@@ -276,21 +254,6 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                   className='cursor-pointer'
                   onClick={() => handlecontactAgent(company?.pma_user?.id)}
                 />
-                <Image
-                  src={visitPerson}
-                  alt='person'
-                  className='cursor-pointer'
-                  onClick={() => handkeAppointAgnet(company?.pma_user?.id)}
-                />
-
-                {/* <section className='flex bg-[#26C6F93D] p-3 rounded-md'>
-                      <Image
-                        src={extend3days}
-                        alt='person'
-                        className='cursor-pointer'
-                        onClick={() => handleExtendByThree(company?.pma_user?.id)}
-                      />
-                    </section> */}
               </section>
             </section>
           ))}
@@ -300,6 +263,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
             shorlistedPmas={finalShortListedResponce?.data?.shortlisted_pmas}
             mainSiteVisitVideoCalls={undefined}
             defaultmultiselect={selectedPma}
+            setOnlineCallsModalOpen={setOnlineCallsModalOpen}
           />
           <SiteVisitsModal
             open={siteVisitsModalOpen}

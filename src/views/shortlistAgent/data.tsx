@@ -1,6 +1,9 @@
 import Image from 'next/image'
 
 import successVisit from '../../../public/images/customImages/sucess.svg'
+import tradingYear from '../../../public/images/dashboardImages/tradingYear.svg'
+
+// tradingYear
 
 export const reviewSystem = [
   {
@@ -84,7 +87,7 @@ export const tabs = [
 
   {
     id: 2,
-    icons: <i className='ri-calendar-2-line'></i>,
+    icons: <Image src={tradingYear} alt='success Visit' />,
     state: 'Trading Years',
     descrption: '11 Years'
   }

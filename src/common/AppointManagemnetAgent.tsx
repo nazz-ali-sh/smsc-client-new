@@ -67,12 +67,9 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
 }) => {
   const theme = useTheme()
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)
-
   const [feedbacks, setFeedbacks] = useState<{ [key: number]: { feedback: string; noFeedback: boolean } }>({})
-
   const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
   const tender_id = rmcData?.tender_id
-
   const reschedual_pma_user_id = (InviteCompletedCalls ?? [])[0]?.pma_user_ids || '0'
 
   const { data: pmaShortlistedData } = useQuery<shortListedFinalAgent, Error>({
@@ -102,7 +99,7 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
     },
 
     onError: (error: any) => {
-      const errorMessage = error?.response?.data?.message || 'Failed to About Step'
+      const errorMessage = error?.response?.data?.message || ''
 
       console.error('About API error:', errorMessage)
       toast.error(errorMessage)

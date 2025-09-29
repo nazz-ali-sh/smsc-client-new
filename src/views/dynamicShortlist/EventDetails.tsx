@@ -1,21 +1,23 @@
 'use client'
 
+import Image from 'next/image'
+
 import { Card, CardContent, Divider, LinearProgress, Typography, useTheme } from '@mui/material'
 
 import TabsSwitch from './components/Tabs'
 
-import { tabs } from '../shortlistAgent/data'
 import EditableDataTables from './components/PastActivityTable'
 import useMediaQuery from '@/@menu/hooks/useMediaQuery'
+import successVisit from '../../../public/images/customImages/sucess.svg'
+import tradingYear from '../../../public/images/dashboardImages/tradingYear.svg'
 
 import type { PmaDetailsResponse } from './type'
 
 interface EventDetailsProps {
   userData: PmaDetailsResponse
-  handleDataFromSubChild: any
 }
 
-const EventDetails = ({ userData, handleDataFromSubChild }: EventDetailsProps) => {
+const EventDetails = ({ userData }: EventDetailsProps) => {
   const starRatings = [
     { label: '5 Star', count: userData?.data?.ratings_and_reviews?.five_star_count },
     { label: '4 Star', count: userData?.data?.ratings_and_reviews?.four_star_count },
@@ -24,14 +26,30 @@ const EventDetails = ({ userData, handleDataFromSubChild }: EventDetailsProps) =
     { label: '1 Star', count: userData?.data?.ratings_and_reviews?.one_star_count }
   ]
 
-  console.log(userData)
 
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
-  function handleDataFromChild(dataFromChild: any) {
-    handleDataFromSubChild(dataFromChild)
-  }
+  const tabs = [
+    {
+      id: 1,
+      state: 'Quotation',
+      icons: <i className='ri-customer-service-2-line'></i>,
+      description: `$ ${userData?.data?.quotation?.latest_quote}`
+    },
+    {
+      id: 4,
+      icons: <Image src={successVisit} alt='success Visit' />,
+      state: 'No. of Units Managed',
+      description: `${userData?.data?.company_details?.avg_units_per_manager} Properties`
+    },
+    {
+      id: 2,
+      icons: <Image src={tradingYear} alt='Trading Years' />,
+      state: 'Trading Years',
+      description: `${userData?.data?.company_details?.trading_years} Years`
+    }
+  ]
 
   return (
     <>
@@ -48,7 +66,7 @@ const EventDetails = ({ userData, handleDataFromSubChild }: EventDetailsProps) =
                         : index === 1
                           ? 'bg-[#e3f9d4]'
                           : index === 2
-                            ? 'bg-purple1'
+                            ? 'bg-[#e3f9d4]'
                             : index === 3
                               ? 'bg-[#72E12829]'
                               : ''
@@ -59,7 +77,7 @@ const EventDetails = ({ userData, handleDataFromSubChild }: EventDetailsProps) =
                   <div className='flex flex-col'>
                     <Typography className='text-[18px] font-bold leading-28'>{items.state}</Typography>
                     <Typography variant='body2' color='text.primary'>
-                      {items.descrption}
+                      {items.description}
                     </Typography>
                   </div>
                 </CardContent>
@@ -122,7 +140,7 @@ const EventDetails = ({ userData, handleDataFromSubChild }: EventDetailsProps) =
         </section>
 
         <div className='mt-[50px]'>
-          <TabsSwitch sendDataToParent={handleDataFromChild} data={userData} />
+          <TabsSwitch data={userData} />
         </div>
         <div className='mt-[50px]'>
           <EditableDataTables />

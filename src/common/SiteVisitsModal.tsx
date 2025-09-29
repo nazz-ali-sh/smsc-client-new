@@ -29,7 +29,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { useForm, Controller } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { object, string, optional, any } from 'valibot'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import {  useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
 import { useSelector } from 'react-redux'
@@ -109,9 +109,9 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
   })
 
   console.log(shorlistedPmas)
-
   const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
   const tender_id = rmcData?.tender_id
+  const queryClient = useQueryClient()
 
   const {
     control,
@@ -272,6 +272,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     onSuccess: (data: any) => {
       setInviteData(data?.data?.invites)
       toast.success(data?.message || 'Invite sent successfully!')
+
       reset()
       setSuccessOpen(true)
       setSiteVisitsModalOpen(false)
@@ -332,11 +333,15 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       location: string
     }) => SideVisitInvite(value, day_id, slot_ids, pma_user_ids, message, rmctender_id, location),
     onSuccess: (data: any) => {
+      debugger
       setInviteData(data?.data?.invites)
       toast.success(data?.message || 'Invite sent successfully!')
       reset()
+      queryClient.invalidateQueries({
+        queryKey: ['shortlistData', tender_id]
+      })
       setConfirmationModalOpen(true)
-      setSiteVisitsModalOpen(false)
+      onClose()
     },
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || error?.message || 'Failed to send invite'

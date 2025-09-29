@@ -145,6 +145,12 @@ export function getBlockConditionLabel(value?: string): string {
   return found ? found?.title : ''
 }
 
+export function getBuildingHeightLabel(value?: string): string {
+  const found = buildingTypes?.find(option => option?.value === value)
+
+  return found ? found?.title : ''
+}
+
 export const rmtFormInputs = [
   { name: 'name', label: 'Full Name', type: 'text' as const },
   { name: 'email', label: 'Email', type: 'email' as const },
