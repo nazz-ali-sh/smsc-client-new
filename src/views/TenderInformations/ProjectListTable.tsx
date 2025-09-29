@@ -531,8 +531,8 @@ const KitchenSink = () => {
         onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
       />
       <section className='flex justify-end px-[22px] mt-6 mb-[60px]'>
-        <Button variant='contained' className='bg-buttonPrimary w-[171px]' onClick={openModal}>
-          Shorlisted
+        <Button variant='contained' className='bg-buttonPrimary ' onClick={openModal}>
+          Confirm Selection
         </Button>
       </section>
 
