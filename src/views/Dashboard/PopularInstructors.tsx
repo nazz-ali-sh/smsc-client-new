@@ -180,7 +180,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
               sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '30px', marginTop: '75px' }}
               className=' absolute bottom-[18px] right-2'
             >
-              <CustomTooltip text='View Tender Results' position='left' align='left'>
+              <CustomTooltip text='View Tender Details' position='left' align='left'>
                 <Box
                   sx={{
                     width: '36px',
@@ -376,7 +376,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
               sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px' }}
               className=' absolute bottom-[18px] right-2'
             >
-              <CustomTooltip text='Short List Agent ' position='left' align='left'>
+              <CustomTooltip text='View Shortlisted Agents ' position='left' align='left'>
                 <Box
                   onClick={!stages?.shortlisted?.is_completed ? undefined : () => router.push('/shortlist-agent')}
                   sx={{
@@ -396,7 +396,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                 </Box>
               </CustomTooltip>
 
-              <CustomTooltip text='Blnd tender ' position='left' align='left'>
+              <CustomTooltip text='Shortlist Agents' position='left' align='left'>
                 <Box
                   onClick={!stages?.shortlisted?.is_completed ? undefined : () => router.push('/tender-result')}
                   sx={{
@@ -489,7 +489,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                   marginTop: '14px'
                 }}
               >
-                You’ll be able to invite agents to video calls once you have shortlisted from your results.
+                You’ll be able to invite agents to site visits once you have shortlisted from your results.
               </Typography>
             ) : CallCurrentStage && sinceLastVideoCall == '0' ? (
               <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
@@ -558,7 +558,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                 </Box>
               </CustomTooltip>
 
-              <CustomTooltip text='Schedual New Video call' position='left' align='left'>
+              <CustomTooltip text='Schedule New Video Call' position='left' align='left'>
                 <Box
                   onClick={!stages?.shortlisted?.is_current ? undefined : () => setOnlineCallsModalOpen(true)}
                   sx={{
@@ -695,7 +695,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
               sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px' }}
               className=' absolute bottom-[18px] right-2'
             >
-              <CustomTooltip text='View Tender Results' position='left' align='left'>
+              <CustomTooltip text='View All Site visits' position='left' align='left'>
                 <Box
                   sx={{
                     width: '36px',
@@ -714,7 +714,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                 </Box>
               </CustomTooltip>
 
-              <CustomTooltip text='View All Site Visits' position='left' align='left'>
+              <CustomTooltip text='Appoint Agent' position='left' align='left'>
                 <Box
                   onClick={!stages?.shortlisted?.is_current ? undefined : () => router.push('/invites-side-visits')}
                   sx={{
@@ -735,7 +735,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                   />
                 </Box>
               </CustomTooltip>
-              <CustomTooltip text='Schedual New Site Visits' position='left' align='left'>
+              <CustomTooltip text='Schedule New Site Visits' position='left' align='left'>
                 <Box
                   onClick={!stages?.site_visit?.is_current ? undefined : () => setSiteVisitsModalOpen(true)}
                   sx={{
@@ -810,7 +810,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
               sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px' }}
               className=' absolute bottom-[18px] right-2'
             >
-              <CustomTooltip text='View Final Seletion ' position='left' align='left'>
+              <CustomTooltip text='View Final Selection ' position='left' align='left'>
                 <Box
                   sx={{
                     width: '36px',
