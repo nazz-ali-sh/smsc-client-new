@@ -2,7 +2,9 @@
 
 import React from 'react'
 
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Box } from '@mui/material'
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,Box } from '@mui/material'
+
+import CustomButton from './CustomButton'
 
 type SuccessModalProps = {
   open: boolean
@@ -49,25 +51,15 @@ const SuccessModal = ({
       </DialogContent>
       <DialogActions className='flex justify-between items-center'>
         {cancelButton && (
-          <Button variant='outlined' onClick={onConfirm} disabled={loading} autoFocus>
+          <CustomButton variant='outlined' onClick={onConfirm} disabled={loading} autoFocus>
             {cancelButton}
-          </Button>
+          </CustomButton>
         )}
 
         {onConfirm && (
-          <Button
-            sx={{
-              backgroundColor: 'customColors.ligthBlue',
-              '&:hover': { backgroundColor: 'customColors.ligthBlue' }
-            }}
-            variant='contained'
-            color='primary'
-            onClick={onConfirm}
-            disabled={loading}
-            autoFocus
-          >
+          <CustomButton variant='contained' onClick={onConfirm} disabled={loading} autoFocus>
             {loading ? 'Submitting...' : confirmButtonText}
-          </Button>
+          </CustomButton>
         )}
       </DialogActions>
     </Dialog>

@@ -37,6 +37,7 @@ import { shortlistedPmas } from '@/services/tender_result-apis/tender-result-api
 import CommonModal from '@/common/CommonModal'
 import CustomButton from '@/common/CustomButton'
 import { formatDate, getDaysPassed } from '@/utils/dateFormater'
+import { getLeaseholderTypeLabel } from '@/constants'
 
 interface dashboardResponceprops {
   dashboardResponce?: any
@@ -48,14 +49,25 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
   const [apointAgentModalOpen, setApointAgentModalOpen] = useState(false)
   const [openPmaDropdown, setOpenPmaDropdown] = useState(false)
   const [pmaValue, setpmaValue] = useState('')
+  const [selectedPmaName, setSelectedPmaName] = useState('')
+
+
   const [error, setError] = useState(false)
 
   const handleChange = (event: any) => {
     const newValue = event.target.value
 
     setpmaValue(newValue)
-
     setError(newValue === '')
+
+
+    const selectedPma = finalShortListedResponce?.data?.shortlisted_pma_users?.find(
+      (item: PmaUser) => String(item.id) === String(newValue)
+    )
+
+    if (selectedPma) {
+      setSelectedPmaName(selectedPma.full_name)
+    }
   }
 
   const stages = dashboardResponce?.data?.tender_stage_progress?.stages
@@ -89,6 +101,9 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
 
   const sinceLastSiteVisit = dashboardResponce?.data?.days_since_last_site_visit
   const siteVistCurrentStage = stages?.site_visit?.is_completed
+
+  const shortlistedCurrentStage = stages?.shortlisted?.is_completed
+  const sinceLastshortlisted = dashboardResponce?.data?.days_since_last_shorlisted
 
   const shortlistedCompletedAtDate = stages?.shortlisted?.completed_at
   const daysSinceShortlist = getDaysPassed(shortlistedCompletedAtDate)
@@ -140,7 +155,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                     paddingTop: '2px'
                   }}
                 >
-                  Tender Type: {stages?.went_live?.details?.tender_type}
+                  Tender Type: {getLeaseholderTypeLabel(stages?.went_live?.details?.tender_type)}
                 </Typography>
                 <Typography
                   sx={{
@@ -330,6 +345,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
           </Card>
         </Grid>
 
+        {/* shortlsited */}
         <Grid item xs={12} sm={6} md={4}>
           <Card elevation={0} sx={{ borderRadius: 1, height: '370PX' }} className=' relative'>
             <div className='bg-[#c4edfa] mx-[22px] p-2 rounded-full flex items-center justify-center mt-[24px] size-[44px]'>
@@ -362,7 +378,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                 : 'No shortlisted agents yet'}
             </Typography>
             <Divider sx={{ height: '2px', backgroundColor: '#D9D9D9', my: 1, marginTop: '14px' }} />
-            <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
+            {/* <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
               <Typography
                 sx={{ color: 'customColors.textGray', fontSize: '13px', fontWeight: 400, lineHeight: '22px' }}
               >
@@ -370,7 +386,52 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                   ? '  View Company Information On The Managing Agents You Have Shortlisted'
                   : 'You’ve had your results for X days — shortlist now to move forward.  '}
               </Typography>
-            </CardContent>
+            </CardContent> */}
+
+            {/* new changed */}
+
+            {!shortlistedCurrentStage && sinceLastshortlisted == '0' ? (
+              <Typography
+                sx={{
+                  color: 'customColors.textGray',
+                  fontSize: '13px',
+                  fontWeight: 400,
+                  paddingX: '22px',
+                  marginTop: '14px'
+                }}
+              >
+                Shortlist your preferred agents from the Results tab to unlock this section.
+              </Typography>
+            ) : shortlistedCurrentStage && sinceLastshortlisted == '0' ? (
+              <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
+                <Typography
+                  sx={{
+                    color: 'customColors.textGray',
+                    fontSize: '13px',
+                    fontWeight: 400,
+                    paddingX: '8px',
+                    marginTop: '14px'
+                  }}
+                >
+                  View Company Information On The Managing Agents You Have Shortlisted
+                </Typography>
+              </CardContent>
+            ) : !shortlistedCurrentStage && Number(sinceLastshortlisted) >= 1 ? (
+              <Typography
+                sx={{
+                  color: 'red',
+                  fontSize: '13px',
+                  fontWeight: 400,
+                  marginTop: '15px',
+                  paddingX: '24px'
+                }}
+              >
+                You’ve had your results for X days — shortlist now to move forward.
+              </Typography>
+            ) : (
+              ''
+            )}
+
             <Box
               sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px' }}
               className=' absolute bottom-[18px] right-2'
@@ -501,8 +562,8 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                     marginTop: '14px'
                   }}
                 >
-                  Next Scheduled Call : {stages?.video_call?.details?.upcoming?.date || ''} (
-                  {stages?.video_call?.details?.upcoming?.slot || ''})
+                  Next Scheduled Call : {stages?.video_call?.details?.upcoming?.date || ''}{' '}
+                  {stages?.video_call?.details?.upcoming?.slot && <>({stages?.video_call?.details?.upcoming?.slot})</>}
                 </Typography>
                 <Typography
                   sx={{
@@ -513,8 +574,10 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                     marginTop: '14px'
                   }}
                 >
-                  Last Completed Call : {stages?.video_call?.details?.completed?.date || ''} (
-                  {stages?.video_call?.details?.completed?.slot || ''})
+                  Last Completed Call : {stages?.video_call?.details?.completed?.date || ''}{' '}
+                  {stages?.video_call?.details?.completed?.slot && (
+                    <>({stages?.video_call?.details?.completed?.slot})</>
+                  )}
                 </Typography>
               </CardContent>
             ) : !CallCurrentStage && Number(sinceLastVideoCall) >= 1 ? (
@@ -666,8 +729,8 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                     paddingX: '24px'
                   }}
                 >
-                  Next Scheduled Visit : {stages?.site_visit?.details?.upcoming?.date || ''} (
-                  {stages?.site_visit?.details?.upcoming?.slot || ''})
+                  Next Scheduled Visit : {stages?.site_visit?.details?.upcoming?.date || ''}{' '}
+                  {stages?.site_visit?.details?.upcoming?.slot && <>({stages?.site_visit?.details?.upcoming?.slot})</>}
                 </Typography>
                 <Typography
                   sx={{
@@ -678,8 +741,10 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                     paddingX: '24px'
                   }}
                 >
-                  Last Completed Visit : {stages?.site_visit?.details?.completed?.date || ''} (
-                  {stages?.site_visit?.details?.completed?.slot || ''})
+                  Last Completed Visit : {stages?.site_visit?.details?.completed?.date || ''}{' '}
+                  {stages?.site_visit?.details?.completed?.slot && (
+                    <>({stages?.site_visit?.details?.completed?.slot})</>
+                  )}
                 </Typography>
               </CardContent>
             ) : !siteVistCurrentStage && Number(sinceLastSiteVisit) >= 1 ? (
@@ -783,7 +848,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
               }}
             >
               {stages?.appointment?.details?.appointed_pma_name
-                ? `Agent Name: ${stages?.appointment?.details?.appointed_pma_name}-Date of Appointment`
+                ? `Agent Name: ${stages?.appointment?.details?.appointed_pma_name} Date of Appointment :  ${formatDate(stages?.appointment?.completed_at)}`
                 : 'You can choose an agent after one call or visit is done.'}
             </Typography>
             <Divider sx={{ height: '2px', backgroundColor: '#D9D9D9', my: 1, marginTop: '14px' }} />
@@ -873,6 +938,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
           finalShortListedResponce={finalShortListedResponce?.data?.shortlisted_pma_users}
           pmaSelectedID={pmaValue}
           setpmaValue={setpmaValue}
+          selectedPmaName = {selectedPmaName}
           InviteCompletedCalls={undefined}
         />
 
@@ -883,18 +949,67 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
           maxWidth='sm'
           fullWidth
         >
-          <div className='mt-6'>
-            <FormControl fullWidth error={error}>
-              <InputLabel id='dropdown-label'>Choose Option</InputLabel>
-              <Select labelId='dropdown-label' value={pmaValue} onChange={handleChange}>
-                {finalShortListedResponce?.data?.shortlisted_pma_users?.map((item: PmaUser) => (
-                  <MenuItem key={item.id} value={item.id}>
-                    {item.full_name}
-                  </MenuItem>
-                ))}
-              </Select>
-              {error && <FormHelperText>Please select a value</FormHelperText>}
-            </FormControl>
+          <div className='mt-8'>
+            <Grid item xs={12} sm={12}>
+              <FormControl fullWidth error={error}>
+                <InputLabel
+                  id='dropdown-label'
+                  sx={{
+                    color: '#696969',
+                    '&.Mui-focused': {
+                      color: '#35C0ED'
+                    }
+                  }}
+                >
+                  Choose Pma
+                </InputLabel>
+                <Select
+                  labelId='dropdown-label'
+                  value={pmaValue}
+                  onChange={handleChange}
+                  label='Choose Option'
+                  sx={{
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#696969'
+                    },
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#35C0ED !important'
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#35C0ED !important'
+                    },
+                    '& .MuiSelect-select': {
+                      paddingTop: '8px',
+                      paddingBottom: '8px'
+                    }
+                  }}
+                  MenuProps={{
+                    PaperProps: {
+                      sx: {
+                        '& .MuiMenuItem-root': {
+                          color: '#35C0ED',
+                          backgroundColor: '#26C6F93D',
+                          '&.Mui-selected': {
+                            backgroundColor: '#26C6F93D !important',
+                            color: '#35C0ED !important'
+                          },
+                          '&:hover': {
+                            backgroundColor: '#26C6F93D !important'
+                          }
+                        }
+                      }
+                    }
+                  }}
+                >
+                  {finalShortListedResponce?.data?.shortlisted_pma_users?.map((item: PmaUser) => (
+                    <MenuItem key={item.id} value={item.id}>
+                      {item.full_name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {error && <FormHelperText>Please select a value</FormHelperText>}
+              </FormControl>
+            </Grid>
           </div>
           <div className='mt-8 flex justify-end'>
             <CustomButton

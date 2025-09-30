@@ -345,6 +345,9 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       queryClient.invalidateQueries({
         queryKey: ['dashboardDatas']
       })
+      queryClient.invalidateQueries({
+        queryKey: ['finalAgents']
+      })
       invalidateCache()
       setConfirmationModalOpen(true)
       onClose()

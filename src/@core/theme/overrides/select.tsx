@@ -43,11 +43,43 @@ const select: Theme['components'] = {
       })
     }
   },
+
   MuiNativeSelect: {
     styleOverrides: {
       select: ({ theme }) => ({
         '& + i, & + svg': iconStyles(theme as Theme)
       })
+    }
+  },
+
+  // ✅ MenuItem override
+  MuiMenuItem: {
+    styleOverrides: {
+      root: {
+        '&.Mui-selected': {
+          backgroundColor: '#35C0ED1A !important',
+          color: '#35C0ED !important',
+          '&:hover': {
+            backgroundColor: '#35C0ED33 !important'
+          }
+        }
+      }
+    }
+  },
+
+  // ✅ This fixes the blue highlight on hover/focus
+  MuiListItemButton: {
+    styleOverrides: {
+      root: {
+        '&.Mui-focusVisible': {
+          backgroundColor: '#35C0ED1A !important',
+          color: '#35C0ED !important'
+        },
+        '&:hover': {
+          backgroundColor: '#35C0ED1A !important',
+          color: '#35C0ED !important'
+        }
+      }
     }
   }
 }

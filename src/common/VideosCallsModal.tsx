@@ -229,6 +229,9 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       queryClient.invalidateQueries({
         queryKey: ['dashboardDatas']
       })
+      queryClient.invalidateQueries({
+        queryKey: ['finalAgents']
+      })
       invalidateCache()
       setConfirmationModalOpen(true)
       setOnlineCallsModalOpen(false)
@@ -292,8 +295,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       console.error(error)
     }
   }
-
-  console.log(mainSiteVisitVideoCalls)
 
   const type = 'videoCall'
 
@@ -441,13 +442,14 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
             <i className='ri-close-line' />
           </IconButton>
         </Box>
+
         <Box sx={{ paddingTop: '12px' }}>
           <Divider />
         </Box>
       </DialogTitle>
 
-      <DialogContent sx={{ px: 3, py: 2 }}>
-        <Grid container spacing={6} className='mt-[40px]'>
+      <DialogContent sx={{ px: 3, py: 0 }}>
+        <Grid container spacing={6} className='mt-[20px]'>
           <Grid item xs={12} sm={6}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Box
@@ -527,7 +529,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                     textField: {
                       fullWidth: true,
                       sx: {
-                        // label
                         '& .MuiInputLabel-root': {
                           color: '#35C0ED',
                           '&.Mui-focused': {
@@ -536,14 +537,14 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                         },
                         '& .MuiOutlinedInput-root': {
                           '& .MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#35C0ED'
+                            borderColor: '#35C0ED !important'
                           },
                           '&:hover .MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#35C0ED'
+                            borderColor: 'customColors.ligthBlue'
                           },
                           '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#35C0ED', // force same as label
-                            borderWidth: '2px'
+                            borderColor: '#35C0ED !important', // ✅ force override
+                            borderWidth: 2
                           }
                         }
                       }
@@ -714,7 +715,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
           </Grid>
 
           <Grid item xs={12}>
-            <Typography variant='h6' sx={{ mb: 2, color: 'customColors.ligthBlue', fontWeight: '600' }}>
+            <Typography variant='h6' sx={{ mb: 2, color: '#35C0ED', fontWeight: '600' }}>
               Add Guests
             </Typography>
             <Controller
@@ -736,11 +737,14 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                       variant='outlined'
                       sx={{
                         '& .MuiOutlinedInput-root': {
-                          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                            borderColor: 'customColors.ligthBlue'
+                          '& .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#35C0ED'
                           },
                           '&:hover .MuiOutlinedInput-notchedOutline': {
-                            borderColor: 'customColors.ligthBlue'
+                            borderColor: '#35C0ED'
+                          },
+                          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#35C0ED'
                           }
                         }
                       }}
@@ -756,7 +760,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                           {...tagProps}
                           label={option.pma_number}
                           sx={{
-                            backgroundColor: 'customColors.darkGray',
+                            backgroundColor: '#35C0ED',
                             color: 'white',
                             '& .MuiChip-deleteIcon': { color: 'white' }
                           }}
@@ -764,6 +768,20 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                       )
                     })
                   }
+                  sx={{
+                    "& .MuiAutocomplete-option[aria-selected='true']": {
+                      backgroundColor: '#35C0ED',
+                      color: 'white'
+                    },
+                    '& .MuiAutocomplete-option.Mui-focused': {
+                      backgroundColor: '#35C0ED',
+                      color: 'white'
+                    },
+                    '& .MuiAutocomplete-option:hover': {
+                      backgroundColor: '#35C0ED33', // lighter hover version
+                      color: '#000'
+                    }
+                  }}
                 />
               )}
             />

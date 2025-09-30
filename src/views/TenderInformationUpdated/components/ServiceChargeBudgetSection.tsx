@@ -10,6 +10,7 @@ import type { ServiceChargeBudgetSectionProps } from '../types'
 
 interface ExtendedServiceChargeBudgetSectionProps extends ServiceChargeBudgetSectionProps {
   itemsPerRow?: number
+  type?: any
 }
 
 const ServiceChargeBudgetSection = ({ budgetData, itemsPerRow = 5 }: ExtendedServiceChargeBudgetSectionProps) => {

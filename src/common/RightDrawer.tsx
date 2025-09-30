@@ -13,6 +13,7 @@ import PainPoints from '@/views/TenderInformations/PainPoints'
 import PmaCostbreakdown from '@/views/TenderInformations/PmaCostbreakdown'
 import DrawerWidget from '@/views/TenderInformations/DrawerWidget'
 import ResponceandBio from '@/views/TenderInformations/ResponceandBio'
+import ServiceChargeBudgetSection from '@/views/TenderInformationUpdated/components/ServiceChargeBudgetSection'
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right'
 
@@ -94,7 +95,7 @@ export default function AnchorTemporaryDrawer({
           <section className='mt-[38px]'>
             <PainPoints painPoints={response?.onboarding_answers?.pain_points} />
           </section>
-          {/* <ServiceChargeBudget servicesbudget={drawerData?.service_charge_budget} /> */}
+          <ServiceChargeBudgetSection type = "rightDrawer" budgetData={drawerData?.service_charge_budget} />
           <PmaCostbreakdown pmaCostBreakDown={response?.management_fees} />
 
           <ResponceandBio boi={response?.company_bio?.bio} responce={response?.response_details?.message} />

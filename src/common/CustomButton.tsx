@@ -49,9 +49,9 @@ const CustomButton: React.FC<CustomButtonProps> = ({
       borderColor: 'customColors.ligthBlue'
     },
     '&.Mui-disabled': {
-      backgroundColor: '#26C6F929',
+      backgroundColor: '#c7c7c7',
       color: '#fff',
-      borderColor: '#26C6F929',
+      borderColor: '#c7c7c7',
       opacity: 1
     }
   }

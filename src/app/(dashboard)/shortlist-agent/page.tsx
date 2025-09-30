@@ -58,6 +58,8 @@ export default function Pages() {
     refetchOnWindowFocus: false
   })
 
+  
+
   const { data: rmcShortlistStats } = useQuery<shortListedFinalAgent, Error>({
     queryKey: ['shortlistData', tenderId],
     queryFn: () => getrmcshortlistStats(Number(tenderId)),

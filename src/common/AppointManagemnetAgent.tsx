@@ -35,6 +35,7 @@ interface SiteVisitsModalProps {
   pmaSelectedID?: any
   InviteCompletedCalls: any
   setpmaValue?: any
+  selectedPmaName?: any
 }
 
 interface shortListedFinalAgent {
@@ -64,13 +65,16 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
   finalShortListedResponce,
   pmaSelectedID,
   InviteCompletedCalls,
-  setpmaValue
+  setpmaValue,
+  selectedPmaName
 }) => {
   const theme = useTheme()
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)
   const [feedbacks, setFeedbacks] = useState<{ [key: number]: { feedback: string; noFeedback: boolean } }>({})
   const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
   const reschedual_pma_user_id = (InviteCompletedCalls ?? [])[0]?.pma_user_ids || '0'
+
+  console.log(selectedPmaName)
 
   const queryClient = useQueryClient()
 
@@ -156,7 +160,7 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
 
   const selectedPma =
     finalShortListedResponce?.data?.shortlisted_pmas?.find((pma: any) => pma.pma_user.id === pmaSelectedID)?.pma_user
-      ?.full_name || 'PMA1xxxx'
+      ?.full_name || ''
 
   return (
     <Dialog
@@ -167,7 +171,7 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
       PaperProps={{
         sx: {
           borderRadius: 2,
-          minHeight: '600px',
+          minHeight: '400px',
           paddingX: '24px'
         }
       }}
@@ -186,8 +190,8 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
               Congratulations!
             </Typography>
             <Typography variant='body2' sx={{ paddingTop: '12px' }}>
-              You’ve chosen to appoint {selectedPma} as your new managing agent. They will be thrilled to hear that
-              they’ve been selected to manage your block
+              You’ve chosen to appoint {selectedPma || selectedPmaName} as your new managing agent. They will be
+              thrilled to hear that they’ve been selected to manage your block
             </Typography>
           </Box>
           <IconButton onClick={onClose} size='small' sx={{ mt: -1 }}>
@@ -251,9 +255,9 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
             </Grid>
 
             <Typography sx={{ marginTop: '20px' }}>
-              <span className='font-bold'>{selectedPma}</span> will be in touch very soon to begin getting you set up as
-              their new client. Thank you for using SMSC, and we look forward to supporting you through the transition
-              process!
+              <span className='font-bold'>{selectedPma || selectedPmaName}</span> will be in touch very soon to begin
+              getting you set up as their new client. Thank you for using SMSC, and we look forward to supporting you
+              through the transition process!
             </Typography>
           </section>
         </Grid>

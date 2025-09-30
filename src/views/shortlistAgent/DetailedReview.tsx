@@ -41,6 +41,8 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
   const [pmaSelectedID, setPmaSelectedID] = useState<number | any>()
   const [selectedPma, setSelectedPma] = useState<{ id: number; pma_number: string } | null>(null)
 
+  const extendedCheck = finalShortListedResponce?.data?.shortlisted_pmas[0]?.shortlisting_extended
+
   const shortlistexpiryDate = calculateTimeLeft(
     finalShortListedResponce?.data?.shortlisted_pmas[0]?.shortlisting_expiry_at
   )
@@ -133,15 +135,15 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                   <section className='pb-4 mt-2.5'>
                     <div className='flex space-x-4'>
                       <div
-                        className={`flex items-center space-x-2 px-[15px] py-0 rounded-full ${!company?.video_call_booked && !company?.video_call_booked ? 'bg-[#6969691A]' : 'bg-[#DDF6FE]'} font-semibold `}
+                        className={`flex items-center space-x-2 px-[15px] py-0 rounded-full ${company?.video_call_booked ? 'bg-[#f1f1f1]' : 'bg-[#26C6F929]'} font-semibold `}
                       >
                         <span
-                          className={`w-2 h-2  ${!company?.video_call_booked && !company?.video_call_booked ? 'bg-[#595a5a] ' : 'bg-[#26C6F9]'} rounded-full pt-1`}
+                          className={`w-2 h-2  ${!company?.video_call_booked ? 'bg-[#26C6F9]' : 'bg-[#bbbbbb]'} rounded-full pt-1`}
                         ></span>
                         <span
-                          className={` ${company?.video_call_booked ? 'text-[#26C6F9]' : 'bg-[#6969691A]'} font-medium text-xs `}
+                          className={` ${!company?.video_call_booked ? 'text-[#26C6F9]' : 'text-[#bbbbbb]'} font-medium text-xs `}
                         >
-                          {!company?.video_call_booked && !company?.video_call_booked ? 'Not Contacted' : ' Contacted'}
+                          {!company?.video_call_booked ? 'Not Contacted' : 'Not Contacted'}
                         </span>
                       </div>
 
@@ -149,7 +151,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                         className={`flex items-center space-x-2 px-[15px] py-0 rounded-full ${company?.video_call_booked ? 'bg-[#DDF6FE]' : 'bg-[#6969691A] '}   font-semibold `}
                       >
                         <span
-                          className={`w-2 h-2 ${company?.video_call_booked ? 'bg-[#26C6F9]' : 'bg-[#6969691A] '}  rounded-full pt-1`}
+                          className={`w-2 h-2 ${company?.video_call_booked ? 'bg-[#26C6F9]' : 'bg-[#bbbbbb] '}  rounded-full pt-1`}
                         ></span>
                         <span
                           className={` ${company?.video_call_booked ? 'text-[#26C6F9]' : 'text-[#69696966]'} font-medium text-xs py-1 `}
@@ -162,10 +164,10 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                         className={`flex items-center space-x-2 px-[15px] py-0 rounded-full ${company?.site_visit_booked ? 'bg-[#DDF6FE]' : 'bg-[#6969691A] '} font-semibold `}
                       >
                         <span
-                          className={`w-2 h-2 ${company?.site_visit_booked ? 'bg-[#26C6F9]' : 'bg-[#6969691A]'}  rounded-full pt-1`}
+                          className={`w-2 h-2 ${company?.site_visit_booked ? 'bg-[#26C6F9]' : 'bg-[#bbbbbb]'}  rounded-full pt-1`}
                         ></span>
                         <span
-                          className={` ${company?.site_visit_booked ? 'text-[#26C6F9]' : 'text-[#6969691A]'} font-medium text-xs `}
+                          className={` ${company?.site_visit_booked ? 'text-[#26C6F9]' : 'text-[#69696966]'} font-medium text-xs `}
                         >
                           Visit Arranged
                         </span>
@@ -179,7 +181,11 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                   </Typography>
 
                   <div className='mt-[20px]'>
-                    <CustomButton onClick={() => handleExtendByThree(company?.pma_user?.id)} variant='outlined'>
+                    <CustomButton
+                      disabled={extendedCheck == false}
+                      onClick={() => handleExtendByThree(company?.pma_user?.id)}
+                      variant='outlined'
+                    >
                       Extend by 3 days
                     </CustomButton>
                   </div>

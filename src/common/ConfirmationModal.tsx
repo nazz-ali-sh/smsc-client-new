@@ -8,9 +8,10 @@ import {
   Box,
   IconButton,
   useTheme,
-  Divider,
-  Button
+  Divider, 
 } from '@mui/material'
+
+import CustomButton from './CustomButton'
 
 interface ConfirmationModalProps {
   open: boolean
@@ -59,11 +60,6 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ open, onClose, in
       </DialogTitle>
 
       <DialogContent sx={{ px: 3, py: 2 }}>
-        <Typography variant='body2' sx={{ mb: 3, color: '#333', lineHeight: 1.5 }}>
-          Your video call request has been successfully submitted to the following managing agents. Below is the list of
-          managing agents you have shortlisted.
-        </Typography>
-
         <Box>
           {type === 'videoCall' || type === 'siteVisit' ? (
             <Box>
@@ -133,27 +129,15 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ open, onClose, in
               </Typography>
 
               <Box display='flex' justifyContent='flex-end' gap={2} marginTop='20px'>
-                <Button
-                  sx={{
-                    backgroundColor: 'customColors.ligthBlue',
-                    '&:hover': { backgroundColor: 'customColors.ligthBlue' }
-                  }}
-                  variant='contained'
-                >
+                <CustomButton variant='contained'>
                   <i className='ri-facebook-fill bg-white'></i>
                   Leave Feedback On Google
-                </Button>
+                </CustomButton>
 
-                <Button
-                  sx={{
-                    backgroundColor: 'customColors.ligthBlue',
-                    '&:hover': { backgroundColor: 'customColors.ligthBlue' }
-                  }}
-                  variant='contained'
-                >
+                <CustomButton variant='contained'>
                   <i className='ri-google-fill bg-white'></i>
                   Leave Feedback On Facebook
-                </Button>
+                </CustomButton>
               </Box>
             </Box>
           ) : null}

@@ -12,40 +12,7 @@ const input: Theme['components'] = {
       }
     }
   },
-  MuiInputBase: {
-    styleOverrides: {
-      root: ({ theme }) => ({
-        lineHeight: 1.6,
-        '&.MuiInput-underline': {
-          '&:before': {
-            borderColor: 'var(--mui-palette-customColors-inputBorder)'
-          },
-          '&:not(.Mui-disabled, .Mui-error):hover:before': {
-            borderColor: 'var(--mui-palette-action-active)'
-          },
-          '&.Mui-disabled:before': {
-            borderColor: 'var(--mui-palette-divider)',
-            borderBlockEndStyle: 'solid'
-          },
-          '& + .MuiFormHelperText-root': {
-            marginInline: 0
-          }
-        },
-        '&.Mui-disabled .MuiInputAdornment-root, &.Mui-disabled .MuiInputAdornment-root > *': {
-          color: 'var(--mui-palette-action-disabled)'
-        },
-        '&.MuiAutocomplete-inputRoot:not(.MuiInput-underline)': {
-          paddingInlineStart: `${theme.spacing(4)} !important`
-        }
-      }),
-      inputAdornedStart: {
-        paddingInlineStart: '0 !important'
-      },
-      inputAdornedEnd: {
-        paddingInlineEnd: '0 !important'
-      }
-    }
-  },
+
   MuiFilledInput: {
     styleOverrides: {
       root: ({ theme }) => ({
@@ -81,6 +48,7 @@ const input: Theme['components'] = {
       })
     }
   },
+
   MuiInputLabel: {
     styleOverrides: {
       root: {
@@ -110,6 +78,7 @@ const input: Theme['components'] = {
       }
     }
   },
+
   MuiOutlinedInput: {
     styleOverrides: {
       root: ({ theme }) => ({
@@ -118,6 +87,11 @@ const input: Theme['components'] = {
           '&.MuiInputBase-multiline': {
             padding: theme.spacing(2, 4)
           }
+        },
+
+        // ✅ focused border color
+        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+          borderColor: '#35C0ED !important'
         },
         '&:not(.Mui-focused):not(.Mui-error):not(.Mui-disabled):hover .MuiOutlinedInput-notchedOutline': {
           borderColor: 'var(--mui-palette-action-active)'
@@ -159,6 +133,41 @@ const input: Theme['components'] = {
       }
     }
   },
+  MuiMenuItem: {
+    styleOverrides: {
+      root: {
+        '&.Mui-selected': {
+          backgroundColor: '#35C0ED1A', // light background tint
+          color: '#35C0ED',
+          '&:hover': {
+            backgroundColor: '#35C0ED33'
+          }
+        },
+        '&:hover': {
+          backgroundColor: '#35C0ED1A',
+          color: '#35C0ED'
+        }
+      }
+    }
+  },
+  MuiListItemButton: {
+    styleOverrides: {
+      root: {
+        '&.Mui-selected': {
+          backgroundColor: '#35C0ED1A',
+          color: '#35C0ED',
+          '&:hover': {
+            backgroundColor: '#35C0ED33'
+          }
+        },
+        '&:hover': {
+          backgroundColor: '#35C0ED1A',
+          color: '#35C0ED'
+        }
+      }
+    }
+  },
+
   MuiInputAdornment: {
     styleOverrides: {
       root: {
