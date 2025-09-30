@@ -9,6 +9,7 @@ import { Box, Card, CardContent, Typography, Grid } from '@mui/material'
 import { iconMap } from '@/common/data'
 import ServiceChargeBudgetSection from '@/views/TenderInformationUpdated/components/ServiceChargeBudgetSection'
 import { useTenderDetail } from '@/hooks/useTenderDetail'
+import successVisit from '../../../../public/images/customImages/sucess.svg'
 
 interface FinalSelectionResponse {
   finalSelection?: any
@@ -20,34 +21,38 @@ const ProjectMetrics: React.FC<FinalSelectionResponse> = ({ finalSelection }) =>
   const metrics: Array<{
     title: string
     value: string
-    icon: string
-    color: string
+    icon: string | React.ReactNode
+    backgroundColor: string
+    iconColor: string
   }> = [
     {
       title: 'No. of Units Managed',
       value: `${finalSelection?.data?.company_details?.avg_units_per_manager} Properties`,
-      icon: 'ri-building-line',
-      color: '#4CAF50'
+      icon: <Image src={successVisit} alt='success Visit' />,
+      backgroundColor: '#E3F9D4',
+      iconColor: '#4CAF50'
     },
     {
       title: 'Quotation',
       value: `$ ${finalSelection?.data?.company_details?.avg_units_per_manager} `,
       icon: 'ri-money-dollar-circle-line',
-      color: '#2196F3'
+      backgroundColor: '#CBEFFB',
+      iconColor: '#5BCCF0'
     },
     {
       title: 'Trading Years',
       value: `${finalSelection?.data?.company_details?.trading_years} Years`,
-      icon: 'ri-time-line',
-      color: '#FF9800'
+      icon: 'ri-calendar-check-fill',
+      backgroundColor: '#666CFF3D',
+      iconColor: '#666CFF'
     }
   ]
 
   return (
     <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <CardContent sx={{ flexGrow: 1 }}>
-        <Box sx={{ mb: 4 }}>
-          <Box sx={{ mb: 4, paddingTop: '10px' }}>
+        <Box>
+          <Box sx={{ paddingTop: '10px' }}>
             <Grid container spacing={4}>
               {metrics.map((metric, index) => (
                 <Grid item xs={12} sm={4} key={index}>
@@ -62,23 +67,30 @@ const ProjectMetrics: React.FC<FinalSelectionResponse> = ({ finalSelection }) =>
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            backgroundColor: `${metric.color}15`,
-                            border: `1px solid ${metric.color}30`
+                            backgroundColor: metric.backgroundColor,
+                            border: `1px solid ${metric.iconColor}30`
                           }}
                         >
-                          <i
-                            className={metric.icon}
-                            style={{
-                              fontSize: 24,
-                              color: metric.color
-                            }}
-                          />
+                          {typeof metric.icon === 'string' ? (
+                            <i
+                              className={metric.icon}
+                              style={{
+                                fontSize: 24,
+                                color: metric.iconColor
+                              }}
+                            />
+                          ) : (
+                            metric.icon
+                          )}
                         </Box>
                         <Box>
-                          <Typography variant='body2' sx={{ mb: 1, fontSize: '0.875rem' }}>
+                          <Typography
+                            variant='body2'
+                            sx={{ mb: 1, fontSize: '18px', color: '#262B43E5', fontWeight: 500 }}
+                          >
                             {metric.title}
                           </Typography>
-                          <Typography variant='h5' sx={{ fontWeight: 500, fontSize: 15 }}>
+                          <Typography variant='h5' sx={{ fontWeight: 400, fontSize: '15px', color: '#262B43B2' }}>
                             {metric.value}
                           </Typography>
                         </Box>
@@ -91,7 +103,7 @@ const ProjectMetrics: React.FC<FinalSelectionResponse> = ({ finalSelection }) =>
           </Box>
         </Box>
       </CardContent>
-      
+
       <Box sx={{ marginX: 6 }}>
         <ServiceChargeBudgetSection budgetData={tenderDetailData?.service_charge_budget} itemsPerRow={3} />
       </Box>

@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 
-import { Card, TablePagination, Checkbox, Button, Rating, Stack, Typography } from '@mui/material'
+import { Card, TablePagination, Checkbox, Rating, Stack, Typography } from '@mui/material'
 import classnames from 'classnames'
 import {
   useReactTable,
@@ -533,9 +533,13 @@ const KitchenSink = () => {
         onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
       />
       <section className='flex justify-end px-[22px] mt-6 mb-[60px]'>
-        <Button variant='contained' className='bg-buttonPrimary ' onClick={openModal}>
+        <CustomButton
+          variant='contained'
+          onClick={openModal}
+          disabled={table.getSelectedRowModel().rows.length === 0 && selectedAgentId.length === 0}
+        >
           Confirm Selection
-        </Button>
+        </CustomButton>
       </section>
 
       <SuccessModal
@@ -631,7 +635,7 @@ const KitchenSink = () => {
             <Typography variant='h6' className='font-semibold text-[#696969] mb-1 mt-2'>
               Overview:
             </Typography>
-            <Typography variant='body2' className='text-[#696969] mb-3'>
+            <Typography variant='body2' className='text-[#696969] mb-3 leading-[22px]'>
               A summary showing each agent's location, company size, and proposed overall management fee for a
               high-level comparison.
             </Typography>
@@ -641,7 +645,7 @@ const KitchenSink = () => {
             <Typography variant='h6' className='font-semibold text-[#696969] mb-1 mt-4'>
               Quote Breakdown:
             </Typography>
-            <Typography variant='body2' className='text-[#696969] mb-3 text-xs'>
+            <Typography variant='body2' className='text-[#696969] mb-3 text-xs leading-[22px]'>
               A table displaying what each agent would charge for each line item in the service charge budget, allowing
               you to see cost differences and understand how each agent structures their pricing.
             </Typography>
@@ -651,7 +655,7 @@ const KitchenSink = () => {
             <Typography variant='h6' className='font-semibold text-[#696969] mb-2'>
               Agent Responses:
             </Typography>
-            <Typography variant='body2' className='text-[#696969] mb-3 text-xs'>
+            <Typography variant='body2' className='text-[#696969] mb-3 text-xs leading-[22px]'>
               Each agent provides a 250-word company bio covering their identity, experience, and suitability, along
               with a tailored response to your specific tender, outlining their approach to managing your block.
             </Typography>

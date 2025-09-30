@@ -93,8 +93,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
   defaultmultiselect,
   types,
   componentTypes,
-  calanderReschedualData,
-  setOnlineCallsModalOpen
+  calanderReschedualData
 }) => {
   const theme = useTheme()
   const [dayId, setDayId] = useState('')
@@ -234,7 +233,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       })
       invalidateCache()
       setConfirmationModalOpen(true)
-      setOnlineCallsModalOpen(false)
+
       setSlotError('')
     },
     onError: (error: any) => {

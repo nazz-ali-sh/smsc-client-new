@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,Box } from '@mui/material'
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Box } from '@mui/material'
 
 import CustomButton from './CustomButton'
 
@@ -56,11 +56,13 @@ const SuccessModal = ({
           </CustomButton>
         )}
 
-        {onConfirm && (
-          <CustomButton variant='contained' onClick={onConfirm} disabled={loading} autoFocus>
-            {loading ? 'Submitting...' : confirmButtonText}
-          </CustomButton>
-        )}
+        <div className='flex justify-end w-full'>
+          {onConfirm && (
+            <CustomButton variant='contained' onClick={onConfirm} disabled={loading} autoFocus>
+              {loading ? 'Submitting...' : confirmButtonText}
+            </CustomButton>
+          )}
+        </div>
       </DialogActions>
     </Dialog>
   )

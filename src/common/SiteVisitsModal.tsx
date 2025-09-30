@@ -278,7 +278,8 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
 
       reset()
       setSuccessOpen(true)
-      setSiteVisitsModalOpen(false)
+
+      // setSiteVisitsModalOpen(false)
     },
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || error?.message || 'Failed to send invite'
@@ -350,7 +351,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       })
       invalidateCache()
       setConfirmationModalOpen(true)
-      onClose()
     },
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || error?.message || 'Failed to send invite'

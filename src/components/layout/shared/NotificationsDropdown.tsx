@@ -172,7 +172,7 @@ const NotificationDropdown = ({ notifications }: { notifications: NotificationsT
 
   return (
     <>
-      <IconButton ref={anchorRef} onClick={handleToggle} className='text-textPrimary'>
+      <IconButton disabled ref={anchorRef} onClick={handleToggle} className='text-textPrimary'>
         <Badge
           color='error'
           className='cursor-pointer'

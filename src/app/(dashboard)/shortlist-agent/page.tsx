@@ -58,8 +58,6 @@ export default function Pages() {
     refetchOnWindowFocus: false
   })
 
-  
-
   const { data: rmcShortlistStats } = useQuery<shortListedFinalAgent, Error>({
     queryKey: ['shortlistData', tenderId],
     queryFn: () => getrmcshortlistStats(Number(tenderId)),
@@ -72,20 +70,20 @@ export default function Pages() {
       id: 0,
       state: rmcShortlistStats?.data?.scheduled_calls,
       icons: <i className='ri-customer-service-2-line'></i>,
-      descrption: 'Schedule Calls'
+      descrption: 'Scheduled Calls'
     },
     {
       id: 1,
       icons: <i className='ri-phone-line'></i>,
       state: rmcShortlistStats?.data?.completed_calls,
-      descrption: 'Complete Calls'
+      descrption: 'Completed Calls'
     },
 
     {
       id: 2,
       icons: <i className='ri-map-pin-2-line'></i>,
       state: rmcShortlistStats?.data?.scheduled_visits,
-      descrption: 'Schedule Visits'
+      descrption: 'Scheduled Visits'
     },
 
     {
