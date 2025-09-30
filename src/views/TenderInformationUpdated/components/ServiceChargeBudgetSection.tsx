@@ -10,10 +10,10 @@ import type { ServiceChargeBudgetSectionProps } from '../types'
 
 interface ExtendedServiceChargeBudgetSectionProps extends ServiceChargeBudgetSectionProps {
   itemsPerRow?: number
-  type?: any
+  sx?: object
 }
 
-const ServiceChargeBudgetSection = ({ budgetData, itemsPerRow = 5 }: ExtendedServiceChargeBudgetSectionProps) => {
+const ServiceChargeBudgetSection = ({ budgetData, itemsPerRow = 5, sx }: ExtendedServiceChargeBudgetSectionProps) => {
   const hasAllRequiredFields = () => {
     if (!budgetData) return false
 
@@ -97,7 +97,18 @@ const ServiceChargeBudgetSection = ({ budgetData, itemsPerRow = 5 }: ExtendedSer
 
   return (
     <Box sx={{ marginBottom: 4 }}>
-      <Typography sx={{ fontWeight: 700, fontSize: '24px', color: 'customColors.darkGray1', marginTop: 10 }}>
+      <Typography
+        sx={
+          sx
+            ? sx
+            : {
+                fontWeight: 700,
+                fontSize: '24px',
+                color: 'customColors.darkGray1',
+                marginTop: 10
+              }
+        }
+      >
         Service Charge Budget
       </Typography>
 

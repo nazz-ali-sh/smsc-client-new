@@ -113,21 +113,22 @@ const KitchenSink = () => {
 
   const downloadMutation = useMutation<Blob, Error, { id: number; open?: boolean }>({
     mutationFn: async ({ id }) => {
-      return await downloadBlindTenderPdf(id)
+      return await downloadBlindTenderPdf(id) // always gets Blob from backend
     },
     onSuccess: (data, variables) => {
       const blob = new Blob([data], { type: 'application/pdf' })
       const url = window.URL.createObjectURL(blob)
 
-      // Always download
-      const link = document.createElement('a')
-
-      link.href = url
-      link.download = `tender_${variables.id}.pdf`
-      link.click()
-
       if (variables.open) {
-        window.open(url, '_blank')
+        // ----------- VIEW ONLINE -----------
+        window.open(url, '_blank') // just open, no download
+      } else {
+        // ----------- DOWNLOAD -----------
+        const link = document.createElement('a')
+
+        link.href = url
+        link.download = `tender_${variables.id}.pdf`
+        link.click()
       }
 
       window.URL.revokeObjectURL(url)
@@ -411,25 +412,13 @@ const KitchenSink = () => {
         </section>
         <section className='flex flex-col py-[12px]'>
           <div className='pb-[12px]'>
-            <CustomButton
-              variant='contained'
-              className='!bg-[#35C0ED] w-[280px]'
-              onClick={() => downloadMutation.mutate({ id: tender_id, open: true })}
-              disabled={downloadMutation.isPending}
-            >
-              <i className='ri-eye-line bg-white size-[18px] pr-[5px]'></i>
-              <span className='pl-[5px]'>{'View Results Online'}</span>
+            <CustomButton sx={{ width: '100%' }} onClick={() => downloadMutation.mutate({ id: tender_id, open: true })}>
+              View Results Online
             </CustomButton>
           </div>
           <div>
-            <CustomButton
-              variant='contained'
-              className='!bg-[#35C0ED] w-[280px]'
-              onClick={() => downloadMutation.mutate({ id: tender_id })}
-              disabled={downloadMutation.isPending}
-            >
-              <i className='ri-download-2-fill bg-white size-[18px] pr-[5px]'></i>
-              <span className='pl-[5px]'>{'Download Tender Response'}</span>
+            <CustomButton onClick={() => downloadMutation.mutate({ id: tender_id })}>
+              Download Tender Response
             </CustomButton>
           </div>
         </section>

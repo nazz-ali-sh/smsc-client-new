@@ -61,7 +61,7 @@ export const apiEndpoints = {
 
   selectShortListpma: () => 'rmc/pma-shortlist',
 
-  finalShortList: (id: number) => `rmc/shortlisted-pmas/${id}`,
+  finalShortList: (id: number) => `rmc/shortlist/details/${id}`,
 
   // shortlist
 

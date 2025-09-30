@@ -95,7 +95,17 @@ export default function AnchorTemporaryDrawer({
           <section className='mt-[38px]'>
             <PainPoints painPoints={response?.onboarding_answers?.pain_points} />
           </section>
-          <ServiceChargeBudgetSection type = "rightDrawer" budgetData={drawerData?.service_charge_budget} />
+
+          <ServiceChargeBudgetSection
+            budgetData={drawerData?.service_charge_budget}
+            sx={{
+              fontWeight: 700,
+              fontSize: '18px',
+              color: '#262B43E5',
+              paddingTop: '8px'
+            }}
+          />
+
           <PmaCostbreakdown pmaCostBreakDown={response?.management_fees} />
 
           <ResponceandBio boi={response?.company_bio?.bio} responce={response?.response_details?.message} />

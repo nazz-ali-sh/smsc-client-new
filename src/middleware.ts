@@ -2,7 +2,6 @@ import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
 const protectedRoutes = [
-  '/home',
   '/dashboard',
   '/rmc-onboarding-postcode',
   '/rmc-onboarding-address',

@@ -1,15 +1,6 @@
 import React from 'react'
 
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Typography,
-  Box,
-  IconButton,
-  useTheme,
-  Divider, 
-} from '@mui/material'
+import { Dialog, DialogTitle, DialogContent, Typography, Box, IconButton, useTheme, Divider } from '@mui/material'
 
 import CustomButton from './CustomButton'
 
@@ -130,12 +121,12 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ open, onClose, in
 
               <Box display='flex' justifyContent='flex-end' gap={2} marginTop='20px'>
                 <CustomButton variant='contained'>
-                  <i className='ri-facebook-fill bg-white'></i>
+                  <i className='ri-google-fill bg-white'></i>
                   Leave Feedback On Google
                 </CustomButton>
 
                 <CustomButton variant='contained'>
-                  <i className='ri-google-fill bg-white'></i>
+                  <i className='ri-facebook-fill bg-white'></i>
                   Leave Feedback On Facebook
                 </CustomButton>
               </Box>

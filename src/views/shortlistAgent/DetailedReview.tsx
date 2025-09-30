@@ -182,7 +182,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
 
                   <div className='mt-[20px]'>
                     <CustomButton
-                      disabled={extendedCheck == false}
+                      disabled={!extendedCheck == false}
                       onClick={() => handleExtendByThree(company?.pma_user?.id)}
                       variant='outlined'
                     >

@@ -17,9 +17,7 @@ interface PainPointsSectionProps {
 const PainPoints: React.FC<PainPointsSectionProps> = ({ painPoints }) => {
   return (
     <>
-      <Typography variant='h3' className='text-darkblue text-[18px]'>
-        RMC Pain points
-      </Typography>
+      <Typography className='text-[#262B43E5] font-bold  text-[18px]'>RMC Pain points</Typography>
 
       <Box sx={{ marginBottom: 15, marginTop: '34px' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, marginTop: '18px' }}>

@@ -74,7 +74,6 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
   const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
   const reschedual_pma_user_id = (InviteCompletedCalls ?? [])[0]?.pma_user_ids || '0'
 
-  console.log(selectedPmaName)
 
   const queryClient = useQueryClient()
 

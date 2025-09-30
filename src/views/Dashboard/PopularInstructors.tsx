@@ -51,7 +51,6 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
   const [pmaValue, setpmaValue] = useState('')
   const [selectedPmaName, setSelectedPmaName] = useState('')
 
-
   const [error, setError] = useState(false)
 
   const handleChange = (event: any) => {
@@ -59,7 +58,6 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
 
     setpmaValue(newValue)
     setError(newValue === '')
-
 
     const selectedPma = finalShortListedResponce?.data?.shortlisted_pma_users?.find(
       (item: PmaUser) => String(item.id) === String(newValue)
@@ -119,7 +117,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
             <Typography
               sx={{
                 fontSize: '30px',
-                color: 'customColors.darkGray1',
+                color: stages?.went_live?.is_completed ? 'customColors.darkGray1' : 'customColors.textGray',
                 paddingTop: '8px',
                 paddingX: '22px',
                 fontWeight: 500
@@ -225,7 +223,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
             <Typography
               sx={{
                 fontSize: '30px',
-                color: 'customColors.darkGray1',
+                color: stages?.result_received?.is_completed ? 'customColors.darkGray1' : 'customColors.textGray',
                 paddingTop: '8px',
                 paddingX: '22px',
                 fontWeight: 500
@@ -356,7 +354,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
             <Typography
               sx={{
                 fontSize: '30px',
-                color: 'customColors.darkGray1',
+                color: stages?.shortlisted?.is_completed ? 'customColors.darkGray1' : 'customColors.textGray',
                 paddingTop: '8px',
                 paddingX: '22px',
                 fontWeight: 500
@@ -378,18 +376,6 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                 : 'No shortlisted agents yet'}
             </Typography>
             <Divider sx={{ height: '2px', backgroundColor: '#D9D9D9', my: 1, marginTop: '14px' }} />
-            {/* <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
-              <Typography
-                sx={{ color: 'customColors.textGray', fontSize: '13px', fontWeight: 400, lineHeight: '22px' }}
-              >
-                {stages?.shortlisted?.is_completed == true
-                  ? '  View Company Information On The Managing Agents You Have Shortlisted'
-                  : 'You’ve had your results for X days — shortlist now to move forward.  '}
-              </Typography>
-            </CardContent> */}
-
-            {/* new changed */}
-
             {!shortlistedCurrentStage && sinceLastshortlisted == '0' ? (
               <Typography
                 sx={{
@@ -489,7 +475,9 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
             <Typography
               sx={{
                 fontSize: '30px',
-                color: 'customColors.darkGray1',
+
+                // color: 'customColors.darkGray1',
+                color: stages?.video_call?.is_current ? 'customColors.darkGray1' : 'customColors.textGray',
                 paddingTop: '8px',
                 paddingX: '22px',
                 fontWeight: 500
@@ -656,7 +644,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
             <Typography
               sx={{
                 fontSize: '30px',
-                color: 'customColors.darkGray1',
+                color: stages?.site_visit?.is_current ? 'customColors.darkGray1' : 'customColors.textGray',
                 paddingTop: '8px',
                 paddingX: '22px',
                 fontWeight: 500
@@ -780,7 +768,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
 
               <CustomTooltip text='Appoint Agent' position='left' align='left'>
                 <Box
-                  onClick={!stages?.shortlisted?.is_current ? undefined : () => router.push('/invites-side-visits')}
+                  onClick={!stages?.shortlisted?.is_current ? undefined : () => router.push('/invites-site-visits')}
                   sx={{
                     width: '36px',
                     height: '36px',
@@ -795,7 +783,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
                   <Image
                     src={stages?.site_visit?.is_current ? personTodo : personWhiteIcon}
                     alt='personTodo'
-                    className={`w-[14px] h-[14px] text-[#26C6F9]   `}
+                    className={`w-[14px] h-[14px] text-[#26C6F9]`}
                   />
                 </Box>
               </CustomTooltip>
@@ -830,7 +818,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
             <Typography
               sx={{
                 fontSize: '30px',
-                color: 'customColors.darkGray1',
+                color: stages?.appointment?.is_current ? 'customColors.darkGray1' : 'customColors.textGray',
                 paddingTop: '8px',
                 paddingX: '22px',
                 fontWeight: 500
@@ -848,7 +836,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
               }}
             >
               {stages?.appointment?.details?.appointed_pma_name
-                ? `Agent Name: ${stages?.appointment?.details?.appointed_pma_name} Date of Appointment :  ${formatDate(stages?.appointment?.completed_at)}`
+                ? `Agent Name: ${stages?.appointment?.details?.appointed_pma_name} Date of Appointment :  ${formatDate(stages?.appointment?.completed_at) == null ? '' : formatDate(stages?.appointment?.completed_at)}`
                 : 'You can choose an agent after one call or visit is done.'}
             </Typography>
             <Divider sx={{ height: '2px', backgroundColor: '#D9D9D9', my: 1, marginTop: '14px' }} />
@@ -876,6 +864,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
             >
               <CustomTooltip text='View Final Selection ' position='left' align='left'>
                 <Box
+                  onClick={!stages?.appointment?.is_current ? undefined : () => router.push('/final-selection')}
                   sx={{
                     width: '36px',
                     height: '36px',
@@ -938,7 +927,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
           finalShortListedResponce={finalShortListedResponce?.data?.shortlisted_pma_users}
           pmaSelectedID={pmaValue}
           setpmaValue={setpmaValue}
-          selectedPmaName = {selectedPmaName}
+          selectedPmaName={selectedPmaName}
           InviteCompletedCalls={undefined}
         />
 

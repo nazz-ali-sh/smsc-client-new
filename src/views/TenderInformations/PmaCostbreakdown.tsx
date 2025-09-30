@@ -6,16 +6,14 @@ import { Typography, Box, Grid } from '@mui/material'
 
 import { iconMap } from '@/common/data'
 
-interface pmaCostBreakDown{
-    pmaCostBreakDown?: any
+interface pmaCostBreakDown {
+  pmaCostBreakDown?: any
 }
 
 const PmaCostbreakdown: React.FC<pmaCostBreakDown> = ({ pmaCostBreakDown }) => {
   return (
     <>
-      <Typography variant='h3' className='text-darkblue pt-[34px] text-[18px]'>
-        Cost breakdown
-      </Typography>
+      <Typography className='text-[#262B43E5] pt-[34px] font-bold text-[18px]'>Cost breakdown</Typography>
       <section className='flex flex-wrap pt-[28px]'>
         {pmaCostBreakDown?.map((feeItem: any, feeIndex: any) => (
           <Grid item xs={12} sm={6} md={4} key={feeIndex} className='w-[240px]'>

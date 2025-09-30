@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+import { clearTokenCookie } from '@/utils/tokenSync'
+
 const TENDER_ID = '63168138167'
 
 const axiosClient = axios.create({
@@ -52,6 +54,19 @@ axiosClient.interceptors.request.use(
 axiosClient.interceptors.response.use(
   response => response,
   error => {
+    if (error.response?.status === 401) {
+      console.log('🚪 401 Unauthorized - Logging out user')
+
+      clearTokenCookie()
+
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('persist:root')
+        sessionStorage.clear()
+
+        window.location.href = '/login'
+      }
+    }
+
     return Promise.reject(error)
   }
 )
