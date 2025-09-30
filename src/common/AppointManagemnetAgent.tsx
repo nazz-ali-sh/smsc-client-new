@@ -36,6 +36,7 @@ interface SiteVisitsModalProps {
   InviteCompletedCalls: any
   setpmaValue?: any
   selectedPmaName?: any
+  companyNames?: any
 }
 
 interface shortListedFinalAgent {
@@ -66,14 +67,14 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
   pmaSelectedID,
   InviteCompletedCalls,
   setpmaValue,
-  selectedPmaName
+  selectedPmaName,
+  companyNames
 }) => {
   const theme = useTheme()
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)
   const [feedbacks, setFeedbacks] = useState<{ [key: number]: { feedback: string; noFeedback: boolean } }>({})
   const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
   const reschedual_pma_user_id = (InviteCompletedCalls ?? [])[0]?.pma_user_ids || '0'
-
 
   const queryClient = useQueryClient()
 
@@ -160,6 +161,11 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
   const selectedPma =
     finalShortListedResponce?.data?.shortlisted_pmas?.find((pma: any) => pma.pma_user.id === pmaSelectedID)?.pma_user
       ?.full_name || ''
+
+  const handleClose = () => {
+    setConfirmationModalOpen(false)
+    onClose()
+  }
 
   return (
     <Dialog
@@ -275,11 +281,9 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
       <ConfirmationModal
         type={type}
         open={confirmationModalOpen}
-        onClose={() => {
-          setConfirmationModalOpen(false)
-          onClose()
-        }}
+        onClose={handleClose}
         inviteData={[]}
+        selectcomapny={companyNames}
       />
     </Dialog>
   )

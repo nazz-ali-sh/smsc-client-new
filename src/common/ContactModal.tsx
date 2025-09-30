@@ -5,10 +5,12 @@ import { Dialog, DialogTitle, DialogContent, Typography, Box, IconButton, useThe
 interface ToolTipModalProps {
   open: boolean
   onClose: () => void
+  companyName?: any
 }
 
-const ContactModal: React.FC<ToolTipModalProps> = ({ open, onClose }) => {
+const ContactModal: React.FC<ToolTipModalProps> = ({ open, onClose, companyName }) => {
   const theme = useTheme()
+  const companyNames = companyName[0]?.company_details?.name || ''
 
   return (
     <Dialog
@@ -18,7 +20,7 @@ const ContactModal: React.FC<ToolTipModalProps> = ({ open, onClose }) => {
       PaperProps={{
         sx: {
           borderRadius: 2,
-          minHeight: '400px',
+          minHeight: '300px',
           paddingX: '24px',
           width: '1200px'
         }
@@ -61,14 +63,14 @@ const ContactModal: React.FC<ToolTipModalProps> = ({ open, onClose }) => {
                 fontSize: '0.875rem'
               }}
             >
-              Recommended Next steps
+              {companyNames ? companyNames : 'No data found'}
             </Box>
 
             <>
               <Box
                 sx={{
                   borderTop: 'none',
-                  padding: '12px'
+                  paddingTop: '12px'
                 }}
               >
                 <Typography variant='body2' sx={{ mb: 0.5, fontWeight: '500', fontSize: '0.875rem' }}>

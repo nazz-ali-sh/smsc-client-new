@@ -9,20 +9,22 @@ interface ConfirmationModalProps {
   onClose: () => void
   type: string
   inviteData: any[]
+  selectcomapny?: any
 }
 
-const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ open, onClose, inviteData, type }) => {
+const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ open, onClose, inviteData, type, selectcomapny }) => {
   const theme = useTheme()
+
 
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={() => onClose()}
       maxWidth='md'
       PaperProps={{
         sx: {
           borderRadius: 2,
-          minHeight: '400px',
+          minHeight: '350px',
           paddingX: '24px',
           width: '700px'
         }
@@ -105,9 +107,16 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ open, onClose, in
             </Box>
           ) : type === 'appointAgent' ? (
             <Box>
-              <Typography variant='body2' sx={{ fontSize: '0.875rem', marginBottom: '10px' }}>
-                Home Block Management Have Been Notified & Will Be In Touch With You Very Shortly.
-              </Typography>
+              {selectcomapny?.map((item: any, index: React.Key | null | undefined) => {
+                return (
+                  <>
+                    <Typography key={index} variant='body2' sx={{ fontSize: '0.875rem', marginBottom: '10px' }}>
+                      <span className='font-bold'>{item || ''}</span> Have Been Notified & Will Be In Touch With You
+                      Very Shortly.
+                    </Typography>
+                  </>
+                )
+              })}
 
               <Typography variant='body2' sx={{ fontSize: '0.875rem', marginBottom: '10px' }}>
                 We hope you found our service valuable and would appreciate any feedback to help us continue improving
@@ -119,7 +128,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ open, onClose, in
                 Alternatively, feel free to leave us a review on Google or Facebook.
               </Typography>
 
-              <Box display='flex' justifyContent='flex-end' gap={2} marginTop='20px'>
+              <Box display='flex' justifyContent='flex-end' gap={3} marginTop='20px'>
                 <CustomButton variant='contained'>
                   <i className='ri-google-fill bg-white'></i>
                   Leave Feedback On Google

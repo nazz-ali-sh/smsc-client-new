@@ -96,6 +96,8 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
     })
   }
 
+  const companyNames = finalShortListedResponce?.data?.shortlisted_pmas?.map((item: { company_details: { name: any } }) => item?.company_details?.name) || []
+
   return (
     <>
       <div className='pb-[70px]'>
@@ -290,9 +292,14 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
             finalShortListedResponce={finalShortListedResponce}
             pmaSelectedID={pmaSelectedID}
             InviteCompletedCalls={undefined}
+            companyNames = {companyNames}
           />
 
-          <ContactModal onClose={() => setContactModalOpen(false)} open={contactModalOpen} />
+          <ContactModal
+            onClose={() => setContactModalOpen(false)}
+            open={contactModalOpen}
+            companyName={finalShortListedResponce?.data?.shortlisted_pmas}
+          />
 
           <ShortListAgent
             open={shortlistedModalOpen}
