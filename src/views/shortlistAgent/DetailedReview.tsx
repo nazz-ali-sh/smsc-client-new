@@ -28,6 +28,7 @@ import ContactModal from '@/common/ContactModal'
 import { rmcsendContactpma } from '@/services/tender_result-apis/tender-result-api'
 import demePfd from '../../../public/images/dashboardImages/demePdfImage.png'
 import CustomButton from '@/common/CustomButton'
+import CustomTooltip from '@/common/CustomTooltip'
 import { calculateTimeLeft } from '@/utils/dateFormater'
 
 const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce: any }) => {
@@ -235,24 +236,30 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
               </div>
 
               <section className='flex flex-col space-y-4'>
-                <Image
-                  src={videoCalls}
-                  alt='videocalls'
-                  className='cursor-pointer'
-                  onClick={() => handleVideoCallClick(company)}
-                />
-                <Image
-                  src={visitLocation}
-                  alt='location'
-                  className='cursor-pointer'
-                  onClick={() => handleSiteVisitclick(company)}
-                />
-                <Image
-                  src={phoneCalls}
-                  alt='phoneCalls'
-                  className='cursor-pointer'
-                  onClick={() => handlecontactAgent(company?.pma_user?.id)}
-                />
+                <CustomTooltip text='Invite to Video Call ' position='left' align='center'>
+                  <Image
+                    src={videoCalls}
+                    alt='videocalls'
+                    className='cursor-pointer'
+                    onClick={() => handleVideoCallClick(company)}
+                  />
+                </CustomTooltip>
+                <CustomTooltip text='Invite to Site Visit' position='left' align='center'>
+                  <Image
+                    src={visitLocation}
+                    alt='location'
+                    className='cursor-pointer'
+                    onClick={() => handleSiteVisitclick(company)}
+                  />
+                </CustomTooltip>
+                <CustomTooltip text='Request a Call Back' position='left' align='center'>
+                  <Image
+                    src={phoneCalls}
+                    alt='phoneCalls'
+                    className='cursor-pointer'
+                    onClick={() => handlecontactAgent(company?.pma_user?.id)}
+                  />
+                </CustomTooltip>
               </section>
             </section>
           ))}

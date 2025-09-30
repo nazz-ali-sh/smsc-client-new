@@ -2,6 +2,8 @@
 
 import { Box, Card, CardContent, Grid, Typography } from '@mui/material'
 
+import { useArchiveData } from '@/hooks/useArchiveData'
+
 interface SummaryCardProps {
   title: string
   count: string
@@ -43,6 +45,9 @@ const SummaryCardsDetails: React.FC<SummaryCardProps> = ({ title, count, iconCla
 )
 
 const SummaryCards: React.FC<SummaryStatus> = ({ tenderStatusdetails }) => {
+  const { archiveListData } = useArchiveData({ filter: 'appoint' })
+  const dataToUse = tenderStatusdetails || archiveListData
+
   return (
     <Card sx={{ p: 2 }}>
       <div className='mb-3 px-[25px]'>
@@ -63,7 +68,7 @@ const SummaryCards: React.FC<SummaryStatus> = ({ tenderStatusdetails }) => {
           <Grid item xs={12} sm={6} md={2.4}>
             <SummaryCardsDetails
               title='Total Archived'
-              count={`${tenderStatusdetails?.data?.totals?.total_archived | 0} Tenders`}
+              count={`${dataToUse?.data?.totals?.total_archived | 0} Tenders`}
               iconClass='ri-macbook-line'
               color='customColors.purple2'
               bgColor='customColors.purple1'
@@ -72,7 +77,7 @@ const SummaryCards: React.FC<SummaryStatus> = ({ tenderStatusdetails }) => {
           <Grid item xs={12} sm={6} md={2.4}>
             <SummaryCardsDetails
               title='Expired'
-              count={`${tenderStatusdetails?.data?.totals?.total_expired | 0} Tenders`}
+              count={`${dataToUse?.data?.totals?.total_expired | 0} Tenders`}
               iconClass='ri-lightbulb-flash-line'
               color='customColors.red3'
               bgColor='customColors.red4'
@@ -81,7 +86,7 @@ const SummaryCards: React.FC<SummaryStatus> = ({ tenderStatusdetails }) => {
           <Grid item xs={12} sm={6} md={2.4}>
             <SummaryCardsDetails
               title='Shortlisted'
-              count={`${tenderStatusdetails?.data?.totals?.total_shortlisted | 0} Tenders`}
+              count={`${dataToUse?.data?.totals?.total_shortlisted | 0} Tenders`}
               iconClass='ri-list-check'
               color='customColors.cyan2'
               bgColor='customColors.cyan1'

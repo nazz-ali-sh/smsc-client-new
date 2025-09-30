@@ -13,7 +13,7 @@ const CongratulationsSection = ({ startDate }: CongratulationsSectionProps) => {
     <>
       <Card>
         <CardContent>
-          <Grid container alignItems='center' spacing={4}>
+          <Grid container alignItems='start' spacing={4}>
             <Grid item xs={12} md={8}>
               <Box>
                 <Typography

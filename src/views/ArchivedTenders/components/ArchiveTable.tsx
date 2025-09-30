@@ -7,14 +7,12 @@ import { useRouter } from 'next/navigation'
 import { Chip, MenuItem, Select } from '@mui/material'
 import { createColumnHelper } from '@tanstack/react-table'
 
-import { useQuery } from '@tanstack/react-query'
-
 import { useSelector } from 'react-redux'
 
 import type { ArchiveDataResponse, ArchivedTenderType, TenderApi } from '../types'
 import CommonTable from '@/common/CommonTable'
-import { archiveData } from '@/services/final_result_and_archeive_apis/final_results_apis'
 import SummaryCards from '@/common/SummaryCardsDetails'
+import { useArchiveData } from '@/hooks/useArchiveData'
 
 const columnHelper = createColumnHelper<ArchivedTenderType>()
 
@@ -24,12 +22,7 @@ const ArchiveTable = () => {
   const router = useRouter()
   const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
-  const { data: gettingArchiveData } = useQuery<ArchivedTenderType>({
-    queryKey: ['AvailableSlotsAndDays', value, tender_id],
-    queryFn: () => archiveData(value),
-    enabled: !!value,
-    retry: 2
-  })
+  const { archiveListData: gettingArchiveData } = useArchiveData({ filter: value })
 
   const archivedTendersData: ArchivedTenderType[] =
     (gettingArchiveData as ArchiveDataResponse)?.data?.tenders?.map(

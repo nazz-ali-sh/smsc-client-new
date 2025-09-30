@@ -195,6 +195,23 @@ const NavbarContent = () => {
                     paddingBottom: '8px'
                   }
                 }}
+                MenuProps={{
+                  PaperProps: {
+                    sx: {
+                      '& .MuiMenuItem-root': {
+                        color: '#35C0ED',
+                        backgroundColor: '#26C6F93D',
+                        '&.Mui-selected': {
+                          backgroundColor: '#26C6F93D !important',
+                          color: '#35C0ED'
+                        },
+                        '&:hover': {
+                          backgroundColor: '#26C6F93D'
+                        }
+                      }
+                    }
+                  }
+                }}
               >
                 {isLoading ? (
                   <MenuItem disabled>Loading...</MenuItem>

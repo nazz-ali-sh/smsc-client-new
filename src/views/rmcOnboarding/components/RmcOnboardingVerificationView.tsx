@@ -11,6 +11,7 @@ import { Typography } from '@mui/material'
 
 import { onboardingVerification, type verificationPayload } from '@/services/rmc-onboarding-apis/rmc-onboarding-api'
 import { setVerificationMethod } from '@/redux-store/slices/rmcOnboardingSlice'
+import CustomButton from '@/common/CustomButton'
 
 const RmcOnboardingVerificationView = () => {
   const router = useRouter()
@@ -65,6 +66,10 @@ const RmcOnboardingVerificationView = () => {
     }
   ]
 
+  const handleBack = () => {
+    router.push('/rmc-onboarding-director')
+  }
+
   return (
     <div className='flex flex-col items-center pt-10 mb-20'>
       <h1 className='text-[48px] font-bold text-[#262B43E5] '>RMC Onboarding</h1>
@@ -117,6 +122,14 @@ const RmcOnboardingVerificationView = () => {
             })}
           </div>
         </div>
+        <CustomButton
+          onClick={handleBack}
+          startIcon={<i className='ri-arrow-left-line'></i>}
+          variant='outlined'
+          sx={{ fontSize: '16px', fontWeight: 700 }}
+        >
+          Back
+        </CustomButton>
       </div>
     </div>
   )

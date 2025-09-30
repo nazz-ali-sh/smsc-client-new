@@ -6,9 +6,7 @@ import { useRouter } from 'next/navigation'
 
 import { Box, Card, CardContent, Chip } from '@mui/material'
 
-import { useQuery } from '@tanstack/react-query'
-
-import { archiveDetails } from '@/services/final_result_and_archeive_apis/final_results_apis'
+import { useArchiveData } from '@/hooks/useArchiveData'
 import SummaryCards from '@/common/SummaryCardsDetails'
 import BlockDetailsInfoSection from '@/views/TenderInformationUpdated/components/BlockDetailsInfoSection'
 import PmaCostBreakdown from '@/common/PmaCostBreakdown'
@@ -28,15 +26,12 @@ const Page = ({ params }: PageProps) => {
   const router = useRouter()
 
   const {
-    data: archiveDetailsData,
-    isLoading,
-    isError
-  } = useQuery({
-    queryKey: ['gettingVideoCallsDetails', param_id, selectedPma],
-    queryFn: () => archiveDetails(param_id, selectedPma ? Number(selectedPma) : undefined),
-    enabled: !!param_id,
-    retry: 2
-  })
+    archiveDetailsData,
+    isArchiveDetailsLoading: isLoading,
+    archiveDetailsError
+  } = useArchiveData({ tenderId: param_id, pmaUserId: selectedPma ? Number(selectedPma) : undefined })
+  
+  const isError = !!archiveDetailsError
 
   const { data: tenderDetailData } = useTenderDetail()
 

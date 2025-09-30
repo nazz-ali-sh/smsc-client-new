@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { useMutation } from '@tanstack/react-query'
 
-import { Typography, Select, MenuItem } from '@mui/material'
+import { Typography, Select, MenuItem, FormControl, InputLabel } from '@mui/material'
 
 import CustomButton from '@/common/CustomButton'
 import {
@@ -221,84 +221,108 @@ const OnboardingAddress = () => {
 
         <div className=''>
           <div className='grid grid-cols-1 pb-10 relative'>
-            <Select
+            <FormControl
               fullWidth
-              displayEmpty
-              value={selectedAddressId}
-              onChange={handleAddressChange}
-              MenuProps={{
-                PaperProps: {
-                  style: {
-                    maxHeight: 300,
-                    overflow: 'scroll'
-                  }
-                },
-                anchorOrigin: {
-                  vertical: 'bottom',
-                  horizontal: 'left'
-                },
-                transformOrigin: {
-                  vertical: 'top',
-                  horizontal: 'left'
-                },
-                disableAutoFocusItem: true,
-                variant: 'menu'
-              }}
+              variant='outlined'
               sx={{
                 borderRadius: '6px',
                 width: '100%',
                 maxWidth: '100%',
-                '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#D1D5DB'
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: '#D1D5DB'
+                  },
+                  '&:hover fieldset': {
+                    borderColor: '#26C6F9'
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#26C6F9',
+                    borderWidth: '1px'
+                  }
                 },
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#35C0ED',
-                  border: '1px solid #35C0ED'
+                '& .MuiInputLabel-root': {
+                  color: '#9CA3AF'
                 },
-                '& .MuiSelect-select': {
-                  color: selectedAddressId ? 'inherit' : 'customColors.textGray'
+                '& .MuiInputLabel-root.Mui-focused': {
+                  color: '#26C6F9'
                 }
               }}
             >
-              <MenuItem value='' disabled>
-                Select Address
-              </MenuItem>
-              {addresses.map(address => {
-                const addressId =
-                  `${address.line_1 || ''}-${address.line_2 || ''}-${(address as any).line_3 || ''}-${address.postcode || ''}`
-                    .replace(/\s+/g, '-')
-                    .toLowerCase()
+              <InputLabel id='address-label'>Select Address</InputLabel>
+              <Select
+                labelId='address-label'
+                label='Select Address'
+                fullWidth
+                displayEmpty
+                value={selectedAddressId}
+                onChange={handleAddressChange}
+                MenuProps={{
+                  PaperProps: {
+                    style: {
+                      maxHeight: 300,
+                      overflow: 'scroll'
+                    }
+                  },
+                  anchorOrigin: {
+                    vertical: 'bottom',
+                    horizontal: 'left'
+                  },
+                  transformOrigin: {
+                    vertical: 'top',
+                    horizontal: 'left'
+                  },
+                  disableAutoFocusItem: true,
+                  variant: 'menu'
+                }}
+                sx={{
+                  '& .MuiSelect-select': {
+                    color: selectedAddressId ? 'inherit' : 'customColors.textGray'
+                  }
+                }}
+              >
+                {addresses.map(address => {
+                  const addressId =
+                    `${address.line_1 || ''}-${address.line_2 || ''}-${(address as any).line_3 || ''}-${address.postcode || ''}`
+                      .replace(/\s+/g, '-')
+                      .toLowerCase()
 
-                return (
-                  <MenuItem
-                    key={addressId}
-                    value={addressId}
-                    sx={{
-                      whiteSpace: 'normal',
-                      wordBreak: 'break-word',
-                      padding: '12px 16px',
-                      borderBottom: '1px solid #f0f0f0',
-                      '&:last-child': {
-                        borderBottom: 'none'
-                      },
-                      '&:hover': {
-                        backgroundColor: '#f8f9fa'
-                      }
-                    }}
-                  >
-                    <div className='flex flex-row items-center'>
-                      <span className='font-medium text-gray-900'>
-                        {address.line_1}
-                        {address.line_2 ? `, ${address.line_2}` : ''}
-                      </span>
-                      <span className='text-sm text-gray-500 pl-2'>
-                        {address.post_town}, {address.postcode}
-                      </span>
-                    </div>
-                  </MenuItem>
-                )
-              })}
-            </Select>
+                  return (
+                    <MenuItem
+                      key={addressId}
+                      value={addressId}
+                      sx={{
+                        whiteSpace: 'normal',
+                        wordBreak: 'break-word',
+                        padding: '12px 16px',
+                        borderBottom: '1px solid #f0f0f0',
+                        '&:last-child': {
+                          borderBottom: 'none'
+                        },
+                        '&.Mui-selected': {
+                          backgroundColor: '#26C6F93D !important'
+                        },
+                        '&.Mui-selected:hover': {
+                          backgroundColor: '#26C6F93D !important'
+                        },
+                        '&:hover': {
+                          backgroundColor: '#f8f9fa'
+                        }
+                      }}
+                    >
+                      <div className='flex flex-row items-center'>
+                        <span className='font-medium text-gray-900'>
+                          {address.line_1}
+                          {address.line_2 ? `, ${address.line_2}` : ''}
+                        </span>
+                        <span className='text-sm text-gray-500 pl-2'>
+                          {address.post_town}, {address.postcode}
+                        </span>
+                      </div>
+                    </MenuItem>
+                  )
+                })}
+              </Select>
+            </FormControl>
           </div>
         </div>
 

@@ -91,13 +91,14 @@ const ProjectMetrics: React.FC<FinalSelectionResponse> = ({ finalSelection }) =>
           </Box>
         </Box>
       </CardContent>
+      
       <Box sx={{ marginX: 6 }}>
         <ServiceChargeBudgetSection budgetData={tenderDetailData?.service_charge_budget} itemsPerRow={3} />
       </Box>
 
-      <CardContent sx={{ flexGrow: 1 }}>
+      <CardContent sx={{ flexGrow: 1, pt: 0 }}>
         <Box sx={{ mb: 4 }}>
-          <Typography sx={{ fontWeight: 700, fontSize: '24px', color: 'customColors.darkGray1', marginTop: 10 }}>
+          <Typography sx={{ fontWeight: 700, fontSize: '24px', color: 'customColors.darkGray1' }}>
             PMA Cost Breakdown
           </Typography>
           <section className='flex flex-wrap pt-[28px]'>

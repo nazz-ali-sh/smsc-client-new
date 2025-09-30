@@ -2,6 +2,8 @@ import React from 'react'
 
 import { Dialog, DialogTitle, DialogContent, Typography, Box, IconButton, useTheme, Divider } from '@mui/material'
 
+import { consideration, recommandedStep } from '@/constants'
+
 interface ToolTipModalProps {
   open: boolean
   onClose: () => void
@@ -11,52 +13,6 @@ interface ToolTipModalProps {
 const ToolTipModal: React.FC<ToolTipModalProps> = ({ open, onClose, type }) => {
   const theme = useTheme()
 
-  const recommandedStep = [
-    {
-      title: 'Initial Contact via Video Call:',
-      description:
-        'We recommend starting with a video call for a preliminary discussion. Use our meeting request form to ensure your invitation reaches them. Video calls help narrow down serious contenders before moving to in-person site visits.'
-    },
-    {
-      title: 'Use Our Evaluation Matrix:',
-      description:
-        'Download and use our editable Evaluation Matrix to score each  agent objectively. This tool will help you assess their suitability  based on your block’s unique needs.'
-    },
-    {
-      title: 'Site Visit Stage:',
-      description:
-        'After video calls, invite your top choices for a site visit. This will give them an opportunity to understand the property and allow you to see their approach firsthand.'
-    },
-    {
-      title: 'Setting a Service Level Agreement (SLA):',
-      description:
-        'Remember to set clear service expectations by establishing an SLA prior to speaking with your shortlisted agents. This helps outline key performance indicators (KPIs) for the managing agent to work towards'
-    }
-  ]
-
-  const consideration = [
-    {
-      title: 'Be Cautious with Online Reviews:',
-      description:
-        'Reviews may be biased or written by residents who don’t fully understand the financial constraints set by directors. Consider the context and duration the company has been operating to get a balanced view.'
-    },
-    {
-      title: 'Select an Agent You Connect With:',
-      description:
-        'Do you prefer being a priority for a smaller agent or having the resources of a larger one, even if it means being less of a focus?'
-    },
-    {
-      title: '',
-      description:
-        'After video calls, invite your top choices for a site visit. This will give them an opportunity to understand the property and allow you to see their approach firsthand.'
-    },
-    {
-      title: '',
-      description:
-        'Remember, your goal is to find an agent who understands your needs and can deliver the level of service you expect, not just one with the flashiest sales pitch.'
-    }
-  ]
-
   return (
     <Dialog
       open={open}
@@ -65,7 +21,7 @@ const ToolTipModal: React.FC<ToolTipModalProps> = ({ open, onClose, type }) => {
       PaperProps={{
         sx: {
           borderRadius: 2,
-          minHeight: '400px',
+          minHeight: '320px',
           paddingX: '24px',
           width: '1200px'
         }
@@ -154,7 +110,7 @@ const ToolTipModal: React.FC<ToolTipModalProps> = ({ open, onClose, type }) => {
                   fontSize: '0.875rem'
                 }}
               >
-                Recommended Next steps
+                Important Considerations{' '}
               </Box>
               {consideration?.map((item, index) => {
                 return (
@@ -192,41 +148,37 @@ const ToolTipModal: React.FC<ToolTipModalProps> = ({ open, onClose, type }) => {
                   paddingX: '10px',
                   fontWeight: '600',
                   borderRadius: '5px',
-                  paddingY: '6px',
+                  paddingY: '5px',
                   fontSize: '0.875rem'
                 }}
               >
-                Recommended Next steps
+                Info
               </Box>
 
               <>
                 <Box
                   sx={{
                     borderTop: 'none',
-                    padding: '12px'
+                    marginTop: 10
                   }}
                 >
                   <Typography
                     variant='body2'
-                    sx={{ mb: 0.5, fontWeight: '500', fontSize: '0.875rem', color: '#696969', marginBottom: '8px' }}
+                    sx={{ mb: 0.5, fontWeight: '400', fontSize: '0.875rem', lineHeight: '22px' }}
                   >
-                    Shortlisted Agents Info
-                  </Typography>
-
-                  <Typography variant='body2' sx={{ mb: 0.5, fontWeight: '500', fontSize: '0.875rem' }}>
                     Once you've shortlisted your preferred agents, we recommend starting with video calls to get an
                     initial feel for each company. After the video calls, you can then invite the agents you'd like to
                     meet in person to carry out a site visit.
                   </Typography>
 
-                  <Typography variant='body2' sx={{ mb: 0.5, fontWeight: '500', fontSize: '0.875rem' }}>
+                  <Typography
+                    variant='body2'
+                    sx={{ mb: 0.5, fontWeight: '400', fontSize: '0.875rem', lineHeight: '22px', marginTop: '20px' }}
+                  >
                     If you'd like others to join the video calls — such as fellow directors or leaseholders — you can
-                    invite them from the video call section of your portal.
-                  </Typography>
-
-                  <Typography variant='body2' sx={{ mb: 0.5, fontWeight: '500', fontSize: '0.875rem' }}>
-                    Don’t forget: using the evaluation matrix is a great way to score each agent’s suitability and keep
-                    track of your impressions throughout the process.
+                    invite them from the video call section of your portal. Don’t forget: using the evaluation matrix is
+                    a great way to score each agent’s suitability and keep track of your impressions throughout the
+                    process.
                   </Typography>
                 </Box>
               </>

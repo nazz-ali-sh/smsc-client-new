@@ -252,19 +252,12 @@ const OnboardingBlockDetails = () => {
             </div>
 
             <div className='grid xs:grid-col-1  md:grid-cols-3 gap-4 mt-8'>
-              <FormSelect
-                name='number_of_blocks'
-                control={control}
-                label='Number of Blocks'
-                options={blockOptions}
-                placeholder='Select number of blocks'
-              />
+              <FormSelect name='number_of_blocks' control={control} label='Number of Blocks' options={blockOptions} />
               <FormSelect
                 name='year_built'
                 control={control}
                 label='Year Built'
                 options={yearOptions}
-                placeholder='Select year built'
                 sx={{
                   '& .MuiOutlinedInput-notchedOutline': {
                     borderColor: errors.year_built ? '#d32f2f' : '#D1D5DB'
@@ -284,7 +277,6 @@ const OnboardingBlockDetails = () => {
                 type='submit'
                 isLoading={mutation.isPending}
                 disabled={mutation.isPending}
-                sx={{ fontSize: '16px', fontWeight: 700 }}
                 endIcon={<i className='ri-arrow-right-line'></i>}
               >
                 {mutation.isPending ? 'Submitting...' : 'Next'}
@@ -312,7 +304,6 @@ const OnboardingBlockDetails = () => {
                   { label: 'Option 2', value: '2' },
                   { label: 'Option 3', value: '3' }
                 ]}
-                placeholder='Confirm Identity'
               />
             </div>
           </div>

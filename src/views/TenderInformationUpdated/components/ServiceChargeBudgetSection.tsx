@@ -103,13 +103,7 @@ const ServiceChargeBudgetSection = ({ budgetData, itemsPerRow = 5 }: ExtendedSer
       <Box sx={{ marginBottom: 4, marginTop: '24px' }}>
         <Grid container spacing={3} rowSpacing={6}>
           {budgetItems?.map((item, index) => (
-            <Grid 
-              item 
-              xs={12} 
-              sm={6} 
-              md={itemsPerRow === 3 ? 4 : 2.4} 
-              key={index}
-            >
+            <Grid item xs={12} sm={6} md={itemsPerRow === 3 ? 4 : 2.4} key={index}>
               <Box sx={{ display: 'flex', alignItems: 'start', gap: 2 }}>
                 <Box
                   sx={{

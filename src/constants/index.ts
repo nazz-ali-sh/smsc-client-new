@@ -168,3 +168,49 @@ export const rmcDirectorFormInputs = [
 
 export const budgetText =
   "Including your block’s service charge budget is optional, but highly recommended. Tenders that include budget information typically receive more detailed and tailored replies from Managing Agents. If you'd prefer not to upload it, you can skip this step, but please note: once your tender goes live, you won’t be able to add budget details later. The fees you enter for each fee type will be applied to the full block."
+
+export const recommandedStep = [
+  {
+    title: 'Initial Contact via Video Call:',
+    description:
+      'We recommend starting with a video call for a preliminary discussion. Use our meeting request form to ensure your invitation reaches them. Video calls help narrow down serious contenders before moving to in-person site visits.'
+  },
+  {
+    title: 'Use Our Evaluation Matrix:',
+    description:
+      'Download and use our editable Evaluation Matrix to score each  agent objectively. This tool will help you assess their suitability  based on your block’s unique needs.'
+  },
+  {
+    title: 'Site Visit Stage:',
+    description:
+      'After video calls, invite your top choices for a site visit. This will give them an opportunity to understand the property and allow you to see their approach firsthand.'
+  },
+  {
+    title: 'Setting a Service Level Agreement (SLA):',
+    description:
+      'Remember to set clear service expectations by establishing an SLA prior to speaking with your shortlisted agents. This helps outline key performance indicators (KPIs) for the managing agent to work towards'
+  }
+]
+
+export const consideration = [
+  {
+    title: 'Be Cautious with Online Reviews:',
+    description:
+      'Reviews may be biased or written by residents who don’t fully understand the financial constraints set by directors. Consider the context and duration the company has been operating to get a balanced view.'
+  },
+  {
+    title: 'Select an Agent You Connect With:',
+    description:
+      'Do you prefer being a priority for a smaller agent or having the resources of a larger one, even if it means being less of a focus?'
+  },
+  {
+    title: '',
+    description:
+      'After video calls, invite your top choices for a site visit. This will give them an opportunity to understand the property and allow you to see their approach firsthand.'
+  },
+  {
+    title: '',
+    description:
+      'Remember, your goal is to find an agent who understands your needs and can deliver the level of service you expect, not just one with the flashiest sales pitch.'
+  }
+]

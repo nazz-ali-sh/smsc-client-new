@@ -51,7 +51,6 @@ const ManagingAgentDetails: React.FC<FinalSelectionResponse> = ({ finalSelection
       toast.success('PDF downloaded successfully!')
     },
     onError: (error: any) => {
-
       if (error?.response?.data?.message) {
         toast.error(error.response.data.message)
       } else if (error?.message) {
@@ -84,11 +83,8 @@ const ManagingAgentDetails: React.FC<FinalSelectionResponse> = ({ finalSelection
           <Box sx={{ marginX: '28px', marginTop: '12px' }}>
             <Divider />
           </Box>
-          <Typography
-            className='flex justify-center items-center text-[18px] pt-4 leading-[22px]'
-            sx={{ color: 'customColors.darkGray1' }}
-          >
-            {finalSelection?.data?.pma_user?.company_details?.name}
+          <Typography className='flex justify-center items-center text-[18px] pt-2 text-black leading-[22px]'>
+            {finalSelection?.data?.company_details?.name}
           </Typography>
           <Link
             href='#'
@@ -133,7 +129,7 @@ const ManagingAgentDetails: React.FC<FinalSelectionResponse> = ({ finalSelection
             </section>
           </div>
           <CustomButton onClick={handlePdfClick} disabled={downloadMutation.isPending} variant='contained'>
-            {downloadMutation.isPending ? 'Downloading...' : 'Download PDF'}
+            {downloadMutation.isPending ? 'Downloading...' : 'Download Full Journey'}
           </CustomButton>
         </section>
       </CardContent>

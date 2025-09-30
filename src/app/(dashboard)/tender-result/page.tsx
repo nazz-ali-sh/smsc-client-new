@@ -6,7 +6,7 @@ export default function Page() {
   return (
     <>
       <section className='flex w-full'>
-        <WeeklyReport text={'Tender Information'} />
+        <WeeklyReport text={'Tender Results'} />
       </section>
       <div className='py-5'>
         <HorizontalLinearStepper />

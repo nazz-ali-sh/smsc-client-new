@@ -97,7 +97,7 @@ export default function Pages() {
   return (
     <>
       <section className='flex w-full'>
-        <WeeklyReport text='Welcome' />
+        <WeeklyReport text='Shorlisted Agents' />
       </section>
       <div className='py-5'>
         <HorizontalLinearStepper />
@@ -106,29 +106,35 @@ export default function Pages() {
       <section className='shadow-xl p-5 rounded-xl bg-white w-full'>
         <div className='flex justify-between items-center w-full'>
           <div>
-            <Typography variant='h5' className='pl-6 font-bold  text-buttonPrimary'>
-              SMSC Recommended Steps for Shortlisted Agents
-              <Button
+            <div className='flex gap-2 items-center'>
+              <Typography variant='h5' className='pl-6 font-bold  text-buttonPrimary'>
+                SMSC Recommended Steps for Shortlisted Agents
+              </Typography>
+              <span
+                className='cursor-pointer pl-1 pt-2'
                 onClick={() => {
                   setOpen(true)
                   setModalType('shortList_agent')
                 }}
               >
                 <i className='ri-information-line bg-buttonPrimary'></i>
-              </Button>
-            </Typography>
+              </span>
+            </div>
 
-            <Typography variant='h2' className='pl-6 font-bold'>
-              Shortlisted Agents
-              <Button
+            <div className='flex gap-2 items-center'>
+              <Typography variant='h2' className='pl-6 font-bold'>
+                Shortlisted Agents
+              </Typography>
+              <span
+                className='cursor-pointer'
                 onClick={() => {
                   setOpen(true)
                   setModalType('shortList_agent_info')
                 }}
               >
                 <i className='ri-information-line bg-[#262B43E5]'></i>
-              </Button>
-            </Typography>
+              </span>
+            </div>
           </div>
           <div>
             <Button

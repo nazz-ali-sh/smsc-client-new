@@ -42,6 +42,20 @@ const PmaCostBreakdown = ({
   isLoading,
   isError
 }: PmaCostBreakdownProps) => {
+  React.useEffect(() => {
+    if (
+      archiveDetailsData?.data?.shortlisted_pmas &&
+      archiveDetailsData?.data?.shortlisted_pmas?.length > 0 &&
+      (selectedPma === '' || selectedPma === null || selectedPma === undefined)
+    ) {
+      const firstPmaId = archiveDetailsData?.data?.shortlisted_pmas[0]?.id
+
+      if (firstPmaId) {
+        handleChange({ target: { value: firstPmaId } })
+      }
+    }
+  }, [archiveDetailsData?.data?.shortlisted_pmas, selectedPma, handleChange])
+
   return (
     <CardContent sx={{ flexGrow: 1, pt: 0 }}>
       <Box sx={{ mb: 4 }}>
