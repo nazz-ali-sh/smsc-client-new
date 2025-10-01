@@ -260,6 +260,7 @@ export interface RmcBlockDetailsPayload {
   current_managing_agent?: string
   step?: number
   address_line3?: string
+  address_type?: string
 }
 
 export const submitRmcBlockDetails = async (data: RmcBlockDetailsPayload): Promise<RmcOnboardingResponse> => {

@@ -72,16 +72,15 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
 
   const { control, handleSubmit, setValue, reset, watch } = useForm<AddressFormData>({
     defaultValues: {
-      addressLine1: initialData.addressLine1 || '',
-      addressLine2: initialData.addressLine2 || '',
-      postcode: initialData.postcode || '',
-      region: initialData.region || '',
-      county: initialData.county || '',
-      coordinates: initialData.coordinates || { lat: 0, lng: 0 }
+      addressLine1: initialData?.addressLine1 || '',
+      addressLine2: initialData?.addressLine2 || '',
+      postcode: initialData?.postcode || '',
+      region: initialData?.region || '',
+      county: initialData?.county || '',
+      coordinates: initialData?.coordinates || { lat: 0, lng: 0 }
     }
   })
 
-  // Watch specific form values
   const addressLine1 = watch('addressLine1')
   const addressLine2 = watch('addressLine2')
   const postcode = watch('postcode')
@@ -89,13 +88,11 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
   const county = watch('county')
   const coordinates = watch('coordinates')
 
-  // Debounced effect to send manual address data
   useEffect(() => {
     if (!onManualAddressData || !addressLine1?.trim()) return
 
     const timeoutId = setTimeout(() => {
-      // Only send if we have meaningful data
-      const hasValidData = addressLine1.trim() && (postcode.trim() || region.trim() || county.trim())
+      const hasValidData = addressLine1?.trim() && (postcode?.trim() || region?.trim() || county?.trim())
 
       if (hasValidData) {
         const formData = {
@@ -109,7 +106,7 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
 
         onManualAddressData(formData)
       }
-    }, 500) // Wait 500ms after user stops typing
+    }, 500)
 
     return () => clearTimeout(timeoutId)
   }, [addressLine1, addressLine2, postcode, region, county, coordinates, onManualAddressData])
@@ -127,6 +124,24 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
       setSelectedLocation(null)
     }
   }, [resetTrigger, reset])
+
+  useEffect(() => {
+    if (initialData && Object.keys(initialData)?.length > 0) {
+      setValue('addressLine1', initialData?.addressLine1 || '')
+      setValue('addressLine2', initialData?.addressLine2 || '')
+      setValue('postcode', initialData?.postcode || '')
+      setValue('region', initialData?.region || '')
+      setValue('county', initialData?.county || '')
+      setValue('coordinates', initialData?.coordinates || { lat: 0, lng: 0 })
+
+      if (initialData.coordinates) {
+        setSelectedLocation({
+          lat: initialData?.coordinates?.lat,
+          lng: initialData?.coordinates?.lng
+        })
+      }
+    }
+  }, [initialData, setValue])
 
   const handleMapClick = useCallback(
     (event: any) => {
@@ -148,7 +163,7 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
           geocoder.geocode({ location: { lat, lng } }, (results, status) => {
             if (status === 'OK' && results && results[0]) {
               const result = results[0]
-              const address = result.formatted_address
+              const address = result?.formatted_address
 
               let postcode = ''
               let city = ''
@@ -156,7 +171,7 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
               let country = ''
 
               if (result.address_components) {
-                for (const component of result.address_components) {
+                for (const component of result?.address_components) {
                   if (component.types.includes('postal_code')) {
                     postcode = component.long_name
                   }
@@ -166,12 +181,12 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
                   }
 
                   if (component.types.includes('administrative_area_level_1')) {
-                    state = component.long_name
+                    state = component?.long_name
                   }
 
                   if (component.types.includes('country')) {
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    country = component.long_name
+                    country = component?.long_name
                   }
                 }
               }
@@ -202,7 +217,6 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
       onManualAddressChange()
     }
 
-    // Send manual address data to parent
     if (onManualAddressData) {
       onManualAddressData(data)
     }

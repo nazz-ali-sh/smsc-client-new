@@ -30,7 +30,8 @@ export const useAvailability = () => {
   } = useQuery({
     queryKey: ['availabilitySlots'],
     queryFn: getAvailabilitySlots,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    retry: 2
   })
 
   const transformApiResponseToLocalState = (apiData: AvailabilitySlotResponse[]): DaySlots => {

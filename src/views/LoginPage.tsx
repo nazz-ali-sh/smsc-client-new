@@ -38,8 +38,8 @@ const LoginPage = () => {
     onSuccess: data => {
       if (data) {
         storeToken(data?.data.token)
-        toast.success('Login successful!')
         router.push('/dashboard')
+        toast.success('Login successful!')
       }
     },
     onError: (error: any) => {

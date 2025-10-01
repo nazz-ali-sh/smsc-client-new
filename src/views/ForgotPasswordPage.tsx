@@ -36,8 +36,8 @@ const ForgotPasswordPage = () => {
     mutationFn: forgotPassword,
     onSuccess: data => {
       if (data?.status === 'success') {
-        toast.success(data.message || 'Password reset email sent successfully!')
         router.push('/login')
+        toast.success(data.message || 'Password reset email sent successfully!')
       }
     },
     onError: (error: any) => {

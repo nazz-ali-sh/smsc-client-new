@@ -32,11 +32,8 @@ const StyledDiv = styled.div<StyledDivProps>`
 `
 
 const Navigation = () => {
-  // Hooks
   const { settings } = useSettings()
   const { isBreakpointReached } = useHorizontalNav()
-
-  // Vars
   const headerContentCompact = settings.navbarContentWidth === 'compact'
 
   return (

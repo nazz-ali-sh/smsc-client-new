@@ -56,14 +56,14 @@ const OnboardingPostCode = () => {
           line_3: address.line_3
         }))
 
+        router.push('/rmc-onboarding-address')
+        
         dispatch(
           setPostcodeAddresses({
             addresses: mappedAddresses,
             postcode: variables?.postcode
           })
         )
-
-        router.push('/rmc-onboarding-address')
       } else {
         toast.error('No addresses found for this postcode.')
       }

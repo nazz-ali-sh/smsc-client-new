@@ -51,8 +51,8 @@ const OnboardingAddress = () => {
   const mutation = useMutation({
     mutationFn: submitRmcBlockDetails,
     onSuccess: () => {
-      invalidateCache()
       router.push('/rmc-onboarding-details')
+      invalidateCache()
     },
     onError: (error: any) => {
       console.error('Error submitting address details:', error)
@@ -115,39 +115,80 @@ const OnboardingAddress = () => {
   }, [addresses, postcodeMutation])
 
   useEffect(() => {
-    if (onboardingData?.steps?.step_3 && addresses && addresses?.length > 0) {
+    if (onboardingData?.steps?.step_3) {
       const savedData = onboardingData?.steps.step_3
 
-      const foundAddress = addresses.find(
-        address =>
-          address?.line_1 === savedData?.address &&
-          address?.line_2 === savedData?.address_line2 &&
-          (address as any).line_3 === savedData?.address_line3 &&
-          address?.postcode === savedData?.postcode
-      )
+      if (savedData?.address_type === 'api' && addresses && addresses?.length > 0) {
+        const foundAddress = addresses?.find(
+          address =>
+            address?.line_1 === savedData?.address &&
+            address?.line_2 === savedData?.address_line2 &&
+            (address as any).line_3 === savedData?.address_line3 &&
+            address?.postcode === savedData?.postcode
+        )
 
-      if (foundAddress) {
-        const addressId =
-          `${foundAddress.line_1 || ''}-${foundAddress?.line_2 || ''}-${(foundAddress as any)?.line_3 || ''}-${foundAddress?.postcode || ''}`
-            ?.replace(/\s+/g, '-')
-            ?.toLowerCase()
+        if (foundAddress) {
+          const addressId =
+            `${foundAddress.line_1 || ''}-${foundAddress?.line_2 || ''}-${(foundAddress as any)?.line_3 || ''}-${foundAddress?.postcode || ''}`
+              ?.replace(/\s+/g, '-')
+              ?.toLowerCase()
 
-        setSelectedAddressId(addressId)
-        dispatch(setPostcodeSelectedAddress(foundAddress))
-        dispatch(setSelectedAddress(foundAddress))
+          setSelectedAddressId(addressId)
+          dispatch(setPostcodeSelectedAddress(foundAddress))
+          dispatch(setSelectedAddress(foundAddress))
+        }
+      } else if (savedData?.address_type === 'manual') {
+        const manualData: MapAddressData = {
+          addressLine1: savedData?.address || '',
+          addressLine2: savedData?.address_line2 || '',
+          postcode: savedData?.postcode || '',
+          region: savedData?.region || '',
+          county: savedData?.county || '',
+          coordinates: {
+            lat: parseFloat(savedData?.lat) || 0,
+            lng: parseFloat(savedData?.lng) || 0
+          }
+        }
+
+        setManualAddressData(manualData)
+        setSelectedAddressId('')
+        dispatch(setPostcodeSelectedAddress(null as any))
+        dispatch(setSelectedAddress(null as any))
       }
     }
   }, [onboardingData, addresses, dispatch])
+
+  useEffect(() => {
+    if (onboardingData?.steps?.step_3) {
+      const savedData = onboardingData?.steps?.step_3
+
+      if (savedData?.address_type === 'manual') {
+        const manualData: MapAddressData = {
+          addressLine1: savedData?.address || '',
+          addressLine2: savedData?.address_line2 || '',
+          postcode: savedData?.postcode || '',
+          region: savedData?.region || '',
+          county: savedData?.county || '',
+          coordinates: {
+            lat: parseFloat(savedData?.lat) || 0,
+            lng: parseFloat(savedData?.lng) || 0
+          }
+        }
+
+        setManualAddressData(manualData)
+        setSelectedAddressId('')
+        dispatch(setPostcodeSelectedAddress(null as any))
+        dispatch(setSelectedAddress(null as any))
+      }
+    }
+  }, [onboardingData, dispatch])
 
   const handleAddressChange = (event: any) => {
     const addressId = event.target.value
 
     setSelectedAddressId(addressId)
-
     setMapSelectedAddress(null)
-
     setManualAddressData(null)
-
     setResetMapTrigger(prev => prev + 1)
 
     const address = addresses?.find(addr => {
@@ -184,18 +225,51 @@ const OnboardingAddress = () => {
   }
 
   const handleManualAddressData = (data: MapAddressData) => {
-    console.log('Manual address data received:', data)
     setManualAddressData(data)
   }
 
   const handleNavigate = () => {
     const hasDropdownAddress = selectedAddressId && selectedAddress
-    const hasMapOrManualAddress = mapSelectedAddress || (manualAddressData && manualAddressData.addressLine1)
+    const hasMapOrManualAddress = mapSelectedAddress || (manualAddressData && manualAddressData?.addressLine1)
 
     if (!hasDropdownAddress && !hasMapOrManualAddress) {
       toast.error('Please select an address from the dropdown or use the map to select a location')
 
       return
+    }
+
+    if (manualAddressData && manualAddressData.addressLine1) {
+      const { addressLine1, addressLine2, postcode, region, county } = manualAddressData
+
+      if (!addressLine1?.trim()) {
+        toast.error('Address Line 1 is required')
+
+        return
+      }
+
+      if (!addressLine2?.trim()) {
+        toast.error('Address Line 2 is required')
+
+        return
+      }
+
+      if (!postcode?.trim()) {
+        toast.error('Postcode is required')
+
+        return
+      }
+
+      if (!region?.trim()) {
+        toast.error('Town is required')
+
+        return
+      }
+
+      if (!county?.trim()) {
+        toast.error('County is required')
+
+        return
+      }
     }
 
     if (!rmcData?.tender_onboarding_id) {
@@ -218,7 +292,8 @@ const OnboardingAddress = () => {
         address_line2: selectedAddress?.line_2 || '',
         address_line3: selectedAddress?.line_3 || '',
         step: 3,
-        state: ''
+        state: '',
+        address_type: 'api'
       }
     } else {
       const addressData = mapSelectedAddress || manualAddressData
@@ -234,7 +309,8 @@ const OnboardingAddress = () => {
         address_line2: addressData?.addressLine2 || '',
         address_line3: '',
         step: 3,
-        state: ''
+        state: '',
+        address_type: 'manual'
       }
     }
 
@@ -415,6 +491,7 @@ const OnboardingAddress = () => {
             onManualAddressData={handleManualAddressData}
             showManualEntry={true}
             resetTrigger={resetMapTrigger}
+            initialData={manualAddressData || undefined}
           />
         </div>
 
