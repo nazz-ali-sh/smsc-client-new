@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
-import { Typography, Checkbox, FormControlLabel, Button } from '@mui/material'
+import { Typography, Button } from '@mui/material'
 
 import type { InferOutput } from 'valibot'
 
@@ -87,21 +87,7 @@ const LoginPage = () => {
           sx={commonStyles}
           showPasswordToggle={true}
         />
-        <div className='flex items-center justify-between'>
-          <FormControlLabel
-            control={
-              <Checkbox
-                name='rememberMe'
-                sx={{
-                  color: '#0B2952',
-                  '&.Mui-checked': {
-                    color: '#0B2952'
-                  }
-                }}
-              />
-            }
-            label={<Typography className='text-gray-600 text-sm'>Remember me</Typography>}
-          />
+        <div className='flex items-center justify-end w-full'>
           <p onClick={handleForgotPassword} className='text-[#0B2952] text-sm font-medium cursor-pointer'>
             Forgot Password?
           </p>
