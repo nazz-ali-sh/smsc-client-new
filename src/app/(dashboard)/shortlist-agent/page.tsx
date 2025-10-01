@@ -6,7 +6,7 @@ import Image from 'next/image'
 
 import { useRouter } from 'next/navigation'
 
-import { Button, Card, CardContent, Typography } from '@mui/material'
+import { Card, CardContent, Typography } from '@mui/material'
 
 import { useSelector } from 'react-redux'
 
@@ -22,6 +22,7 @@ import successVisit from '../../../../public/images/customImages/sucess.svg'
 import { finalShortListedAgent, getrmcshortlistStats } from '@/services/tender_result-apis/tender-result-api'
 import ToolTipModal from '@/common/ToolTipModal'
 import CustomLoader from '@/common/CustomLoader'
+import CustomButton from '@/common/CustomButton'
 
 export default function Pages() {
   const router = useRouter()
@@ -140,13 +141,13 @@ export default function Pages() {
               </div>
             </div>
             <div>
-              <Button
+              <CustomButton
                 onClick={() => router.push('/evaluation-matrix')}
                 variant='contained'
-                className='bg-buttonPrimary gap-x-3'
+                startIcon={<i className='ri-edit-box-line size-[22px]'></i>}
               >
-                <i className='ri-eye-line size-[22px]'></i> Evaluation Metric
-              </Button>
+                Evaluation Metric
+              </CustomButton>
             </div>
           </div>
 
