@@ -38,6 +38,7 @@ import CustomButton from '@/common/CustomButton'
 import CommonModal from '@/common/CommonModal'
 import { calculateTimeLeft } from '@/utils/dateFormater'
 import { useDashboardData } from '@/hooks/useDashboardData'
+import CustomLoader from '@/common/CustomLoader'
 
 const columnHelper = createColumnHelper<DataType>()
 
@@ -79,7 +80,7 @@ const KitchenSink = () => {
 
   const [selectedResponse, setSelectedResponse] = useState<ApiResponseItem | null>(null)
 
-  const { data: responceData } = useQuery<TenderResponse, Error>({
+  const { data: responceData, isLoading: isTableLoading } = useQuery<TenderResponse, Error>({
     queryKey: ['tendeResponce', tender_id],
     queryFn: () => tenderResponce(Number(tender_id)),
     enabled: !!tender_id
@@ -89,7 +90,6 @@ const KitchenSink = () => {
     mutationFn: ({ tender_id, pma_user_ids }: { tender_id: number; pma_user_ids: number[] }) =>
       ShortlistedPma(tender_id, pma_user_ids),
     onSuccess: data => {
-      // 🔹 Extract expiry date from response
       const expiryAt = data?.data?.expiry_at || ''
 
       invalidateCache()
@@ -113,17 +113,15 @@ const KitchenSink = () => {
 
   const downloadMutation = useMutation<Blob, Error, { id: number; open?: boolean }>({
     mutationFn: async ({ id }) => {
-      return await downloadBlindTenderPdf(id) // always gets Blob from backend
+      return await downloadBlindTenderPdf(id)
     },
     onSuccess: (data, variables) => {
       const blob = new Blob([data], { type: 'application/pdf' })
       const url = window.URL.createObjectURL(blob)
 
       if (variables.open) {
-        // ----------- VIEW ONLINE -----------
-        window.open(url, '_blank') // just open, no download
+        window.open(url, '_blank')
       } else {
-        // ----------- DOWNLOAD -----------
         const link = document.createElement('a')
 
         link.href = url
@@ -344,7 +342,6 @@ const KitchenSink = () => {
     const selectedRows = table.getSelectedRowModel().rows
     const pma_user_ids = selectedRows.map(row => row.original.pma_id)
 
-    // If no rows are selected but selectedAgentId exists (e.g., from Questionnaire button)
     const allSelectedIds = [...new Set([...pma_user_ids, ...selectedAgentId])]
 
     if (allSelectedIds.length === 0) {
@@ -382,283 +379,292 @@ const KitchenSink = () => {
   }
 
   return (
-    <Card>
-      <div className='text-[#35C0ED] text-[16px] font-semibold pl-[20px] py-[20px] flex items-center gap-2'>
-        Best Practice For Shortlisting Managing Agents
-        <i
-          className='ri-information-line cursor-pointer text-[#35C0ED] hover:text-[#26A6D9] transition-colors'
-          onClick={() => setBestPracticesModalOpen(true)}
-        ></i>
-      </div>
-      <section className='flex justify-between items-center px-[20px] pb-[42px]'>
-        <section className=' flex items-center space-x-4'>
-          <div className='size-[150px]'>
-            <Image src={pdfFrame} alt='image' />
+    <>
+      {isTableLoading ? (
+        <CustomLoader size='large' />
+      ) : (
+        <Card>
+          <div className='text-[#35C0ED] text-[16px] font-semibold pl-[20px] py-[20px] flex items-center gap-2'>
+            Best Practice For Shortlisting Managing Agents
+            <i
+              className='ri-information-line cursor-pointer text-[#35C0ED] hover:text-[#26A6D9] transition-colors'
+              onClick={() => setBestPracticesModalOpen(true)}
+            ></i>
           </div>
-          <div className='w-[500px]'>
-            <Typography variant='h3' className='flex items-center font-bold gap-2'>
-              Tender Responses
-              <i
-                className='ri-information-line cursor-pointer text-black transition-colors'
-                onClick={() => setTenderResponsesModalOpen(true)}
-              ></i>
-            </Typography>
-            <Typography sx={{ color: '#262B43E5' }}>
-              When you're ready to shortlist agents, simply select the ones you’d like to shortlist and click ‘Confirm
-              Selected Agents’ at the bottom of the page. You can return to this page and shortlist additional agents at
-              any time
-            </Typography>
-          </div>
-        </section>
-        <section className='flex flex-col py-[12px]'>
-          <div className='pb-[12px]'>
-            <CustomButton sx={{ width: '100%' }} onClick={() => downloadMutation.mutate({ id: tender_id, open: true })}>
-              View Results Online
-            </CustomButton>
-          </div>
-          <div>
-            <CustomButton onClick={() => downloadMutation.mutate({ id: tender_id })}>
-              Download Tender Response
-            </CustomButton>
-          </div>
-        </section>
-      </section>
-      <div className='overflow-x-auto pt-[50px]'>
-        <table className={styles.table} style={{ width: '100%' }}>
-          <thead>
-            {table.getHeaderGroups().map(headerGroup => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header, idx) => (
-                  <th
-                    key={header.id}
-                    style={{
-                      width: header.column.columnDef.size,
-                      minWidth: header.column.columnDef.size,
-                      maxWidth: (header.column.columnDef.size ?? 100) * 1.9,
-                      padding: '3x 1px',
-                      textAlign: 'center',
-                      borderRight: idx !== headerGroup.headers.length - 1 ? '1px solid #ccc' : 'none'
-                    }}
-                  >
-                    {header.isPlaceholder ? null : (
-                      <div
-                        className={classnames({
-                          'flex items-center': header.column.getIsSorted() || header.id === 'select',
-                          'cursor-pointer select-none': header.column.getCanSort()
-                        })}
-                        onClick={header.column.getToggleSortingHandler()}
+          <section className='flex justify-between items-center px-[20px] pb-[42px]'>
+            <section className=' flex items-center space-x-4'>
+              <div className='size-[150px]'>
+                <Image src={pdfFrame} alt='image' />
+              </div>
+              <div className='w-[500px]'>
+                <Typography variant='h3' className='flex items-center font-bold gap-2'>
+                  Tender Responses
+                  <i
+                    className='ri-information-line cursor-pointer text-black transition-colors'
+                    onClick={() => setTenderResponsesModalOpen(true)}
+                  ></i>
+                </Typography>
+                <Typography sx={{ color: '#262B43E5' }}>
+                  When you're ready to shortlist agents, simply select the ones you’d like to shortlist and click
+                  ‘Confirm Selected Agents’ at the bottom of the page. You can return to this page and shortlist
+                  additional agents at any time
+                </Typography>
+              </div>
+            </section>
+            <section className='flex flex-col py-[12px]'>
+              <div className='pb-[12px]'>
+                <CustomButton
+                  sx={{ width: '100%' }}
+                  onClick={() => downloadMutation.mutate({ id: tender_id, open: true })}
+                >
+                  View Results Online
+                </CustomButton>
+              </div>
+              <div>
+                <CustomButton onClick={() => downloadMutation.mutate({ id: tender_id })}>
+                  Download Tender Response
+                </CustomButton>
+              </div>
+            </section>
+          </section>
+          <div className='overflow-x-auto pt-[50px]'>
+            <table className={styles.table} style={{ width: '100%' }}>
+              <thead>
+                {table.getHeaderGroups().map(headerGroup => (
+                  <tr key={headerGroup.id}>
+                    {headerGroup.headers.map((header, idx) => (
+                      <th
+                        key={header.id}
+                        style={{
+                          width: header.column.columnDef.size,
+                          minWidth: header.column.columnDef.size,
+                          maxWidth: (header.column.columnDef.size ?? 100) * 1.9,
+                          padding: '3x 1px',
+                          textAlign: 'center',
+                          borderRight: idx !== headerGroup.headers.length - 1 ? '1px solid #ccc' : 'none'
+                        }}
                       >
-                        {flexRender(header.column.columnDef.header, header.getContext())}
-                        {(header.id !== 'select' &&
-                          {
-                            asc: <ChevronRight fontSize='1.25rem' className='-rotate-90' />,
-                            desc: <ChevronRight fontSize='1.25rem' className='rotate-90' />
-                          }[header.column.getIsSorted() as 'asc' | 'desc']) ??
-                          null}
-                      </div>
-                    )}
-                  </th>
+                        {header.isPlaceholder ? null : (
+                          <div
+                            className={classnames({
+                              'flex items-center': header.column.getIsSorted() || header.id === 'select',
+                              'cursor-pointer select-none': header.column.getCanSort()
+                            })}
+                            onClick={header.column.getToggleSortingHandler()}
+                          >
+                            {flexRender(header.column.columnDef.header, header.getContext())}
+                            {(header.id !== 'select' &&
+                              {
+                                asc: <ChevronRight fontSize='1.25rem' className='-rotate-90' />,
+                                desc: <ChevronRight fontSize='1.25rem' className='rotate-90' />
+                              }[header.column.getIsSorted() as 'asc' | 'desc']) ??
+                              null}
+                          </div>
+                        )}
+                      </th>
+                    ))}
+                  </tr>
                 ))}
-              </tr>
-            ))}
-          </thead>
-          {table.getFilteredRowModel().rows.length === 0 ? (
-            <tbody>
-              <tr>
-                <td colSpan={table.getVisibleFlatColumns().length} className='text-center'>
-                  No data available
-                </td>
-              </tr>
-            </tbody>
-          ) : (
-            <tbody>
-              {table.getRowModel().rows.map(row => (
-                <tr key={row.id}>
-                  {row.getVisibleCells().map(cell => (
-                    <td
-                      key={cell.id}
-                      style={{
-                        width: cell.column.columnDef.size,
-                        minWidth: cell.column.columnDef.size,
-                        maxWidth: (cell.column.columnDef.size ?? 120) * 1.9,
-                        padding: '10px',
-                        verticalAlign: 'top',
-                        textAlign: 'center',
-                        whiteSpace: 'normal',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis'
-                      }}
-                    >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              </thead>
+              {table.getFilteredRowModel().rows.length === 0 ? (
+                <tbody>
+                  <tr>
+                    <td colSpan={table.getVisibleFlatColumns().length} className='text-center'>
+                      No data available
                     </td>
+                  </tr>
+                </tbody>
+              ) : (
+                <tbody>
+                  {table.getRowModel().rows.map(row => (
+                    <tr key={row.id}>
+                      {row.getVisibleCells().map(cell => (
+                        <td
+                          key={cell.id}
+                          style={{
+                            width: cell.column.columnDef.size,
+                            minWidth: cell.column.columnDef.size,
+                            maxWidth: (cell.column.columnDef.size ?? 120) * 1.9,
+                            padding: '10px',
+                            verticalAlign: 'top',
+                            textAlign: 'center',
+                            whiteSpace: 'normal',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis'
+                          }}
+                        >
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </td>
+                      ))}
+                    </tr>
                   ))}
-                </tr>
-              ))}
-            </tbody>
-          )}
-        </table>
-      </div>
-
-      <AnchorTemporaryDrawer
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        drawerData={responceData?.data}
-        successModalOpen={successModalOpen}
-        setSuccessModalOpen={setSuccessModalOpen}
-        handleConfirmSelected={handleConfirmSelected}
-        DrawerStats={selectedResponse}
-      />
-
-      <TablePagination
-        rowsPerPageOptions={[7, 10, 25, { label: 'All', value: tableData.length }]}
-        component='div'
-        className='border-bs'
-        count={table.getFilteredRowModel().rows.length}
-        rowsPerPage={table.getState().pagination.pageSize}
-        page={table.getState().pagination.pageIndex}
-        onPageChange={(_, page) => {
-          table.setPageIndex(page)
-        }}
-        onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
-      />
-      <section className='flex justify-end px-[22px] mt-6 mb-[60px]'>
-        <CustomButton
-          variant='contained'
-          onClick={openModal}
-          disabled={table.getSelectedRowModel().rows.length === 0 && selectedAgentId.length === 0}
-        >
-          Confirm Selection
-        </CustomButton>
-      </section>
-
-      <SuccessModal
-        open={successModalOpen}
-        onClose={() => setSuccessModalOpen(false)}
-        message='Please confirm that you agree to share your contact information with the selected managing agent. They will receive your details and you will receive full information for direct communication'
-        title='Confirm your selection'
-        confirmButtonText='Confirm Selection'
-        onClick={handleConfirmSelected}
-        onConfirm={() => {
-          setSuccessModalOpen(false)
-          handleConfirmSelected()
-        }}
-        cancelButton={''}
-      />
-      <ShortListAgent
-        open={shortlistedModalOpen}
-        onClose={handleCloseAndNavigate}
-        pmaSelectedID={allselectedpma}
-        fianlExpireDate={fianlExpireDate}
-      />
-
-      <CommonModal
-        isOpen={bestPracticesModalOpen}
-        handleClose={() => setBestPracticesModalOpen(false)}
-        header='Best Practices for Shortlisting Managing Agents'
-        maxWidth='md'
-      >
-        <div className='space-y-4'>
-          <Typography variant='body1' className='text-[#696969] text-xs leading-[22px]'>
-            Choosing the right managing agent is crucial to the success and smooth operation of your block. Our “blind”
-            shortlisting process creates a level playing field to ensure you select the agent that best suits your needs
-            based on their response, rather than being influenced by brand size or marketing.
-          </Typography>
-
-          <div className='mt-3'>
-            <Typography variant='h6' className='font-semibold text-[#696969] mb-2 '>
-              Evaluate Replies Carefully:
-            </Typography>
-            <Typography variant='body2' className='text-[#696969] text-xs leading-[22px] mb-3'>
-              Focus on each agent’s tailored response. Consider how they addressed your specific needs and the clarity
-              of their proposal. Do they understand your block's requirements? Do their suggestions align with your
-              expectations?
-            </Typography>
+                </tbody>
+              )}
+            </table>
           </div>
 
-          <div className='mt-3'>
-            <Typography variant='h6' className='font-semibold text-[#696969] leading-[22px] mb-2 '>
-              Review the Quote Breakdown:
-            </Typography>
-            <Typography variant='body2' className='text-[#696969] text-xs leading-[22px] mb-3'>
-              Compare the costs line-by-line. Pay attention not only to the overall price but also to the breakdown of
-              each line item. This will help you identify where each agent prioritizes spending.
-            </Typography>
-          </div>
+          <AnchorTemporaryDrawer
+            open={drawerOpen}
+            onClose={() => setDrawerOpen(false)}
+            drawerData={responceData?.data}
+            successModalOpen={successModalOpen}
+            setSuccessModalOpen={setSuccessModalOpen}
+            handleConfirmSelected={handleConfirmSelected}
+            DrawerStats={selectedResponse}
+          />
 
-          <div className='mt-3'>
-            <Typography variant='h6' className='font-semibold text-[#696969] leading-[22px] mb-2'>
-              Consider Block Size and Service Fit:
-            </Typography>
-            <Typography variant='body2' className='text-[#696969] text-xs leading-[22px] mb-3'>
-              Larger agents may bring more experience with big portfolios, but smaller agents might provide more
-              personalized service. Think about what is more important for your block: being a valued client for a
-              smaller agent or having the backing of a larger firm.
-            </Typography>
-          </div>
+          <TablePagination
+            rowsPerPageOptions={[7, 10, 25, { label: 'All', value: tableData.length }]}
+            component='div'
+            className='border-bs'
+            count={table.getFilteredRowModel().rows.length}
+            rowsPerPage={table.getState().pagination.pageSize}
+            page={table.getState().pagination.pageIndex}
+            onPageChange={(_, page) => {
+              table.setPageIndex(page)
+            }}
+            onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
+          />
+          <section className='flex justify-end px-[22px] mt-6 mb-[60px]'>
+            <CustomButton
+              variant='contained'
+              onClick={openModal}
+              disabled={table.getSelectedRowModel().rows.length === 0 && selectedAgentId.length === 0}
+            >
+              Confirm Selection
+            </CustomButton>
+          </section>
 
-          <Typography variant='body1' className='text-[#696969] text-xs leading-[22px]'>
-            Once you have selected the agents you wish to shortlist, you will receive the details of your selected
-            agents, and they will be given your information to start the vetting stage of the process.
-          </Typography>
+          <SuccessModal
+            open={successModalOpen}
+            onClose={() => setSuccessModalOpen(false)}
+            message='Please confirm that you agree to share your contact information with the selected managing agent. They will receive your details and you will receive full information for direct communication'
+            title='Confirm your selection'
+            confirmButtonText='Confirm Selection'
+            onClick={handleConfirmSelected}
+            onConfirm={() => {
+              setSuccessModalOpen(false)
+              handleConfirmSelected()
+            }}
+            cancelButton={''}
+          />
+          <ShortListAgent
+            open={shortlistedModalOpen}
+            onClose={handleCloseAndNavigate}
+            pmaSelectedID={allselectedpma}
+            fianlExpireDate={fianlExpireDate}
+          />
 
-          <Typography variant='body1' className='text-[#696969] text-xs leading-[22px]'>
-            SMSC are experts in running tenders and this approach ensures you have made an unbiased decision based on
-            the information provided, without external sales pressures influencing your choice.
-          </Typography>
-        </div>
-      </CommonModal>
+          <CommonModal
+            isOpen={bestPracticesModalOpen}
+            handleClose={() => setBestPracticesModalOpen(false)}
+            header='Best Practices for Shortlisting Managing Agents'
+            maxWidth='md'
+          >
+            <div className='space-y-4'>
+              <Typography variant='body1' className='text-[#696969] text-xs leading-[22px]'>
+                Choosing the right managing agent is crucial to the success and smooth operation of your block. Our
+                “blind” shortlisting process creates a level playing field to ensure you select the agent that best
+                suits your needs based on their response, rather than being influenced by brand size or marketing.
+              </Typography>
 
-      <CommonModal
-        isOpen={tenderResponsesModalOpen}
-        handleClose={() => setTenderResponsesModalOpen(false)}
-        header='What Your Report Contains & How To Use It'
-        maxWidth='md'
-      >
-        <div className='space-y-4'>
-          <Typography variant='body1' className='text-[#696969] text-xs mt-3 leading-[22px]'>
-            This report compiles responses and best offers from managing agents interested in managing your block. It's
-            designed to help you easily compare and shortlist the most suitable agents for your property.
-          </Typography>
+              <div className='mt-3'>
+                <Typography variant='h6' className='font-semibold text-[#696969] mb-2 '>
+                  Evaluate Replies Carefully:
+                </Typography>
+                <Typography variant='body2' className='text-[#696969] text-xs leading-[22px] mb-3'>
+                  Focus on each agent’s tailored response. Consider how they addressed your specific needs and the
+                  clarity of their proposal. Do they understand your block's requirements? Do their suggestions align
+                  with your expectations?
+                </Typography>
+              </div>
 
-          <div>
-            <Typography variant='h6' className='font-semibold text-[#696969] mb-1 mt-2'>
-              Overview:
-            </Typography>
-            <Typography variant='body2' className='text-[#696969] mb-3 leading-[22px]'>
-              A summary showing each agent's location, company size, and proposed overall management fee for a
-              high-level comparison.
-            </Typography>
-          </div>
+              <div className='mt-3'>
+                <Typography variant='h6' className='font-semibold text-[#696969] leading-[22px] mb-2 '>
+                  Review the Quote Breakdown:
+                </Typography>
+                <Typography variant='body2' className='text-[#696969] text-xs leading-[22px] mb-3'>
+                  Compare the costs line-by-line. Pay attention not only to the overall price but also to the breakdown
+                  of each line item. This will help you identify where each agent prioritizes spending.
+                </Typography>
+              </div>
 
-          <div>
-            <Typography variant='h6' className='font-semibold text-[#696969] mb-1 mt-4'>
-              Quote Breakdown:
-            </Typography>
-            <Typography variant='body2' className='text-[#696969] mb-3 text-xs leading-[22px]'>
-              A table displaying what each agent would charge for each line item in the service charge budget, allowing
-              you to see cost differences and understand how each agent structures their pricing.
-            </Typography>
-          </div>
+              <div className='mt-3'>
+                <Typography variant='h6' className='font-semibold text-[#696969] leading-[22px] mb-2'>
+                  Consider Block Size and Service Fit:
+                </Typography>
+                <Typography variant='body2' className='text-[#696969] text-xs leading-[22px] mb-3'>
+                  Larger agents may bring more experience with big portfolios, but smaller agents might provide more
+                  personalized service. Think about what is more important for your block: being a valued client for a
+                  smaller agent or having the backing of a larger firm.
+                </Typography>
+              </div>
 
-          <div>
-            <Typography variant='h6' className='font-semibold text-[#696969] mb-2'>
-              Agent Responses:
-            </Typography>
-            <Typography variant='body2' className='text-[#696969] mb-3 text-xs leading-[22px]'>
-              Each agent provides a 250-word company bio covering their identity, experience, and suitability, along
-              with a tailored response to your specific tender, outlining their approach to managing your block.
-            </Typography>
-          </div>
-          <div className='mt-6'>
-            <Typography variant='body1' className='text-[#696969] leading-[22px] text-xs '>
-              We recommend selecting at least two agents for your shortlist. After reviewing the report and making your
-              selection, you'll receive the agents' contact details, and they'll receive your details to begin the
-              vetting process. You can add more managing agents to your shortlist at any time.
-            </Typography>
-          </div>
-        </div>
-      </CommonModal>
-    </Card>
+              <Typography variant='body1' className='text-[#696969] text-xs leading-[22px]'>
+                Once you have selected the agents you wish to shortlist, you will receive the details of your selected
+                agents, and they will be given your information to start the vetting stage of the process.
+              </Typography>
+
+              <Typography variant='body1' className='text-[#696969] text-xs leading-[22px]'>
+                SMSC are experts in running tenders and this approach ensures you have made an unbiased decision based
+                on the information provided, without external sales pressures influencing your choice.
+              </Typography>
+            </div>
+          </CommonModal>
+
+          <CommonModal
+            isOpen={tenderResponsesModalOpen}
+            handleClose={() => setTenderResponsesModalOpen(false)}
+            header='What Your Report Contains & How To Use It'
+            maxWidth='md'
+          >
+            <div className='space-y-4'>
+              <Typography variant='body1' className='text-[#696969] text-xs mt-3 leading-[22px]'>
+                This report compiles responses and best offers from managing agents interested in managing your block.
+                It's designed to help you easily compare and shortlist the most suitable agents for your property.
+              </Typography>
+
+              <div>
+                <Typography variant='h6' className='font-semibold text-[#696969] mb-1 mt-2'>
+                  Overview:
+                </Typography>
+                <Typography variant='body2' className='text-[#696969] mb-3 leading-[22px]'>
+                  A summary showing each agent's location, company size, and proposed overall management fee for a
+                  high-level comparison.
+                </Typography>
+              </div>
+
+              <div>
+                <Typography variant='h6' className='font-semibold text-[#696969] mb-1 mt-4'>
+                  Quote Breakdown:
+                </Typography>
+                <Typography variant='body2' className='text-[#696969] mb-3 text-xs leading-[22px]'>
+                  A table displaying what each agent would charge for each line item in the service charge budget,
+                  allowing you to see cost differences and understand how each agent structures their pricing.
+                </Typography>
+              </div>
+
+              <div>
+                <Typography variant='h6' className='font-semibold text-[#696969] mb-2'>
+                  Agent Responses:
+                </Typography>
+                <Typography variant='body2' className='text-[#696969] mb-3 text-xs leading-[22px]'>
+                  Each agent provides a 250-word company bio covering their identity, experience, and suitability, along
+                  with a tailored response to your specific tender, outlining their approach to managing your block.
+                </Typography>
+              </div>
+              <div className='mt-6'>
+                <Typography variant='body1' className='text-[#696969] leading-[22px] text-xs '>
+                  We recommend selecting at least two agents for your shortlist. After reviewing the report and making
+                  your selection, you'll receive the agents' contact details, and they'll receive your details to begin
+                  the vetting process. You can add more managing agents to your shortlist at any time.
+                </Typography>
+              </div>
+            </div>
+          </CommonModal>
+        </Card>
+      )}
+    </>
   )
 }
 

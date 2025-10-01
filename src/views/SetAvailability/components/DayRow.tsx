@@ -72,9 +72,9 @@ const DayRow = ({
               }}
             >
               <TimeSlotChip
-                startTime={slot.startTime}
-                endTime={slot.endTime}
-                onDelete={() => onRemoveSlot(day, slot.id)}
+                startTime={slot?.startTime}
+                endTime={slot?.endTime}
+                onDelete={() => onRemoveSlot(day, slot?.id)}
                 formatTimeForDisplay={formatTimeForDisplay}
               />
             </Box>

@@ -38,12 +38,14 @@ import CommonModal from '@/common/CommonModal'
 import CustomButton from '@/common/CustomButton'
 import { formatDate, getDaysPassed } from '@/utils/dateFormater'
 import { getLeaseholderTypeLabel } from '@/constants'
+import DashboardSkeletonGrid from '@/components/DashboardSkeletonGrid'
 
 interface dashboardResponceprops {
   dashboardResponce?: any
+  isLoading?: boolean
 }
 
-const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) => {
+const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLoading }) => {
   const [onlineCallsModalOpen, setOnlineCallsModalOpen] = useState(false)
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
   const [apointAgentModalOpen, setApointAgentModalOpen] = useState(false)
@@ -105,6 +107,10 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce }) =>
 
   const shortlistedCompletedAtDate = stages?.shortlisted?.completed_at
   const daysSinceShortlist = getDaysPassed(shortlistedCompletedAtDate)
+
+  if (isLoading) {
+    return <DashboardSkeletonGrid />
+  }
 
   return (
     <>

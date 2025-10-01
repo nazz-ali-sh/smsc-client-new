@@ -2,6 +2,25 @@ import { Box, Typography, Select, MenuItem, FormControl, InputLabel } from '@mui
 
 import type { NewSlot } from '../types'
 
+const StyledFormControl = ({ children, ...props }: any) => (
+  <FormControl
+    size='small'
+    sx={{
+      '& .MuiInputLabel-root': {
+        color: '#6C6C6C',
+        fontSize: '14px'
+      },
+      '& .MuiInputLabel-root.Mui-focused': {
+        color: '#35C0ED'
+      },
+      minWidth: '200px'
+    }}
+    {...props}
+  >
+    {children}
+  </FormControl>
+)
+
 interface TimePickerSectionProps {
   day: string
   newSlots: NewSlot
@@ -23,18 +42,32 @@ const TimePickerSection = ({
 }: TimePickerSectionProps) => {
   return (
     <Box sx={{ display: 'flex', gap: '8px', alignItems: 'center', flex: 1, minWidth: 0 }}>
-      <FormControl size='small' sx={{ minWidth: '200px' }}>
+      <StyledFormControl>
         <InputLabel>Start time</InputLabel>
         <Select
           value={newSlots.startTime}
           onChange={e => onTimeChange(day, 'startTime', e.target.value)}
           label='Start time'
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              borderColor: '#D1D5DB',
-              '&:hover fieldset': {
-                borderColor: '#9CA3AF'
+          MenuProps={{
+            PaperProps: {
+              style: {
+                maxHeight: 200,
+                overflow: 'auto'
               }
+            }
+          }}
+          sx={{
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#D1D5DB',
+              borderWidth: '1px'
+            },
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#9CA3AF',
+              borderWidth: '1px'
+            },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#35C0ED',
+              borderWidth: '1px'
             }
           }}
         >
@@ -44,7 +77,7 @@ const TimePickerSection = ({
             </MenuItem>
           ))}
         </Select>
-      </FormControl>
+      </StyledFormControl>
 
       <Typography
         variant='body1'
@@ -58,19 +91,33 @@ const TimePickerSection = ({
         -
       </Typography>
 
-      <FormControl size='small' sx={{ minWidth: '200px' }}>
+      <StyledFormControl>
         <InputLabel>End time</InputLabel>
         <Select
           value={newSlots.endTime}
           onChange={e => onTimeChange(day, 'endTime', e.target.value)}
           label='End time'
           disabled={!newSlots.startTime}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              borderColor: '#D1D5DB',
-              '&:hover fieldset': {
-                borderColor: '#9CA3AF'
+          MenuProps={{
+            PaperProps: {
+              style: {
+                maxHeight: 200,
+                overflow: 'auto'
               }
+            }
+          }}
+          sx={{
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#D1D5DB',
+              borderWidth: '1px'
+            },
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#9CA3AF',
+              borderWidth: '1px'
+            },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#35C0ED',
+              borderWidth: '1px'
             }
           }}
         >
@@ -80,7 +127,7 @@ const TimePickerSection = ({
             </MenuItem>
           ))}
         </Select>
-      </FormControl>
+      </StyledFormControl>
 
       <div className='flex justify-end'>
         <button

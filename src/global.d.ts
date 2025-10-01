@@ -4,7 +4,7 @@ declare global {
   interface FormInputProps<T extends FieldValues = FieldValues> {
     name: FieldPath<T>
     control: Control<T>
-    type?: 'text' | 'email' | 'password' | 'tel' | 'number' | 'string'
+    type?: 'text' | 'email' | 'password' | 'tel' | 'number' | 'string' | 'date'
     placeholder?: string
     required?: boolean
     disabled?: boolean

@@ -4,12 +4,10 @@ import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 import { useDispatch } from 'react-redux'
-
 import { useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
-
 import { Typography } from '@mui/material'
 
 import CustomButton from '@/common/CustomButton'
@@ -30,6 +28,10 @@ const OnboardingPostCode = () => {
   })
 
   useEffect(() => {
+    router.prefetch('/rmc-onboarding-address')
+  }, [router])
+
+  useEffect(() => {
     const savedPostcode = localStorage.getItem('rmc-onboarding-postcode')
 
     if (savedPostcode) {
@@ -41,7 +43,7 @@ const OnboardingPostCode = () => {
     mutationFn: lookupPostcode,
     onSuccess: (data, variables) => {
       if (data?.result && data?.result?.length > 0) {
-        const mappedAddresses: PostcodeAddress[] = data?.result?.map(address => ({
+        const mappedAddresses: PostcodeAddress[] = data.result.map(address => ({
           longitude: address?.longitude,
           latitude: address?.latitude,
           postcode: address?.postcode,
@@ -60,6 +62,7 @@ const OnboardingPostCode = () => {
             postcode: variables?.postcode
           })
         )
+
         router.push('/rmc-onboarding-address')
       } else {
         toast.error('No addresses found for this postcode.')
@@ -91,9 +94,7 @@ const OnboardingPostCode = () => {
 
     localStorage.setItem('rmc-onboarding-postcode', trimmedPostcode)
 
-    const payload: PostcodeLookupPayload = {
-      postcode: trimmedPostcode
-    }
+    const payload: PostcodeLookupPayload = { postcode: trimmedPostcode }
 
     mutation.mutate(payload)
   }

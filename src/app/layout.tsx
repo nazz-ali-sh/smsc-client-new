@@ -18,6 +18,7 @@ import { GoogleMapProvider } from '@/providers/google-map-provider'
 import type { ChildrenType } from '@core/types'
 import ReduxProvider from '@/redux-store/ReduxProvider'
 import queryClient from '../libs/react-query-client'
+import GlobalLoader from '@/components/GlobalRouteLoader'
 
 import '@/app/globals.css'
 
@@ -56,8 +57,10 @@ const RootLayout = ({ children }: ChildrenType) => {
           {/* <Hydrate state={pageProps.dehydratedState}> */}
           <ReduxProvider>
             <GoogleMapProvider apiKey={googleMapsApiKey}>
-              {children}
-              <ToastContainer position='top-center' autoClose={3000} />
+              <GlobalLoader>
+                {children}
+                <ToastContainer position='top-center' autoClose={3000} />
+              </GlobalLoader>
             </GoogleMapProvider>
           </ReduxProvider>
           {/* </Hydrate> */}

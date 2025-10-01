@@ -45,7 +45,7 @@ interface DashboardResponse {
 export default function Page() {
   const tenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
-  const { data: dashboardResponce } = useQuery<DashboardResponse, Error>({
+  const { data: dashboardResponce, isLoading: isDashboardLoading } = useQuery<DashboardResponse, Error>({
     queryKey: ['dashboardDatas', tenderId],
     queryFn: () => dashboardData(Number(tenderId)),
     enabled: !!tenderId,
@@ -62,7 +62,7 @@ export default function Page() {
         <HorizontalLinearStepper />
       </section>
       <div className='mt-3'>
-        <TenderCards dashboardResponce={dashboardResponce} />
+        <TenderCards dashboardResponce={dashboardResponce} isLoading={isDashboardLoading} />
       </div>
 
       <div className='mt-[36px]'>

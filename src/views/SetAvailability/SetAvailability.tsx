@@ -7,6 +7,7 @@ import SetAvailabilityHeader from './components/SetAvailabilityHeader'
 import DayRow from './components/DayRow'
 import { useAvailability } from './hooks/useAvailability'
 import { DAYS } from './constants'
+import CustomLoader from '@/common/CustomLoader'
 
 const SetAvailability = () => {
   const {
@@ -18,8 +19,26 @@ const SetAvailability = () => {
     handleAddSlot,
     handleRemoveSlot,
     handleSaveChanges,
-    formatTimeForDisplay
+    formatTimeForDisplay,
+    isSaving,
+    isLoading,
+    hasAnySlots
   } = useAvailability()
+
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '50vh'
+        }}
+      >
+        <CustomLoader size='large' message='Loading availability slots...' />
+      </Box>
+    )
+  }
 
   return (
     <Box
@@ -37,7 +56,7 @@ const SetAvailability = () => {
       <SetAvailabilityHeader />
 
       <Box>
-        {DAYS.map((day, index) => (
+        {DAYS?.map((day, index) => (
           <DayRow
             key={day}
             day={day}
@@ -61,15 +80,16 @@ const SetAvailability = () => {
           marginTop: '40px'
         }}
       >
-        <CustomButton
-          onClick={handleSaveChanges}
-          sx={{
-            fontSize: '16px',
-            fontWeight: 700
-          }}
-        >
-          Save Changes
-        </CustomButton>
+            <CustomButton
+              onClick={handleSaveChanges}
+              disabled={isSaving || !hasAnySlots}
+              sx={{
+                fontSize: '16px',
+                fontWeight: 700
+              }}
+            >
+              {isSaving ? 'Saving...' : 'Save Changes'}
+            </CustomButton>
       </Box>
     </Box>
   )

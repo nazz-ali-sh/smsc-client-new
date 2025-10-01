@@ -24,6 +24,9 @@ export const apiEndpoints = {
 
   rtmNonDirector: () => `/rmc/non-director`,
 
+  //---------------------- Availability ---------------------------//
+  availabilitySlots: () => `/rmc/availability/slots`,
+
   nearByPma: (lat: number, lng: number, radius = 10) =>
     `/rmc/rtm/nearby?lat=${lat}&lng=${lng}&radius=${radius}&limit=20`,
 

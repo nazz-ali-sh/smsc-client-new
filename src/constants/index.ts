@@ -214,3 +214,27 @@ export const consideration = [
       'Remember, your goal is to find an agent who understands your needs and can deliver the level of service you expect, not just one with the flashiest sales pitch.'
   }
 ]
+
+export const insuranceTypeOptions = [
+  { label: 'Health Insurance', value: 'health' },
+  { label: 'Life Insurance', value: 'life' },
+  { label: 'Auto Insurance', value: 'auto' },
+  { label: 'Property Insurance', value: 'property' },
+  { label: 'Travel Insurance', value: 'travel' },
+  { label: 'Other', value: 'other' }
+]
+
+export const planSelectionOptions = [
+  { label: 'Basic Plan', value: 'basic' },
+  { label: 'Standard Plan', value: 'standard' },
+  { label: 'Premium Plan', value: 'premium' },
+  { label: 'Deluxe Plan', value: 'deluxe' }
+]
+
+export const paymentMethodOptions = [
+  { label: 'Credit Card', value: 'credit_card' },
+  { label: 'Debit Card', value: 'debit_card' },
+  { label: 'Bank Transfer', value: 'bank_transfer' },
+  { label: 'Cash', value: 'cash' },
+  { label: 'Check', value: 'check' }
+]

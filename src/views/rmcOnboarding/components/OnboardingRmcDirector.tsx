@@ -44,22 +44,20 @@ export default function OnboardingForm() {
     onSuccess: data => {
       if (data?.data) {
         const rmcData = {
-          user_id: data?.data?.user_id,
-          onboarding_id: data?.data?.onboarding_id,
-          verified: data?.data?.verified,
-          status: data?.data?.status,
-          current_step: data?.data?.current_step,
-          next_step: data?.data?.next_step,
-          token: data?.data?.token,
-          is_completed: data?.data?.is_completed
+          user_id: data.data.user_id,
+          onboarding_id: data.data.onboarding_id,
+          verified: data.data.verified,
+          status: data.data.status,
+          current_step: data.data.current_step,
+          next_step: data.data.next_step,
+          token: data.data.token,
+          is_completed: data.data.is_completed
         }
 
         dispatch(setRmcData(rmcData))
 
         router.replace('/rmc-onboarding-verification')
       }
-
-      setIsSubmitting(false)
     },
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || 'Failed to submit form. Please try again.'
@@ -70,18 +68,16 @@ export default function OnboardingForm() {
   })
 
   const handleFormSubmit = (data: DirectorOfRMCFormData) => {
-    if (isSubmitting || mutation.isPending) {
-      return
-    }
+    if (isSubmitting || mutation.isPending) return
 
     setIsSubmitting(true)
 
     const payload: RmcOnboardingStep1Payload = {
-      name: `${data?.fullName} ${data?.lastName}`?.trim(),
-      email: data?.email,
-      phone_no: data?.phoneNumber,
-      password: data?.password,
-      password_confirmation: data?.confirmPassword
+      name: `${data?.fullName} ${data?.lastName}`.trim(),
+      email: data.email,
+      phone_no: data.phoneNumber,
+      password: data.password,
+      password_confirmation: data.confirmPassword
     }
 
     mutation.mutate(payload)

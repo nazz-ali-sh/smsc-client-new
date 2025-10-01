@@ -37,8 +37,10 @@ const FormInput = <T extends FieldValues = FieldValues>({
   delete restSx.background
 
   const isPasswordField = type === 'password'
+  const isDateField = type === 'date'
 
-  const inputType = isPasswordField && showPasswordToggle ? (showPassword ? 'text' : 'password') : type
+  const inputType =
+    isPasswordField && showPasswordToggle ? (showPassword ? 'text' : 'password') : isDateField ? 'date' : type
 
   const handlePasswordToggle = () => setShowPassword(!showPassword)
 

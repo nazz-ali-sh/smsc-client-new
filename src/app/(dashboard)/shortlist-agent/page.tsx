@@ -21,6 +21,7 @@ import successVisit from '../../../../public/images/customImages/sucess.svg'
 
 import { finalShortListedAgent, getrmcshortlistStats } from '@/services/tender_result-apis/tender-result-api'
 import ToolTipModal from '@/common/ToolTipModal'
+import CustomLoader from '@/common/CustomLoader'
 
 export default function Pages() {
   const router = useRouter()
@@ -51,7 +52,7 @@ export default function Pages() {
 
   const tenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
-  const { data: finalShortListedResponce } = useQuery<shortListedFinalAgent, Error>({
+  const { data: finalShortListedResponce, isLoading } = useQuery<shortListedFinalAgent, Error>({
     queryKey: ['finalAgents', tenderId],
     queryFn: () => finalShortListedAgent(Number(tenderId)),
     enabled: !!tenderId,
@@ -102,108 +103,111 @@ export default function Pages() {
       <div className='py-5'>
         <HorizontalLinearStepper />
       </div>
+      {isLoading ? (
+        <CustomLoader size='large' />
+      ) : (
+        <section className='shadow-xl p-5 rounded-xl bg-white w-full'>
+          <div className='flex justify-between items-center w-full'>
+            <div>
+              <div className='flex gap-2 items-center'>
+                <Typography variant='h5' className='pl-6 font-bold  text-buttonPrimary'>
+                  SMSC Recommended Steps for Shortlisted Agents
+                </Typography>
+                <span
+                  className='cursor-pointer pl-1 pt-2'
+                  onClick={() => {
+                    setOpen(true)
+                    setModalType('shortList_agent')
+                  }}
+                >
+                  <i className='ri-information-line bg-buttonPrimary'></i>
+                </span>
+              </div>
 
-      <section className='shadow-xl p-5 rounded-xl bg-white w-full'>
-        <div className='flex justify-between items-center w-full'>
-          <div>
-            <div className='flex gap-2 items-center'>
-              <Typography variant='h5' className='pl-6 font-bold  text-buttonPrimary'>
-                SMSC Recommended Steps for Shortlisted Agents
-              </Typography>
-              <span
-                className='cursor-pointer pl-1 pt-2'
-                onClick={() => {
-                  setOpen(true)
-                  setModalType('shortList_agent')
-                }}
-              >
-                <i className='ri-information-line bg-buttonPrimary'></i>
-              </span>
+              <div className='flex gap-2 items-center'>
+                <Typography variant='h2' className='pl-6 font-bold'>
+                  Shortlisted Agents
+                </Typography>
+                <span
+                  className='cursor-pointer'
+                  onClick={() => {
+                    setOpen(true)
+                    setModalType('shortList_agent_info')
+                  }}
+                >
+                  <i className='ri-information-line bg-[#262B43E5]'></i>
+                </span>
+              </div>
             </div>
-
-            <div className='flex gap-2 items-center'>
-              <Typography variant='h2' className='pl-6 font-bold'>
-                Shortlisted Agents
-              </Typography>
-              <span
-                className='cursor-pointer'
-                onClick={() => {
-                  setOpen(true)
-                  setModalType('shortList_agent_info')
-                }}
+            <div>
+              <Button
+                onClick={() => router.push('/evaluation-matrix')}
+                variant='contained'
+                className='bg-buttonPrimary gap-x-3'
               >
-                <i className='ri-information-line bg-[#262B43E5]'></i>
-              </span>
+                <i className='ri-eye-line size-[22px]'></i> Evaluation Metric
+              </Button>
             </div>
           </div>
-          <div>
-            <Button
-              onClick={() => router.push('/evaluation-matrix')}
-              variant='contained'
-              className='bg-buttonPrimary gap-x-3'
-            >
-              <i className='ri-eye-line size-[22px]'></i> Evaluation Metric
-            </Button>
+
+          <ToolTipModal open={open} onClose={() => setOpen(false)} type={modalType} />
+
+          <ul>
+            <li className='text-[16px] font-normal leading-6'>
+              Schedule video calls with the managing agents you&apos;ve shortlisted.
+            </li>
+            <li className='text-[16px] font-normal leading-6'>
+              Click Schedule Call to book a time or request a callback.
+            </li>
+            <li className='text-[16px] font-normal leading-6'>
+              To invite others, use the video call section of your portal.
+            </li>
+            <li className='text-[16px] font-normal leading-6'>
+              Your contact details remain private for the first 3 days. This gives you time to review agent profiles and
+              do your research.
+            </li>
+            <li className='text-[16px] font-normal leading-6'>
+              If you book a meeting or request a call, your contact details will be shared with that agent immediately.
+            </li>
+          </ul>
+          <div className='flex justify-between items-center'>
+            {cardsData.map((items, index) => (
+              <div className='w-[22%]' key={index}>
+                <Card color={'primary'}>
+                  <CardContent className='flex items-center gap-x-[16px]'>
+                    <div
+                      className={`flex items-center gap-4 ${
+                        index === 0
+                          ? 'bg-sky'
+                          : index === 1
+                            ? 'bg-[#e3f9d4]'
+                            : index === 2
+                              ? 'bg-purple1'
+                              : index === 3
+                                ? 'bg-[#72E12829]'
+                                : ''
+                      } size-[40px] justify-center rounded-lg`}
+                    >
+                      {items.icons}
+                    </div>
+                    <div className='flex flex-col'>
+                      <Typography className='text-[17px] font-bold leading-28'>{items.state}</Typography>
+                      <Typography variant='body1' color='text.primary'>
+                        {items.descrption}
+                      </Typography>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            ))}
           </div>
-        </div>
-
-        <ToolTipModal open={open} onClose={() => setOpen(false)} type={modalType} />
-
-        <ul>
-          <li className='text-[16px] font-normal leading-6'>
-            Schedule video calls with the managing agents you&apos;ve shortlisted.
-          </li>
-          <li className='text-[16px] font-normal leading-6'>
-            Click Schedule Call to book a time or request a callback.
-          </li>
-          <li className='text-[16px] font-normal leading-6'>
-            To invite others, use the video call section of your portal.
-          </li>
-          <li className='text-[16px] font-normal leading-6'>
-            Your contact details remain private for the first 3 days. This gives you time to review agent profiles and
-            do your research.
-          </li>
-          <li className='text-[16px] font-normal leading-6'>
-            If you book a meeting or request a call, your contact details will be shared with that agent immediately.
-          </li>
-        </ul>
-        <div className='flex justify-between items-center'>
-          {cardsData.map((items, index) => (
-            <div className='w-[22%]' key={index}>
-              <Card color={'primary'}>
-                <CardContent className='flex items-center gap-x-[16px]'>
-                  <div
-                    className={`flex items-center gap-4 ${
-                      index === 0
-                        ? 'bg-sky'
-                        : index === 1
-                          ? 'bg-[#e3f9d4]'
-                          : index === 2
-                            ? 'bg-purple1'
-                            : index === 3
-                              ? 'bg-[#72E12829]'
-                              : ''
-                    } size-[40px] justify-center rounded-lg`}
-                  >
-                    {items.icons}
-                  </div>
-                  <div className='flex flex-col'>
-                    <Typography className='text-[17px] font-bold leading-28'>{items.state}</Typography>
-                    <Typography variant='body1' color='text.primary'>
-                      {items.descrption}
-                    </Typography>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          ))}
-        </div>
-        {finalShortListedResponce ? (
-          <DetailedReview finalShortListedResponce={finalShortListedResponce} />
-        ) : (
-          'Data Not Found'
-        )}
-      </section>
+          {finalShortListedResponce ? (
+            <DetailedReview finalShortListedResponce={finalShortListedResponce} />
+          ) : (
+            'Data Not Found'
+          )}
+        </section>
+      )}
     </>
   )
 }

@@ -1,9 +1,11 @@
 import React from 'react'
 
+import InsuranceForm from '@/views/InsuranceForm'
+
 const page = () => {
   return (
-    <div className='flex justify-center items-center h-[80vh] '>
-      <p>Coming Soon!</p>
+    <div className='min-h-screen  py-8'>
+      <InsuranceForm />
     </div>
   )
 }
