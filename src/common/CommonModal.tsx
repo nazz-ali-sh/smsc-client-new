@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import React from 'react'
 
-import type { DialogProps } from '@mui/material'
+import type { DialogProps, SxProps, Theme } from '@mui/material'
 import { Dialog, DialogTitle, DialogContent, IconButton, Typography } from '@mui/material'
 
 export interface CommonModalProps {
@@ -11,6 +11,8 @@ export interface CommonModalProps {
   children: ReactNode
   maxWidth?: DialogProps['maxWidth']
   fullWidth?: boolean
+  headerSx?: SxProps<Theme>
+  isBorder?: boolean
 }
 
 const CommonModal: React.FC<CommonModalProps> = ({
@@ -19,7 +21,9 @@ const CommonModal: React.FC<CommonModalProps> = ({
   header,
   children,
   maxWidth = 'sm',
-  fullWidth = true
+  fullWidth = true,
+  headerSx,
+  isBorder = false
 }) => {
   return (
     <Dialog
@@ -40,10 +44,15 @@ const CommonModal: React.FC<CommonModalProps> = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            p: 2
+            p: 2,
+            ...(isBorder && {
+              borderBottom: '2px solid #0000001C'
+            })
           }}
         >
-          <Typography variant='h6'>{header}</Typography>
+          <Typography variant='h6' sx={headerSx}>
+            {header}
+          </Typography>
           <IconButton onClick={handleClose}>
             <i className='ri-close-line'></i>
           </IconButton>

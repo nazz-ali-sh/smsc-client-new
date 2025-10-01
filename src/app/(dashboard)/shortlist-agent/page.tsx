@@ -178,15 +178,31 @@ export default function Pages() {
                     <div
                       className={`flex items-center gap-4 ${
                         index === 0
-                          ? 'bg-sky'
+                          ? 'bg-[#CBEFFB]'
                           : index === 1
-                            ? 'bg-[#e3f9d4]'
+                            ? 'bg-[#E3F9D4]'
                             : index === 2
-                              ? 'bg-purple1'
+                              ? 'bg-[#3B72ED29]'
                               : index === 3
-                                ? 'bg-[#72E12829]'
+                                ? 'bg-[#0B295229]'
                                 : ''
                       } size-[40px] justify-center rounded-lg`}
+                      style={{
+                        color:
+                          index === 0
+                            ? '#35C0ED'
+                            : index === 1
+                              ? '#72E128'
+                              : index === 2
+                                ? '#3B72ED'
+                                : index === 3
+                                  ? '#0B2952'
+                                  : 'inherit',
+                        filter:
+                          index === 3
+                            ? 'brightness(0) saturate(100%) invert(12%) sepia(94%) saturate(7491%) hue-rotate(210deg) brightness(15%) contrast(100%)'
+                            : 'none'
+                      }}
                     >
                       {items.icons}
                     </div>

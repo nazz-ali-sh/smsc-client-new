@@ -56,6 +56,8 @@ const BudgetConfirmationModal = ({
       header='Thank You for Providing Your Budget'
       maxWidth='md'
       fullWidth
+      headerSx={{ color: '#1F4E8D', fontSize: '26px', fontWeight: 600 }}
+      isBorder
     >
       <div className='p-6'>
         <div className='mb-6 space-y-3'>

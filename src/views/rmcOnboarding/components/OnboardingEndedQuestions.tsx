@@ -200,7 +200,15 @@ const OnboardingEndedQuestions = () => {
         </div>
       </div>
       {open && (
-        <CommonModal isOpen={open} handleClose={() => setOpen(false)} header='Thank You !' maxWidth='sm' fullWidth>
+        <CommonModal
+          isOpen={open}
+          handleClose={() => setOpen(false)}
+          header='Thank You !'
+          maxWidth='sm'
+          fullWidth
+          headerSx={{ color: '#1F4E8D', fontSize: '26px', fontWeight: 600 }}
+          isBorder
+        >
           <p className='text-[#696969] text-base font-normal'>
             Thanks! Your tender is now under review. You will be notified when it goes live and when the results are in.
             Tenders typically run for 5 days. Quotes will start arriving soon."

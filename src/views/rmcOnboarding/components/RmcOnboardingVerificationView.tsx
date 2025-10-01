@@ -122,12 +122,7 @@ const RmcOnboardingVerificationView = () => {
             })}
           </div>
         </div>
-        <CustomButton
-          onClick={handleBack}
-          startIcon={<i className='ri-arrow-left-line'></i>}
-          variant='outlined'
-          sx={{ fontSize: '16px', fontWeight: 700 }}
-        >
+        <CustomButton onClick={handleBack} startIcon={<i className='ri-arrow-left-line'></i>} variant='outlined'>
           Back
         </CustomButton>
       </div>

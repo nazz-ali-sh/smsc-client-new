@@ -294,7 +294,6 @@ export default function OnboardingOtp() {
             <CustomButton
               variant='outlined'
               disabled={mutation?.isPending || resendMutation?.isPending}
-              sx={{ fontSize: '12px', borderRadius: '4px' }}
               onClick={handleBack}
               startIcon={<i className='ri-arrow-left-line'></i>}
             >
