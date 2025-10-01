@@ -138,19 +138,22 @@ const KitchenSink = () => {
 
   useEffect(() => {
     if (responceData?.data?.responses) {
-      const mappedData: DataType[] = responceData?.data?.responses.map((item: ApiResponseItem) => ({
-        id: item.response_id,
+      const mappedData: DataType[] = responceData?.data?.responses?.map((item: ApiResponseItem) => ({
+        id: item?.response_id,
         pma_id: item?.pma_user_id,
-        avatar: item.company_name.substring(0, 2).toUpperCase(),
-        fullName: item.company_name,
-        submittedDate: item.response_details.submitted_at
-          ? new Date(item.response_details.submitted_at).toLocaleDateString('en-GB')
+        avatar: item?.company_name?.substring(0, 2)?.toUpperCase(),
+        fullName: item?.company_name,
+        submittedDate: item?.response_details?.submitted_at
+          ? new Date(item?.response_details?.submitted_at)?.toLocaleDateString('en-GB')
           : 'N/A',
-        quotation: item.quotation.total_quote_inc_vat.toLocaleString('en-US', { style: 'currency', currency: 'GBP' }),
-        location: item.location.address || 'N/A',
-        NoOfUnits: item.company_metrics.total_units_managed ?? item.quotation.per_unit_equivalent_inc_vat ?? 'N/A',
-        googleReview: item.reviews.google.rating || 0,
-        tradingYears: item.company_metrics.trading_years ?? 'N/A',
+        quotation: item?.quotation?.total_quote_inc_vat?.toLocaleString('en-US', {
+          style: 'currency',
+          currency: 'GBP'
+        }),
+        location: item?.location?.address || 'N/A',
+        NoOfUnits: item?.company_metrics?.total_units_managed ?? item?.quotation?.per_unit_equivalent_inc_vat ?? 'N/A',
+        googleReview: item?.reviews?.google?.rating || 0,
+        tradingYears: item?.company_metrics?.trading_years ?? 'N/A',
         Questionaire: 'View agent Response & Quote'
       }))
 

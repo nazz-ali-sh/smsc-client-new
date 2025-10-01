@@ -44,7 +44,7 @@ const OnboardingAddress = () => {
   const [resetMapTrigger, setResetMapTrigger] = useState(0)
   const hasAttemptedFetch = useRef(false)
 
-  const { addresses, currentPostcode } = useSelector((state: RootState) => state.postcode)
+  const { addresses, currentPostcode } = useSelector((state: any) => state.postcode)
   const { selectedAddress, rmcData } = useSelector((state: RootState) => state.rmcOnboarding)
   const { data: onboardingData, invalidateCache } = useRmcOnboardingData()
 
@@ -120,7 +120,7 @@ const OnboardingAddress = () => {
 
       if (savedData?.address_type === 'api' && addresses && addresses?.length > 0) {
         const foundAddress = addresses?.find(
-          address =>
+          (address: any) =>
             address?.line_1 === savedData?.address &&
             address?.line_2 === savedData?.address_line2 &&
             (address as any).line_3 === savedData?.address_line3 &&
@@ -191,7 +191,7 @@ const OnboardingAddress = () => {
     setManualAddressData(null)
     setResetMapTrigger(prev => prev + 1)
 
-    const address = addresses?.find(addr => {
+    const address = addresses?.find((addr: any) => {
       const addrId =
         `${addr?.line_1 || ''}-${addr?.line_2 || ''}-${(addr as any)?.line_3 || ''}-${addr?.postcode || ''}`
           ?.replace(/\s+/g, '-')
@@ -422,7 +422,7 @@ const OnboardingAddress = () => {
                   }
                 }}
               >
-                {addresses?.map(address => {
+                {addresses?.map((address: any) => {
                   const addressId =
                     `${address.line_1 || ''}-${address.line_2 || ''}-${(address as any).line_3 || ''}-${address.postcode || ''}`
                       ?.replace(/\s+/g, '-')
