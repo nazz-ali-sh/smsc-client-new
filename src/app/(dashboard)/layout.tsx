@@ -16,26 +16,18 @@ import ScrollToTop from '@core/components/scroll-to-top'
 
 // Util Imports
 import { getSystemMode } from '@core/utils/serverHelpers'
-import Header from '@/components/layout/horizontal/Header'
 import HorizontalFooter from '@components/layout/horizontal/Footer'
 
-import { getDictionary } from '@/utils/getDictionary'
-
-const Layout = async ({ children, params }: ChildrenType & { params: { lang: Locale } }) => {
+const Layout = async ({ children }: ChildrenType & { params: { lang: Locale } }) => {
   // Vars
   const direction = 'ltr'
   const systemMode = getSystemMode()
-  const dictionary = await getDictionary(params.lang)
 
   return (
     <Providers direction={direction}>
       <LayoutWrapper
         systemMode={systemMode}
-        horizontalLayout={
-          <HorizontalLayout header={<Header dictionary={dictionary} />} footer={<HorizontalFooter />}>
-            {children}
-          </HorizontalLayout>
-        }
+        horizontalLayout={<HorizontalLayout footer={<HorizontalFooter />}>{children}</HorizontalLayout>}
       />
       <ScrollToTop className='mui-fixed'>
         <Button
