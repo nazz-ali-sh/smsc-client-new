@@ -5,12 +5,10 @@ import { Dialog, DialogTitle, DialogContent, Typography, Box, IconButton, useThe
 interface ToolTipModalProps {
   open: boolean
   onClose: () => void
-  companyName?: any
 }
 
-const ContactModal: React.FC<ToolTipModalProps> = ({ open, onClose, companyName }) => {
+const ContactModal: React.FC<ToolTipModalProps> = ({ open, onClose }) => {
   const theme = useTheme()
-  const companyNames = companyName[0]?.company_details?.name || ''
 
   return (
     <Dialog
@@ -62,9 +60,7 @@ const ContactModal: React.FC<ToolTipModalProps> = ({ open, onClose, companyName 
                 paddingY: '6px',
                 fontSize: '0.875rem'
               }}
-            >
-              {companyNames ? companyNames : 'No data found'}
-            </Box>
+            ></Box>
 
             <>
               <Box

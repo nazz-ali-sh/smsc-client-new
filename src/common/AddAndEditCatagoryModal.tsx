@@ -1,28 +1,17 @@
 'use client'
 import React from 'react'
 
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Typography,
-  Box,
-  IconButton,
-  useTheme,
-  Divider,
-  TextField,
-  Button
-} from '@mui/material'
-import { useForm, Controller } from 'react-hook-form'
+import { Dialog, DialogTitle, DialogContent, Typography, Box, IconButton, useTheme, Divider } from '@mui/material'
+import { useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import * as v from 'valibot'
-import { useMutation } from '@tanstack/react-query'
-
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { string, pipe, nonEmpty } from 'valibot'
-
 import { useSelector } from 'react-redux'
 
 import { addEMetric, editEMetric } from '@/services/evaluation_matrix/evaluation_matrix'
+import FormInput from '@/components/form-components/FormInput'
+import CustomButton from './CustomButton'
 
 interface ToolTipModalProps {
   open: boolean
@@ -35,7 +24,6 @@ interface ToolTipModalProps {
 }
 
 // ✅ Valibot Schema
-
 export const categorySchema = v.object({
   categoryName: pipe(string(), v.nonEmpty('Category Name is required')),
   weight: v.pipe(v.string(), v.nonEmpty('Weight is required')),
@@ -46,7 +34,7 @@ type CategoryFormValues = v.InferOutput<typeof categorySchema>
 
 const AddAndEditCatagoryModal: React.FC<ToolTipModalProps> = ({ open, onClose, types, categoryData }) => {
   const theme = useTheme()
-
+  const queryClient = useQueryClient()
   const tenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   const {
@@ -67,7 +55,7 @@ const AddAndEditCatagoryModal: React.FC<ToolTipModalProps> = ({ open, onClose, t
     if (types === 'edit' && categoryData) {
       reset({
         categoryName: categoryData?.name || '',
-        weight: categoryData?.default_weight || '',
+        weight: String(categoryData?.default_weight) || '',
         description: categoryData?.description || ''
       })
     } else if (types === 'add') {
@@ -79,24 +67,17 @@ const AddAndEditCatagoryModal: React.FC<ToolTipModalProps> = ({ open, onClose, t
     }
   }, [types, categoryData, reset])
 
-  // ✅ Single mutation for both Add & Edit
   const mutation = useMutation({
     mutationFn: (data: CategoryFormValues) => {
       if (types === 'edit') {
-        return editEMetric(
-          categoryData?.id,
-          tenderId,
-          data.categoryName,
-          data.description,
-          Number(data.weight),
-          true
-        )
+        return editEMetric(categoryData?.id, tenderId, data.categoryName, data.description, Number(data.weight), true)
       } else {
         return addEMetric(tenderId, data.categoryName, data.description, Number(data.weight), true)
       }
     },
     onSuccess: res => {
       console.log(`${types === 'edit' ? 'Metric updated' : 'Metric added'} successfully:`, res)
+      queryClient.invalidateQueries({ queryKey: ['metrix', tenderId] })
       onClose?.()
     },
     onError: err => {
@@ -139,11 +120,11 @@ const AddAndEditCatagoryModal: React.FC<ToolTipModalProps> = ({ open, onClose, t
           </IconButton>
         </Box>
         <Typography
-          variant='h5'
           sx={{
             color: theme.colorSchemes.light.palette.customColors.darkGray1,
-            fontSize: '12px',
-            marginTop: '10px'
+            fontSize: '15px',
+            marginTop: '10px',
+            fontWeight: '400'
           }}
         >
           Add your category here
@@ -153,91 +134,59 @@ const AddAndEditCatagoryModal: React.FC<ToolTipModalProps> = ({ open, onClose, t
         </Box>
       </DialogTitle>
 
-      <DialogContent sx={{ px: 3, mt: 6 }}>
+      <DialogContent sx={{ px: 3 }}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box display='flex' flexDirection='column' gap={3}>
-            <Controller
+            <FormInput
               name='categoryName'
               control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  label='Category Name'
-                  variant='outlined'
-                  error={!!errors.categoryName}
-                  helperText={errors.categoryName?.message as string}
-                />
-              )}
+              label='Category Name'
+              type='text'
+              error={!!errors.categoryName}
+              helperText={errors.categoryName?.message as string}
+              inputProps={{ maxLength: 40 }}
+              sx={{ marginTop: '14px' }}
             />
 
-            <Controller
+            <FormInput
               name='weight'
               control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  sx={{ marginTop: '14px' }}
-                  fullWidth
-                  type='number'
-                  inputProps={{ min: 0.5, max: 1.5, step: 0.25 }}
-                  label='Default weight'
-                  variant='outlined'
-                  error={!!errors.weight}
-                  helperText={errors.weight?.message as string}
-                />
-              )}
+              label='Default Weightage'
+              type='number'
+              inputProps={{ min: 0.5, max: 1.5, step: 0.25 }}
+              sx={{ marginTop: '14px' }}
             />
 
-            <Controller
+            <FormInput
               name='description'
               control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  sx={{ marginTop: '22px' }}
-                  fullWidth
-                  label='Category Description'
-                  multiline
-                  rows={4}
-                  variant='outlined'
-                  error={!!errors.description}
-                  helperText={errors.description?.message as string}
-                />
-              )}
+              label='Category Description'
+              type='text'
+              multiline
+              rows={4}
+              error={!!errors.description}
+              helperText={errors.description?.message as string}
+              inputProps={{ maxLength: 60 }}
+              sx={{ marginTop: '22px' }}
             />
           </Box>
 
           <div className='flex justify-end items-end gap-x-[12px] mt-[34px]'>
-            <Button
-              onClick={onClose}
-              variant='outlined'
-              className='bg-white gap-x-3 border-[buttonPrimary] py-[10px] px-7'
-            >
+            <CustomButton onClick={onClose} variant='outlined'>
               Cancel
-            </Button>
+            </CustomButton>
 
             {types === 'edit' ? (
               <div className='flex justify-end mt-8'>
-                <Button
-                  type='submit'
-                  variant='contained'
-                  className='bg-buttonPrimary gap-x-3 py-3 px-7'
-                  disabled={mutation.isPending}
-                >
+                <CustomButton type='submit' variant='contained' disabled={mutation.isPending}>
                   {mutation.isPending ? 'Saving...' : 'Save'}
-                </Button>
+                </CustomButton>
               </div>
             ) : (
               <div className='flex justify-end mt-8'>
-                <Button
-                  type='submit'
-                  variant='contained'
-                  className='bg-buttonPrimary gap-x-3 py-3 px-9'
-                  disabled={mutation.isPending}
-                >
+                <CustomButton type='submit' variant='contained' disabled={mutation.isPending}>
                   {mutation.isPending ? 'Adding...' : 'Add'}
-                </Button>
+                </CustomButton>
               </div>
             )}
           </div>

@@ -19,10 +19,15 @@ const EvaluationMatrix = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [evaluationData, setEvaluationData] = useState<any[]>([])
 
+  const [pmaScoreValue, setPmaScoreValue] = useState({
+    pmascoreValue: '',
+    pmaScoreIndex: 0
+  })
+
   const [isSaved, setIsSaved] = useState(false)
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
-  const [isScored, setisScored] = useState(false)
+  const [isScored, setisScored] = useState(true)
   const [isOpenCatagory, setIsOpenCatagory] = useState(false)
 
   const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
@@ -31,23 +36,17 @@ const EvaluationMatrix = () => {
     queryKey: ['shortlistedPMAs', tender_id],
     queryFn: () => finalShortListedAgent(Number(tender_id)),
     enabled: !!tender_id,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    retry: 2
   })
 
   const { data: metrixCategories } = useQuery({
     queryKey: ['metrix', tender_id],
     queryFn: () => gettingmetrixDetails(Number(tender_id)),
     enabled: !!tender_id,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    retry: 2
   })
-
-  console.log(metrixCategories)
-
-  useEffect(() => {
-    if (metrixCategories) {
-      setEvaluationData(metrixCategories)
-    }
-  }, [metrixCategories])
 
   const pmaColumns = useMemo(() => {
     if (shortlistedPMAs?.data?.shortlisted_pmas?.length > 0) {
@@ -59,12 +58,11 @@ const EvaluationMatrix = () => {
     return []
   }, [shortlistedPMAs])
 
-  // Create initial evaluation data
   const createInitialEvaluationData = useCallback(
     (pmaColumns: string[]) => {
       if (!metrixCategories) return []
 
-      return metrixCategories.map((category: { category_id: any; name: any; description: any; weight: any }) => {
+      return metrixCategories.map((category: { id: any; name: any; description: any; default_weight: any }) => {
         const pmaColumnsData = pmaColumns.reduce(
           (acc: Record<string, string>, column: string) => {
             acc[column] = ''
@@ -75,10 +73,10 @@ const EvaluationMatrix = () => {
         )
 
         return {
-          category_id: category?.category_id,
+          category_id: category?.id,
           name: category?.name,
           description: category?.description,
-          weight: category?.weight,
+          weight: category?.default_weight,
           ...pmaColumnsData
         }
       })
@@ -108,7 +106,8 @@ const EvaluationMatrix = () => {
             category_id: item.category.id,
             name: item.category.name,
             description: item.category.description,
-            weight: item.weight
+            weight: item.weight,
+            scores: item.scores || []
           }
 
           if (item.scores?.length > 0) {
@@ -205,6 +204,11 @@ const EvaluationMatrix = () => {
   }
 
   const handleInputChange = (categoryIndex: number, field: string, value: string) => {
+    setPmaScoreValue({
+      pmascoreValue: value,
+      pmaScoreIndex: categoryIndex
+    })
+
     if (field === 'weight' && value !== '') {
       if (!validateWeighting(value)) return showToast('Weighting must be between 0.5 and 1.5')
     } else if (pmaColumns.includes(field) && value !== '') {
@@ -297,11 +301,19 @@ const EvaluationMatrix = () => {
                 </div>
               )}
             </div>
+
             <Typography sx={{ marginTop: '16px', color: '#262B43E5', fontWeight: 400, fontSize: '16px' }}>
               Use this matrix to score each shortlisted managing agent on a scale of 1 to 10 during your video calls and
-              site visits. You can print a copy to take handwritten notes, then return to your portal to enter final
-              scores. Your saved weightings will be applied automatically, and the results will be shown in your Final
-              Report. Note: once saved, your matrix cannot be changed
+              site visits.
+            </Typography>
+            <Typography sx={{ marginTop: '16px', color: '#262B43E5', fontWeight: 400, fontSize: '16px' }}>
+              You can print a copy to take handwritten notes, then return to your portal to enter final scores.
+            </Typography>
+            <Typography sx={{ marginTop: '16px', color: '#262B43E5', fontWeight: 400, fontSize: '16px' }}>
+              Your saved weightings will be applied automatically, and the results will be shown in your Final Report.
+            </Typography>
+            <Typography sx={{ marginTop: '16px', color: '#262B43E5', fontWeight: 400, fontSize: '16px' }}>
+              Note: once saved, your matrix cannot be changed.
             </Typography>
 
             <Typography
@@ -346,11 +358,10 @@ const EvaluationMatrix = () => {
                         style={{
                           padding: '24px',
                           textAlign: 'left',
-                          border: '1px solid #e0e0e0',
                           backgroundColor: '#f8f9fa',
-                          fontWeight: 'bold',
-                          fontSize: '14px',
-                          color: '#333'
+                          fontWeight: 'normal',
+                          fontSize: '12px',
+                          color: '#262B43'
                         }}
                       >
                         CATEGORY
@@ -359,11 +370,10 @@ const EvaluationMatrix = () => {
                         style={{
                           padding: '24px',
                           textAlign: 'center',
-                          border: '1px solid #e0e0e0',
                           backgroundColor: '#f8f9fa',
-                          fontWeight: 'bold',
+                          fontWeight: 'normal',
                           fontSize: '14px',
-                          color: '#333'
+                          color: '#262B43'
                         }}
                       >
                         Weighting
@@ -375,11 +385,10 @@ const EvaluationMatrix = () => {
                             style={{
                               padding: '24px',
                               textAlign: 'center',
-                              border: '1px solid #e0e0e0',
                               backgroundColor: '#f8f9fa',
-                              fontWeight: 'bold',
-                              fontSize: '14px',
-                              color: '#333'
+                              fontWeight: 'normal',
+                              fontSize: '12px',
+                              color: '#262B43'
                             }}
                           >
                             {pma}
@@ -390,11 +399,10 @@ const EvaluationMatrix = () => {
                           style={{
                             padding: '24px',
                             textAlign: 'center',
-                            border: '1px solid #e0e0e0',
                             backgroundColor: '#f8f9fa',
-                            fontWeight: 'bold',
+                            fontWeight: 'normal',
                             fontSize: '14px',
-                            color: '#666',
+                            color: '#262B43',
                             fontStyle: 'italic'
                           }}
                         >
@@ -405,12 +413,28 @@ const EvaluationMatrix = () => {
                   </thead>
 
                   <tbody>
-                    {evaluationData?.map((category: any, categoryIndex) => (
+                    {evaluationData?.map((category: any, categoryIndex: number) => (
                       <tr key={categoryIndex}>
+                        {/* Category Name & Description */}
+
                         <td
-                          style={{ padding: '16px', border: '1px solid #e0e0e0', verticalAlign: 'top', width: '300px' }}
+                          style={{
+                            padding: '16px',
+                            borderBottom: '1px solid #e0e0e0',
+                            verticalAlign: 'top',
+                            width: '300px'
+                          }}
                         >
-                          <Typography variant='body2' sx={{ fontWeight: 'bold', marginBottom: '4px' }}>
+                          <Typography
+                            variant='body2'
+                            sx={{
+                              fontWeight: 'bold',
+                              marginBottom: '4px',
+                              color: '#262B43',
+                              fontSize: '14px',
+                              lineHeight: '24px'
+                            }}
+                          >
                             {category.name}
                           </Typography>
                           <Typography variant='caption' sx={{ color: '#666', fontSize: '12px' }}>
@@ -418,12 +442,13 @@ const EvaluationMatrix = () => {
                           </Typography>
                         </td>
 
-                        {!isScored == true ? (
-                          <td style={{ padding: '8px', border: '1px solid #e0e0e0', textAlign: 'center' }}>
+                        {/* Weight Column */}
+                        {!isScored ? (
+                          <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0', textAlign: 'center' }}>
                             <TextField
                               type='number'
                               size='small'
-                              value={category?.weight > 1.5 ? 0 : category?.default_weight || '--'}
+                              value={category?.weight > 1.5 ? 0 : category?.weight || ''}
                               onChange={e => handleInputChange(categoryIndex, 'weight', e.target.value)}
                               placeholder='--'
                               inputProps={{ min: 0.5, max: 1.5, step: 0.25 }}
@@ -431,31 +456,50 @@ const EvaluationMatrix = () => {
                             />
                           </td>
                         ) : (
-                          <td style={{ padding: '8px', border: '1px solid #e0e0e0', textAlign: 'center' }}>
-                            {category?.default_weight > 1.5 ? 0 : category?.default_weight || '--'}
+                          <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0', textAlign: 'center' }}>
+                            {category?.weight > 1.5 ? 0 : category?.weight || '--'}
                           </td>
                         )}
 
+                        {/* PMA Columns */}
                         {pmaColumns.length > 0 ? (
                           pmaColumns.map((pma: string, pmaIndex: number) => (
-                            <td
-                              key={pmaIndex}
-                              style={{ padding: '8px', border: '1px solid #e0e0e0', textAlign: 'center' }}
-                            >
-                              {!isScored ? (
-                                <TextField
-                                  type='number'
-                                  size='small'
-                                  value={category[pma as keyof typeof category] ?? ''}
-                                  onChange={e => handleInputChange(categoryIndex, pma, e.target.value)}
-                                  placeholder='--'
-                                  inputProps={{ min: 1, max: 10, step: 1 }}
-                                  sx={{ width: '80px' }}
-                                />
-                              ) : (
-                                category[pma as keyof typeof category] || '--'
-                              )}
-                            </td>
+                            <>
+                              <td
+                                key={pmaIndex}
+                                style={{
+                                  padding: '8px',
+                                  borderBottom: '1px solid #e0e0e0',
+                                  textAlign: 'center'
+                                }}
+                              >
+                                {!isScored ? (
+                                  <TextField
+                                    type='number'
+                                    size='small'
+                                    value={category[pma as keyof typeof category] ?? ''}
+                                    onChange={e => handleInputChange(categoryIndex, pma, e.target.value)}
+                                    placeholder='--'
+                                    inputProps={{ min: 0, max: 10, step: 1 }}
+                                    sx={{ width: '80px' }}
+                                  />
+                                ) : (
+                                  category[pma as keyof typeof category] || '--'
+                                )}
+                                <div className='text-green-600 mt-2'>
+                                  <span className=''>
+                                    {category?.weight} *
+                                    {pmaScoreValue?.pmaScoreIndex == categoryIndex ? pmaScoreValue?.pmascoreValue : '0'}
+                                  </span>
+                                  <span className='pr-2'> = </span>
+                                  <span>
+                                    {pmaScoreValue?.pmaScoreIndex === categoryIndex
+                                      ? Number(category?.weight) * Number(pmaScoreValue?.pmascoreValue)
+                                      : 0}
+                                  </span>
+                                </div>
+                              </td>
+                            </>
                           ))
                         ) : (
                           <td
@@ -472,13 +516,14 @@ const EvaluationMatrix = () => {
                         )}
                       </tr>
                     ))}
+
+                    {/* Totals Row */}
                     <tr>
                       <td
                         style={{
                           padding: '16px',
-                          border: '1px solid #e0e0e0',
                           fontWeight: 'bold',
-                          backgroundColor: '#f8f9fa'
+                          borderBottom: '1px solid #e0e0e0'
                         }}
                       >
                         TOTAL
@@ -486,9 +531,8 @@ const EvaluationMatrix = () => {
                       <td
                         style={{
                           padding: '8px',
-                          border: '1px solid #e0e0e0',
                           textAlign: 'center',
-                          backgroundColor: '#f8f9fa'
+                          borderBottom: '1px solid #e0e0e0'
                         }}
                       >
                         <Typography variant='body2' sx={{ color: '#333', fontWeight: 'bold' }}>
@@ -501,9 +545,8 @@ const EvaluationMatrix = () => {
                             key={index}
                             style={{
                               padding: '8px',
-                              border: '1px solid #e0e0e0',
                               textAlign: 'center',
-                              backgroundColor: '#f8f9fa'
+                              borderBottom: '1px solid #e0e0e0'
                             }}
                           >
                             <Typography variant='body2' sx={{ color: '#333', fontWeight: 'bold' }}>
@@ -515,10 +558,10 @@ const EvaluationMatrix = () => {
                         <td
                           style={{
                             padding: '8px',
-                            border: '1px solid #e0e0e0',
                             textAlign: 'center',
-                            backgroundColor: '#f8f9fa',
                             color: '#666',
+                            borderBottom: '1px solid #e0e0e0',
+
                             fontStyle: 'italic'
                           }}
                         >
@@ -530,31 +573,16 @@ const EvaluationMatrix = () => {
                 </table>
               </Box>
 
-              <div className='flex justify-end items-end gap-x-[40px]'>
+              <div className='flex justify-end items-end gap-x-[20px]'>
                 <div className='flex justify-end mt-8'>
-                  <Button
-                    onClick={() => setIsOpenCatagory(true)}
-                    variant='contained'
-                    className='bg-buttonPrimary gap-x-3'
-                  >
-                    update category
-                  </Button>
+                  <CustomButton onClick={() => setIsOpenCatagory(true)} variant='contained'>
+                    Update Category
+                  </CustomButton>
                 </div>
 
                 {!isScored ? (
                   <div className='mt-8 flex justify-end'>
-                    <CustomButton
-                      onClick={() => handleSaveEvaluation()}
-                      disabled={isSaving || isSaved}
-                      sx={{
-                        fontSize: '16px',
-                        fontWeight: 700,
-                        backgroundColor: '#35C0ED',
-
-                        '&:hover': { backgroundColor: isSaved ? '#28a745' : '#2BA8D1' },
-                        '&:disabled': { backgroundColor: isSaved ? '#2BA8D1' : '#2BA8D1' }
-                      }}
-                    >
+                    <CustomButton onClick={() => handleSaveEvaluation()} disabled={isSaving || isSaved}>
                       {isSaving ? 'Saving...' : 'Save Evaluation'}
                     </CustomButton>
                   </div>
@@ -568,7 +596,12 @@ const EvaluationMatrix = () => {
               </div>
             </div>
           </div>
-          <CommonModal isOpen={isOpen} handleClose={handleModalClose} header='How to use Evaluation Matrix'>
+          <CommonModal
+            isOpen={isOpen}
+            maxWidth='md'
+            handleClose={handleModalClose}
+            header='How to use Evaluation Matrix'
+          >
             <EvaluationInstructions />
           </CommonModal>
           <Snackbar

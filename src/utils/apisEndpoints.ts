@@ -154,7 +154,7 @@ export const apiEndpoints = {
   eveluationCatagories: (tender_id: number) => `rmc/evaluation-categories?tender_id=${tender_id}`,
 
   gettingCalanderData: (tender_id: number, status: string, type: string, month: string, date: string) =>
-    `rmc/calendar?tender_id=8&view=${status}&type=${type}&month=${month}&date=${date}`,
+    `rmc/calendar?tender_id=${tender_id}&view=${status}&type=${type}&month=${month}&date=${date}`,
 
   addEvaluationMetric: () => 'rmc/evaluation-categories',
 

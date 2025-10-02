@@ -1,13 +1,10 @@
 'use client'
 
-// React Imports
 import { useRef, useState } from 'react'
 import type { MouseEvent } from 'react'
 
-// Next Imports
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 
-// MUI Imports
 import { styled } from '@mui/material/styles'
 import Badge from '@mui/material/Badge'
 import Avatar from '@mui/material/Avatar'
@@ -19,17 +16,14 @@ import MenuList from '@mui/material/MenuList'
 import Typography from '@mui/material/Typography'
 import MenuItem from '@mui/material/MenuItem'
 
-// Redux Imports
 import { useDispatch } from 'react-redux'
 
-// Hook Imports
 import { useSettings } from '@core/hooks/useSettings'
 
-// Utils Imports
 import { clearTokenCookie } from '@/utils/tokenSync'
 import { clearRmcData } from '@/redux-store/slices/rmcOnboardingSlice'
+import { routesWithNavbarContent } from '@/constants'
 
-// Styled component for badge content
 const BadgeContentSpan = styled('span')({
   width: 8,
   height: 8,
@@ -40,17 +34,17 @@ const BadgeContentSpan = styled('span')({
 })
 
 const UserDropdown = () => {
-  // States
   const [open, setOpen] = useState(false)
 
-  // Refs
   const anchorRef = useRef<HTMLDivElement>(null)
 
-  // Hooks
   const router = useRouter()
+  const pathname = usePathname()
   const dispatch = useDispatch()
 
   const { settings } = useSettings()
+
+  const isOnboardingRoute = routesWithNavbarContent.some(route => pathname.includes(route))
 
   const handleDropdownOpen = () => {
     !open ? setOpen(true) : setOpen(false)
@@ -117,16 +111,21 @@ const UserDropdown = () => {
             >
               <ClickAwayListener onClickAway={e => handleDropdownClose(e as MouseEvent | TouchEvent)}>
                 <MenuList>
-                  <MenuItem className='gap-3 pli-4' onClick={e => handleDropdownClose(e, '/my-accounts')}>
-                    <Typography color='text.primary'>My Account</Typography>
-                  </MenuItem>
-                  <MenuItem className='gap-3 pli-4' onClick={e => handleDropdownClose(e, '/set-availability')}>
-                    <Typography color='text.primary'>Set Availability </Typography>
-                  </MenuItem>
-
-                  <MenuItem className='gap-3 pli-4' onClick={hanldeArchive}>
-                    <Typography color='text.primary'>Archive</Typography>
-                  </MenuItem>
+                  {!isOnboardingRoute && (
+                    <MenuItem className='gap-3 pli-4' onClick={e => handleDropdownClose(e, '/my-accounts')}>
+                      <Typography color='text.primary'>My Account</Typography>
+                    </MenuItem>
+                  )}
+                  {!isOnboardingRoute && (
+                    <MenuItem className='gap-3 pli-4' onClick={e => handleDropdownClose(e, '/set-availability')}>
+                      <Typography color='text.primary'>Set Availability </Typography>
+                    </MenuItem>
+                  )}
+                  {!isOnboardingRoute && (
+                    <MenuItem className='gap-3 pli-4' onClick={hanldeArchive}>
+                      <Typography color='text.primary'>Archive</Typography>
+                    </MenuItem>
+                  )}
                   <MenuItem className='gap-3 pli-4' onClick={handleSignOut}>
                     <Typography color='text.primary'>Sign out</Typography>
                   </MenuItem>

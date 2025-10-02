@@ -12,9 +12,13 @@ import {
   Divider,
   Button
 } from '@mui/material'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { useSelector } from 'react-redux'
+
+import { toast } from 'react-toastify'
+
+import type { AxiosError } from 'axios'
 
 import { removeMatric } from '@/services/evaluation_matrix/evaluation_matrix'
 
@@ -29,19 +33,24 @@ interface ToolTipModalProps {
 
 const DeleteCatagoryModal: React.FC<ToolTipModalProps> = ({ open, onClose, title, description, categoryid }) => {
   const theme = useTheme()
+  const queryClient = useQueryClient()
 
   const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
-  // ✅ Mutation Hook
   const mutation = useMutation({
     mutationFn: ({ categoryid, tender_id }: { categoryid: number; tender_id: number }) =>
       removeMatric(categoryid, tender_id),
     onSuccess: () => {
-      console.log('Category deleted successfully')
+      queryClient.invalidateQueries({ queryKey: ['metrix', tender_id] })
       onClose?.()
     },
     onError: error => {
-      console.error('Error deleting category:', error)
+      const axiosError = error as AxiosError<{ message: string }>
+
+      const errorMessage = axiosError.response?.data?.message || axiosError.message || 'Something went wrong!'
+
+      toast.error(errorMessage)
+      onClose?.()
     }
   })
 

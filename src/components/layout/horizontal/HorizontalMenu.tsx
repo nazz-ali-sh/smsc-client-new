@@ -38,11 +38,9 @@ const RenderVerticalExpandIcon = ({ open, transitionDuration }: RenderVerticalEx
 )
 
 const HorizontalMenu = () => {
-  // Hooks
   const verticalNavOptions = useVerticalNav()
   const theme = useTheme()
 
-  // Vars
   const { transitionDuration } = verticalNavOptions
 
   return (

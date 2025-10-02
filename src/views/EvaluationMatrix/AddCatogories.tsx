@@ -2,12 +2,17 @@
 
 import React, { useState } from 'react'
 
-import { Typography, Box, Button } from '@mui/material'
+import Image from 'next/image'
+
+import { Typography, Box } from '@mui/material'
 
 import AddAndEditCatagoryModal from '@/common/AddAndEditCatagoryModal'
 import DeleteCatagoryModal from '@/common/DeleteCatagoryModal'
 import CommonModal from '@/common/CommonModal'
 import EvaluationInstructions from './EvaluationInstructions'
+import CustomButton from '@/common/CustomButton'
+import CustomTooltip from '@/common/CustomTooltip'
+import edit from '../../../public/images/customImages/edit.svg'
 
 interface CategoriesProps {
   isOpenCategory?: boolean
@@ -201,15 +206,23 @@ const AddCategories: React.FC<CategoriesProps> = ({ metrixCategories, handleBack
                           }}
                         >
                           <div className='flex justify-center gap-x-[12px] '>
-                            <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#26C6F93D] text-[#35C0ED] flex justify-center items-center'>
-                              <i onClick={() => handleEdit('edit', item, item?.id)} className='ri-edit-box-line'></i>
-                            </span>
-                            <span
-                              onClick={() => handleDelete(Number(item?.id))}
-                              className='size-[33px] rounded-[5px] cursor-pointer bg-[#26C6F93D] text-[#35C0ED] flex justify-center items-center'
-                            >
-                              <i className='ri-delete-bin-6-line'></i>
-                            </span>
+                            <CustomTooltip text='Edit Category' position='left' align='center'>
+                              <span
+                                onClick={() => handleEdit('edit', item, item?.id)}
+                                className='size-[33px] rounded-[5px] cursor-pointer bg-[#26C6F93D] text-[#35C0ED] flex justify-center items-center'
+                              >
+                                <Image src={edit} alt='edit' />
+                              </span>
+                            </CustomTooltip>
+
+                            <CustomTooltip text='Delete Category' position='left' align='center'>
+                              <span
+                                onClick={() => handleDelete(Number(item?.id))}
+                                className='size-[33px] rounded-[5px] cursor-pointer bg-[#26C6F93D] text-[#35C0ED] flex justify-center items-center'
+                              >
+                                <i className='ri-delete-bin-6-line'></i>
+                              </span>
+                            </CustomTooltip>
                           </div>
                         </td>
                       </tr>
@@ -218,25 +231,17 @@ const AddCategories: React.FC<CategoriesProps> = ({ metrixCategories, handleBack
                 </tbody>
               </table>
             </Box>
-            <div className='flex justify-end items-end gap-x-[40px]'>
+            <div className='flex justify-end items-end gap-x-[20px]'>
               <div className='flex justify-end mt-8'>
-                <Button
-                  onClick={handleBackbutton}
-                  variant='outlined'
-                  className='bg-white gap-x-3 border-[buttonPrimary] py-[10px] px-9'
-                >
+                <CustomButton onClick={handleBackbutton} variant='outlined'>
                   Back
-                </Button>
+                </CustomButton>
               </div>
 
               <div className='flex justify-end mt-8'>
-                <Button
-                  onClick={() => handleEdit('add')}
-                  variant='contained'
-                  className='bg-buttonPrimary gap-x-3 py-3 px-9'
-                >
+                <CustomButton onClick={() => handleEdit('add')} variant='contained'>
                   Add Category
-                </Button>
+                </CustomButton>
               </div>
             </div>
           </div>

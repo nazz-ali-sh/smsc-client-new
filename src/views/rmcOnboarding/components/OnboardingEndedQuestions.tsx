@@ -137,7 +137,7 @@ const OnboardingEndedQuestions = () => {
     <>
       <div className='flex flex-col items-center pt-10 pb-32'>
         <h1 className='text-[48px] font-bold text-[#262B43E5] '>RMC Onboarding</h1>
-        <div className='bg-white p-8 pt-10 w-full max-w-7xl mt-8 '>
+        <div className='bg-white p-8 pt-10 w-full  mt-8 '>
           <Typography variant='h6' sx={{ fontSize: '24px', fontWeight: 500, color: '#333' }} className='mb-10'>
             Open- Ended Questions
           </Typography>

@@ -96,6 +96,7 @@ const CalendarWrapper = () => {
   const calendarApiPayload = useSelector((state: RootState) => state.rmcCalendarReducer.calendarApiPayload)
   const calendarActiveStatus = useSelector((state: RootState) => state.rmcCalendarReducer.calendarStatus)
 
+
   const [calendarFilters, setCalendarFilters] = useState({
     status: 'month',
     view: 'site_visit',

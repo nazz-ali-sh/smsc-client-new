@@ -272,7 +272,7 @@ const OnboardingPriorities: React.FC = () => {
           onDragEnd={handleDragEnd}
           modifiers={[restrictToWindowEdges]}
         >
-          <div className='bg-white p-10 w-full max-w-7xl'>
+          <div className='bg-white p-10 w-full '>
             <div className='grid grid-cols-2 gap-8'>
               <div>
                 <h2 className='text-lg font-semibold text-[#262B43] mb-4'>RMC Priorities</h2>

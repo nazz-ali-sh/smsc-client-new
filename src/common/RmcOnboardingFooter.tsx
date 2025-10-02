@@ -4,6 +4,8 @@ import Image from 'next/image'
 
 import { Box, Typography, TextField, Button } from '@mui/material'
 
+import appLogo from '../../public/images/customImages/appLogo.png'
+
 const RmcOnboardingFooter = () => {
   return (
     <Box
@@ -21,7 +23,7 @@ const RmcOnboardingFooter = () => {
       }}
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', maxWidth: '300px' }}>
-        <Image src={'/svgs/rmcLogo.svg'} alt={'image'} width={100} height={100} />
+        <Image src={appLogo} alt='nav Logo' className='mb-3' />
 
         <Box className='px-8 py-4 bg-[#F4F5F9]'>
           <Typography variant='body2' sx={{ marginBottom: '8px', fontWeight: 700, color: '#262B43E5', paddingY: 2 }}>

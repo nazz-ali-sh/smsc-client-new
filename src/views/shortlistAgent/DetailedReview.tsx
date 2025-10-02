@@ -96,7 +96,12 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
     })
   }
 
-  const companyNames = finalShortListedResponce?.data?.shortlisted_pmas?.map((item: { company_details: { name: any } }) => item?.company_details?.name) || []
+  const companyNames =
+    finalShortListedResponce?.data?.shortlisted_pmas?.map(
+      (item: { company_details: { name: any } }) => item?.company_details?.name
+    ) || []
+
+  console.log(companyNames)
 
   return (
     <>
@@ -292,14 +297,10 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
             finalShortListedResponce={finalShortListedResponce}
             pmaSelectedID={pmaSelectedID}
             InviteCompletedCalls={undefined}
-            companyNames = {companyNames}
+            companyNames={companyNames}
           />
 
-          <ContactModal
-            onClose={() => setContactModalOpen(false)}
-            open={contactModalOpen}
-            companyName={finalShortListedResponce?.data?.shortlisted_pmas}
-          />
+          <ContactModal onClose={() => setContactModalOpen(false)} open={contactModalOpen}  />
 
           <ShortListAgent
             open={shortlistedModalOpen}

@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import { useParams, usePathname } from 'next/navigation'
 
 import Image from 'next/image'
 
@@ -31,6 +31,7 @@ import { gettingRmcTenderId } from '@/services/dashboard-apis/dashboard-api'
 import { setRmcTenderId } from '@/redux-store/slices/rmcOnboardingSlice'
 
 import appLogo from '../../../../public/images/customImages/appLogo.png'
+import { routesWithNavbarContent } from '@/constants'
 
 const notifications: NotificationsType[] = [
   {
@@ -96,7 +97,10 @@ interface TenderIdResponse {
 const NavbarContent = () => {
   const { isBreakpointReached } = useHorizontalNav()
   const { lang: locale } = useParams()
+  const pathname = usePathname()
   const dispatch = useDispatch()
+
+  const shouldHideElements = routesWithNavbarContent.some(route => pathname.includes(route))
 
   const [rmctenderId, setRmctenderId] = useState<string>('')
   const currentTenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
@@ -146,92 +150,96 @@ const NavbarContent = () => {
       </div>
 
       <div className='flex items-center'>
-        <Button
-          variant='contained'
-          startIcon={<i className='ri-add-line text-[20px]'></i>}
-          sx={{
-            backgroundColor: 'customColors.ligthBlue',
-            paddingX: '20px',
-            marginRight: '20px',
-            '&:hover': {
-              backgroundColor: 'customColors.ligthBlue'
-            }
-          }}
-        >
-          Launch New Tender
-        </Button>
-        <div className='w-[200px]'>
-          <Grid item xs={12} sm={6}>
-            <FormControl fullWidth size='small'>
-              <InputLabel
-                id='tender-input'
-                sx={{
-                  color: '#696969',
-                  '&.Mui-focused': {
-                    color: '#35C0ED'
-                  }
-                }}
-              >
-                Select Tender
-              </InputLabel>
-              <Select
-                labelId='tender-input'
-                id='demo-simple-select'
-                value={rmctenderId}
-                label='Select Tender'
-                onChange={handleTenderChange}
-                sx={{
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#696969'
-                  },
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#35C0ED'
-                  },
-                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#35C0ED'
-                  },
-                  '& .MuiSelect-select': {
-                    paddingTop: '8px',
-                    paddingBottom: '8px'
-                  }
-                }}
-                MenuProps={{
-                  PaperProps: {
-                    sx: {
-                      '& .MuiMenuItem-root': {
-                        color: '#35C0ED',
-                        backgroundColor: '#26C6F93D',
-                        '&.Mui-selected': {
-                          backgroundColor: '#26C6F93D !important',
-                          color: '#35C0ED'
-                        },
-                        '&:hover': {
-                          backgroundColor: '#26C6F93D'
+        {!shouldHideElements && (
+          <Button
+            variant='contained'
+            startIcon={<i className='ri-add-line text-[20px]'></i>}
+            sx={{
+              backgroundColor: 'customColors.ligthBlue',
+              paddingX: '20px',
+              marginRight: '20px',
+              '&:hover': {
+                backgroundColor: 'customColors.ligthBlue'
+              }
+            }}
+          >
+            Launch New Tender
+          </Button>
+        )}
+        {!shouldHideElements && (
+          <div className='w-[200px]'>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth size='small'>
+                <InputLabel
+                  id='tender-input'
+                  sx={{
+                    color: '#696969',
+                    '&.Mui-focused': {
+                      color: '#35C0ED'
+                    }
+                  }}
+                >
+                  Select Tender
+                </InputLabel>
+                <Select
+                  labelId='tender-input'
+                  id='demo-simple-select'
+                  value={rmctenderId}
+                  label='Select Tender'
+                  onChange={handleTenderChange}
+                  sx={{
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#696969'
+                    },
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#35C0ED'
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#35C0ED'
+                    },
+                    '& .MuiSelect-select': {
+                      paddingTop: '8px',
+                      paddingBottom: '8px'
+                    }
+                  }}
+                  MenuProps={{
+                    PaperProps: {
+                      sx: {
+                        '& .MuiMenuItem-root': {
+                          color: '#35C0ED',
+                          backgroundColor: '#26C6F93D',
+                          '&.Mui-selected': {
+                            backgroundColor: '#26C6F93D !important',
+                            color: '#35C0ED'
+                          },
+                          '&:hover': {
+                            backgroundColor: '#26C6F93D'
+                          }
                         }
                       }
                     }
-                  }
-                }}
-              >
-                {isLoading ? (
-                  <MenuItem disabled>Loading...</MenuItem>
-                ) : rmcTenderIDData?.data?.tenders?.length ? (
-                  rmcTenderIDData.data.tenders.map(tender => (
-                    <MenuItem key={tender.id} value={tender.id}>
-                      {tender.name}
+                  }}
+                >
+                  {isLoading ? (
+                    <MenuItem disabled>Loading...</MenuItem>
+                  ) : rmcTenderIDData?.data?.tenders?.length ? (
+                    rmcTenderIDData.data.tenders.map(tender => (
+                      <MenuItem key={tender.id} value={tender.id}>
+                        {tender.name}
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <MenuItem value='' disabled>
+                      No tenders available
                     </MenuItem>
-                  ))
-                ) : (
-                  <MenuItem value='' disabled>
-                    No tenders available
-                  </MenuItem>
-                )}
-              </Select>
-            </FormControl>
-          </Grid>
-        </div>
-        <NavSearch />
-        <NotificationsDropdown notifications={notifications} />
+                  )}
+                </Select>
+              </FormControl>
+            </Grid>
+          </div>
+        )}
+        {!shouldHideElements && <NavSearch />}
+        {!shouldHideElements && <NotificationsDropdown notifications={notifications} />}
         <UserDropdown />
       </div>
     </div>

@@ -200,7 +200,7 @@ export default function OnboardingOtp() {
     <>
       <h1 className='text-[48px] font-bold text-[#262B43E5] text-center mt-6 mb-4'>RMC Onboarding</h1>
       <div className=' bg-white flex items-center justify-center p-2 mb-20'>
-        <div className='px-3 rounded-lg w-full max-w-7xl pb-12'>
+        <div className='px-3 rounded-lg w-full  pb-12'>
           <Typography
             variant='h6'
             sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1' }}
