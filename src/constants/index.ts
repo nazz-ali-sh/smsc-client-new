@@ -261,3 +261,13 @@ export const contactInfo = [
 export const navigationLinks = [{ text: 'Terms' }, { text: 'Privacy' }, { text: 'Cookies' }]
 
 export const socialMedia = [{ icon: 'ri-linkedin-fill' }, { icon: 'ri-facebook-fill' }]
+
+export const setDaysOptions = [
+  { value: '3', label: 'Up to 3 days' },
+  { value: '5', label: 'Up to 5 days' }
+]
+
+export const setMilesOptions = [
+  { value: '75', label: '75 miles' },
+  { value: '100', label: '100 miles' }
+]

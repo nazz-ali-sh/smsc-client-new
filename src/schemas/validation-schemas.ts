@@ -349,3 +349,8 @@ export const insuranceSchema = pipe(
     payment_method: pipe(string(), nonEmpty('Payment method is required'))
   })
 )
+
+export const retenderSchema = object({
+  setDays: pipe(string(), minLength(1, 'Set days is required')),
+  setMiles: pipe(string(), minLength(1, 'Set miles is required'))
+})
