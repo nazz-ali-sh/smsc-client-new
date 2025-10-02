@@ -37,7 +37,7 @@ const CommonFooter = () => {
             SAVE MY SERVICE CHARGE.
           </Typography>
         </Box>
-
+        
         <Typography
           variant='body2'
           sx={{
@@ -47,8 +47,7 @@ const CommonFooter = () => {
             maxWidth: '350px'
           }}
         >
-          The UK's first service charge comparison site, solely for leaseholders. We're experts in running tenders for
-          blocks of flats and leasehold estates.
+          The UK's first service charge comparison site, solely for leaseholders. We're experts in running tenders for blocks of flats and leasehold estates.
         </Typography>
       </Box>
 
@@ -165,8 +164,7 @@ const CommonFooter = () => {
             lineHeight: 1.4
           }}
         >
-          Save My Service Charge Ltd. Registered in England & Wales. Company No. 12969517. Registered office: 5 The
-          Square, Bagshot, Surrey, GU19 5AX.
+          Save My Service Charge Ltd. Registered in England & Wales. Company No. 12969517. Registered office: 5 The Square, Bagshot, Surrey, GU19 5AX.
         </Typography>
 
         {/* Navigation Links and Social Media */}
