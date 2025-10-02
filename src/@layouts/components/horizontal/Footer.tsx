@@ -46,7 +46,7 @@ const Footer = (props: Props) => {
     <StyledFooter
       theme={theme}
       overrideStyles={overrideStyles}
-      className={classnames(horizontalLayoutClasses.footer, {
+      className={classnames(horizontalLayoutClasses.footer, 'is-full w-full bg-white shadow-lg mt-8', {
         [horizontalLayoutClasses.footerStatic]: footerStatic,
         [horizontalLayoutClasses.footerFixed]: footerFixed,
         [horizontalLayoutClasses.footerContentCompact]: footerContentCompact,

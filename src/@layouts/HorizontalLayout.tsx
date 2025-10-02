@@ -21,7 +21,7 @@ type HorizontalLayoutProps = ChildrenType & {
 }
 
 const HorizontalLayout = (props: HorizontalLayoutProps) => {
-  const { header, children } = props
+  const { header, footer, children } = props
   const pathname = usePathname()
   const hideHeader = pathname.startsWith('/rmc-onboarding')
 
@@ -30,7 +30,7 @@ const HorizontalLayout = (props: HorizontalLayoutProps) => {
       <HorizontalNavProvider>
         <StyledContentWrapper className={classnames(horizontalLayoutClasses.contentWrapper, 'flex flex-col is-full')}>
           {!hideHeader && header} <LayoutContent>{children}</LayoutContent>
-          {/* {footer || null} */}
+          {footer || null}
         </StyledContentWrapper>
       </HorizontalNavProvider>
     </div>

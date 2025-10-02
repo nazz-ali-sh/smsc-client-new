@@ -238,3 +238,26 @@ export const paymentMethodOptions = [
   { label: 'Cash', value: 'cash' },
   { label: 'Check', value: 'check' }
 ]
+
+export const contactInfo = [
+  {
+    icon: 'ri-phone-line',
+    text: '0800 690 6300'
+  },
+  {
+    icon: 'ri-map-pin-line',
+    text: '5, The Square, Bagshot, Surrey, GU19 5AX'
+  },
+  {
+    icon: 'ri-mail-line',
+    text: 'info@savemyservicecharge.co.uk'
+  },
+  {
+    icon: 'ri-time-line',
+    text: 'Mon - Fri 10:00 - 20:00'
+  }
+]
+
+export const navigationLinks = [{ text: 'Terms' }, { text: 'Privacy' }, { text: 'Cookies' }]
+
+export const socialMedia = [{ icon: 'ri-linkedin-fill' }, { icon: 'ri-facebook-fill' }]

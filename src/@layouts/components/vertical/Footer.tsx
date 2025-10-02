@@ -48,7 +48,7 @@ const Footer = (props: Props) => {
     <StyledFooter
       theme={theme}
       overrideStyles={overrideStyles}
-      className={classnames(verticalLayoutClasses.footer, 'is-full', {
+      className={classnames(verticalLayoutClasses.footer, {
         [verticalLayoutClasses.footerDetached]: footerDetached,
         [verticalLayoutClasses.footerAttached]: footerAttached,
         [verticalLayoutClasses.footerStatic]: footerStatic,
