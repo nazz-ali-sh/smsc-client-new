@@ -1,5 +1,7 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
+
 import { useQuery } from '@tanstack/react-query'
 
 import { useSelector } from 'react-redux'
@@ -10,6 +12,7 @@ import CurrentActivity from '@/views/Dashboard/CurrentActivity'
 import { TenderCards } from '@/views/Dashboard/PopularInstructors'
 import WeeklyReport from '@/common/WeeklyReport'
 import HorizontalLinearStepper from '@/common/HorizontalLinearStepper'
+import RetenderNotification from '@/common/RetenderNotification'
 
 interface Stage {
   stage: string
@@ -43,6 +46,7 @@ interface DashboardResponse {
 }
 
 export default function Page() {
+  const router = useRouter()
   const tenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   const { data: dashboardResponce, isLoading: isDashboardLoading } = useQuery<DashboardResponse, Error>({
@@ -52,8 +56,22 @@ export default function Page() {
     retry: 2
   })
 
+  const handleCompleteOnboarding = () => {
+    router.push('/rmc-onboarding')
+  }
+
   return (
     <>
+      {(!tenderId || tenderId === null || tenderId === undefined) && (
+        <RetenderNotification
+          title='Complete Your Profile'
+          description="Your account is not yet active. You won't be able to launch any tender until your profile is complete. Please finish your setup."
+          buttonText='Complete Onboarding'
+          buttonAction={handleCompleteOnboarding}
+          showModal={false}
+          icon='⚠️'
+        />
+      )}
       <section className='flex w-full'>
         <WeeklyReport text={'Welcome Back'} />
       </section>

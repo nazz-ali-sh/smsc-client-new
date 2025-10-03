@@ -19,11 +19,6 @@ const EvaluationMatrix = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [evaluationData, setEvaluationData] = useState<any[]>([])
 
-  const [pmaScoreValue, setPmaScoreValue] = useState({
-    pmascoreValue: '',
-    pmaScoreIndex: 0
-  })
-
   const [isSaved, setIsSaved] = useState(false)
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
@@ -204,11 +199,6 @@ const EvaluationMatrix = () => {
   }
 
   const handleInputChange = (categoryIndex: number, field: string, value: string) => {
-    setPmaScoreValue({
-      pmascoreValue: value,
-      pmaScoreIndex: categoryIndex
-    })
-
     if (field === 'weight' && value !== '') {
       if (!validateWeighting(value)) return showToast('Weighting must be between 0.5 and 1.5')
     } else if (pmaColumns.includes(field) && value !== '') {
@@ -240,7 +230,10 @@ const EvaluationMatrix = () => {
       pmaColumns.forEach((pmaColumn: string) => {
         const pmaValue = parseInt(category[pmaColumn as keyof typeof category] as string) || 0
 
-        totals[pmaColumn as keyof typeof totals] += pmaValue
+        // Calculate weighted total: weight × score
+        const weightedValue = weight * pmaValue
+
+        totals[pmaColumn as keyof typeof totals] += weightedValue
       })
     })
 
@@ -488,14 +481,11 @@ const EvaluationMatrix = () => {
                                 )}
                                 <div className='text-green-600 mt-2'>
                                   <span className=''>
-                                    {category?.weight} *
-                                    {pmaScoreValue?.pmaScoreIndex == categoryIndex ? pmaScoreValue?.pmascoreValue : '0'}
+                                    {category?.weight} *{category[pma as keyof typeof category] || '0'}
                                   </span>
                                   <span className='pr-2'> = </span>
                                   <span>
-                                    {pmaScoreValue?.pmaScoreIndex === categoryIndex
-                                      ? Number(category?.weight) * Number(pmaScoreValue?.pmascoreValue)
-                                      : 0}
+                                    {Number(category?.weight) * Number(category[pma as keyof typeof category] || 0)}
                                   </span>
                                 </div>
                               </td>
@@ -550,7 +540,7 @@ const EvaluationMatrix = () => {
                             }}
                           >
                             <Typography variant='body2' sx={{ color: '#333', fontWeight: 'bold' }}>
-                              {totals[pma as keyof typeof totals]}
+                              {totals[pma as keyof typeof totals].toFixed(1)}
                             </Typography>
                           </td>
                         ))

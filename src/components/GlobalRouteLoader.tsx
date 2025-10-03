@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 
 import { usePathname } from 'next/navigation'
 
-import CustomLoader from '@/common/CustomLoader'
+import { onboardingRoutes } from '@/constants'
 
 interface GlobalLoaderProps {
   children: React.ReactNode
@@ -14,32 +14,7 @@ const GlobalLoader = ({ children }: GlobalLoaderProps) => {
   const pathname = usePathname()
   const [loading, setLoading] = useState(false)
 
-  const onboardingRoutes = [
-    '/rmc-onboarding',
-    '/rmc-onboarding-address',
-    '/rmc-onboarding-blocks',
-    '/rmc-onboarding-budget',
-    '/rmc-onboarding-buildings',
-    '/rmc-onboarding-details',
-    '/rmc-onboarding-director',
-    '/rmc-onboarding-five',
-    '/rmc-onboarding-four',
-    '/rmc-onboarding-leaseholder',
-    '/rmc-onboarding-open',
-    '/rmc-onboarding-otp',
-    '/rmc-onboarding-postcode',
-    '/rmc-onboarding-priorities',
-    '/rmc-onboarding-questions',
-    '/rmc-onboarding-resident',
-    '/rmc-onboarding-rtm',
-    '/rmc-onboarding-second',
-    '/rmc-onboarding-spaces',
-    '/rmc-onboarding-third',
-    '/rmc-onboarding-verification',
-    '/tender-information-update'
-  ]
-
-  const isOnboardingRoute = onboardingRoutes.some(route => pathname.startsWith(route))
+  const isOnboardingRoute = onboardingRoutes?.some(route => pathname?.startsWith(route))
 
   useEffect(() => {
     if (isOnboardingRoute) {
@@ -49,16 +24,17 @@ const GlobalLoader = ({ children }: GlobalLoaderProps) => {
     }
 
     setLoading(true)
-    const timeout = setTimeout(() => setLoading(false), 500)
+    const timeout = setTimeout(() => setLoading(false), 1000)
 
     return () => clearTimeout(timeout)
   }, [pathname, isOnboardingRoute])
-
   return (
     <>
       {loading && !isOnboardingRoute && (
-        <div className='fixed inset-0 flex items-center justify-center  z-50'>
-          <CustomLoader size='large' />
+        <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[200]'>
+          <div className='flex flex-col items-center justify-center'>
+            <img src='/logo.gif' alt='Loading...' className='size-40 object-contain' />
+          </div>
         </div>
       )}
       {children}

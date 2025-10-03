@@ -176,7 +176,6 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
                   isDisabled ? 'cursor-default pointer-events-none' : 'cursor-pointer'
                 } justify-center py-2 rounded-lg min-w-[140px]`}
                 style={{
-                  color: isDisabled ? 'inherit' : 'inherit',
                   cursor: isDisabled ? 'default' : 'pointer',
                   pointerEvents: isDisabled ? 'none' : 'auto'
                 }}
@@ -185,15 +184,19 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
                   <div className='size-[22px]' style={{ color: 'inherit' }}>
                     {items.image}
                   </div>
-                  <div className='text-[15px]' style={{ color: 'inherit' }}>
-                    {items.menuItem}
-                  </div>
+                  <div className='text-[15px]'>{items.menuItem}</div>
                 </section>
               </Link>
             )
 
             return isDisabled ? (
-              <CustomTooltip key={index} text="Complete Onboarding"  align='left' position="left" cursor="default">
+              <CustomTooltip
+                key={index}
+                text='Finish Onboarding before access these tabs'
+                align='left'
+                position='left'
+                cursor='default'
+              >
                 {menuItem}
               </CustomTooltip>
             ) : (

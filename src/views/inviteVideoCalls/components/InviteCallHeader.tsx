@@ -2,9 +2,11 @@
 
 import React, { useState } from 'react'
 
-import { Box, Typography, Button } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 
 import VideosCallsModal from '@/common/VideosCallsModal'
+import CustomButton from '@/common/CustomButton'
+import { useShortlistedPmas } from '@/hooks/useShortlistedPmasData'
 
 interface InviteCallHeaderProps {
   title?: string
@@ -14,23 +16,21 @@ interface InviteCallHeaderProps {
 const InviteCallHeader = ({ title = 'Video Calls', actionButton }: InviteCallHeaderProps) => {
   const [onlineCallsModalOpen, setOnlineCallsModalOpen] = useState(false)
 
+  const handleOnlineModal = () => {
+    setOnlineCallsModalOpen(true)
+  }
+
+  const { data: finalShortListedResponce  } = useShortlistedPmas()
+
   return (
     <Box className=' p-6'>
       <Box className='flex justify-between items-center'>
         <Typography variant='h6' sx={{ color: 'customColors.gray9', fontWeight: 700, fontSize: '28px' }}>
           {title}
         </Typography>
-        <Button
-          variant='contained'
-          sx={{
-            backgroundColor: '#35C0ED',
-            '&:hover': { backgroundColor: '#28A8D1' },
-            textTransform: 'none'
-          }}
-          className='flex items-center gap-2'
-        >
+        <CustomButton onClick={() => handleOnlineModal()} variant='contained'>
           {actionButton}
-        </Button>
+        </CustomButton>
       </Box>
       <Typography
         sx={{
@@ -49,7 +49,7 @@ const InviteCallHeader = ({ title = 'Video Calls', actionButton }: InviteCallHea
         open={onlineCallsModalOpen}
         onClose={() => setOnlineCallsModalOpen(false)}
         shorlistedPmas={null}
-        mainSiteVisitVideoCalls={undefined}
+        mainSiteVisitVideoCalls={finalShortListedResponce?.data?.shortlisted_pma_users}
       />
     </Box>
   )

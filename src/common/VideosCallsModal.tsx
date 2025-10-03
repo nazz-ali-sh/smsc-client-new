@@ -621,21 +621,16 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                       }
                     }}
                   >
-                    {finalSelectedSlots.map(
-                      (item, index) => (
-                        console.log(item),
-                        (
-                          <MenuItem
-                            key={index}
-                            disabled={item?.booked}
-                            value={String(item.id)}
-                            className={`${item?.booked ? 'bg-gray-400' : ''} my-2 `}
-                          >
-                            <span className='my-2'>{item.slot_name}</span>
-                          </MenuItem>
-                        )
-                      )
-                    )}
+                    {finalSelectedSlots.map((item, index) => (
+                      <MenuItem
+                        key={index}
+                        disabled={item?.booked}
+                        value={String(item.id)}
+                        className={`${item?.booked ? 'bg-gray-200' : ''} my-2 `}
+                      >
+                        <span className='my-2'>{item.slot_name}</span>
+                      </MenuItem>
+                    ))}
                   </Select>
                   {(errors.availableSlots || slotError) && (
                     <FormHelperText>{errors.availableSlots?.message || slotError}</FormHelperText>

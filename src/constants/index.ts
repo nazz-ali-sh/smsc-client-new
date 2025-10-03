@@ -322,3 +322,28 @@ export const routesWithNavbarContent = [
   'rmc-onboarding-priorities',
   'rmc-onboarding-open'
 ]
+
+export const onboardingRoutes = [
+  '/rmc-onboarding',
+  '/rmc-onboarding-address',
+  '/rmc-onboarding-blocks',
+  '/rmc-onboarding-budget',
+  '/rmc-onboarding-buildings',
+  '/rmc-onboarding-details',
+  '/rmc-onboarding-director',
+  '/rmc-onboarding-five',
+  '/rmc-onboarding-four',
+  '/rmc-onboarding-leaseholder',
+  '/rmc-onboarding-open',
+  '/rmc-onboarding-otp',
+  '/rmc-onboarding-postcode',
+  '/rmc-onboarding-priorities',
+  '/rmc-onboarding-questions',
+  '/rmc-onboarding-resident',
+  '/rmc-onboarding-rtm',
+  '/rmc-onboarding-second',
+  '/rmc-onboarding-spaces',
+  '/rmc-onboarding-third',
+  '/rmc-onboarding-verification',
+  '/tender-information-update'
+]

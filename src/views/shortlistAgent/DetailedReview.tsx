@@ -41,6 +41,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
   const [pmaSelectedID, setPmaSelectedID] = useState<number | any>()
   const [selectedPma, setSelectedPma] = useState<{ id: number; pma_number: string } | null>(null)
 
+
   const extendedCheck = finalShortListedResponce?.data?.shortlisted_pmas[0]?.shortlisting_extended
 
   const shortlistexpiryDate = calculateTimeLeft(
@@ -101,7 +102,6 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
       (item: { company_details: { name: any } }) => item?.company_details?.name
     ) || []
 
-  console.log(companyNames)
 
   return (
     <>
@@ -300,7 +300,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
             companyNames={companyNames}
           />
 
-          <ContactModal onClose={() => setContactModalOpen(false)} open={contactModalOpen}  />
+          <ContactModal onClose={() => setContactModalOpen(false)} open={contactModalOpen} />
 
           <ShortListAgent
             open={shortlistedModalOpen}

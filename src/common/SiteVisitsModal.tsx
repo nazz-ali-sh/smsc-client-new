@@ -671,7 +671,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                         key={index}
                         value={String(item.id)}
                         disabled={item?.booked}
-                        className={`${item?.booked ? 'bg-gray-400' : ''} my-2 `}
+                        className={`${item?.booked ? 'bg-gray-200' : ''} my-2 `}
                       >
                         {item.slot_name}
                       </MenuItem>
@@ -822,34 +822,48 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
               />
             </Grid>
           )}
-
           <Grid item xs={12}>
             <Controller
               name='additionalNotes'
               control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  label='Add Additional Notes'
-                  multiline
-                  rows={4}
-                  placeholder='Enter additional notes...'
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'customColors.ligthBlue'
+              render={({ field }) => {
+                const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+                  const text = e.target.value
+                  const words = text.trim().split(/\s+/) // split by whitespace
+
+                  if (words.length <= 300) {
+                    field.onChange(text) // allow update if <= 300 words
+                  }
+                }
+
+                const wordCount = field.value?.trim().split(/\s+/).filter(Boolean).length || 0
+
+                return (
+                  <TextField
+                    {...field}
+                    onChange={handleChange}
+                    fullWidth
+                    label='Add Additional Notes'
+                    multiline
+                    rows={4}
+                    placeholder='Enter additional notes...'
+                    helperText={`${wordCount}/300 words`}
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                          borderColor: 'customColors.ligthBlue'
+                        },
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                          borderColor: 'customColors.ligthBlue'
+                        }
                       },
-                      '&:hover .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'customColors.ligthBlue'
+                      '& .MuiInputLabel-root.Mui-focused': {
+                        color: 'customColors.ligthBlue'
                       }
-                    },
-                    '& .MuiInputLabel-root.Mui-focused': {
-                      color: 'customColors.ligthBlue'
-                    }
-                  }}
-                />
-              )}
+                    }}
+                  />
+                )
+              }}
             />
           </Grid>
         </Grid>

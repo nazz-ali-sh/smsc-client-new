@@ -9,7 +9,7 @@
   --background-color: var(--mui-palette-background-default);
   --background-color-rgb: var(--mui-palette-background-paperChannel);
   --header-height: 64px;
-  --header-z-index: var(--mui-zIndex-appBar);
+  --header-z-index: 50;
   --footer-z-index: 10;
   --customizer-z-index: var(--mui-zIndex-drawer);
   --search-z-index: var(--mui-zIndex-tooltip);

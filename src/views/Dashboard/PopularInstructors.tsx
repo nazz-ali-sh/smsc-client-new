@@ -19,10 +19,6 @@ import {
   FormHelperText
 } from '@mui/material'
 
-import { useSelector } from 'react-redux'
-
-import { useQuery } from '@tanstack/react-query'
-
 import phone from '../../../public/images/dashboardImages/phone.svg'
 import phonewhite from '../../../public/images/dashboardImages/phoneWhiteIcon.svg'
 import personWhiteIcon from '../../../public/images/dashboardImages/personWhiteIcon.svg'
@@ -33,12 +29,12 @@ import CustomTooltip from '../../common/CustomTooltip'
 import VideosCallsModal from '@/common/VideosCallsModal'
 import SiteVisitsModal from '@/common/SiteVisitsModal'
 import AppointManagemnetModal from '@/common/AppointManagemnetAgent'
-import { shortlistedPmas } from '@/services/tender_result-apis/tender-result-api'
 import CommonModal from '@/common/CommonModal'
 import CustomButton from '@/common/CustomButton'
 import { formatDate, getDaysPassed } from '@/utils/dateFormater'
 import { getLeaseholderTypeLabel } from '@/constants'
 import DashboardSkeletonGrid from '@/components/DashboardSkeletonGrid'
+import { useShortlistedPmas } from '@/hooks/useShortlistedPmasData'
 
 interface dashboardResponceprops {
   dashboardResponce?: any
@@ -74,22 +70,12 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
 
   const router = useRouter()
 
-  interface ShortlistedPmas {
-    data?: any
-  }
-
   interface PmaUser {
     id: number
     full_name: string
   }
 
-  const rmcTenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
-
-  const { data: finalShortListedResponce } = useQuery<ShortlistedPmas, Error>({
-    queryKey: ['shortlist', rmcTenderId],
-    queryFn: () => shortlistedPmas(Number(rmcTenderId)),
-    enabled: !!rmcTenderId
-  })
+  const { data: finalShortListedResponce } = useShortlistedPmas()
 
   const handleAppointAgentSelection = () => {
     setApointAgentModalOpen(true)

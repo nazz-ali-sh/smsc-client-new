@@ -284,6 +284,10 @@ export const getSavedEvaluationData = async (tender_id: number) => {
 
 export const shortlistedPmas = async (tender_id: number) => {
   try {
+    if (!tender_id || tender_id === undefined || tender_id === null || isNaN(tender_id)) {
+      throw new Error('Invalid tender ID provided')
+    }
+
     const url = apiEndpoints.gettingAllShortlistedPma(tender_id)
 
     const response = await axiosClient.get(url)

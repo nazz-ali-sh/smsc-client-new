@@ -78,16 +78,18 @@ const WeeklyReport = ({ text }: { text?: string }) => {
   const currentStageLabel = getCurrentStageDisplayName(dashboardResponce)
 
   const formatDate = (dateString?: string | null): string => {
-    if (!dateString) return ''
+    if (!dateString) return '--'
     const date = new Date(dateString)
 
-    if (isNaN(date.getTime())) return ''
+    if (isNaN(date.getTime())) return '--'
     const month = String(date.getMonth() + 1).padStart(2, '0')
     const day = String(date.getDate()).padStart(2, '0')
     const year = date.getFullYear()
 
     return `${month}-${day}-${year}`
   }
+
+  console.log(currentStageLabel, 'currentStageLabel')
 
   return (
     <div className='flex max-md:flex-col md:items-center gap-6 plb-5 w-full'>
@@ -119,7 +121,7 @@ const WeeklyReport = ({ text }: { text?: string }) => {
             <div>
               <Typography sx={{ fontSize: '14px', fontWeight: 400 }}>Tender Sent to</Typography>
               <Typography variant='h5' sx={{ color: 'customColors.purple2', fontSize: '18px', fontWeight: 700 }}>
-                {dashboardResponce?.data?.pma_count} PMAs
+                {dashboardResponce?.data?.pma_count ?? 0} PMAs
               </Typography>
             </div>
           </div>
@@ -131,7 +133,7 @@ const WeeklyReport = ({ text }: { text?: string }) => {
             <div>
               <Typography sx={{ fontSize: '14px', fontWeight: 400 }}>You have received</Typography>
               <Typography variant='h5' sx={{ color: 'customColors.cyan2', fontSize: '18px', fontWeight: 700 }}>
-                {dashboardResponce?.data?.tender_response_count} Responses
+                {dashboardResponce?.data?.tender_response_count ?? 0} Responses
               </Typography>
             </div>
           </div>
@@ -143,7 +145,7 @@ const WeeklyReport = ({ text }: { text?: string }) => {
             <div>
               <Typography sx={{ fontSize: '14px', fontWeight: 400 }}>Tender Ends on</Typography>
               <Typography variant='h5' sx={{ color: 'customColors.orange2', fontSize: '18px', fontWeight: 700 }}>
-                {new Date(tenderExpireDaat)?.toLocaleDateString()}
+                {tenderExpireDaat ? formatDate(tenderExpireDaat) : '--'}
               </Typography>
             </div>
           </div>
@@ -158,28 +160,26 @@ const WeeklyReport = ({ text }: { text?: string }) => {
               Tender Id
             </Typography>
             <Typography variant='body1' sx={{ fontSize: '15px', fontWeight: 400, paddingTop: '6px' }}>
-              {dashboardResponce?.tender_name}
+              {dashboardResponce?.tender_name ?? '--'}
             </Typography>
             <Typography variant='h5' sx={{ paddingTop: '18px', fontWeight: 700 }}>
               Tender Stage
             </Typography>
           </div>
 
-          {currentStageLabel && (
-            <div className='flex items-baseline gap-1'>
-              <div className='size-[10px] border-2 mt-2 border-red-400 bg-white rounded-full'></div>
+          <div className='flex items-baseline gap-1'>
+            <div className='size-[10px] border-2 mt-2 border-red-400 bg-white rounded-full'></div>
 
-              <Typography
-                variant='body1'
-                sx={{ fontSize: '15px', fontWeight: 400, paddingTop: '6px', color: 'customColors.gray7' }}
-              >
-                {currentStageLabel} on {formatDate(completedAtDate)}
-              </Typography>
-            </div>
-          )}
+            <Typography
+              variant='body1'
+              sx={{ fontSize: '15px', fontWeight: 400, paddingTop: '6px', color: 'customColors.gray7' }}
+            >
+              {currentStageLabel ? `${currentStageLabel} on ${formatDate(completedAtDate)}` : '--'}
+            </Typography>
+          </div>
         </div>
         <div className='flex justify-center items-center mr-5'>
-          <CustomCircularProgress progress={value} size={100} strokeWidth={12} />
+          <CustomCircularProgress progress={value ?? 0} size={100} strokeWidth={12} />
         </div>
       </div>
     </div>

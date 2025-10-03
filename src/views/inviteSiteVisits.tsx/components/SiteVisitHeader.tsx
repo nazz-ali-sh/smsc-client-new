@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react'
 
-import { Box, Typography, Button } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 
 import VideosCallsModal from '@/common/VideosCallsModal'
+import CustomButton from '@/common/CustomButton'
 
 interface InviteCallHeaderProps {
   title?: string
@@ -21,18 +22,14 @@ const SiteVisitHeader = ({ title = 'Video Calls', actionButton, videoCallmodalDa
         <Typography variant='h6' sx={{ color: 'customColors.gray9', fontWeight: 700, fontSize: '28px' }}>
           {title}
         </Typography>
-        <Button
+
+        <CustomButton
           variant='contained'
-          sx={{
-            backgroundColor: '#35C0ED',
-            '&:hover': { backgroundColor: '#28A8D1' },
-            textTransform: 'none'
-          }}
           className='flex items-center gap-2'
           onClick={() => setOnlineCallsModalOpen(true)}
         >
           {actionButton}
-        </Button>
+        </CustomButton>
       </Box>
       <Typography
         sx={{

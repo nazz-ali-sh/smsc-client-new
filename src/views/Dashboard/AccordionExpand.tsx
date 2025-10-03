@@ -10,7 +10,6 @@ import { useSelector } from 'react-redux'
 
 import { dashboardFaqs } from '@/services/dashboard-apis/dashboard-api'
 
-
 interface Faq {
   id: number
   question: string
@@ -76,8 +75,7 @@ export default function AccordionExpand() {
       {
         id: 2,
         question: 'How do you process payments?',
-        answer:
-          'Donec placerat, lectus sed mattis semper, neque lectus feugiat lectus, varius pulvinar diam eros in elit. Pellentesque convallis laoreet laoreet. Donec placerat, lectus sed mattis semper, neque lectus feugiat lectus, varius pulvinar diam eros in elit. Pellentesque convallis laoreet laoreet.'
+        answer: 'We process payments via Stripe.'
       },
       {
         id: 3,
