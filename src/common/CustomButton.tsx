@@ -33,7 +33,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
     },
     '&.Mui-disabled': {
       backgroundColor: '#A9E1F7',
-      color: '#fff',
+      color: '#fff !important',
       opacity: 1
     }
   }
@@ -50,7 +50,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
     },
     '&.Mui-disabled': {
       backgroundColor: '#A9E1F7',
-      color: '#fff',
+      color: '#fff !important',
       borderColor: '#A9E1F7',
       opacity: 1
     }

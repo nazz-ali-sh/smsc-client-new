@@ -1,6 +1,6 @@
 export const leaseholderTypes = [
   { title: 'Converted House', image: '/svgs/house.svg', value: 'converted_house' },
-  { title: 'Purpose built Flat', image: '/svgs/flat.svg', value: 'purpose_built_flats' },
+  { title: 'Purpose Built Flat', image: '/svgs/flat.svg', value: 'purpose_built_flats' },
   { title: 'Mixed Development', image: '/svgs/development.svg', value: 'mixed_development' },
   { title: 'Others', image: '/svgs/settings.svg', value: 'others' }
 ]

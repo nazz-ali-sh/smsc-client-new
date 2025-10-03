@@ -24,6 +24,7 @@ import { blockOptions, tooltipContent, yearOptions } from '@/constants'
 const OnboardingBlockDetails = () => {
   const router = useRouter()
   const [open, setOpen] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const [tooltipState, setTooltipState] = useState<{
     isOpen: boolean
@@ -90,6 +91,7 @@ const OnboardingBlockDetails = () => {
       const errorMessage = error?.response?.data?.message || 'Failed to submit block details. Please try again.'
 
       toast.error(errorMessage)
+      setIsSubmitting(false)
     }
   })
 
@@ -102,6 +104,8 @@ const OnboardingBlockDetails = () => {
   }
 
   const handleFormSubmit = (data: BlockDetailsFormData) => {
+    if (isSubmitting || mutation.isPending) return
+
     if (!rmcData?.tender_onboarding_id) {
       toast.error('Tender onboarding ID not found. Please try again.')
 
@@ -113,6 +117,8 @@ const OnboardingBlockDetails = () => {
 
       return
     }
+
+    setIsSubmitting(true)
 
     const payload: RmcBlockDetailsPayload = {
       tender_onboarding_id: rmcData?.tender_onboarding_id,
@@ -275,11 +281,11 @@ const OnboardingBlockDetails = () => {
             <div className='pb-9 mt-16 flex justify-end'>
               <CustomButton
                 type='submit'
-                isLoading={mutation.isPending}
-                disabled={mutation.isPending}
+                isLoading={isSubmitting || mutation.isPending}
+                disabled={isSubmitting || mutation.isPending}
                 endIcon={<i className='ri-arrow-right-line'></i>}
               >
-                {mutation.isPending ? 'Submitting...' : 'Next'}
+                {isSubmitting || mutation.isPending ? 'Submitting...' : 'Next'}
               </CustomButton>
             </div>
           </form>

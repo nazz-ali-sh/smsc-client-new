@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 
 import { useRouter } from 'next/navigation'
 
@@ -23,6 +23,7 @@ const ForgotPasswordPage = () => {
   type ForgotPasswordFormData = InferOutput<typeof forgotPasswordRequestSchema>
 
   const router = useRouter()
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const { control, handleSubmit } = useForm<ForgotPasswordFormData>({
     resolver: valibotResolver(forgotPasswordRequestSchema),
@@ -45,10 +46,14 @@ const ForgotPasswordPage = () => {
         error?.response?.data?.message || error?.message || 'Failed to send reset email. Please try again.'
 
       toast.error(errorMessage)
+      setIsSubmitting(false)
     }
   })
 
   const handleForgotPassword: SubmitHandler<ForgotPasswordFormData> = async data => {
+    if (isSubmitting || isLoading) return
+
+    setIsSubmitting(true)
     sendForgotPassword({
       email: data.email
     })
@@ -85,7 +90,7 @@ const ForgotPasswordPage = () => {
           <Button
             variant='contained'
             type='submit'
-            disabled={isLoading}
+            disabled={isSubmitting || isLoading}
             sx={{
               backgroundColor: '#35C0ED',
               color: '#fff',
@@ -104,7 +109,7 @@ const ForgotPasswordPage = () => {
               }
             }}
           >
-            {isLoading ? 'Sending...' : 'Send Reset Link'}
+            {isSubmitting || isLoading ? 'Sending...' : 'Send Reset Link'}
           </Button>
         </div>
       </form>

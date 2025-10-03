@@ -83,6 +83,7 @@ const OnboardingPriorities: React.FC = () => {
   const router = useRouter()
   const [available, setAvailable] = useState<PriorityItem[]>([])
   const [slots, setSlots] = useState<(PriorityItem | null)[]>([])
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const rmcData = useSelector((state: RootState) => state?.rmcOnboarding?.rmcData)
 
   const { data: priorities } = useQuery({
@@ -126,6 +127,7 @@ const OnboardingPriorities: React.FC = () => {
     },
     onError: (error: any) => {
       toast.error(error?.response?.data?.message || 'Failed to submit priorities. Please try again.')
+      setIsSubmitting(false)
     }
   })
 
@@ -235,6 +237,8 @@ const OnboardingPriorities: React.FC = () => {
   }
 
   const handleNext = () => {
+    if (isSubmitting || mutation.isPending) return
+
     if (!rmcData?.tender_onboarding_id) {
       toast.error('Tender onboarding ID not found. Please try again.')
 
@@ -244,6 +248,8 @@ const OnboardingPriorities: React.FC = () => {
     if (!validateSequence()) {
       return
     }
+
+    setIsSubmitting(true)
 
     const priorities =
       slots?.map(slot => (slot ? parseInt(slot?.id) : null))?.filter((id): id is number => id !== null) || []
@@ -334,10 +340,10 @@ const OnboardingPriorities: React.FC = () => {
               <CustomButton
                 endIcon={<i className='ri-arrow-right-line'></i>}
                 onClick={handleNext}
-                isLoading={mutation.isPending}
-                disabled={mutation.isPending}
+                isLoading={isSubmitting || mutation.isPending}
+                disabled={isSubmitting || mutation.isPending}
               >
-                {mutation.isPending ? 'Submitting...' : 'Next'}
+                {isSubmitting || mutation.isPending ? 'Submitting...' : 'Next'}
               </CustomButton>
             </div>
           </div>

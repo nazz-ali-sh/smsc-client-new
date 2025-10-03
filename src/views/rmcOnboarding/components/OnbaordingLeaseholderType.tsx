@@ -100,7 +100,7 @@ const OnboardingLeaseholderType = () => {
           sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1' }}
           className='mb-6'
         >
-          Leaseholder type
+          Leasehold Type
         </Typography>
 
         <div className='grid sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 pb-10 mt-10'>

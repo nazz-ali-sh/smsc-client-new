@@ -42,6 +42,7 @@ const OnboardingAddress = () => {
   const [mapSelectedAddress, setMapSelectedAddress] = useState<MapAddressData | null>(null)
   const [manualAddressData, setManualAddressData] = useState<MapAddressData | null>(null)
   const [resetMapTrigger, setResetMapTrigger] = useState(0)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const hasAttemptedFetch = useRef(false)
 
   const { addresses, currentPostcode } = useSelector((state: any) => state.postcode)
@@ -57,6 +58,7 @@ const OnboardingAddress = () => {
     onError: (error: any) => {
       console.error('Error submitting address details:', error)
       toast.error('Failed to submit address details. Please try again.')
+      setIsSubmitting(false)
     }
   })
 
@@ -229,6 +231,8 @@ const OnboardingAddress = () => {
   }
 
   const handleNavigate = () => {
+    if (isSubmitting || mutation.isPending) return
+
     const hasDropdownAddress = selectedAddressId && selectedAddress
     const hasMapOrManualAddress = mapSelectedAddress || (manualAddressData && manualAddressData?.addressLine1)
 
@@ -237,6 +241,8 @@ const OnboardingAddress = () => {
 
       return
     }
+
+    setIsSubmitting(true)
 
     if (manualAddressData && manualAddressData.addressLine1) {
       const { addressLine1, addressLine2, postcode, region, county } = manualAddressData
@@ -498,12 +504,12 @@ const OnboardingAddress = () => {
         <div className='pb-3 flex justify-end mt-6'>
           <CustomButton
             onClick={handleNavigate}
-            isLoading={mutation.isPending}
-            disabled={mutation.isPending}
+            isLoading={isSubmitting || mutation.isPending}
+            disabled={isSubmitting || mutation.isPending}
             sx={{ fontSize: '16px', fontWeight: 700 }}
             endIcon={<i className='ri-arrow-right-line'></i>}
           >
-            {mutation.isPending ? 'Submitting...' : 'Continue with Selected Address'}
+            {isSubmitting || mutation.isPending ? 'Submitting...' : 'Continue with Selected Address'}
           </CustomButton>
         </div>
       </div>

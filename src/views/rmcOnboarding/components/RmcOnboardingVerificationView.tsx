@@ -19,6 +19,7 @@ const RmcOnboardingVerificationView = () => {
   const rmcData = useSelector((state: any) => state.rmcOnboarding.rmcData)
   const verificationMethod = useSelector((state: any) => state.rmcOnboarding.verificationMethod)
   const [selectedMethod, setSelectedMethod] = useState<'sms' | 'email' | null>(verificationMethod)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const userId = rmcData?.user_id
 
   const mutation = useMutation({
@@ -32,16 +33,20 @@ const RmcOnboardingVerificationView = () => {
       const errorMessage = error?.response?.data?.message || `Failed to send ${method} verification. Please try again.`
 
       toast.error(errorMessage)
+      setIsSubmitting(false)
     }
   })
 
   const handleVerificationMethod = (method: 'sms' | 'email') => {
+    if (isSubmitting || mutation.isPending) return
+
     if (!userId) {
       toast.error('User ID not found. Please try again.')
 
       return
     }
 
+    setIsSubmitting(true)
     setSelectedMethod(method)
     dispatch(setVerificationMethod(method))
 
@@ -87,21 +92,22 @@ const RmcOnboardingVerificationView = () => {
             {verificationOptions.map(option => {
               const isSelected = selectedMethod === option.key
               const isPending = mutation.isPending && isSelected
+              const isDisabled = (isSubmitting || mutation.isPending) && isSelected
 
               return (
                 <div
                   key={option.key}
-                  onClick={() => !isPending && handleVerificationMethod(option.key)}
-                  className={`group flex flex-col items-center p-6 shadow-sm rounded-md cursor-pointer w-[280px] h-[318px] justify-between transition-all duration-300 ${
-                    isPending
+                  onClick={() => !isDisabled && handleVerificationMethod(option.key)}
+                  className={`group flex flex-col items-center p-6 shadow-sm rounded-md w-[280px] h-[318px] justify-between transition-all duration-300 ${
+                    isDisabled
                       ? 'bg-gray-100 cursor-not-allowed border-[1px] border-gray-300'
                       : isSelected
-                        ? 'bg-[#F3FCFE] border-[1px] border-[#35C0ED] shadow-lg'
-                        : 'bg-[#F3FCFE] hover:bg-[#D7F2FB] border border-blue-100'
+                        ? 'bg-[#F3FCFE] border-[1px] border-[#35C0ED] shadow-lg cursor-pointer'
+                        : 'bg-[#F3FCFE] hover:bg-[#D7F2FB] border border-blue-100 cursor-pointer'
                   }`}
                 >
                   <div className='flex items-center justify-center flex-grow'>
-                    <div className={`transition-transform duration-300 ${isPending ? '' : 'group-hover:scale-125'}`}>
+                    <div className={`transition-transform duration-300 ${isDisabled ? '' : 'group-hover:scale-125'}`}>
                       <Image src={option.icon} alt={option.label} width={150} height={150} className='mb-4' />
                     </div>
                   </div>
@@ -115,7 +121,7 @@ const RmcOnboardingVerificationView = () => {
                     }}
                     className='text-center'
                   >
-                    {isPending ? 'Sending...' : option.label}
+                    {isPending ? 'Sending...' : isDisabled ? 'Processing...' : option.label}
                   </Typography>
                 </div>
               )

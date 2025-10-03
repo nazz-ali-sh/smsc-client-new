@@ -4,11 +4,15 @@ import { createContext, forwardRef, useMemo, useState } from 'react'
 import type { ForwardRefRenderFunction, MenuHTMLAttributes, ReactElement } from 'react'
 
 import Link from 'next/link'
-import { useSelector } from 'react-redux'
 
 import { usePathname } from 'next/navigation'
 
+import { useSelector } from 'react-redux'
+
 import { FloatingTree } from '@floating-ui/react'
+
+import { routesWithNavbarContent } from '@/constants'
+import CustomTooltip from '@/common/CustomTooltip'
 
 import type { MenuProps as VerticalMenuProps } from '../vertical-menu/Menu'
 import type {
@@ -65,6 +69,7 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
     textTruncate = true,
     verticalMenuProps
   } = props
+
   const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   const hasTenderId = tender_id && tender_id !== null && tender_id !== undefined
@@ -146,16 +151,19 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
   ])
 
   const pathname = usePathname()
+  const isOnboardingRoute = routesWithNavbarContent?.some(route => pathname?.includes(route))
 
   return (
     <HorizontalMenuContext.Provider value={providerValue}>
       <FloatingTree>
-        <div className='flex items-center justify-center gap-x-[20px] min-w-[1300px] w-full '>
+        <div
+          className={`flex items-center justify-center ${isOnboardingRoute ? 'gap-x-[13px]' : 'gap-x-[20px]'} min-w-[1300px] w-full`}
+        >
           {menuData.map((items, index) => {
             const isDisabled = !items.alwaysEnabled && !hasTenderId
             const isActive = pathname === items.href
 
-            return (
+            const menuItem = (
               <Link
                 key={index}
                 href={isDisabled ? '#' : items.href}
@@ -165,23 +173,31 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
                   }
                 }}
                 className={`flex items-center ${isActive ? 'bg-[#35C0ED] text-white' : ''} ${
-                  isDisabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : 'cursor-pointer'
+                  isDisabled ? 'cursor-default pointer-events-none' : 'cursor-pointer'
                 } justify-center py-2 rounded-lg min-w-[140px]`}
                 style={{
-                  color: isDisabled ? '#9e9e9e' : 'inherit',
-                  cursor: isDisabled ? 'not-allowed' : 'pointer',
+                  color: isDisabled ? 'inherit' : 'inherit',
+                  cursor: isDisabled ? 'default' : 'pointer',
                   pointerEvents: isDisabled ? 'none' : 'auto'
                 }}
               >
                 <section className='flex gap-x-[8px] px-3'>
-                  <div className='size-[22px]' style={{ color: isDisabled ? '#9e9e9e' : 'inherit' }}>
+                  <div className='size-[22px]' style={{ color: 'inherit' }}>
                     {items.image}
                   </div>
-                  <div className='text-[15px]' style={{ color: isDisabled ? '#9e9e9e' : 'inherit' }}>
+                  <div className='text-[15px]' style={{ color: 'inherit' }}>
                     {items.menuItem}
                   </div>
                 </section>
               </Link>
+            )
+
+            return isDisabled ? (
+              <CustomTooltip key={index} text="Complete Onboarding"  align='left' position="left" cursor="default">
+                {menuItem}
+              </CustomTooltip>
+            ) : (
+              menuItem
             )
           })}
         </div>

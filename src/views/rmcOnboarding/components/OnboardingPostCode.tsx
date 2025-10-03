@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/navigation'
 
@@ -19,6 +19,7 @@ import { setPostcodeAddresses, type PostcodeAddress } from '@/redux-store/slices
 const OnboardingPostCode = () => {
   const router = useRouter()
   const dispatch = useDispatch()
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const { control, handleSubmit, setValue } = useForm<PostcodeFormData>({
     resolver: valibotResolver(postcodeSchema),
@@ -86,10 +87,14 @@ const OnboardingPostCode = () => {
       }
 
       toast.error(errorMessage)
+      setIsSubmitting(false)
     }
   })
 
   const handleFormSubmit = (data: PostcodeFormData) => {
+    if (isSubmitting || mutation.isPending) return
+
+    setIsSubmitting(true)
     const trimmedPostcode = data?.postcode?.trim()
 
     localStorage.setItem('rmc-onboarding-postcode', trimmedPostcode)
@@ -125,12 +130,12 @@ const OnboardingPostCode = () => {
           <div className='pb-20 flex  justify-end'>
             <CustomButton
               type='submit'
-              isLoading={mutation.isPending}
-              disabled={mutation.isPending}
+              isLoading={isSubmitting || mutation.isPending}
+              disabled={isSubmitting || mutation.isPending}
               sx={{ fontSize: '16px', fontWeight: 700 }}
               endIcon={<i className='ri-arrow-right-line'></i>}
             >
-              {mutation.isPending ? 'Finding Address...' : 'Find Address'}
+              {isSubmitting || mutation.isPending ? 'Finding Address...' : 'Find Address'}
             </CustomButton>
           </div>
         </form>

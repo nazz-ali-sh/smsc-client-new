@@ -1,6 +1,5 @@
-import React from 'react'
-
 import { steps } from '@/constants'
+import React from 'react'
 
 const EvaluationInstructions = () => {
   return (

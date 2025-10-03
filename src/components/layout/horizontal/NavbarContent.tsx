@@ -101,6 +101,7 @@ const NavbarContent = () => {
   const dispatch = useDispatch()
 
   const shouldHideElements = routesWithNavbarContent.some(route => pathname.includes(route))
+  const isOnboardingRoute = pathname.includes('rmc-onboarding')
 
   const [rmctenderId, setRmctenderId] = useState<string>('')
   const currentTenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
@@ -137,7 +138,8 @@ const NavbarContent = () => {
     <div
       className={classnames(
         horizontalLayoutClasses.navbarContent,
-        'flex items-center justify-between gap-4 mt-2 is-full'
+        'flex items-center justify-between gap-4 is-full',
+        !isOnboardingRoute && 'mt-2'
       )}
     >
       <div className='flex items-center gap-4'>

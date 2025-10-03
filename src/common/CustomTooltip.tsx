@@ -8,6 +8,7 @@ interface CustomTooltipProps {
   position?: 'top' | 'bottom' | 'left' | 'right'
   className?: string
   align?: 'left' | 'center' | 'right'
+  cursor?: 'default' | 'pointer' | 'not-allowed'
 }
 
 const CustomTooltip: React.FC<CustomTooltipProps> = ({
@@ -15,7 +16,8 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
   text,
   position = 'top',
   className = '',
-  align = 'center'
+  align = 'center',
+  cursor = 'pointer'
 }) => {
   const [isVisible, setIsVisible] = useState(false)
 
@@ -182,7 +184,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
       sx={{
         position: 'relative',
         display: 'inline-block',
-        cursor: 'pointer'
+        cursor: cursor
       }}
       onMouseEnter={() => setIsVisible(true)}
       onMouseLeave={() => setIsVisible(false)}

@@ -23,6 +23,7 @@ import { useRmcOnboardingData } from '@/hooks/useRmcOnboardingData'
 const OnboardingEndedQuestions = () => {
   const [open, setOpen] = useState(false)
   const [responses, setResponses] = useState<Record<string, string>>({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const router = useRouter()
   const dispatch = useDispatch()
@@ -75,6 +76,7 @@ const OnboardingEndedQuestions = () => {
       }
 
       toast.error(errorMessage)
+      setIsSubmitting(false)
     }
   })
 
@@ -88,6 +90,8 @@ const OnboardingEndedQuestions = () => {
   }
 
   const handleLaunch = () => {
+    if (isSubmitting || mutation.isPending) return
+
     if (!rmcData?.tender_onboarding_id) {
       toast.error('Tender onboarding ID not found. Please try again.')
 
@@ -112,6 +116,8 @@ const OnboardingEndedQuestions = () => {
 
       return
     }
+
+    setIsSubmitting(true)
 
     const payload: RmcProcessPayload = {
       tender_onboarding_id: rmcData?.tender_onboarding_id,
@@ -191,10 +197,10 @@ const OnboardingEndedQuestions = () => {
               sx={buttonStyles}
               endIcon={<i className='ri-arrow-right-line'></i>}
               onClick={handleLaunch}
-              isLoading={mutation.isPending}
-              disabled={mutation.isPending}
+              isLoading={isSubmitting || mutation.isPending}
+              disabled={isSubmitting || mutation.isPending}
             >
-              {mutation.isPending ? 'Submitting...' : 'Launch'}
+              {isSubmitting || mutation.isPending ? 'Submitting...' : 'Launch'}
             </CustomButton>
           </div>
         </div>

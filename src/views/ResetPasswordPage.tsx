@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { useRouter, useSearchParams } from 'next/navigation'
 
@@ -26,6 +26,7 @@ const ResetPasswordPage = () => {
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
   const emailFromUrl = searchParams.get('email')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const { control, handleSubmit, setValue } = useForm<ResetPasswordFormData>({
     resolver: valibotResolver(resetPasswordSchema),
@@ -60,16 +61,20 @@ const ResetPasswordPage = () => {
         error?.response?.data?.message || error?.message || 'Failed to reset password. Please try again.'
 
       toast.error(errorMessage)
+      setIsSubmitting(false)
     }
   })
 
   const handleResetPassword: SubmitHandler<ResetPasswordFormData> = async data => {
+    if (isSubmitting || isLoading) return
+
     if (!token) {
       toast.error('Reset token is missing. Please use the link from your email.')
 
       return
     }
 
+    setIsSubmitting(true)
     resetUserPassword({
       token: token,
       email: data.email,
@@ -110,7 +115,7 @@ const ResetPasswordPage = () => {
           <Button
             variant='contained'
             type='submit'
-            disabled={isLoading}
+            disabled={isSubmitting || isLoading}
             sx={{
               backgroundColor: '#35C0ED',
               color: '#fff',
@@ -129,7 +134,7 @@ const ResetPasswordPage = () => {
               }
             }}
           >
-            {isLoading ? 'Resetting...' : 'Reset Password'}
+            {isSubmitting || isLoading ? 'Resetting...' : 'Reset Password'}
           </Button>
         </div>
       </form>

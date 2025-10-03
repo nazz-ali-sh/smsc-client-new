@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 
 import { useRouter } from 'next/navigation'
 
@@ -22,6 +22,7 @@ type LoginFormData = InferOutput<typeof loginSchema>
 
 const LoginPage = () => {
   const router = useRouter()
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const { control, handleSubmit } = useForm<LoginFormData>({
     resolver: valibotResolver(loginSchema),
@@ -46,10 +47,14 @@ const LoginPage = () => {
       const errorMessage = error?.response?.data?.message || error?.message || 'Login failed. Please try again.'
 
       toast.error(errorMessage)
+      setIsSubmitting(false)
     }
   })
 
   const handleLogin: SubmitHandler<LoginFormData> = async data => {
+    if (isSubmitting || isLoading) return
+
+    setIsSubmitting(true)
     login({
       email: data?.email,
       password: data?.password
@@ -96,7 +101,7 @@ const LoginPage = () => {
           <Button
             variant='contained'
             type='submit'
-            disabled={isLoading}
+            disabled={isSubmitting || isLoading}
             sx={{
               backgroundColor: '#35C0ED',
               color: '#fff',
@@ -115,7 +120,7 @@ const LoginPage = () => {
               }
             }}
           >
-            {isLoading ? 'Logging in...' : 'Login'}
+            {isSubmitting || isLoading ? 'Logging in...' : 'Login'}
           </Button>
         </div>
         <p onClick={handleOnboarding} className='font-medium mt-4 text-[#0B2952] text-center cursor-pointer'>
