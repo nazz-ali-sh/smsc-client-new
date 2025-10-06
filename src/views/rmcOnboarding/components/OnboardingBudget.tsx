@@ -124,7 +124,7 @@ const OnboardingBudget = () => {
       fire_door_fee: parseFloat(budgetData?.fire_door_fee),
       anti_money_fee: parseFloat(budgetData?.anti_money_fee),
       step: 4,
-      tender_onboarding_id: rmcData?.tender_onboarding_id
+      tender_onboarding_id: onboardingData?.onboarding_id ?? rmcData?.tender_onboarding_id
     }
 
     mutation.mutate(payload)

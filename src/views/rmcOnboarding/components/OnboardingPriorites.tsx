@@ -239,7 +239,7 @@ const OnboardingPriorities: React.FC = () => {
   const handleNext = () => {
     if (isSubmitting || mutation.isPending) return
 
-    if (!rmcData?.tender_onboarding_id) {
+    if (!onboardingData?.onboarding_id && !rmcData?.tender_onboarding_id) {
       toast.error('Tender onboarding ID not found. Please try again.')
 
       return
@@ -255,7 +255,7 @@ const OnboardingPriorities: React.FC = () => {
       slots?.map(slot => (slot ? parseInt(slot?.id) : null))?.filter((id): id is number => id !== null) || []
 
     const payload: RmcPrioritiesPayload = {
-      tender_onboarding_id: rmcData?.tender_onboarding_id,
+      tender_onboarding_id: onboardingData?.onboarding_id ?? rmcData?.tender_onboarding_id,
       priorities: priorities,
       step: 6
     }

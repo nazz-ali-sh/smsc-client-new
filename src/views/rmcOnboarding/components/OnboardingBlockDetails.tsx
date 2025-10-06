@@ -106,7 +106,7 @@ const OnboardingBlockDetails = () => {
   const handleFormSubmit = (data: BlockDetailsFormData) => {
     if (isSubmitting || mutation.isPending) return
 
-    if (!rmcData?.tender_onboarding_id) {
+    if (!onboardingData?.onboarding_id && !rmcData?.tender_onboarding_id) {
       toast.error('Tender onboarding ID not found. Please try again.')
 
       return
@@ -121,7 +121,7 @@ const OnboardingBlockDetails = () => {
     setIsSubmitting(true)
 
     const payload: RmcBlockDetailsPayload = {
-      tender_onboarding_id: rmcData?.tender_onboarding_id,
+      tender_onboarding_id: onboardingData?.onboarding_id ?? rmcData?.tender_onboarding_id,
       number_of_blocks: parseInt(data?.number_of_blocks),
       total_units: parseInt(data?.no_of_units),
       year_built: data?.year_built,

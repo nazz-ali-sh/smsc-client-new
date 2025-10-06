@@ -9,6 +9,7 @@ import { valibotResolver } from '@hookform/resolvers/valibot'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 import { Typography, Button } from '@mui/material'
+import { useDispatch } from 'react-redux'
 
 import type { InferOutput } from 'valibot'
 
@@ -17,11 +18,13 @@ import AuthLayout from '@/common/AuthLayout'
 import { loginSchema } from '@/schemas/validation-schemas'
 import { loginUser } from '@/services/auth-apis/auth-api'
 import { storeToken } from '@/utils/tokenSync'
+import { setTenderInformation } from '@/redux-store/slices/tenderInformationSlice'
 
 type LoginFormData = InferOutput<typeof loginSchema>
 
 const LoginPage = () => {
   const router = useRouter()
+  const dispatch = useDispatch()
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const { control, handleSubmit } = useForm<LoginFormData>({
@@ -39,6 +42,11 @@ const LoginPage = () => {
     onSuccess: data => {
       if (data) {
         storeToken(data?.data.token)
+
+        if (data?.data?.onboarding) {
+          dispatch(setTenderInformation(data?.data?.onboarding))
+        }
+
         router.push('/dashboard')
         toast.success('Login successful!')
       }

@@ -89,11 +89,11 @@ const OnboardingRtmForm = () => {
       <h1 className='text-[48px] text-center font-bold text-[#262B43E5] mt-8'>RMC Onboarding</h1>
       <div className='flex items-center justify-center p-4 bg-white mt-8 mb-20'>
         <div className='p-4 rounded-lg w-full '>
-          <div className='pt-16'>
+          <div className=''>
             <Box component='form'>
               <Typography
                 variant='h6'
-                sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1', mb: 3 }}
+                sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1', mb: 10 }}
               >
                 Setup An RTM
               </Typography>

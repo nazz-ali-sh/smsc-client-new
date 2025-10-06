@@ -15,8 +15,11 @@ import FormInput from '@/components/form-components/FormInput'
 import { postcodeSchema } from '@/schemas/validation-schemas'
 import { lookupPostcode, type PostcodeLookupPayload } from '@/services/postcode-apis/postcode-api'
 import { setPostcodeAddresses, type PostcodeAddress } from '@/redux-store/slices/postcodeSlice'
+import { useRmcOnboardingData } from '@/hooks/useRmcOnboardingData'
 
 const OnboardingPostCode = () => {
+  const { data } = useRmcOnboardingData()
+
   const router = useRouter()
   const dispatch = useDispatch()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -33,12 +36,12 @@ const OnboardingPostCode = () => {
   }, [router])
 
   useEffect(() => {
-    const savedPostcode = localStorage.getItem('rmc-onboarding-postcode')
+    const savedPostcode = data?.steps?.step3?.postcode ?? localStorage.getItem('rmc-onboarding-postcode')
 
     if (savedPostcode) {
       setValue('postcode', savedPostcode)
     }
-  }, [setValue])
+  }, [data?.steps?.step3?.postcode, setValue])
 
   const mutation = useMutation({
     mutationFn: lookupPostcode,

@@ -65,6 +65,9 @@ const UserDropdown = () => {
   const handleSignOut = () => {
     clearTokenCookie()
     dispatch(clearRmcData())
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('rmc-onboarding-postcode')
+    }
     setOpen(false)
     router.push('/login')
   }

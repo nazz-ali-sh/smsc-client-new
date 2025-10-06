@@ -61,6 +61,7 @@ axiosClient.interceptors.response.use(
 
       if (typeof window !== 'undefined') {
         localStorage.removeItem('persist:root')
+        localStorage.removeItem('rmc-onboarding-postcode')
         sessionStorage.clear()
 
         window.location.href = '/login'

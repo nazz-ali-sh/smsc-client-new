@@ -92,7 +92,7 @@ const OnboardingEndedQuestions = () => {
   const handleLaunch = () => {
     if (isSubmitting || mutation.isPending) return
 
-    if (!rmcData?.tender_onboarding_id) {
+    if (!onboardingData?.onboarding_id && !rmcData?.tender_onboarding_id) {
       toast.error('Tender onboarding ID not found. Please try again.')
 
       return
@@ -120,7 +120,7 @@ const OnboardingEndedQuestions = () => {
     setIsSubmitting(true)
 
     const payload: RmcProcessPayload = {
-      tender_onboarding_id: rmcData?.tender_onboarding_id,
+      tender_onboarding_id: onboardingData?.onboarding_id ?? rmcData?.tender_onboarding_id,
       step: 7,
       answers
     }

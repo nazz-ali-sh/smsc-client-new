@@ -15,6 +15,7 @@ import rmcOnboardingReducer from '@/redux-store/slices/rmcOnboardingSlice'
 import rtmNonDirectorReducer from '@/redux-store/slices/rtmNonDirectorSlice'
 import postcodeReducer from '@/redux-store/slices/postcodeSlice'
 import tabSlice from '@/redux-store/slices/tabSlice'
+import tenderInformationReducer from '@/redux-store/slices/tenderInformationSlice'
 
 const persistConfig = {
   key: 'root',
@@ -27,7 +28,8 @@ const persistConfig = {
     'branches',
     'users',
     'rmcOnboarding',
-    'rtmNonDirector'
+    'rtmNonDirector',
+    'tenderInformation'
   ]
 }
 
@@ -44,7 +46,8 @@ const rootReducer = combineReducers({
   rmcOnboarding: rmcOnboardingReducer,
   rtmNonDirector: rtmNonDirectorReducer,
   postcode: postcodeReducer,
-  tabSwitch: tabSlice
+  tabSwitch: tabSlice,
+  tenderInformation: tenderInformationReducer
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

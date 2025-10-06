@@ -103,18 +103,23 @@ const OnboardingAddress = () => {
       return
     }
 
-    const savedPostcode = localStorage.getItem('rmc-onboarding-postcode')
+    const savedPostcode =
+      (typeof onboardingData?.steps?.step_3?.postcode === 'string' && onboardingData?.steps?.step_3?.postcode) ||
+      localStorage.getItem('rmc-onboarding-postcode') ||
+      ''
 
-    if (savedPostcode && savedPostcode?.trim()) {
+    const trimmedPostcode = savedPostcode?.trim()
+
+    if (trimmedPostcode) {
       hasAttemptedFetch.current = true
 
       const payload: PostcodeLookupPayload = {
-        postcode: savedPostcode?.trim()
+        postcode: trimmedPostcode
       }
 
       postcodeMutation.mutate(payload)
     }
-  }, [addresses, postcodeMutation])
+  }, [addresses, onboardingData?.steps?.step_3?.postcode, postcodeMutation])
 
   useEffect(() => {
     if (onboardingData?.steps?.step_3) {
@@ -283,7 +288,7 @@ const OnboardingAddress = () => {
       }
     }
 
-    if (!rmcData?.tender_onboarding_id) {
+    if (!onboardingData?.onboarding_id && !rmcData?.tender_onboarding_id) {
       toast.error('Tender onboarding ID not found. Please try again.')
       setIsSubmitting(false)
 
@@ -294,7 +299,7 @@ const OnboardingAddress = () => {
 
     if (hasDropdownAddress) {
       payload = {
-        tender_onboarding_id: rmcData?.tender_onboarding_id,
+        tender_onboarding_id: onboardingData?.onboarding_id ?? rmcData?.tender_onboarding_id,
         postcode: selectedAddress?.postcode || '',
         address: selectedAddress?.line_1,
         lat: selectedAddress?.latitude || 0,
@@ -311,7 +316,7 @@ const OnboardingAddress = () => {
       const addressData = mapSelectedAddress || manualAddressData
 
       payload = {
-        tender_onboarding_id: rmcData?.tender_onboarding_id,
+        tender_onboarding_id: onboardingData?.onboarding_id ?? rmcData?.tender_onboarding_id,
         postcode: addressData?.postcode || '',
         address: addressData?.addressLine1,
         lat: addressData?.coordinates.lat || 0,

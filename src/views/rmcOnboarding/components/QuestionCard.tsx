@@ -37,7 +37,7 @@ const QuestionCard = ({ question, questionKey, nextRoute, backRoute, questionNum
           sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1' }}
           className=' mb-6'
         >
-          RTM Question
+          RTM Questions
         </Typography>
         <Typography
           variant='h6'
@@ -88,12 +88,7 @@ const QuestionCard = ({ question, questionKey, nextRoute, backRoute, questionNum
         </div>
 
         <div className='flex justify-start mt-8'>
-          <CustomButton
-            onClick={handleBack}
-            startIcon={<i className='ri-arrow-left-line'></i>}
-            variant='outlined'
-            sx={{ fontSize: '16px', fontWeight: 700 }}
-          >
+          <CustomButton onClick={handleBack} startIcon={<i className='ri-arrow-left-line'></i>} variant='outlined'>
             Back
           </CustomButton>
         </div>

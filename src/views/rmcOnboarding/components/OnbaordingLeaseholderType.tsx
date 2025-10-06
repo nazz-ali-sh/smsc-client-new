@@ -67,7 +67,7 @@ const OnboardingLeaseholderType = () => {
   })
 
   const handleLeaseholderTypeSubmit = (leaseholdType: string, customValue?: string) => {
-    if (!rmcData?.tender_onboarding_id) {
+    if (!onboardingData?.onboarding_id && !rmcData?.tender_onboarding_id) {
       toast.error('Tender onboarding ID not found. Please try again.')
 
       return
@@ -77,7 +77,7 @@ const OnboardingLeaseholderType = () => {
 
     const payload: RmcLeaseholderTypePayload = {
       step: 5,
-      tender_onboarding_id: rmcData?.tender_onboarding_id,
+      tender_onboarding_id: onboardingData?.onboarding_id ?? rmcData?.tender_onboarding_id,
       leasehold_type: customValue || leaseholdType,
       building_height: step5Data?.building_height || '',
       block_condition: step5Data?.block_condition || '',

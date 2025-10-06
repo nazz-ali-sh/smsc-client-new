@@ -192,7 +192,7 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
             return isDisabled ? (
               <CustomTooltip
                 key={index}
-                text='Finish Onboarding before access these tabs'
+                text='Finish Onboarding to access these tabs'
                 align='left'
                 position='left'
                 cursor='default'

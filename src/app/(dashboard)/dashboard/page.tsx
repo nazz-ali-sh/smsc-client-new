@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useSelector } from 'react-redux'
 
 import { dashboardData } from '@/services/dashboard-apis/dashboard-api'
+import { getOnboardingRoute } from '@/utils/onboarding'
 import AccordionExpand from '@/views/Dashboard/AccordionExpand'
 import CurrentActivity from '@/views/Dashboard/CurrentActivity'
 import { TenderCards } from '@/views/Dashboard/PopularInstructors'
@@ -48,6 +49,7 @@ interface DashboardResponse {
 export default function Page() {
   const router = useRouter()
   const tenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
+  const tenderInformation = useSelector((state: any) => state?.tenderInformation?.onboarding)
 
   const { data: dashboardResponce, isLoading: isDashboardLoading } = useQuery<DashboardResponse, Error>({
     queryKey: ['dashboardDatas', tenderId],
@@ -57,7 +59,10 @@ export default function Page() {
   })
 
   const handleCompleteOnboarding = () => {
-    router.push('/rmc-onboarding')
+    const step = tenderInformation?.current_step
+    const route = getOnboardingRoute(step)
+
+    router.push(route)
   }
 
   return (
