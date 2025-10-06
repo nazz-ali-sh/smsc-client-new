@@ -198,9 +198,9 @@ const OnboardingBudget = () => {
                 label={label}
                 type='text'
                 inputProps={{
-                  maxLength: 6,
-                  pattern: '[0-9]*',
-                  inputMode: 'numeric'
+                  maxLength: 8,
+                  pattern: '[0-9]*\\.?[0-9]*',
+                  inputMode: 'decimal'
                 }}
                 onInput={(e: any) => {
                   const value = parseFloat(e.target.value)

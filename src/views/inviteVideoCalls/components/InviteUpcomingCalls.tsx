@@ -7,8 +7,9 @@ import { createColumnHelper } from '@tanstack/react-table'
 
 import CommonTable from '@/common/CommonTable'
 import RejectModal from '@/common/RejectModal'
-import SiteVisitsModal from '@/common/SiteVisitsModal'
 import CancelVideoCallsAndSiteVisist from '@/common/CancelVideoCallsAndSiteVisist'
+import { formatDates } from '@/utils/dateFormater'
+import VideosCallsModal from '@/common/VideosCallsModal'
 
 interface RescheduledCallType {
   pmaId: string
@@ -18,9 +19,10 @@ interface RescheduledCallType {
   videoCallLink: string
   timeline: string
   rescheduled: string
-  invite_id: number
+  invite_id: any
+  invited_at: string
+  slot_ids?: string
 }
-
 interface pendingInviteData {
   pendingInviteData?: any
 }
@@ -28,8 +30,8 @@ interface pendingInviteData {
 const columnHelper = createColumnHelper<RescheduledCallType>()
 
 const InviteUpcomingCalls: React.FC<pendingInviteData> = ({ pendingInviteData }) => {
-  const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
   const [confirmOpen, setConfirmOpen] = useState(false)
+  const [onlineCallsModalOpen, setOnlineCallsModalOpen] = useState(false)
   const [visitsSchedualInviteId, setVisitsSchedualInviteId] = useState<number | undefined>(undefined)
 
   const tableData: RescheduledCallType[] =
@@ -41,18 +43,19 @@ const InviteUpcomingCalls: React.FC<pendingInviteData> = ({ pendingInviteData })
         quotation: { total_quote_inc_vat: any }
         zoom_meeting_link: any
         slot: { name: any; id: any }
+        invited_at: any
 
         status_label: any
       }) => ({
         pmaId: invite.pma_name,
         invite_id: invite?.id,
-        yearTrading: invite.pma_company?.trading_years?.toString() ?? '',
-        unitsManaged: invite.pma_company?.total_units ?? 0,
-        quotations: invite.quotation?.total_quote_inc_vat ?? '',
-        videoCallLink: invite.zoom_meeting_link ?? '',
+        yearTrading: invite?.pma_company?.trading_years?.toString() ?? '',
+        unitsManaged: invite?.pma_company?.total_units ?? 0,
+        quotations: invite?.quotation?.total_quote_inc_vat ?? '',
+        videoCallLink: invite?.zoom_meeting_link ?? '',
         timeline: invite.slot?.name ?? '',
         slot_ids: invite.slot?.id ?? '',
-        rescheduled: invite.status_label ?? ''
+        invited_at: formatDates(invite?.invited_at) ?? ''
       })
     ) || []
 
@@ -65,7 +68,7 @@ const InviteUpcomingCalls: React.FC<pendingInviteData> = ({ pendingInviteData })
       enableSorting: true
     }),
     columnHelper.accessor('pmaId', {
-      header: 'PMA ID',
+      header: 'PMA Name',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true
@@ -104,13 +107,14 @@ const InviteUpcomingCalls: React.FC<pendingInviteData> = ({ pendingInviteData })
       enableSorting: false
     }),
     columnHelper.accessor('timeline', {
-      header: 'Timeline',
+      header: 'Scheduled Slot',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true
     }),
-    columnHelper.accessor('rescheduled', {
-      header: 'Rescheduled',
+
+    columnHelper.accessor('invited_at', {
+      header: 'Scheduled Date',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true
@@ -133,7 +137,7 @@ const InviteUpcomingCalls: React.FC<pendingInviteData> = ({ pendingInviteData })
             <i
               onClick={() => {
                 setVisitsSchedualInviteId(row.original.invite_id)
-                setSiteVisitsModalOpen(true)
+                setOnlineCallsModalOpen(true)
               }}
               className='ri-edit-box-line'
             />
@@ -146,7 +150,7 @@ const InviteUpcomingCalls: React.FC<pendingInviteData> = ({ pendingInviteData })
   ]
 
   return (
-    <Box className='bg-white h-[70vh] overflow-y-auto'>
+    <Box className='bg-white  overflow-y-auto'>
       <CommonTable
         data={tableData}
         columns={columns}
@@ -154,15 +158,6 @@ const InviteUpcomingCalls: React.FC<pendingInviteData> = ({ pendingInviteData })
         onPaginationChange={() => {}}
         pageSizeOptions={[5, 10, 25]}
         enableSorting={true}
-      />
-
-      <SiteVisitsModal
-        open={siteVisitsModalOpen}
-        onClose={() => setSiteVisitsModalOpen(false)}
-        shorlistedPmas={undefined}
-        Reschedual={tableData}
-        VideoCallInviteId={visitsSchedualInviteId}
-        types='Reschedual'
       />
 
       <RejectModal
@@ -176,6 +171,15 @@ const InviteUpcomingCalls: React.FC<pendingInviteData> = ({ pendingInviteData })
         types='cancel'
         sitePendingData={undefined}
         SideVisitsSchedualInviteId={undefined}
+      />
+
+      <VideosCallsModal
+        open={onlineCallsModalOpen}
+        onClose={() => setOnlineCallsModalOpen(false)}
+        VideoCallInviteId={visitsSchedualInviteId}
+        shorlistedPmas={null}
+        mainSiteVisitVideoCalls={undefined}
+        types='videoCallReschedual'
       />
 
       <CancelVideoCallsAndSiteVisist

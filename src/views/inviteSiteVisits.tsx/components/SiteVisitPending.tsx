@@ -47,7 +47,7 @@ const SiteVisitPending = ({ sitePendingData }: any) => {
         location: any
       }) => ({
         pmaId: invite.pma_name,
-        invite_id: invite?.id, // ✅ added here
+        invite_id: invite?.id, 
         yearTrading: invite.pma_company?.trading_years?.toString() ?? '',
         unitsManaged: invite.pma_company?.total_units ?? 0,
         quotations: invite.quotation?.total_quote_inc_vat ?? '',
@@ -153,7 +153,7 @@ const SiteVisitPending = ({ sitePendingData }: any) => {
   ]
 
   return (
-    <Box className='bg-white h-[70vh] overflow-y-auto'>
+    <Box className='bg-white overflow-y-auto'>
       <CommonTable
         data={tableData}
         columns={columns}

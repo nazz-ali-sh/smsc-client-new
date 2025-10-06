@@ -17,9 +17,12 @@ import RejectModal from '@/common/RejectModal'
 import SiteVisitsModal from '@/common/SiteVisitsModal'
 import SuccessModal from '@/common/SucessModal'
 import { reSchedualAccepted } from '@/services/site_visit_apis/site_visit_api'
+import { formatDates } from '@/utils/dateFormater'
+import VideosCallsModal from '@/common/VideosCallsModal'
 
 interface RescheduledCallType {
   pmaId: string
+  pma_user_id: number
   yearTrading: string
   unitsManaged: number
   quotations: string
@@ -27,6 +30,7 @@ interface RescheduledCallType {
   timeline: string
   rescheduled: string
   invite_id: number
+  invited_at: string
 }
 
 const columnHelper = createColumnHelper<RescheduledCallType>()
@@ -36,6 +40,7 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
   const [SuccessOpen, setSuccessOpen] = useState(false)
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
   const [visitsSchedualInviteId, setVisitsSchedualInviteId] = useState<number | undefined>(undefined)
+  const [onlineCallsModalOpen, setOnlineCallsModalOpen] = useState(false)
 
   const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
@@ -44,26 +49,27 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
       (invite: {
         pma_name: any
         id: number
+        pma_user_id: number
         pma_company: { trading_years: { toString: () => any }; total_units: any }
         quotation: { total_quote_inc_vat: any }
         zoom_meeting_link: any
         slot: { name: any; id: any }
         status_label: any
+        invited_at: any
       }) => ({
         pmaId: invite.pma_name,
         invite_id: invite?.id,
+        pma_user_id: invite?.pma_user_id,
         yearTrading: invite.pma_company?.trading_years?.toString() ?? '',
         unitsManaged: invite.pma_company?.total_units ?? 0,
         quotations: invite.quotation?.total_quote_inc_vat ?? '',
         videoCallLink: invite.zoom_meeting_link ?? '',
         timeline: invite.slot?.name ?? '',
-        rescheduled: invite.status_label ?? ''
+        rescheduled: invite?.status_label ?? '',
+        invited_at: formatDates(invite?.invited_at) ?? ''
       })
     ) || []
 
-  const reschedual_inviteId = (tableData ?? [])[0]?.invite_id || '0'
-
-  console.log(reschedual_inviteId)
 
   const rechedualRmcAgain = useMutation({
     mutationFn: ({ visitsSchedualInviteId, rmctender_id }: { visitsSchedualInviteId: any; rmctender_id: number }) =>
@@ -96,7 +102,7 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
       enableSorting: true
     }),
     columnHelper.accessor('pmaId', {
-      header: 'PMA ID',
+      header: 'PMA Name',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true
@@ -135,17 +141,18 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
       enableSorting: false
     }),
     columnHelper.accessor('timeline', {
-      header: 'Timeline',
+      header: 'Rescheduled Slot',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true
     }),
-    columnHelper.accessor('rescheduled', {
-      header: 'Rescheduled',
+    columnHelper.accessor('invited_at', {
+      header: 'Rescheduled Date',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true
     }),
+
     columnHelper.display({
       id: 'action',
       header: 'Action',
@@ -175,7 +182,7 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
             <i
               onClick={() => {
                 setVisitsSchedualInviteId(row.original.invite_id)
-                setSiteVisitsModalOpen(true)
+                setOnlineCallsModalOpen(true)
               }}
               className='ri-edit-box-line'
             />
@@ -188,7 +195,7 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
   ]
 
   return (
-    <Box className='bg-white h-[70vh] overflow-y-auto'>
+    <Box className='bg-white  overflow-y-auto'>
       <CommonTable
         data={tableData}
         columns={columns}
@@ -221,6 +228,15 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
         siteVisitDate={undefined}
         SideVisitsSchedualInviteId={undefined}
         completedShorlistedPmas={undefined}
+      />
+
+      <VideosCallsModal
+        open={onlineCallsModalOpen}
+        VideoCallInviteId={visitsSchedualInviteId}
+        onClose={() => setOnlineCallsModalOpen(false)}
+        shorlistedPmas={null}
+        mainSiteVisitVideoCalls={undefined}
+        types='videoCallReschedual'
       />
 
       <SuccessModal

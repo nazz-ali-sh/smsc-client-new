@@ -925,8 +925,10 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
 
         <CommonModal
           isOpen={openPmaDropdown}
+          headerSx={{ color: '#1F4E8D', fontSize: '26px', fontWeight: 600 }}
+          isBorder
           handleClose={() => setOpenPmaDropdown(false)}
-          header='Plese select the Pma for Appointment'
+          header='Appoint Your Agent'
           maxWidth='sm'
           fullWidth
         >
@@ -998,7 +1000,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
               onClick={handleAppointAgentSelection}
               sx={{ fontSize: '14px', fontWeight: 700 }}
             >
-              Select the Pma
+              Select PMA
             </CustomButton>
           </div>
         </CommonModal>

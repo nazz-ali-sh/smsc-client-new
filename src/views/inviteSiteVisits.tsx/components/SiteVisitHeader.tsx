@@ -4,8 +4,9 @@ import React, { useState } from 'react'
 
 import { Box, Typography } from '@mui/material'
 
-import VideosCallsModal from '@/common/VideosCallsModal'
+import SiteVisitsModal from '@/common/SiteVisitsModal'
 import CustomButton from '@/common/CustomButton'
+import { useShortlistedPmas } from '@/hooks/useShortlistedPmasData'
 
 interface InviteCallHeaderProps {
   title?: string
@@ -13,8 +14,10 @@ interface InviteCallHeaderProps {
   videoCallmodalData: any
 }
 
-const SiteVisitHeader = ({ title = 'Video Calls', actionButton, videoCallmodalData }: InviteCallHeaderProps) => {
-  const [onlineCallsModalOpen, setOnlineCallsModalOpen] = useState(false)
+const SiteVisitHeader = ({ title = 'Video Calls', actionButton }: InviteCallHeaderProps) => {
+  const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
+
+  const { data: finalShortListedResponce } = useShortlistedPmas()
 
   return (
     <Box className=' p-6'>
@@ -26,7 +29,7 @@ const SiteVisitHeader = ({ title = 'Video Calls', actionButton, videoCallmodalDa
         <CustomButton
           variant='contained'
           className='flex items-center gap-2'
-          onClick={() => setOnlineCallsModalOpen(true)}
+          onClick={() => setSiteVisitsModalOpen(true)}
         >
           {actionButton}
         </CustomButton>
@@ -44,11 +47,15 @@ const SiteVisitHeader = ({ title = 'Video Calls', actionButton, videoCallmodalDa
         centralized location.
       </Typography>
 
-      <VideosCallsModal
-        open={onlineCallsModalOpen}
-        onClose={() => setOnlineCallsModalOpen(false)}
-        shorlistedPmas={null}
-        mainSiteVisitVideoCalls={videoCallmodalData}
+      <SiteVisitsModal
+        open={siteVisitsModalOpen}
+        onClose={() => setSiteVisitsModalOpen(false)}
+        types='fromSiteVisitTable'
+        siteVisitDate={undefined}
+        SideVisitsSchedualInviteId={undefined}
+        VideoCallInviteId={undefined}
+        completedShorlistedPmas={undefined}
+        shorlistedPmas={finalShortListedResponce?.data?.shortlisted_pma_users}
       />
     </Box>
   )

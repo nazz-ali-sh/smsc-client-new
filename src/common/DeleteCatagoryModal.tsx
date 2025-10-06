@@ -10,7 +10,6 @@ import {
   IconButton,
   useTheme,
   Divider,
-  Button
 } from '@mui/material'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
@@ -21,6 +20,7 @@ import { toast } from 'react-toastify'
 import type { AxiosError } from 'axios'
 
 import { removeMatric } from '@/services/evaluation_matrix/evaluation_matrix'
+import CustomButton from './CustomButton'
 
 interface ToolTipModalProps {
   open: boolean
@@ -98,36 +98,28 @@ const DeleteCatagoryModal: React.FC<ToolTipModalProps> = ({ open, onClose, title
         </Box>
       </DialogTitle>
 
-      <DialogContent sx={{ px: 3, mt: 6 }}>
+      <DialogContent sx={{ px: 3, mt: 3 }}>
         <Typography
           variant='h5'
           sx={{
-            color: theme.colorSchemes.light.palette.customColors.darkGray1,
             fontSize: '16px',
-            marginTop: '10px'
+            marginTop: '10px',
+            fontWeight: '400px',
+            color: '#696969'
           }}
         >
           {description}
         </Typography>
 
         <div className='flex justify-end items-end gap-x-[12px] mt-[34px]'>
-          <Button
-            onClick={onClose}
-            variant='outlined'
-            className='bg-white gap-x-3 border-[buttonPrimary] py-[10px] px-7'
-          >
+          <CustomButton onClick={onClose} variant='outlined'>
             Cancel
-          </Button>
+          </CustomButton>
 
           <div className='flex justify-end mt-8'>
-            <Button
-              onClick={handleDelete}
-              variant='contained'
-              disabled={mutation.isPending}
-              className='bg-buttonPrimary gap-x-3 py-3 px-7'
-            >
+            <CustomButton onClick={handleDelete} variant='contained' disabled={mutation.isPending}>
               {mutation.isPending ? 'Deleting...' : 'Delete'}
-            </Button>
+            </CustomButton>
           </div>
         </div>
       </DialogContent>

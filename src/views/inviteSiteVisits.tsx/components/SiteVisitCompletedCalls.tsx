@@ -130,7 +130,7 @@ const SiteVisitCompletedCalls = ({ siteCompleted }: any) => {
   ]
 
   return (
-    <Box className='h-[70vh] overflow-y-auto'>
+    <Box className='overflow-y-auto'>
       <CommonTable
         data={tableData}
         columns={columns}

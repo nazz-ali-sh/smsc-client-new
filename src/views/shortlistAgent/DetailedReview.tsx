@@ -41,7 +41,6 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
   const [pmaSelectedID, setPmaSelectedID] = useState<number | any>()
   const [selectedPma, setSelectedPma] = useState<{ id: number; pma_number: string } | null>(null)
 
-
   const extendedCheck = finalShortListedResponce?.data?.shortlisted_pmas[0]?.shortlisting_extended
 
   const shortlistexpiryDate = calculateTimeLeft(
@@ -101,7 +100,6 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
     finalShortListedResponce?.data?.shortlisted_pmas?.map(
       (item: { company_details: { name: any } }) => item?.company_details?.name
     ) || []
-
 
   return (
     <>
@@ -181,11 +179,20 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                       </div>
                     </div>
                   </section>
-
-                  <Typography variant='h3' className='text-[#1F4E8D] text-[21px] font-bold py-1'>
-                    {shortlistexpiryDate?.days} days {shortlistexpiryDate?.hours} hours {shortlistexpiryDate?.minutes}{' '}
-                    minutes
-                  </Typography>
+                  <div className='flex gap-2 items-center cursor-default'>
+                    <Typography variant='h3' className='text-[#1F4E8D] text-[21px] font-bold py-1'>
+                      {shortlistexpiryDate?.days} days {shortlistexpiryDate?.hours} hours {shortlistexpiryDate?.minutes}
+                      minutes
+                    </Typography>
+                    <CustomTooltip
+                      text='During this time period, your contact information will be hidden. This setting is in place to allow you to initiate video calls securely.'
+                      position='right'
+                      align='right'
+                      width='350px'
+                    >
+                      <i className='ri-information-line text-[#1F4E8D] cursor-default'></i>
+                    </CustomTooltip>
+                  </div>
 
                   <div className='mt-[20px]'>
                     <CustomButton

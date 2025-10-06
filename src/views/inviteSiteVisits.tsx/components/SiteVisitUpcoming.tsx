@@ -149,7 +149,7 @@ const SiteVisitUpcoming = ({ SiteUpComingData }: any) => {
   ]
 
   return (
-    <Box className='bg-white h-[70vh] overflow-y-auto'>
+    <Box className='bg-white overflow-y-auto'>
       <CommonTable
         data={tableData}
         columns={columns}

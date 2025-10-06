@@ -10,6 +10,7 @@ import CommonTable from '@/common/CommonTable'
 import RejectModal from '@/common/RejectModal'
 import SiteVisitsModal from '@/common/SiteVisitsModal'
 import SuccessModal from '@/common/SucessModal'
+import { formatDates } from '@/utils/dateFormater'
 
 interface RescheduledCallType {
   pmaId: string
@@ -20,6 +21,7 @@ interface RescheduledCallType {
   timeline: string
   rescheduled: string
   rejectedInviteData: any
+  invited_at: string
 }
 
 const columnHelper = createColumnHelper<RescheduledCallType>()
@@ -38,6 +40,7 @@ const InviteRejectedTab = ({ rejectedInviteData }: any) => {
         quotation: { total_quote_inc_vat: any }
         zoom_meeting_link: any
         slot: { name: any; id: any }
+        invited_at: any
 
         status_label: any
       }) => ({
@@ -49,7 +52,8 @@ const InviteRejectedTab = ({ rejectedInviteData }: any) => {
         videoCallLink: invite.zoom_meeting_link ?? '',
         timeline: invite.slot?.name ?? '',
         slot_ids: invite.slot?.id ?? '',
-        rescheduled: invite.status_label ?? ''
+        rescheduled: invite.status_label ?? '',
+        invited_at: formatDates(invite?.invited_at) ?? ''
       })
     ) || []
 
@@ -62,7 +66,7 @@ const InviteRejectedTab = ({ rejectedInviteData }: any) => {
       enableSorting: true
     }),
     columnHelper.accessor('pmaId', {
-      header: 'PMA ID',
+      header: 'PMA Name',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true
@@ -101,13 +105,13 @@ const InviteRejectedTab = ({ rejectedInviteData }: any) => {
       enableSorting: false
     }),
     columnHelper.accessor('timeline', {
-      header: 'Timeline',
+      header: 'Scheduled Slot',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true
     }),
-    columnHelper.accessor('rescheduled', {
-      header: 'Rescheduled',
+    columnHelper.accessor('invited_at', {
+      header: 'Scheduled Date',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true
@@ -115,7 +119,7 @@ const InviteRejectedTab = ({ rejectedInviteData }: any) => {
   ]
 
   return (
-    <Box className='bg-white h-[70vh] overflow-y-auto'>
+    <Box className='bg-white  overflow-y-auto'>
       <CommonTable
         data={tableData}
         columns={columns}

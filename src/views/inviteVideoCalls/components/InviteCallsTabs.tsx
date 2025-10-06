@@ -64,7 +64,7 @@ const InviteCallsTabs = () => {
   }
 
   return (
-    <Box className='p-1 bg-white rounded-lg shadow h-[70vh] overflow-y-auto'>
+    <Box className='py-1 bg-white  rounded-lg  overflow-y-auto'>
       <InviteCallHeader title={getTitle()} actionButton='Schedule New Calls' />
       <InviteCallsTabSection value={activeTab} onChange={handleTabChange} />
       {activeTab === 0 && <InviteUpcomingCalls pendingInviteData={getVideoCallsData} />}

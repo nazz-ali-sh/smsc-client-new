@@ -29,6 +29,8 @@ export const rmcVideoCallDetails = async (status: string, tender_id: number) => 
   }
 }
 
+
+// video call reschedual
 export const rmcReSchedualAgain = async (
   invite_id: number,
   tender_id: number,

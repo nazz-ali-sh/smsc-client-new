@@ -1,10 +1,18 @@
 import React from 'react'
 
+import Image from 'next/image'
+
 import { Tabs, Tab } from '@mui/material'
+
+import upcomingIcon from '../../../../public/images/customImages/upcomingIcon.svg'
+import pendingIcon from '../../../../public/images/customImages/pendingIcon.svg'
+import rechedualIcon from '../../../../public/images/customImages/reschedualIcon.svg'
+import completedIcon from '../../../../public/images/customImages/completed.svg'
+import cancalled from '../../../../public/images/customImages/cancelled.svg'
 
 export interface InviteTabItem {
   label: string
-  icon: string
+  icon: () => JSX.Element
   bg: string
   color: string
 }
@@ -12,10 +20,43 @@ export interface InviteTabItem {
 interface InviteTabsProps {
   value: number
   onChange: (event: React.SyntheticEvent, newValue: number) => void
-  tabs: InviteTabItem[]
+  tabs?: InviteTabItem[]
 }
 
-const SiteVisitTabSection: React.FC<InviteTabsProps> = ({ value, onChange, tabs }) => {
+const InviteTabItems: InviteTabItem[] = [
+  {
+    label: 'Upcoming Visits',
+    icon: () => <Image src={upcomingIcon} alt='Upcoming Calls' width={24} height={24} />,
+    bg: '#E8F9FE',
+    color: '#26C6F9'
+  },
+  {
+    label: 'Rescheduled Visits',
+    icon: () => <Image src={rechedualIcon} alt='Rescheduled Call' width={24} height={24} />,
+    bg: '#FDF3DC',
+    color: '#FDB528'
+  },
+  {
+    label: 'Completed Visits',
+    icon: () => <Image src={completedIcon} alt='Completed Calls' width={24} height={24} />,
+    bg: '#F3F8D4',
+    color: '#72E128'
+  },
+  {
+    label: 'Pending Visits',
+    icon: () => <Image src={pendingIcon} alt='Pending Calls' width={24} height={24} />,
+    bg: '#e7e7ea',
+    color: '#FDB528'
+  },
+  {
+    label: 'Rejected / Cancelled Calls',
+    icon: () => <Image src={cancalled} alt='Rejected / Cancelled Calls' width={24} height={24} />,
+    bg: '#f5dadb',
+    color: '#FDB528'
+  }
+]
+
+const SiteVisitTabSection: React.FC<InviteTabsProps> = ({ value, onChange }) => {
   return (
     <Tabs
       value={value}
@@ -30,7 +71,7 @@ const SiteVisitTabSection: React.FC<InviteTabsProps> = ({ value, onChange, tabs 
         }
       }}
     >
-      {tabs?.map((tab, index) => (
+      {InviteTabItems?.map((tab, index) => (
         <Tab
           key={index}
           label={
@@ -39,7 +80,7 @@ const SiteVisitTabSection: React.FC<InviteTabsProps> = ({ value, onChange, tabs 
                 className='h-[42px] w-[42px] rounded-md flex justify-center items-center'
                 style={{ backgroundColor: tab.bg, color: tab.color }}
               >
-                <i className={tab.icon} />
+                {tab?.icon()}
               </div>
               {tab.label}
             </span>

@@ -297,14 +297,11 @@ const EvaluationMatrix = () => {
 
             <Typography sx={{ marginTop: '16px', color: '#262B43E5', fontWeight: 400, fontSize: '16px' }}>
               Use this matrix to score each shortlisted managing agent on a scale of 1 to 10 during your video calls and
-              site visits.
+              site visits . You can print a copy to take handwritten notes, then return to your portal to enter final
+              scores. Your saved weightings will be applied automatically, and the results will be shown in your Final
+              Report.
             </Typography>
-            <Typography sx={{ marginTop: '16px', color: '#262B43E5', fontWeight: 400, fontSize: '16px' }}>
-              You can print a copy to take handwritten notes, then return to your portal to enter final scores.
-            </Typography>
-            <Typography sx={{ marginTop: '16px', color: '#262B43E5', fontWeight: 400, fontSize: '16px' }}>
-              Your saved weightings will be applied automatically, and the results will be shown in your Final Report.
-            </Typography>
+
             <Typography sx={{ marginTop: '16px', color: '#262B43E5', fontWeight: 400, fontSize: '16px' }}>
               Note: once saved, your matrix cannot be changed.
             </Typography>
@@ -588,6 +585,8 @@ const EvaluationMatrix = () => {
           </div>
           <CommonModal
             isOpen={isOpen}
+            headerSx={{ color: '#1F4E8D', fontSize: '26px', fontWeight: 600 }}
+            isBorder
             maxWidth='md'
             handleClose={handleModalClose}
             header='How to use Evaluation Matrix'

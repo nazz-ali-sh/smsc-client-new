@@ -63,11 +63,28 @@ const InviteCallsTabSection: React.FC<InviteTabsProps> = ({ value, onChange }) =
       onChange={onChange}
       aria-label='invite calls tabs'
       className='mt-7'
-      TabIndicatorProps={{
-        style: {
-          backgroundColor: '#6AC2ED',
-          height: '4px',
-          borderRadius: '4px'
+      sx={{
+        width: '95%',
+        '& .MuiTab-root': {
+          minHeight: 60,
+          textTransform: 'none',
+          fontSize: '0.875rem',
+          color: '#666',
+          flex: 1,
+          padding: '8px 10px',
+          '&.Mui-selected': {
+            color: '#35C0ED',
+            fontWeight: 600
+          }
+        },
+        '& .MuiTabs-indicator': {
+          backgroundColor: '#35C0ED',
+          height: 3
+        },
+        '& .MuiTabs-flexContainer': {
+          gap: '20px',
+          flexDirection: 'row',
+          alignItems: 'center'
         }
       }}
     >
@@ -87,13 +104,7 @@ const InviteCallsTabSection: React.FC<InviteTabsProps> = ({ value, onChange }) =
           }
           sx={{
             textTransform: 'none',
-            fontWeight: value === index ? 700 : 500,
-            '&.Mui-selected': {
-              color: '#939393'
-            },
-            '&:hover': {
-              color: 'inherit'
-            }
+            fontWeight: value === index ? 700 : 500
           }}
         />
       ))}

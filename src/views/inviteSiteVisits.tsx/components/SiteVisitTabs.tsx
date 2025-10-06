@@ -8,8 +8,6 @@ import { useSelector } from 'react-redux'
 
 import { useQuery } from '@tanstack/react-query'
 
-import { InviteTabItems } from '../data'
-import SiteVisitTabSection, { type InviteTabItem } from './SiteVisitTabSection'
 import SiteVisitHeader from './SiteVisitHeader'
 import SiteReschedule from './SiteVisitReschedule'
 import SiteVisitCompletedCalls from './SiteVisitCompletedCalls'
@@ -17,6 +15,7 @@ import SiteVisitPending from './SiteVisitPending'
 import { rmcSiteVisitDetails } from '@/services/site_visit_apis/site_visit_api'
 import SiteVisitUpcoming from './SiteVisitUpcoming'
 import SiteVisitReject from './SiteVisitReject'
+import SiteVisitTabSection from './SiteVisitTabSection'
 
 const SiteVisitTabs = () => {
   const [activeTab, setActiveTab] = useState(0)
@@ -69,8 +68,8 @@ const SiteVisitTabs = () => {
 
   return (
     <Box className='p-1 bg-white rounded-lg shadow h-[70vh] overflow-y-auto'>
-      <SiteVisitHeader title={getTitle()} actionButton='Schedule New Calls' videoCallmodalData={getSiteVisit} />
-      <SiteVisitTabSection value={activeTab} onChange={handleTabChange} tabs={InviteTabItems as InviteTabItem[]} />
+      <SiteVisitHeader title={getTitle()} actionButton='Schedule New Site Visit' videoCallmodalData={getSiteVisit} />
+      <SiteVisitTabSection value={activeTab} onChange={handleTabChange} />
 
       {activeTab === 0 && <SiteVisitUpcoming SiteUpComingData={getSiteVisit} />}
       {activeTab === 1 && <SiteReschedule siteRechedual={getSiteVisit} />}

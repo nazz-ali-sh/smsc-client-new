@@ -12,7 +12,7 @@ import person from '../../../../public/images/TenderResults/person.svg'
 import person1 from '../../../../public/images/TenderResults/person1.svg'
 import SiteVisitsModal from '../../../common/SiteVisitsModal'
 import AppointManagemnetModal from '@/common/AppointManagemnetAgent'
-import VideosCallsModal from '@/common/VideosCallsModal'
+import { formatDates } from '@/utils/dateFormater'
 
 interface CompletedCallType {
   pmaId: string
@@ -22,6 +22,7 @@ interface CompletedCallType {
   videoCallLink: string
   timeline: string
   action: string
+  invited_at: string
 }
 
 const columnHelper = createColumnHelper<CompletedCallType>()
@@ -29,7 +30,6 @@ const columnHelper = createColumnHelper<CompletedCallType>()
 const InviteCompletedCalls = ({ videoInviteData }: any) => {
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
   const [apointAgentModalOpen, setApointAgentModalOpen] = useState(false)
-  const [onlineCallsModalOpen, setOnlineCallsModalOpen] = useState(false)
 
   const tableData: any[] =
     videoInviteData?.data?.invites?.map(
@@ -41,6 +41,7 @@ const InviteCompletedCalls = ({ videoInviteData }: any) => {
         quotation: { total_quote_inc_vat: any }
         zoom_meeting_link: any
         slot: { name: any; id: any }
+        invited_at?: any
 
         status_label: any
       }) => ({
@@ -53,7 +54,8 @@ const InviteCompletedCalls = ({ videoInviteData }: any) => {
         videoCallLink: invite.zoom_meeting_link ?? '',
         timeline: invite.slot?.name ?? '',
         slot_ids: invite.slot?.id ?? '',
-        rescheduled: invite.status_label ?? ''
+        rescheduled: invite.status_label ?? '',
+        invited_at: formatDates(invite?.invited_at) ?? ''
       })
     ) || []
 
@@ -66,7 +68,7 @@ const InviteCompletedCalls = ({ videoInviteData }: any) => {
       enableSorting: true
     }),
     columnHelper.accessor('pmaId', {
-      header: 'PMA ID',
+      header: 'PMA Name',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true
@@ -105,7 +107,13 @@ const InviteCompletedCalls = ({ videoInviteData }: any) => {
       enableSorting: false
     }),
     columnHelper.accessor('timeline', {
-      header: 'Timeline',
+      header: 'Scheduled Slot',
+      cell: info => info.getValue(),
+      size: 150,
+      enableSorting: true
+    }),
+    columnHelper.accessor('invited_at', {
+      header: 'Scheduled Date',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true
@@ -116,13 +124,13 @@ const InviteCompletedCalls = ({ videoInviteData }: any) => {
         <>
           <div className='flex gap-2'>
             <span
-              onClick={() => setSiteVisitsModalOpen(true)}
+              onClick={() => setApointAgentModalOpen(true)}
               className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#DE481A] flex justify-center items-center'
             >
               <Image src={person} alt='person' />
             </span>
             <span
-              onClick={() => setApointAgentModalOpen(true)}
+              onClick={() => setSiteVisitsModalOpen(true)}
               className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'
             >
               <Image src={person1} alt='person1' />
@@ -136,7 +144,7 @@ const InviteCompletedCalls = ({ videoInviteData }: any) => {
   ]
 
   return (
-    <Box className='h-[70vh] overflow-y-auto'>
+    <Box className=' overflow-y-auto'>
       <CommonTable
         data={tableData}
         columns={columns}
@@ -165,12 +173,7 @@ const InviteCompletedCalls = ({ videoInviteData }: any) => {
         InviteCompletedCalls={tableData}
       />
 
-      <VideosCallsModal
-        open={onlineCallsModalOpen}
-        onClose={() => setOnlineCallsModalOpen(false)}
-        shorlistedPmas={null}
-        mainSiteVisitVideoCalls={undefined}
-      />
+      
     </Box>
   )
 }

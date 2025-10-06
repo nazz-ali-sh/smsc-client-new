@@ -106,9 +106,9 @@ export default function Pages() {
               <CustomButton
                 onClick={() => router.push('/evaluation-matrix')}
                 variant='contained'
-                startIcon={<i className='ri-edit-box-line size-[22px]'></i>}
+                startIcon={<i className='ri-edit-line size-[22px]'></i>}
               >
-                Evaluation Metric
+                Evaluation Matrix
               </CustomButton>
             </div>
           </div>

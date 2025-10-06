@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
+import { useRouter } from 'next/navigation'
+
 import {
   Dialog,
   DialogTitle,
@@ -20,12 +22,6 @@ import {
   Select,
   InputLabel
 } from '@mui/material'
-import type { FieldChangeHandlerContext } from '@mui/x-date-pickers/internals'
-import type { Dayjs } from 'dayjs'
-import dayjs from 'dayjs'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { useForm, Controller } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { object, string, optional, any } from 'valibot'
@@ -45,6 +41,7 @@ import SuccessModal from './SucessModal'
 import type { ShortlistedPmaResponse } from './type'
 import { useDashboardData } from '@/hooks/useDashboardData'
 import CustomButton from './CustomButton'
+import FormInput from '@/components/form-components/FormInput'
 
 interface Guest {
   id: string
@@ -77,7 +74,7 @@ interface Slot {
 }
 
 export const videoCallSchema = object({
-  selectedDay: string('Please select a day'),
+  selectedDate: string('Please select a date'),
   availableSlots: string('Please select an available slot'),
   pmaGuest: optional(any()),
   additionalNotes: optional(string())
@@ -96,14 +93,14 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
   calanderReschedualData
 }) => {
   const theme = useTheme()
+  const router = useRouter()
   const [dayId, setDayId] = useState('')
   const [finalSelectedSlots, setFinalSelectedSlots] = useState<Slot[]>([])
   const [inviteData, setInviteData] = useState<[]>([])
   const [SuccessOpen, setSuccessOpen] = useState(false)
-  const [value, setValues] = useState<Dayjs | null>(dayjs())
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)
   const [allPmaids, setAllPmaIds] = useState<[]>([])
-  const [showSlotError, setShowSlotError] = useState(false) // New state to track slot selection error
+  const [showSlotError, setShowSlotError] = useState(false)
 
   const [userSelectedSlots, setUserSelectedSlots] = useState<{ selectedIds: string; slotName: string | null }>({
     selectedIds: '',
@@ -121,16 +118,19 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     reset,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors }
   } = useForm({
     resolver: valibotResolver(videoCallSchema),
     defaultValues: {
-      selectedDay: '',
+      selectedDate: new Date().toISOString().split('T')[0],
       availableSlots: '',
       pmaGuest: [],
       additionalNotes: ''
     }
   })
+
+  const selectedDate = watch('selectedDate')
 
   const { data: allshortlsitedPmaData } = useQuery<ShortlistedPmaResponse, Error>({
     queryKey: ['shortlisted', tender_id],
@@ -138,41 +138,11 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     enabled: types === 'fromDashboard' || types == 'fromCalender' || types == 'sitevVisitFromCalender'
   })
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleDateChange = (newValue: Date | Dayjs | null, _context: FieldChangeHandlerContext<any>) => {
-    if (!newValue) return
-
-    const d = dayjs(newValue)
-
-    if (d.day() === 0 || d.day() === 6) {
-      toast.error('Saturday and Sunday are not available')
-
-      return
-    }
-
-    if (d.isBefore(dayjs(), 'day')) {
-      toast.error('Previous dates are not allowed')
-
-      return
-    }
-
-    setValues(d)
-    setShowSlotError(false) // Reset error when date changes
-  }
-
-  const shouldDisableDate = (date: Date | Dayjs) => {
-    const d = dayjs(date)
-    const isWeekend = d.day() === 0 || d.day() === 6
-    const isPastDate = d.isBefore(dayjs(), 'day')
-
-    return isWeekend || isPastDate
-  }
-
   const handleSlotSelection = (selectedId: string) => {
     const found = finalSelectedSlots.find(s => String(s.id) === String(selectedId)) ?? null
 
     setUserSelectedSlots({ selectedIds: String(selectedId), slotName: found?.slot_name || '' })
-    setShowSlotError(false) // Reset error when a slot is selected
+    setShowSlotError(false)
   }
 
   interface SlotsApiResponse {
@@ -186,8 +156,9 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     isError,
     error
   } = useQuery<SlotsApiResponse, Error>({
-    queryKey: ['AvailableSlotsAndDays', value?.format('YYYY-MM-DD')],
-    queryFn: () => sideVisitCalendarSlots(value!.format('YYYY-MM-DD'))
+    queryKey: ['AvailableSlotsAndDays', selectedDate],
+    queryFn: () => sideVisitCalendarSlots(selectedDate),
+    enabled: !!selectedDate
   })
 
   useEffect(() => {
@@ -206,6 +177,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     }
   }, [isError, error])
 
+  //  video call reschedual
   const rechedualRmcAgain = useMutation({
     mutationFn: ({
       invite_id,
@@ -248,14 +220,13 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     rechedualRmcAgain.mutate({
       invite_id: VideoCallInviteId || SideVisitsSchedualInviteId,
       rmctender_id: tender_id,
-      date: value!.format('YYYY-MM-DD'),
+      date: selectedDate,
       day_id: Number(dayId),
       rmcslot_id: Number(formData.availableSlots),
       message: formData.additionalNotes
     })
   }
 
-  //  site visit
   const sideVisitrechedualRmcAgain = useMutation({
     mutationFn: ({
       invite_id,
@@ -275,11 +246,8 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     onSuccess: (data: any) => {
       setInviteData(data?.data?.invites)
       toast.success(data?.message || 'Invite sent successfully!')
-
       reset()
       setSuccessOpen(true)
-
-      // setSiteVisitsModalOpen(false)
     },
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || error?.message || 'Failed to send invite'
@@ -309,7 +277,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     sideVisitrechedualRmcAgain.mutate({
       invite_id,
       rmctender_id: tender_id,
-      date: value!.format('YYYY-MM-DD'),
+      date: selectedDate,
       day_id: Number(dayId),
       rmcslot_id: Number(formData.availableSlots),
       message: formData.additionalNotes
@@ -375,7 +343,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     }
 
     videoCallInviteMutation.mutate({
-      value: value!.format('YYYY-MM-DD'),
+      value: selectedDate,
       day_id: Number(dayId),
       slot_ids: Number(formData.availableSlots),
       pma_user_ids: formData.pmaGuest.map((g: Guest) => g.id),
@@ -393,7 +361,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     }
 
     videoCallInviteMutation.mutate({
-      value: value!.format('YYYY-MM-DD'),
+      value: selectedDate,
       day_id: Number(dayId),
       slot_ids: Number(formData.availableSlots),
       pma_user_ids: allPmaids,
@@ -436,6 +404,10 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     }
   }, [calanderReschedualData, defaultmultiselect, setValue])
 
+  const handleSlots = () => {
+    router.push('/set-availability')
+  }
+
   return (
     <Dialog
       open={open}
@@ -465,7 +437,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                 ? 'Reschedual Site Visit Invites'
                 : types == 'SiteVisits'
                   ? 'Reschedual Site Visit'
-                  : types == 'fromDashboard'
+                  : types == 'fromDashboard' || types == 'fromSiteVisitTable'
                     ? 'Site Visits Invites'
                     : '  Reschedual Site Visit'}
             </Typography>
@@ -482,127 +454,16 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
         </Box>
       </DialogTitle>
 
-      <DialogContent sx={{ px: 3, py: 2 }} className='mt-10'>
-        <Grid container spacing={6} className='mt-[40px]'>
+      <DialogContent sx={{ px: 3, py: 2 }}>
+        <Grid container spacing={6} className='mt-[20px]'>
           <Grid item xs={12} sm={6}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <Box
-                sx={{
-                  '& *': {
-                    '&.MuiOutlinedInput-root': {
-                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#35C0ED !important',
-                        borderWidth: '2px !important'
-                      },
-                      '&:hover .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#35C0ED !important',
-                        borderWidth: '2px !important'
-                      },
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#35C0ED !important',
-                        borderWidth: '2px !important'
-                      }
-                    },
-                    '&.MuiInputLabel-root': {
-                      color: '#35C0ED !important',
-                      '&.Mui-focused': {
-                        color: '#35C0ED !important'
-                      }
-                    }
-                  },
-                  '& .MuiTextField-root': {
-                    '& .MuiOutlinedInput-root': {
-                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#35C0ED !important',
-                        borderWidth: '2px !important'
-                      },
-                      '&:hover .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#35C0ED !important',
-                        borderWidth: '2px !important'
-                      },
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#35C0ED !important',
-                        borderWidth: '2px !important'
-                      }
-                    },
-                    '& .MuiInputLabel-root': {
-                      color: '#35C0ED !important',
-                      '&.Mui-focused': {
-                        color: '#35C0ED !important'
-                      }
-                    }
-                  },
-                  '& .MuiOutlinedInput-root': {
-                    '&.Mui-focused': {
-                      borderColor: '#35C0ED !important',
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#35C0ED !important',
-                        borderWidth: '2px !important'
-                      }
-                    },
-                    '&:hover': {
-                      borderColor: '#35C0ED !important',
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#35C0ED !important',
-                        borderWidth: '2px !important'
-                      }
-                    },
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#35C0ED !important',
-                      borderWidth: '2px !important'
-                    }
-                  }
-                }}
-              >
-                <DatePicker
-                  label='Select date'
-                  value={value}
-                  onChange={handleDateChange}
-                  shouldDisableDate={shouldDisableDate}
-                  slotProps={{
-                    textField: {
-                      fullWidth: true,
-                      sx: {
-                        '& .MuiOutlinedInput-root': {
-                          '&.Mui-focused': {
-                            borderColor: '#35C0ED !important',
-                            '& .MuiOutlinedInput-notchedOutline': {
-                              borderColor: '#35C0ED !important',
-                              borderWidth: '2px !important'
-                            }
-                          },
-                          '&:hover': {
-                            borderColor: '#35C0ED !important',
-                            '& .MuiOutlinedInput-notchedOutline': {
-                              borderColor: '#35C0ED !important',
-                              borderWidth: '2px !important'
-                            }
-                          },
-                          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#35C0ED !important',
-                            borderWidth: '2px !important'
-                          },
-                          '&:hover .MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#35C0ED !important',
-                            borderWidth: '2px !important'
-                          },
-                          '& .MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#35C0ED !important',
-                            borderWidth: '2px !important'
-                          }
-                        },
-                        '& .MuiInputLabel-root': {
-                          color: '#35C0ED !important',
-                          '&.Mui-focused': {
-                            color: '#35C0ED !important'
-                          }
-                        }
-                      }
-                    }
-                  }}
-                />
-              </Box>
-            </LocalizationProvider>
+            <FormInput
+              name='selectedDate'
+              control={control}
+              label='Select Date'
+              type='date'
+              InputLabelProps={{ shrink: true }}
+            />
           </Grid>
 
           <Grid item xs={12} sm={6}>
@@ -748,15 +609,9 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
               </Grid>
             </Grid>
             <Box sx={{ display: 'flex', justifyContent: 'end', mt: 4 }}>
-              <Button
-                variant='contained'
-                sx={{
-                  backgroundColor: 'customColors.ligthBlue',
-                  '&:hover': { backgroundColor: 'customColors.ligthBlue' }
-                }}
-              >
+              <CustomButton variant='contained' onClick={handleSlots}>
                 Update Slot
-              </Button>
+              </CustomButton>
             </Box>
           </Grid>
 
@@ -764,7 +619,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
             ''
           ) : (
             <Grid item xs={12}>
-              <Typography variant='h6' sx={{ mb: 2, color: 'customColors.ligthBlue', fontWeight: '600' }}>
+              <Typography variant='h6' sx={{ mb: 2, color: '#6C6C6C', fontWeight: '600' }}>
                 Add Guests
               </Typography>
               <Controller

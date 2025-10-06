@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, {  useState } from 'react'
 
 import { Box } from '@mui/material'
 import { createColumnHelper } from '@tanstack/react-table'
@@ -9,11 +9,14 @@ import CommonTable from '@/common/CommonTable'
 import SiteVisitsModal from '@/common/SiteVisitsModal'
 import SuccessModal from '@/common/SucessModal'
 import CancelVideoCallsAndSiteVisist from '@/common/CancelVideoCallsAndSiteVisist'
+import VideosCallsModal from '@/common/VideosCallsModal'
+import { formatDates } from '@/utils/dateFormater'
 
 interface RescheduledCallType {
   data: any
   pmaId: string
   invite_id: number
+  pma_user_id: number
   yearTrading: string
   unitsManaged: number
   quotations: string
@@ -21,6 +24,7 @@ interface RescheduledCallType {
   timeline: string
   rescheduled: string
   InviteAndCalls?: { [key: string]: any }
+  invited_at: string
 }
 
 const columnHelper = createColumnHelper<RescheduledCallType>()
@@ -34,28 +38,36 @@ const InvitePendingCalls: React.FC<InvitePendingCallsProps> = ({ pendingInviteDa
   const [successOpen, setSuccessOpen] = useState(false)
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
   const [visitsSchedualInviteId, setVisitsSchedualInviteId] = useState<number | undefined>(undefined)
+  const [onlineCallsModalOpen, setOnlineCallsModalOpen] = useState(false)
+
 
   const tableData: RescheduledCallType[] =
     pendingInviteData?.data?.invites?.map(
       (invite: {
         pma_name: any
         id: number
+        pma_user_id: number
         pma_company: { trading_years: { toString: () => any }; total_units: any }
         quotation: { total_quote_inc_vat: any }
         zoom_meeting_link: any
         slot: { name: any; id: any }
         status_label: any
+        invited_at?: any
       }) => ({
         pmaId: invite.pma_name,
         invite_id: invite?.id,
+        pma_user_id: invite?.pma_user_id,
         yearTrading: invite.pma_company?.trading_years?.toString() ?? '',
         unitsManaged: invite.pma_company?.total_units ?? 0,
         quotations: invite.quotation?.total_quote_inc_vat ?? '',
         videoCallLink: invite.zoom_meeting_link ?? '',
         timeline: invite.slot?.name ?? '',
-        rescheduled: invite.status_label ?? ''
+        rescheduled: invite.status_label ?? '',
+        invited_at: formatDates(invite?.invited_at) ?? ''
       })
     ) || []
+
+
 
   const columns = [
     columnHelper.accessor((row, index) => index + 1, {
@@ -66,7 +78,7 @@ const InvitePendingCalls: React.FC<InvitePendingCallsProps> = ({ pendingInviteDa
       enableSorting: true
     }),
     columnHelper.accessor('pmaId', {
-      header: 'PMA ID',
+      header: 'PMA Name',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true
@@ -106,13 +118,14 @@ const InvitePendingCalls: React.FC<InvitePendingCallsProps> = ({ pendingInviteDa
       enableSorting: false
     }),
     columnHelper.accessor('timeline', {
-      header: 'Timeline',
+      header: 'Scheduled Slot',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true
     }),
-    columnHelper.accessor('rescheduled', {
-      header: 'Rescheduled',
+
+    columnHelper.accessor('invited_at', {
+      header: 'Scheduled Date',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true
@@ -135,7 +148,7 @@ const InvitePendingCalls: React.FC<InvitePendingCallsProps> = ({ pendingInviteDa
             <i
               onClick={() => {
                 setVisitsSchedualInviteId(row.original.invite_id)
-                setSiteVisitsModalOpen(true)
+                setOnlineCallsModalOpen(true)
               }}
               className='ri-edit-box-line'
             />
@@ -148,7 +161,7 @@ const InvitePendingCalls: React.FC<InvitePendingCallsProps> = ({ pendingInviteDa
   ]
 
   return (
-    <Box className='bg-white h-[70vh] overflow-y-auto'>
+    <Box className='bg-white  overflow-y-auto'>
       <CommonTable
         data={tableData}
         columns={columns}
@@ -181,6 +194,15 @@ const InvitePendingCalls: React.FC<InvitePendingCallsProps> = ({ pendingInviteDa
         siteVisitDate={undefined}
         SideVisitsSchedualInviteId={undefined}
         completedShorlistedPmas={undefined}
+      />
+
+      <VideosCallsModal
+        open={onlineCallsModalOpen}
+        VideoCallInviteId={visitsSchedualInviteId}
+        onClose={() => setOnlineCallsModalOpen(false)}
+        shorlistedPmas={null}
+        mainSiteVisitVideoCalls={undefined}
+        types='videoCallReschedual'
       />
 
       <SuccessModal

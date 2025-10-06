@@ -9,6 +9,7 @@ interface CustomTooltipProps {
   className?: string
   align?: 'left' | 'center' | 'right'
   cursor?: 'default' | 'pointer' | 'not-allowed'
+  width?: string | number
 }
 
 const CustomTooltip: React.FC<CustomTooltipProps> = ({
@@ -17,7 +18,8 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
   position = 'top',
   className = '',
   align = 'center',
-  cursor = 'pointer'
+  cursor = 'pointer',
+  width
 }) => {
   const [isVisible, setIsVisible] = useState(false)
 
@@ -203,9 +205,9 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
             borderRadius: '6px',
             fontSize: '12px',
             fontWeight: 400,
-            width: 'auto',
-            minWidth: 'max-content',
-            maxWidth: '300px',
+            width: width || 'auto',
+            minWidth: width ? '0' : 'max-content',
+            maxWidth: width || '300px',
             wordWrap: 'break-word',
             whiteSpace: 'normal',
             boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
