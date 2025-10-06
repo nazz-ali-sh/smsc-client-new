@@ -38,6 +38,9 @@ export const apiEndpoints = {
 
   getTenderId: `/rmc/tenders`,
 
+  //---------------------- Retender ------------------------------//
+  rmcRetender: () => `/rmc/retender`,
+
   //---------------------- Tender Creation ------------------------------//
 
   getPriorities: `/rmc/priorities`,

@@ -4,11 +4,15 @@ import { useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 
 import { Box, Typography, Grid } from '@mui/material'
+import { useSelector } from 'react-redux'
+import { useMutation } from '@tanstack/react-query'
+import { toast } from 'react-toastify'
 
 import FormSelect from '@/components/form-components/FormSelect'
 import CustomButton from '@/common/CustomButton'
 import CommonModal from '@/common/CommonModal'
 import { setDaysOptions, setMilesOptions } from '@/constants'
+import { rmcRetender } from '@/services/dashboard-apis/dashboard-api'
 import { retenderSchema } from '@/schemas/validation-schemas'
 
 type RetenderFormData = {
@@ -23,6 +27,7 @@ interface RetenderModalProps {
 }
 
 const RetenderModal: React.FC<RetenderModalProps> = ({ isOpen, handleClose, tenderId = 'TND-xxxx' }) => {
+  const numericTenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId) as number | null
   const {
     control,
     handleSubmit,
@@ -36,16 +41,27 @@ const RetenderModal: React.FC<RetenderModalProps> = ({ isOpen, handleClose, tend
     }
   })
 
-  const onSubmit = async (data: RetenderFormData) => {
-    try {
-      console.log('Retender form data:', data)
-      console.log('Tender ID:', tenderId)
-
+  const { mutate, isPending } = useMutation({
+    mutationFn: (payload: { tender_id: number; days: number; miles: number }) => rmcRetender(payload),
+    onSuccess: (res: any) => {
+      const message = res?.message || 'Retender submitted successfully'
+      toast.success(message)
       handleClose()
       reset()
-    } catch (error) {
-      console.error('Error submitting retender form:', error)
+    },
+    onError: (error: any) => {
+      const message = error?.response?.data?.message || 'Failed to submit retender. Please try again.'
+      toast.error(message)
     }
+  })
+
+  const onSubmit = async (data: RetenderFormData) => {
+    if (!numericTenderId) {
+      toast.error('Tender ID not found')
+      return
+    }
+
+    mutate({ tender_id: Number(numericTenderId), days: Number(data.setDays), miles: Number(data.setMiles) })
   }
 
   const handleModalClose = () => {
@@ -102,8 +118,13 @@ const RetenderModal: React.FC<RetenderModalProps> = ({ isOpen, handleClose, tend
                 <CustomButton variant='outlined' onClick={handleModalClose} sx={{ minWidth: 100 }}>
                   Cancel
                 </CustomButton>
-                <CustomButton type='submit' variant='contained' disabled={isSubmitting} sx={{ minWidth: 100 }}>
-                  {isSubmitting ? 'Submitting...' : 'Submit'}
+                <CustomButton
+                  type='submit'
+                  variant='contained'
+                  disabled={isSubmitting || isPending}
+                  sx={{ minWidth: 100 }}
+                >
+                  {isSubmitting || isPending ? 'Submitting...' : 'Submit'}
                 </CustomButton>
               </Box>
             </Grid>

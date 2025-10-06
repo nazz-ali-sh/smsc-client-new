@@ -39,6 +39,17 @@ export const gettingRmcTenderId = async () => {
   }
 }
 
+export const rmcRetender = async (payload: { tender_id: number; days: number; miles: number }) => {
+  try {
+    const url = apiEndpoints.rmcRetender()
+    const response = await axiosClient.post(url, payload)
+    return response.data
+  } catch (error) {
+    console.error('RMC Retender API error:', error)
+    throw error
+  }
+}
+
 export interface DashboardDataResponse {
   success: boolean
   message: string
