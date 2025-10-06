@@ -16,6 +16,7 @@ import RejectModal from '@/common/RejectModal'
 import SiteVisitsModal from '@/common/SiteVisitsModal'
 import SuccessModal from '@/common/SucessModal'
 import { rmcSideVisitAccept } from '@/services/site_visit_apis/site_visit_api'
+import { formatDates } from '@/utils/dateFormater'
 
 interface RescheduledCallType {
   pmaId: string
@@ -29,6 +30,7 @@ interface RescheduledCallType {
   invite_id: number
   slot_ids: string
   location: any
+  invited_at: string
 }
 
 const columnHelper = createColumnHelper<RescheduledCallType>()
@@ -52,6 +54,7 @@ const SiteVisitReschedule = ({ siteRechedual }: any) => {
         slot: { name: any; id: any }
         status_label: any
         location: any
+        invited_at: any
       }) => ({
         pmaId: invite.pma_name,
         invite_id: invite?.id,
@@ -62,6 +65,7 @@ const SiteVisitReschedule = ({ siteRechedual }: any) => {
         timeline: invite.slot?.name ?? '',
         slot_ids: invite.slot?.id ?? '',
         rescheduled: invite.status_label ?? '',
+        invited_at: formatDates(invite?.invited_at) ?? '',
         siteRechedual
       })
     ) || []
@@ -139,17 +143,19 @@ const SiteVisitReschedule = ({ siteRechedual }: any) => {
       enableSorting: false
     }),
     columnHelper.accessor('timeline', {
-      header: 'Timeline',
+      header: 'Rescheduled Slot',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true
     }),
-    columnHelper.accessor('rescheduled', {
-      header: 'Rescheduled',
+
+    columnHelper.accessor('invited_at', {
+      header: 'Rescheduled Date',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true
     }),
+
     columnHelper.display({
       id: 'action',
       header: 'Action',

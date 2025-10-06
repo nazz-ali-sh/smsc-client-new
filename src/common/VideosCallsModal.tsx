@@ -351,8 +351,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     }
   })
 
-  console.log(VideoCallInviteId)
-
   const handleReschedualaModal = async (formData: any) => {
     if (!formData.availableSlots) {
       setSlotError('Select the slots')
@@ -421,7 +419,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                 fontSize: '1.75rem'
               }}
             >
-              Video Call Invites
+              {types == 'videoCallReschedual' ? 'Reschedule Video call Invites' : ' Video Call Invites'}
             </Typography>
             <Typography variant='body2' sx={{ paddingY: '12px' }}>
               Use this section to invite PMAs to meeting

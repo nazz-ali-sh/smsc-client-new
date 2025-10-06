@@ -741,16 +741,9 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
         </>
       ) : types == 'SiteVisits' || types == 'siteVisistfromCalander' ? (
         <DialogActions sx={{ px: 3, pb: 8, mt: 5 }}>
-          <Button
-            variant='contained'
-            onClick={handleSubmit(handleSiteVisitReschedual)}
-            sx={{
-              backgroundColor: 'customColors.ligthBlue',
-              '&:hover': { backgroundColor: 'customColors.ligthBlue' }
-            }}
-          >
+          <CustomButton variant='contained' onClick={handleSubmit(handleSiteVisitReschedual)}>
             Reschedual
-          </Button>
+          </CustomButton>
         </DialogActions>
       ) : (
         <>

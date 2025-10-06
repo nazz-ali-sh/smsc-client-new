@@ -6,6 +6,7 @@ import { Box } from '@mui/material'
 import { createColumnHelper } from '@tanstack/react-table'
 
 import CommonTable from '@/common/CommonTable'
+import { formatDates } from '@/utils/dateFormater'
 
 interface RescheduledCallType {
   pmaId: string
@@ -19,6 +20,7 @@ interface RescheduledCallType {
   invite_id: number
   slot_ids: string
   location: any
+  invited_at: string
 }
 
 const columnHelper = createColumnHelper<RescheduledCallType>()
@@ -35,6 +37,7 @@ const SiteVisitReject = ({ siteRejectedData }: any) => {
         slot: { name: any; id: any }
         status_label: any
         location: any
+        invited_at: any
       }) => ({
         pmaId: invite.pma_name,
         invite_id: invite?.id,
@@ -45,6 +48,7 @@ const SiteVisitReject = ({ siteRejectedData }: any) => {
         timeline: invite.slot?.name ?? '',
         slot_ids: invite.slot?.id ?? '',
         rescheduled: invite.status_label ?? '',
+        invited_at: formatDates(invite?.invited_at) ?? '',
         siteRejectedData
       })
     ) || []
@@ -97,13 +101,13 @@ const SiteVisitReject = ({ siteRejectedData }: any) => {
       enableSorting: false
     }),
     columnHelper.accessor('timeline', {
-      header: 'Timeline',
+      header: 'Scheduled Slot',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true
     }),
-    columnHelper.accessor('rescheduled', {
-      header: 'Rescheduled',
+    columnHelper.accessor('invited_at', {
+      header: 'Scheduled Date',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 
-import { Dialog, DialogTitle, DialogContent, DialogContentText, Button, TextField, Box } from '@mui/material'
+import { Dialog, DialogTitle, DialogContent, DialogContentText, TextField, Box } from '@mui/material'
 import { toast } from 'react-toastify'
 import { useMutation } from '@tanstack/react-query'
 import { useSelector } from 'react-redux'
@@ -12,6 +12,7 @@ import {
   rmcSiteVisitCancel,
   rmcSiteVisitRejected
 } from '@/services/site_visit_apis/site_visit_api'
+import CustomButton from './CustomButton'
 
 type DeleteModalProps = {
   open: boolean
@@ -174,12 +175,12 @@ const DeleteModal = ({
         />
 
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: '20px' }}>
-          <Button onClick={onClose} variant='outlined'>
+          <CustomButton onClick={onClose} variant='outlined'>
             Cancel
-          </Button>
-          <Button variant='contained' onClick={handleConfirm}>
+          </CustomButton>
+          <CustomButton variant='contained' onClick={handleConfirm}>
             Confirm
-          </Button>
+          </CustomButton>
         </Box>
       </DialogContent>
     </Dialog>

@@ -9,6 +9,7 @@ import CommonTable from '@/common/CommonTable'
 import RejectModal from '@/common/RejectModal'
 import SiteVisitsModal from '@/common/SiteVisitsModal'
 import SuccessModal from '@/common/SucessModal'
+import { formatDates } from '@/utils/dateFormater'
 
 interface RescheduledCallType {
   pmaId: string
@@ -22,12 +23,12 @@ interface RescheduledCallType {
   invite_id: number
   slot_ids: string
   location: any
+  invited_at: any
 }
 
 const columnHelper = createColumnHelper<RescheduledCallType>()
 
 const SiteVisitPending = ({ sitePendingData }: any) => {
-  console.log(sitePendingData)
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [SuccessOpen, setSuccessOpen] = useState(false)
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
@@ -45,9 +46,10 @@ const SiteVisitPending = ({ sitePendingData }: any) => {
         slot: { name: any; id: any }
         status_label: any
         location: any
+        invited_at?: any
       }) => ({
         pmaId: invite.pma_name,
-        invite_id: invite?.id, 
+        invite_id: invite?.id,
         yearTrading: invite.pma_company?.trading_years?.toString() ?? '',
         unitsManaged: invite.pma_company?.total_units ?? 0,
         quotations: invite.quotation?.total_quote_inc_vat ?? '',
@@ -55,6 +57,7 @@ const SiteVisitPending = ({ sitePendingData }: any) => {
         timeline: invite.slot?.name ?? '',
         slot_ids: invite.slot?.id ?? '',
         rescheduled: invite.status_label ?? '',
+        invited_at: formatDates(invite?.invited_at) ?? '',
         sitePendingData
       })
     ) || []
@@ -107,13 +110,19 @@ const SiteVisitPending = ({ sitePendingData }: any) => {
       enableSorting: false
     }),
     columnHelper.accessor('timeline', {
-      header: 'Timeline',
+      header: 'Scheduled Slot',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true
     }),
-    columnHelper.accessor('rescheduled', {
-      header: 'Rescheduled',
+    // columnHelper.accessor('rescheduled', {
+    //   header: 'Rescheduled',
+    //   cell: info => info.getValue(),
+    //   size: 150,
+    //   enableSorting: true
+    // }),
+    columnHelper.accessor('invited_at', {
+      header: 'Scheduled Date',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true

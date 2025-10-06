@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import React, { useRef } from 'react'
 
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
@@ -6,6 +6,8 @@ import { useParams } from 'next/navigation'
 import { styled } from '@mui/material/styles'
 
 import PerfectScrollbar from 'react-perfect-scrollbar'
+
+import { useSelector } from 'react-redux'
 
 import type { ChildrenType } from '@core/types'
 import type { Locale } from '@configs/i18n'
@@ -41,12 +43,14 @@ const VerticalNavContent = ({ children }: ChildrenType) => {
   // Hooks
   const { isBreakpointReached } = useHorizontalNav()
   const { lang: locale } = useParams()
+  const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   // Refs
   const shadowRef = useRef(null)
 
   // Vars
   const ScrollWrapper = isBreakpointReached ? 'div' : PerfectScrollbar
+  const hasTenderId = tender_id && tender_id !== null && tender_id !== undefined
 
   const scrollMenu = (container: any, isPerfectScrollbar: boolean) => {
     container = isBreakpointReached || !isPerfectScrollbar ? container.target : container
@@ -65,12 +69,14 @@ const VerticalNavContent = ({ children }: ChildrenType) => {
 
   return (
     <>
-      <NavHeader>
-        <Link href={getLocalizedUrl('/', locale as Locale)}>
-          <Logo />
-        </Link>
-        <NavCollapseIcons />
-      </NavHeader>
+      {!isBreakpointReached && (
+        <NavHeader>
+          <Link href={getLocalizedUrl('/', locale as Locale)}>
+            <Logo />
+          </Link>
+          <NavCollapseIcons />
+        </NavHeader>
+      )}
       <StyledBoxForShadow ref={shadowRef} />
       <ScrollWrapper
         {...(isBreakpointReached
@@ -83,7 +89,21 @@ const VerticalNavContent = ({ children }: ChildrenType) => {
               onScrollY: container => scrollMenu(container, true)
             })}
       >
-        {mapHorizontalToVerticalMenu(children)}
+        {React.Children.map(mapHorizontalToVerticalMenu(children), (child: any) => {
+          if (child && child.props) {
+            const { href } = child.props
+
+            const isDisabled =
+              !href || href === '#' || (!href.includes('/dashboard') && !href.includes('/insurance') && !hasTenderId)
+
+            return React.cloneElement(child, {
+              disabled: isDisabled,
+              href: isDisabled ? '#' : href
+            })
+          }
+
+          return child
+        })}
       </ScrollWrapper>
     </>
   )

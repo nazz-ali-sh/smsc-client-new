@@ -10,9 +10,8 @@ import { createColumnHelper } from '@tanstack/react-table'
 import CommonTable from '@/common/CommonTable'
 
 import person from '../../../../public/images/TenderResults/person.svg'
-import SiteVisitsModal from '../../../common/SiteVisitsModal'
 import AppointManagemnetModal from '@/common/AppointManagemnetAgent'
-import VideosCallsModal from '@/common/VideosCallsModal'
+import { formatDates } from '@/utils/dateFormater'
 
 interface CompletedCallType {
   pmaId: string
@@ -23,29 +22,31 @@ interface CompletedCallType {
   timeline: string
   action: string
   location: any
+  invited_at: any
 }
 
 const columnHelper = createColumnHelper<CompletedCallType>()
 
 const SiteVisitCompletedCalls = ({ siteCompleted }: any) => {
-  const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
   const [apointAgentModalOpen, setApointAgentModalOpen] = useState(false)
-  const [onlineCallsModalOpen, setOnlineCallsModalOpen] = useState(false)
 
   const tableData: any[] =
     siteCompleted?.data?.invites?.map(
       (invite: {
         pma_name: any
         id: number
+        pma_user_id: number
         pma_company: { trading_years: { toString: () => any }; total_units: any }
         quotation: { total_quote_inc_vat: any }
         zoom_meeting_link: any
         slot: { name: any; id: any }
         status_label: any
         location: any
+        invited_at?: any
       }) => ({
         pmaId: invite.pma_name,
         invite_id: invite?.id,
+        pma_user_ids: invite?.pma_user_id,
         yearTrading: invite.pma_company?.trading_years?.toString() ?? '',
         unitsManaged: invite.pma_company?.total_units ?? 0,
         quotations: invite.quotation?.total_quote_inc_vat ?? '',
@@ -53,9 +54,11 @@ const SiteVisitCompletedCalls = ({ siteCompleted }: any) => {
         timeline: invite.slot?.name ?? '',
         slot_ids: invite.slot?.id ?? '',
         rescheduled: invite.status_label ?? '',
+        invited_at: formatDates(invite?.invited_at) ?? '',
         siteCompleted
       })
     ) || []
+
 
   const columns = [
     columnHelper.accessor((row, index) => index + 1, {
@@ -105,7 +108,13 @@ const SiteVisitCompletedCalls = ({ siteCompleted }: any) => {
       enableSorting: false
     }),
     columnHelper.accessor('timeline', {
-      header: 'Timeline',
+      header: 'Scheduled Slot',
+      cell: info => info.getValue(),
+      size: 150,
+      enableSorting: true
+    }),
+    columnHelper.accessor('invited_at', {
+      header: 'Scheduled Date',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true
@@ -116,7 +125,7 @@ const SiteVisitCompletedCalls = ({ siteCompleted }: any) => {
         <>
           <div className='flex gap-2'>
             <span
-              onClick={() => setOnlineCallsModalOpen(true)}
+              onClick={() => setApointAgentModalOpen(true)}
               className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#DE481A] flex justify-center items-center'
             >
               <Image src={person} alt='person' />
@@ -139,17 +148,6 @@ const SiteVisitCompletedCalls = ({ siteCompleted }: any) => {
         pageSizeOptions={[5, 10, 25]}
         enableSorting={true}
       />
-      <SiteVisitsModal
-        open={siteVisitsModalOpen}
-        onClose={() => setSiteVisitsModalOpen(false)}
-        shorlistedPmas={undefined}
-        types={null}
-        Reschedual={undefined}
-        siteVisitDate={undefined}
-        SideVisitsSchedualInviteId={undefined}
-        VideoCallInviteId={undefined}
-        completedShorlistedPmas={undefined}
-      />
 
       <AppointManagemnetModal
         open={apointAgentModalOpen}
@@ -157,14 +155,6 @@ const SiteVisitCompletedCalls = ({ siteCompleted }: any) => {
         finalShortListedResponce={null}
         pmaSelectedID={null}
         InviteCompletedCalls={tableData}
-      />
-
-      <VideosCallsModal
-        open={onlineCallsModalOpen}
-        onClose={() => setOnlineCallsModalOpen(false)}
-        shorlistedPmas={null}
-        siteVisitshorlistedPmas={tableData}
-        mainSiteVisitVideoCalls={undefined}
       />
     </Box>
   )

@@ -2,6 +2,7 @@ import styled from '@emotion/styled'
 import classnames from 'classnames'
 
 import HorizontalMenu from './HorizontalMenu'
+import VerticalNavContent from './VerticalNavContent'
 
 import themeConfig from '@configs/themeConfig'
 
@@ -31,6 +32,7 @@ const StyledDiv = styled.div<StyledDivProps>`
   `}
 `
 
+
 const Navigation = () => {
   const { settings } = useSettings()
   const { isBreakpointReached } = useHorizontalNav()
@@ -42,15 +44,21 @@ const Navigation = () => {
         className: classnames(horizontalLayoutClasses.navigation, 'relative flex ')
       })}
     >
-      <StyledDiv
-        isContentCompact={headerContentCompact}
-        isBreakpointReached={isBreakpointReached}
-        {...(!isBreakpointReached && {
-          className: classnames(horizontalLayoutClasses.navigationContentWrapper, 'flex items-center is-full plb-2')
-        })}
-      >
-        <HorizontalMenu />
-      </StyledDiv>
+      {isBreakpointReached ? (
+        <VerticalNavContent>
+          <HorizontalMenu />
+        </VerticalNavContent>
+      ) : (
+        <StyledDiv
+          isContentCompact={headerContentCompact}
+          isBreakpointReached={isBreakpointReached}
+          {...(!isBreakpointReached && {
+            className: classnames(horizontalLayoutClasses.navigationContentWrapper, 'flex items-center is-full plb-2')
+          })}
+        >
+          <HorizontalMenu />
+        </StyledDiv>
+      )}
     </div>
   )
 }

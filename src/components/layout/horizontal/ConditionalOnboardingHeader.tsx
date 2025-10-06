@@ -19,12 +19,15 @@ const ConditionalOnboardingHeader = () => {
 
   if (shouldShowNavbarContent) {
     return (
-      <LayoutHeader>
-        <Navbar>
-          <NavbarContent />
-        </Navbar>
-        {!isBreakpointReached && <Navigation />}
-      </LayoutHeader>
+      <>
+        <LayoutHeader>
+          <Navbar>
+            <NavbarContent />
+          </Navbar>
+          {!isBreakpointReached && <Navigation />}
+        </LayoutHeader>
+        {isBreakpointReached && <Navigation />}
+      </>
     )
   }
 

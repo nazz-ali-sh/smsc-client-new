@@ -158,11 +158,11 @@ const InviteCompletedCalls = ({ videoInviteData }: any) => {
         onClose={() => setSiteVisitsModalOpen(false)}
         shorlistedPmas={undefined}
         completedShorlistedPmas={tableData}
-        types={null}
         Reschedual={undefined}
         siteVisitDate={undefined}
         SideVisitsSchedualInviteId={undefined}
         VideoCallInviteId={undefined}
+        types = 'fromSiteVisitTable'
       />
 
       <AppointManagemnetModal

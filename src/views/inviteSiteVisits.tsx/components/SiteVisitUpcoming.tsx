@@ -9,6 +9,7 @@ import CommonTable from '@/common/CommonTable'
 import RejectModal from '@/common/RejectModal'
 
 import SiteVisitsModal from '@/common/SiteVisitsModal'
+import { formatDates } from '@/utils/dateFormater'
 
 interface RescheduledCallType {
   pmaId: string
@@ -21,6 +22,7 @@ interface RescheduledCallType {
   SiteUpComingData: any
   location: any
   invite_id?: any
+  invited_at: string
 }
 
 const columnHelper = createColumnHelper<RescheduledCallType>()
@@ -41,6 +43,7 @@ const SiteVisitUpcoming = ({ SiteUpComingData }: any) => {
         slot: { name: any; id: any }
         status_label: any
         location: any
+        invited_at: any
       }) => ({
         pmaId: invite.pma_name,
         invite_id: invite?.id,
@@ -51,6 +54,7 @@ const SiteVisitUpcoming = ({ SiteUpComingData }: any) => {
         timeline: invite.slot?.name ?? '',
         slot_ids: invite.slot?.id ?? '',
         rescheduled: invite.status_label ?? '',
+        invited_at: formatDates(invite?.invited_at) ?? '',
         SiteUpComingData
       })
     ) || []
@@ -103,17 +107,18 @@ const SiteVisitUpcoming = ({ SiteUpComingData }: any) => {
       enableSorting: false
     }),
     columnHelper.accessor('timeline', {
-      header: 'Timeline',
+      header: 'Scheduled Slot',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true
     }),
-    columnHelper.accessor('rescheduled', {
-      header: 'Rescheduled',
+    columnHelper.accessor('invited_at', {
+      header: 'Scheduled Date',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true
     }),
+
     columnHelper.display({
       id: 'action',
       header: 'Action',

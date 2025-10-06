@@ -19,6 +19,8 @@ import {
   FormHelperText
 } from '@mui/material'
 
+import { useSelector } from 'react-redux'
+
 import phone from '../../../public/images/dashboardImages/phone.svg'
 import phonewhite from '../../../public/images/dashboardImages/phoneWhiteIcon.svg'
 import personWhiteIcon from '../../../public/images/dashboardImages/personWhiteIcon.svg'
@@ -50,6 +52,8 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
   const [selectedPmaName, setSelectedPmaName] = useState('')
 
   const [error, setError] = useState(false)
+
+  const tenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   const handleChange = (event: any) => {
     const newValue = event.target.value
@@ -109,7 +113,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
             <Typography
               sx={{
                 fontSize: '30px',
-                color: stages?.went_live?.is_completed ? 'customColors.darkGray1' : 'customColors.textGray',
+                color: stages?.went_live?.is_completed || tenderId ? 'customColors.darkGray1' : '#919191E5',
                 paddingTop: '8px',
                 paddingX: '22px',
                 fontWeight: 500
@@ -117,22 +121,56 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
             >
               Tender Overview
             </Typography>
-            <Typography
-              sx={{
-                paddingTop: '8px',
-                color: stages?.went_live?.is_completed ? 'customColors.green5' : 'customColors.textGray',
-                paddingX: '22px',
-                fontSize: '12px',
-                fontWeight: 300
-              }}
-            >
-              View and edit information on your tender
-            </Typography>
+
+            {!tenderId ? (
+              <Typography
+                sx={{
+                  paddingTop: '8px',
+                  color: '#919191E5',
+                  paddingX: '22px',
+                  fontSize: '12px',
+                  fontWeight: 300
+                }}
+              >
+                Tender overview not Available
+              </Typography>
+            ) : (
+              <Typography
+                sx={{
+                  paddingTop: '8px',
+                  color: stages?.went_live?.is_completed ? 'customColors.green5' : 'customColors.textGray',
+                  paddingX: '22px',
+                  fontSize: '12px',
+                  fontWeight: 300
+                }}
+              >
+                View and edit information on your tender
+              </Typography>
+            )}
+
             <Divider sx={{ height: '2px', backgroundColor: '#D9D9D9', my: 1, marginTop: '14px' }} />
-            {stages?.went_live?.is_completed && stages?.went_live?.details ? (
+
+            {!tenderId ? (
+              <Typography
+                sx={{
+                  paddingTop: '8px',
+                  color: '#919191E5',
+                  paddingX: '22px',
+                  fontSize: '12px',
+                  fontWeight: 300
+                }}
+              >
+                Tender details will be available once it goes live.
+              </Typography>
+            ) : stages?.went_live?.is_completed && stages?.went_live?.details ? (
               <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
                 <Typography
-                  sx={{ color: 'customColors.textGray', fontSize: '13px', fontWeight: 400, lineHeight: '22px' }}
+                  sx={{
+                    color: 'customColors.textGray',
+                    fontSize: '13px',
+                    fontWeight: 400,
+                    lineHeight: '22px'
+                  }}
                 >
                   Reference Number: {dashboardResponce?.tender_name}
                 </Typography>
@@ -167,18 +205,24 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
                     paddingTop: '2px'
                   }}
                 >
-                  Tender ends on : {formatDate(dashboardResponce?.data?.tender_end_date?.date)}
+                  Tender ends on: {formatDate(dashboardResponce?.data?.tender_end_date?.date)}
                 </Typography>
               </CardContent>
             ) : (
               <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
                 <Typography
-                  sx={{ color: 'customColors.textGray', fontSize: '13px', fontWeight: 400, lineHeight: '22px' }}
+                  sx={{
+                    color: 'customColors.textGray',
+                    fontSize: '13px',
+                    fontWeight: 400,
+                    lineHeight: '22px'
+                  }}
                 >
                   Tender details will be available once it goes live.
                 </Typography>
               </CardContent>
             )}
+
             <Box
               onClick={!stages?.went_live?.is_completed ? undefined : () => router.push('/tender-information-update')}
               sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '30px', marginTop: '75px' }}
@@ -215,7 +259,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
             <Typography
               sx={{
                 fontSize: '30px',
-                color: stages?.result_received?.is_completed ? 'customColors.darkGray1' : 'customColors.textGray',
+                color: stages?.result_received?.is_completed || tenderId ? 'customColors.darkGray1' : '#919191E5',
                 paddingTop: '8px',
                 paddingX: '22px',
                 fontWeight: 500
@@ -223,91 +267,115 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
             >
               Tender Results
             </Typography>
-            <Typography
-              sx={{
-                paddingTop: '8px',
-                color:
-                  stages?.result_received?.is_completed == true
-                    ? 'customColors.green5'
-                    : stages?.result_received?.is_completed == false
-                      ? 'ustomColors.textGray'
-                      : 'customColors.textGray',
-                paddingX: '22px',
-                fontSize: '12px',
-                fontWeight: 300
-              }}
-            >
-              Your tender was sent to {stages?.result_received?.details?.pma_count} PMAs. You have received{' '}
-              {stages?.result_received?.details?.total_response_count} responses
-            </Typography>
-            <Divider sx={{ height: '2px', backgroundColor: '#D9D9D9', my: 1, marginTop: '14px' }} />
-            {stages?.result_received?.is_completed === true ? (
-              <>
-                <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
-                  <Typography
-                    sx={{
-                      color: 'customColors.textGray',
-                      fontSize: '13px',
-                      fontWeight: 400,
-                      lineHeight: '22px'
-                    }}
-                  >
-                    Tender ended on : {formatDate(stages?.result_received?.details?.tender_end_date)}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      color: 'customColors.textGray',
-                      fontSize: '13px',
-                      fontWeight: 400,
-                      lineHeight: '22px',
-                      paddingTop: '2px'
-                    }}
-                  >
-                    Results received on : {formatDate(stages?.result_received?.details?.tender_response_date)}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      color: 'customColors.textGray',
-                      fontSize: '13px',
-                      fontWeight: 400,
-                      lineHeight: '22px',
-                      paddingTop: '2px'
-                    }}
-                  >
-                    Tender sent to : {stages?.result_received?.details?.pma_count} PMAs
-                  </Typography>
-                  <Typography
-                    sx={{
-                      color: 'customColors.textGray',
-                      fontSize: '13px',
-                      fontWeight: 400,
-                      lineHeight: '22px',
-                      paddingTop: '2px'
-                    }}
-                  >
-                    Total results received : {stages?.result_received?.details?.total_response_count} PMAs
-                  </Typography>
-                </CardContent>
-              </>
+
+            {!tenderId ? (
+              <Typography
+                sx={{
+                  paddingTop: '8px',
+                  color: '#919191E5',
+                  paddingX: '22px',
+                  fontSize: '12px',
+                  fontWeight: 300
+                }}
+              >
+                Tender Results Not Available
+              </Typography>
             ) : (
-              <>
-                <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
-                  <Typography
-                    sx={{
-                      color: 'customColors.textGray',
-                      fontSize: '13px',
-                      fontWeight: 400,
-                      lineHeight: '22px',
-                      paddingTop: '2px'
-                    }}
-                  >
-                    You’ll be able to review all proposals anonymously once the deadline passes and agents have
-                    submitted their responses
-                  </Typography>
-                </CardContent>
-              </>
+              <Typography
+                sx={{
+                  paddingTop: '8px',
+                  color:
+                    stages?.result_received?.is_completed == true
+                      ? 'customColors.green5'
+                      : stages?.result_received?.is_completed == false
+                        ? 'ustomColors.textGray'
+                        : 'customColors.textGray',
+                  paddingX: '22px',
+                  fontSize: '12px',
+                  fontWeight: 300
+                }}
+              >
+                Your tender was sent to {stages?.result_received?.details?.pma_count} PMAs. You have received{' '}
+                {stages?.result_received?.details?.total_response_count} responses
+              </Typography>
             )}
 
+            <Divider sx={{ height: '2px', backgroundColor: '#D9D9D9', my: 1, marginTop: '14px' }} />
+
+            {!tenderId ? (
+              <Typography
+                sx={{
+                  paddingTop: '8px',
+                  color: '#919191E5',
+                  paddingX: '22px',
+                  fontSize: '12px',
+                  fontWeight: 300
+                }}
+              >
+                Please launch a tender to initiate the process.
+              </Typography>
+            ) : stages?.result_received?.is_completed === true ? (
+              <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
+                <Typography
+                  sx={{
+                    color: 'customColors.textGray',
+                    fontSize: '13px',
+                    fontWeight: 400,
+                    lineHeight: '22px'
+                  }}
+                >
+                  Tender ended on : {formatDate(stages?.result_received?.details?.tender_end_date)}
+                </Typography>
+                <Typography
+                  sx={{
+                    color: 'customColors.textGray',
+                    fontSize: '13px',
+                    fontWeight: 400,
+                    lineHeight: '22px',
+                    paddingTop: '2px'
+                  }}
+                >
+                  Results received on : {formatDate(stages?.result_received?.details?.tender_response_date)}
+                </Typography>
+                <Typography
+                  sx={{
+                    color: 'customColors.textGray',
+                    fontSize: '13px',
+                    fontWeight: 400,
+                    lineHeight: '22px',
+                    paddingTop: '2px'
+                  }}
+                >
+                  Tender sent to : {stages?.result_received?.details?.pma_count} PMAs
+                </Typography>
+                <Typography
+                  sx={{
+                    color: 'customColors.textGray',
+                    fontSize: '13px',
+                    fontWeight: 400,
+                    lineHeight: '22px',
+                    paddingTop: '2px'
+                  }}
+                >
+                  Total results received : {stages?.result_received?.details?.total_response_count} PMAs
+                </Typography>
+              </CardContent>
+            ) : (
+              <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
+                <Typography
+                  sx={{
+                    color: 'customColors.textGray',
+                    fontSize: '13px',
+                    fontWeight: 400,
+                    lineHeight: '22px',
+                    paddingTop: '2px'
+                  }}
+                >
+                  You’ll be able to review all proposals anonymously once the deadline passes and agents have submitted
+                  their responses
+                </Typography>
+              </CardContent>
+            )}
             <Box
               onClick={!stages?.result_received?.is_completed ? undefined : () => router.push('/tender-result')}
               sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px' }}
@@ -346,7 +414,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
             <Typography
               sx={{
                 fontSize: '30px',
-                color: stages?.shortlisted?.is_completed ? 'customColors.darkGray1' : 'customColors.textGray',
+                color: stages?.shortlisted?.is_completed || tenderId ? 'customColors.darkGray1' : '#919191E5',
                 paddingTop: '8px',
                 paddingX: '22px',
                 fontWeight: 500
@@ -354,21 +422,50 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
             >
               Shortlisted
             </Typography>
-            <Typography
-              sx={{
-                paddingTop: '8px',
-                color: stages?.shortlisted?.is_completed ? 'customColors.green5' : 'customColors.textGray',
-                paddingX: '22px',
-                fontSize: '12px',
-                fontWeight: 300
-              }}
-            >
-              {stages?.shortlisted?.is_completed
-                ? `You’ve shortlisted ${dashboardResponce?.data?.shortlisted_pma} agents.`
-                : 'No shortlisted agents yet'}
-            </Typography>
+
+            {!tenderId ? (
+              <Typography
+                sx={{
+                  paddingTop: '8px',
+                  color: '#919191E5',
+                  paddingX: '22px',
+                  fontSize: '12px',
+                  fontWeight: 300
+                }}
+              >
+                Tender Results Not Available
+              </Typography>
+            ) : (
+              <Typography
+                sx={{
+                  paddingTop: '8px',
+                  color: stages?.shortlisted?.is_completed ? 'customColors.green5' : 'customColors.textGray',
+                  paddingX: '22px',
+                  fontSize: '12px',
+                  fontWeight: 300
+                }}
+              >
+                {stages?.shortlisted?.is_completed
+                  ? `You’ve shortlisted ${dashboardResponce?.data?.shortlisted_pma} agents.`
+                  : 'No shortlisted agents yet'}
+              </Typography>
+            )}
+
             <Divider sx={{ height: '2px', backgroundColor: '#D9D9D9', my: 1, marginTop: '14px' }} />
-            {!shortlistedCurrentStage && sinceLastshortlisted == '0' ? (
+
+            {!tenderId ? (
+              <Typography
+                sx={{
+                  paddingTop: '8px',
+                  color: '#919191E5',
+                  paddingX: '22px',
+                  fontSize: '12px',
+                  fontWeight: 300
+                }}
+              >
+                Please launch a tender first. The shortlisting process begins after tender submission closes.
+              </Typography>
+            ) : !shortlistedCurrentStage && sinceLastshortlisted === '0' ? (
               <Typography
                 sx={{
                   color: 'customColors.textGray',
@@ -380,7 +477,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
               >
                 Shortlist your preferred agents from the Results tab to unlock this section.
               </Typography>
-            ) : shortlistedCurrentStage && sinceLastshortlisted == '0' ? (
+            ) : shortlistedCurrentStage && sinceLastshortlisted === '0' ? (
               <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
                 <Typography
                   sx={{
@@ -404,7 +501,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
                   paddingX: '24px'
                 }}
               >
-                You’ve had your results for X days — shortlist now to move forward.
+                You’ve had your results for {sinceLastshortlisted} days — shortlist now to move forward.
               </Typography>
             ) : (
               ''
@@ -467,9 +564,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
             <Typography
               sx={{
                 fontSize: '30px',
-
-                // color: 'customColors.darkGray1',
-                color: stages?.video_call?.is_current ? 'customColors.darkGray1' : 'customColors.textGray',
+                color: stages?.video_call?.is_current || tenderId ? 'customColors.darkGray1' : '#919191E5',
                 paddingTop: '8px',
                 paddingX: '22px',
                 fontWeight: 500
@@ -478,7 +573,19 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
               Video Calls
             </Typography>
 
-            {!CallCurrentStage && sinceLastVideoCall == '0' ? (
+            {!tenderId ? (
+              <Typography
+                sx={{
+                  paddingTop: '8px',
+                  color: '#919191E5',
+                  paddingX: '22px',
+                  fontSize: '12px',
+                  fontWeight: 300
+                }}
+              >
+                Video Calls Can Not Be Scheduled.
+              </Typography>
+            ) : !CallCurrentStage && sinceLastVideoCall === '0' ? (
               <Typography
                 sx={{
                   paddingTop: '8px',
@@ -490,7 +597,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
               >
                 Shortlist Agent to unlock this section
               </Typography>
-            ) : CallCurrentStage && sinceLastVideoCall == '0' ? (
+            ) : CallCurrentStage && sinceLastVideoCall === '0' ? (
               <Typography
                 sx={{
                   paddingTop: '8px',
@@ -511,7 +618,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
                   fontWeight: 300
                 }}
               >
-                'No video calls booked yet.'
+                No video calls booked yet.
               </Typography>
             ) : (
               ''
@@ -519,7 +626,20 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
 
             <Divider sx={{ height: '2px', backgroundColor: '#D9D9D9', my: 1, marginTop: '14px' }} />
 
-            {!CallCurrentStage && sinceLastVideoCall == '0' ? (
+            {!tenderId ? (
+              <Typography
+                sx={{
+                  paddingTop: '8px',
+                  color: '#919191E5',
+                  paddingX: '22px',
+                  fontSize: '12px',
+                  fontWeight: 300
+                }}
+              >
+                You must launch a tender first. Video calls are scheduled with shortlisted candidates only after the
+                initial review is complete
+              </Typography>
+            ) : !CallCurrentStage && sinceLastVideoCall === '0' ? (
               <Typography
                 sx={{
                   color: 'customColors.textGray',
@@ -531,7 +651,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
               >
                 You’ll be able to invite agents to site visits once you have shortlisted from your results.
               </Typography>
-            ) : CallCurrentStage && sinceLastVideoCall == '0' ? (
+            ) : CallCurrentStage && sinceLastVideoCall === '0' ? (
               <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
                 <Typography
                   sx={{
@@ -545,6 +665,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
                   Next Scheduled Call : {stages?.video_call?.details?.upcoming?.date || ''}{' '}
                   {stages?.video_call?.details?.upcoming?.slot && <>({stages?.video_call?.details?.upcoming?.slot})</>}
                 </Typography>
+
                 <Typography
                   sx={{
                     color: 'customColors.textGray',
@@ -571,11 +692,12 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
                 }}
               >
                 It’s been {daysSinceShortlist} days since you shortlisted agents – invite them to a video call to help
-                decide who to progress to a site visit
+                decide who to progress to a site visit.
               </Typography>
             ) : (
               ''
             )}
+
             <Box
               sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px' }}
               className=' absolute bottom-[18px] right-2'
@@ -636,7 +758,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
             <Typography
               sx={{
                 fontSize: '30px',
-                color: stages?.site_visit?.is_current ? 'customColors.darkGray1' : 'customColors.textGray',
+                color: stages?.site_visit?.is_current || tenderId ? 'customColors.darkGray1' : '#919191E5',
                 paddingTop: '8px',
                 paddingX: '22px',
                 fontWeight: 500
@@ -645,7 +767,19 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
               Site Visits
             </Typography>
 
-            {!siteVistCurrentStage && sinceLastSiteVisit == '0' ? (
+            {!tenderId ? (
+              <Typography
+                sx={{
+                  paddingTop: '8px',
+                  color: '#919191E5',
+                  paddingX: '22px',
+                  fontSize: '12px',
+                  fontWeight: 300
+                }}
+              >
+                Site Visits Can Not Be Scheduled
+              </Typography>
+            ) : !siteVistCurrentStage && sinceLastSiteVisit === '0' ? (
               <Typography
                 sx={{
                   paddingTop: '8px',
@@ -657,7 +791,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
               >
                 Shortlist Agent to unlock this section
               </Typography>
-            ) : siteVistCurrentStage && sinceLastSiteVisit == '0' ? (
+            ) : siteVistCurrentStage && sinceLastSiteVisit === '0' ? (
               <Typography
                 sx={{
                   paddingTop: '8px',
@@ -678,7 +812,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
                   fontWeight: 300
                 }}
               >
-                'No video calls booked yet.'
+                No video calls booked yet.
               </Typography>
             ) : (
               ''
@@ -686,7 +820,20 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
 
             <Divider sx={{ height: '2px', backgroundColor: '#D9D9D9', my: 1, marginTop: '14px' }} />
 
-            {!siteVistCurrentStage && sinceLastSiteVisit == '0' ? (
+            {!tenderId ? (
+              <Typography
+                sx={{
+                  paddingTop: '8px',
+                  color: '#919191E5',
+                  paddingX: '22px',
+                  fontSize: '12px',
+                  fontWeight: 300
+                }}
+              >
+                You must launch a tender first. Site visits are scheduled with shortlisted candidates only after the
+                initial review is complete.
+              </Typography>
+            ) : !siteVistCurrentStage && sinceLastSiteVisit === '0' ? (
               <Typography
                 sx={{
                   color: 'customColors.textGray',
@@ -696,9 +843,9 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
                   paddingX: '24px'
                 }}
               >
-                You’ll be able to invite agents to video calls once you have shortlisted from your results.
+                You’ll be able to invite agents to site visits once you have shortlisted from your results.
               </Typography>
-            ) : siteVistCurrentStage && sinceLastSiteVisit == '0' ? (
+            ) : siteVistCurrentStage && sinceLastSiteVisit === '0' ? (
               <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
                 <Typography
                   sx={{
@@ -712,6 +859,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
                   Next Scheduled Visit : {stages?.site_visit?.details?.upcoming?.date || ''}{' '}
                   {stages?.site_visit?.details?.upcoming?.slot && <>({stages?.site_visit?.details?.upcoming?.slot})</>}
                 </Typography>
+
                 <Typography
                   sx={{
                     color: 'customColors.textGray',
@@ -728,13 +876,22 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
                 </Typography>
               </CardContent>
             ) : !siteVistCurrentStage && Number(sinceLastSiteVisit) >= 1 ? (
-              <Typography sx={{ color: 'red', fontSize: '13px', fontWeight: 400, marginTop: '20px', paddingX: '24px' }}>
+              <Typography
+                sx={{
+                  color: 'red',
+                  fontSize: '13px',
+                  fontWeight: 400,
+                  marginTop: '20px',
+                  paddingX: '24px'
+                }}
+              >
                 You shortlisted agents {daysSinceShortlist} days ago — invite them to a site visit to make your final
                 decision easier.
               </Typography>
             ) : (
               ''
             )}
+
             <Box
               sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px' }}
               className=' absolute bottom-[18px] right-2'
@@ -807,10 +964,11 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
             <div className='bg-[#c4edfa] mx-[22px] p-2 rounded-full flex items-center justify-center mt-[24px] size-[44px]'>
               <Image src={stages?.appointment?.is_current ? roundStar : star} alt='appointment-image' />
             </div>
+
             <Typography
               sx={{
                 fontSize: '30px',
-                color: stages?.appointment?.is_current ? 'customColors.darkGray1' : 'customColors.textGray',
+                color: stages?.appointment?.is_current || tenderId ? 'customColors.darkGray1' : '#919191E5',
                 paddingTop: '8px',
                 paddingX: '22px',
                 fontWeight: 500
@@ -818,38 +976,77 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
             >
               Appoint Your Agent
             </Typography>
-            <Typography
-              sx={{
-                paddingTop: '8px',
-                color: stages?.appointment?.is_completed ? 'customColors.green5' : 'customColors.textGray',
-                paddingX: '22px',
-                fontSize: '12px',
-                fontWeight: 300
-              }}
-            >
-              {stages?.appointment?.details?.appointed_pma_name
-                ? `Agent Name: ${stages?.appointment?.details?.appointed_pma_name} Date of Appointment :  ${formatDate(stages?.appointment?.completed_at) == null ? '' : formatDate(stages?.appointment?.completed_at)}`
-                : 'You can choose an agent after one call or visit is done.'}
-            </Typography>
+
+            {!tenderId ? (
+              <Typography
+                sx={{
+                  paddingTop: '8px',
+                  color: '#919191E5',
+                  paddingX: '22px',
+                  fontSize: '12px',
+                  fontWeight: 300
+                }}
+              >
+                Agent Appointment Disabled
+              </Typography>
+            ) : (
+              <Typography
+                sx={{
+                  paddingTop: '8px',
+                  color: stages?.appointment?.is_completed ? 'customColors.green5' : 'customColors.textGray',
+                  paddingX: '22px',
+                  fontSize: '12px',
+                  fontWeight: 300
+                }}
+              >
+                {stages?.appointment?.details?.appointed_pma_name
+                  ? `Agent Name: ${stages?.appointment?.details?.appointed_pma_name} Date of Appointment :  ${formatDate(stages?.appointment?.completed_at) == null ? '' : formatDate(stages?.appointment?.completed_at)}`
+                  : 'You can choose an agent after one call or visit is done.'}
+              </Typography>
+            )}
+
             <Divider sx={{ height: '2px', backgroundColor: '#D9D9D9', my: 1, marginTop: '14px' }} />
 
             <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
-              {!stages?.appointment?.is_completed ? (
+              {!tenderId ? (
                 <Typography
-                  sx={{ color: 'customColors.textGray', fontSize: '13px', fontWeight: 400, lineHeight: '22px' }}
+                  sx={{
+                    paddingTop: '8px',
+                    color: '#919191E5',
+                    fontSize: '12px',
+                    fontWeight: 300
+                  }}
+                >
+                  The final step of appointing an agent requires a completed tender process. Launch a tender to begin
+                  qualifying and selecting your agent.
+                </Typography>
+              ) : !stages?.appointment?.is_completed ? (
+                <Typography
+                  sx={{
+                    color: 'customColors.textGray',
+                    fontSize: '13px',
+                    fontWeight: 400,
+                    lineHeight: '22px'
+                  }}
                 >
                   Once you’ve had meaningful discussions or met with agents, you’ll be able to appoint your chosen
                   managing agent here.
                 </Typography>
               ) : (
                 <Typography
-                  sx={{ color: 'customColors.textGray', fontSize: '13px', fontWeight: 400, lineHeight: '22px' }}
+                  sx={{
+                    color: 'customColors.textGray',
+                    fontSize: '13px',
+                    fontWeight: 400,
+                    lineHeight: '22px'
+                  }}
                 >
                   <span className='font-bold'>Congratulations, you’ve appointed a new managing agent.</span> We’ll now
-                  archive this tender in 30 Days.
+                  archive this tender in 30 days.
                 </Typography>
               )}
             </CardContent>
+
             <Box
               sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px' }}
               className=' absolute bottom-[18px] right-2'
