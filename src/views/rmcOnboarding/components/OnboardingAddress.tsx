@@ -249,30 +249,35 @@ const OnboardingAddress = () => {
 
       if (!addressLine1?.trim()) {
         toast.error('Address Line 1 is required')
+        setIsSubmitting(false)
 
         return
       }
 
       if (!addressLine2?.trim()) {
         toast.error('Address Line 2 is required')
+        setIsSubmitting(false)
 
         return
       }
 
       if (!postcode?.trim()) {
         toast.error('Postcode is required')
+        setIsSubmitting(false)
 
         return
       }
 
       if (!region?.trim()) {
         toast.error('Town is required')
+        setIsSubmitting(false)
 
         return
       }
 
       if (!county?.trim()) {
         toast.error('County is required')
+        setIsSubmitting(false)
 
         return
       }
@@ -280,6 +285,7 @@ const OnboardingAddress = () => {
 
     if (!rmcData?.tender_onboarding_id) {
       toast.error('Tender onboarding ID not found. Please try again.')
+      setIsSubmitting(false)
 
       return
     }
