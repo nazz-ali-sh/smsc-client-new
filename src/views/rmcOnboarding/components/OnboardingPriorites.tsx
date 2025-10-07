@@ -85,15 +85,14 @@ const OnboardingPriorities: React.FC = () => {
   const [slots, setSlots] = useState<(PriorityItem | null)[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const rmcData = useSelector((state: RootState) => state?.rmcOnboarding?.rmcData)
+  const { data: onboardingData, invalidateCache } = useRmcOnboardingData()
 
   const { data: priorities } = useQuery({
-    queryKey: ['rmc-priorities', rmcData?.tender_onboarding_id],
+    queryKey: ['rmc-priorities', onboardingData?.onboarding_id ?? rmcData?.tender_onboarding_id],
     queryFn: getRmcPriorities,
-    enabled: !!rmcData?.tender_onboarding_id,
+    enabled: !!(onboardingData?.onboarding_id || rmcData?.tender_onboarding_id),
     retry: 2
   })
-
-  const { data: onboardingData, invalidateCache } = useRmcOnboardingData()
 
   useEffect(() => {
     if (priorities && priorities?.length > 0) {

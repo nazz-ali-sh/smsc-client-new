@@ -32,9 +32,9 @@ const OnboardingEndedQuestions = () => {
   const { data: onboardingData, invalidateCache } = useRmcOnboardingData()
 
   const { data: questions } = useQuery({
-    queryKey: ['rmc-questions', rmcData?.tender_onboarding_id],
+    queryKey: ['rmc-questions', onboardingData?.onboarding_id ?? rmcData?.tender_onboarding_id],
     queryFn: getRmcQuestions,
-    enabled: !!rmcData?.tender_onboarding_id,
+    enabled: !!(onboardingData?.onboarding_id || rmcData?.tender_onboarding_id),
     retry: 2
   })
 
