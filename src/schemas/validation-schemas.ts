@@ -370,7 +370,7 @@ export const profileSchema = pipe(
     mobile_number: pipe(
       string(),
       nonEmpty('Mobile number is required'),
-      minLength(8, 'Mobile number must be at least 8 characters')
+      check(validateUKPhoneNumber, 'Please enter a valid UK phone number (e.g., 07123456789)')
     ),
     notify_email: boolean(),
     notify_message: boolean(),

@@ -39,7 +39,6 @@ const OnboardingBlockDetails = () => {
   })
 
   const { rmcData } = useSelector((state: any) => state?.rmcOnboarding)
-  const { selectedAddress } = useSelector((state: any) => state?.rmcOnboarding)
 
   const { data: onboardingData, invalidateCache } = useRmcOnboardingData()
 
@@ -108,12 +107,6 @@ const OnboardingBlockDetails = () => {
 
     if (!onboardingData?.onboarding_id && !rmcData?.tender_onboarding_id) {
       toast.error('Tender onboarding ID not found. Please try again.')
-
-      return
-    }
-
-    if (!selectedAddress) {
-      toast.error('Address not found. Please go back and select an address.')
 
       return
     }

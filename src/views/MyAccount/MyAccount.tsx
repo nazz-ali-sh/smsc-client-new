@@ -147,6 +147,12 @@ const MyAccount: React.FC = () => {
     router.push('/my-accounts')
   }
 
+  const preferencesList = [
+    { label: 'Get notification through Email', field: 'notify_email', value: notifyEmail },
+    { label: 'Get notification through Message', field: 'notify_message', value: notifyMessage },
+    { label: 'Get notification in Portal', field: 'notify_portal', value: notifyPortal }
+  ]
+
   return (
     <div className='min-h-screen flex justify-center bg-white mt-3'>
       <div className='w-full rounded-xl shadow-md p-8 '>
@@ -167,11 +173,7 @@ const MyAccount: React.FC = () => {
           <div className='mb-8'>
             <h2 className='text-lg font-semibold text-gray-800 mb-4'>Notification Preferences</h2>
 
-            {[
-              { label: 'Get notification through Email', field: 'notify_email', value: notifyEmail },
-              { label: 'Get notification through Message', field: 'notify_message', value: notifyMessage },
-              { label: 'Get notification in Portal', field: 'notify_portal', value: notifyPortal }
-            ].map(({ label, field, value }) => (
+            {preferencesList?.map(({ label, field, value }) => (
               <div key={field} className='flex justify-between items-center py-3 '>
                 <p className='text-[#777981] font-medium text-[15px]'>{label}</p>
                 <div className='flex gap-1 items-center'>
