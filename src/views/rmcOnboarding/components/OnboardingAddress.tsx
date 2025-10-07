@@ -499,7 +499,7 @@ const OnboardingAddress = () => {
             }}
           >
             {mapSelectedAddress && <i className='ri-check-line' style={{ color: '#26C6F9' }}></i>}
-            Or Select Location on Map
+            Select Location on Map
             {mapSelectedAddress && <span style={{ fontSize: '14px', color: '#26C6F9' }}>(Selected)</span>}
           </Typography>
           <AddressMapSelector

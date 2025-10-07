@@ -365,9 +365,6 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
             )}
 
             <Grid item xs={12}>
-              <Typography variant='h6' sx={{ mb: 2, mt: 4 }}>
-                Select Location on Map
-              </Typography>
               <Box sx={{ width: '100%', height: '600px', borderRadius: 2, overflow: 'hidden' }}>
                 <Map
                   mapId={googleMapId}
