@@ -4,6 +4,7 @@ export const apiEndpoints = {
   forgotPassword: () => `/auth/forgot-password`,
   resetPassword: () => `/auth/reset-password`,
   meWithOnboarding: () => `/auth/onboarding`,
+  myAccount: () => `/auth/my-account`,
 
   //---------------------- Onboarding Stepper----------------------//
   // onboarding: (step: any) => `rmc-onboarding?step=${step}`,

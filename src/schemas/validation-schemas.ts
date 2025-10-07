@@ -354,3 +354,26 @@ export const retenderSchema = object({
   setDays: pipe(string(), minLength(1, 'Set days is required')),
   setMiles: pipe(string(), minLength(1, 'Set miles is required'))
 })
+
+export const profileSchema = pipe(
+  object({
+    name: pipe(
+      string(),
+      nonEmpty('Name is required'),
+      minLength(2, 'Name must be at least 2 characters')
+    ),
+    email: pipe(
+      string(),
+      nonEmpty('Email is required'),
+      email('Please enter a valid email address')
+    ),
+    mobile_number: pipe(
+      string(),
+      nonEmpty('Mobile number is required'),
+      minLength(8, 'Mobile number must be at least 8 characters')
+    ),
+    notify_email: boolean(),
+    notify_message: boolean(),
+    notify_portal: boolean()
+  })
+)

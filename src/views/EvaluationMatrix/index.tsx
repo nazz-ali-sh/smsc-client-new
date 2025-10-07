@@ -1,8 +1,9 @@
 'use client'
 import React, { useEffect, useState, useCallback, useMemo } from 'react'
 
-import { Box, Typography, TextField, Snackbar, Alert, Button } from '@mui/material'
+import { Box, Typography, TextField, Button } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
+import { toast } from 'react-toastify'
 
 import { useSelector } from 'react-redux'
 
@@ -15,12 +16,10 @@ import { gettingmetrixDetails } from '@/services/evaluation_matrix/evaluation_ma
 import AddCatogories from './AddCatogories'
 
 const EvaluationMatrix = () => {
-  const [toast, setToast] = useState({ open: false, message: '', severity: 'error' as 'error' | 'success' })
   const [isOpen, setIsOpen] = useState(false)
   const [evaluationData, setEvaluationData] = useState<any[]>([])
 
   const [isSaved, setIsSaved] = useState(false)
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [isScored, setisScored] = useState(true)
   const [isOpenCatagory, setIsOpenCatagory] = useState(false)
@@ -79,7 +78,6 @@ const EvaluationMatrix = () => {
     [metrixCategories]
   )
 
-  // Load saved evaluation data
   const loadSavedEvaluationData = useCallback(async () => {
     if (!tender_id) return
 
@@ -87,7 +85,6 @@ const EvaluationMatrix = () => {
       const savedData = await getSavedEvaluationData(tender_id)
 
       if (savedData?.data?.categories?.length > 0) {
-        // ✅ check once before mapping
         const hasValidScore = savedData.data.categories.some((category: { scores: any[] }) =>
           category?.scores?.some(score => score?.score >= 1)
         )
@@ -128,7 +125,6 @@ const EvaluationMatrix = () => {
 
         setEvaluationData(convertedData)
         setIsSaved(true)
-        setHasUnsavedChanges(false)
       } else {
         if (pmaColumns.length > 0) {
           setEvaluationData(createInitialEvaluationData(pmaColumns))
@@ -166,11 +162,13 @@ const EvaluationMatrix = () => {
 
               return { pma_user_id: pmaUserId, score }
             })
-            .filter((score: any) => score.score > 0 && score.pma_user_id)
+            .filter((score: any) => score?.pma_user_id)
 
-          return { category_id: category.category_id, weight: category.weight, scores }
+          return { category_id: category?.category_id, weight: category?.weight, scores }
         })
-        .filter(item => item.scores.length > 0)
+        .filter(item => {
+          return item?.scores?.length > 0 || item?.weight > 0
+        })
 
       const payload = { tender_id: tenderId, items }
       const response = await axiosClient.post('/rmc/evaluation-matrix/scores', payload)
@@ -180,10 +178,6 @@ const EvaluationMatrix = () => {
       console.error('Error saving evaluation scores:', error)
       throw error
     }
-  }
-
-  const showToast = (message: string, severity: 'error' | 'success' = 'error') => {
-    setToast({ open: true, message, severity })
   }
 
   const validateWeighting = (value: string) => {
@@ -200,9 +194,9 @@ const EvaluationMatrix = () => {
 
   const handleInputChange = (categoryIndex: number, field: string, value: string) => {
     if (field === 'weight' && value !== '') {
-      if (!validateWeighting(value)) return showToast('Weighting must be between 0.5 and 1.5')
+      if (!validateWeighting(value)) return toast.error('Weighting must be between 0.5 and 1.5')
     } else if (pmaColumns.includes(field) && value !== '') {
-      if (!validatePMA(value)) return showToast('PMA values must be whole numbers between 1 and 10')
+      if (!validatePMA(value)) return toast.error('PMA values must be whole numbers between 1 and 10')
     }
 
     setEvaluationData(prev => {
@@ -213,7 +207,6 @@ const EvaluationMatrix = () => {
       return updated
     })
 
-    setHasUnsavedChanges(true)
     setIsSaved(false)
   }
 
@@ -230,7 +223,6 @@ const EvaluationMatrix = () => {
       pmaColumns.forEach((pmaColumn: string) => {
         const pmaValue = parseInt(category[pmaColumn as keyof typeof category] as string) || 0
 
-        // Calculate weighted total: weight × score
         const weightedValue = weight * pmaValue
 
         totals[pmaColumn as keyof typeof totals] += weightedValue
@@ -254,12 +246,11 @@ const EvaluationMatrix = () => {
       const tenderId = tender_id
 
       await saveEvaluationScores(tenderId, evaluationData)
-      showToast('Evaluation scores saved successfully!', 'success')
+      toast.success('Evaluation scores saved successfully!')
       setIsSaved(true)
-      setHasUnsavedChanges(false)
       setTimeout(() => loadSavedEvaluationData(), 100)
     } catch {
-      showToast('Failed to save evaluation scores. Please try again.', 'error')
+      toast.error('Failed to save evaluation scores. Please try again.')
     } finally {
       setIsSaving(false)
     }
@@ -281,18 +272,6 @@ const EvaluationMatrix = () => {
           <Box sx={{ marginTop: 18 }}>
             <div className='flex items-center justify-between'>
               <Typography sx={{ color: '#262B43E5', fontWeight: 600, fontSize: '18px' }}>Evaluation Matrix</Typography>
-              {isSaved && (
-                <div className='flex items-center gap-2 text-green-600'>
-                  <i className='ri-check-line text-lg'></i>
-                  <span className='text-sm font-medium'>Saved</span>
-                </div>
-              )}
-              {hasUnsavedChanges && !isSaved && (
-                <div className='flex items-center gap-2 text-orange-600'>
-                  <i className='ri-edit-line text-lg'></i>
-                  <span className='text-sm font-medium'>Unsaved changes</span>
-                </div>
-              )}
             </div>
 
             <Typography sx={{ marginTop: '16px', color: '#262B43E5', fontWeight: 400, fontSize: '16px' }}>
@@ -405,8 +384,6 @@ const EvaluationMatrix = () => {
                   <tbody>
                     {evaluationData?.map((category: any, categoryIndex: number) => (
                       <tr key={categoryIndex}>
-                        {/* Category Name & Description */}
-
                         <td
                           style={{
                             padding: '16px',
@@ -432,7 +409,6 @@ const EvaluationMatrix = () => {
                           </Typography>
                         </td>
 
-                        {/* Weight Column */}
                         {!isScored ? (
                           <td style={{ padding: '8px', borderBottom: '1px solid #e0e0e0', textAlign: 'center' }}>
                             <TextField
@@ -451,9 +427,8 @@ const EvaluationMatrix = () => {
                           </td>
                         )}
 
-                        {/* PMA Columns */}
-                        {pmaColumns.length > 0 ? (
-                          pmaColumns.map((pma: string, pmaIndex: number) => (
+                        {pmaColumns?.length > 0 ? (
+                          pmaColumns?.map((pma: string, pmaIndex: number) => (
                             <>
                               <td
                                 key={pmaIndex}
@@ -504,7 +479,6 @@ const EvaluationMatrix = () => {
                       </tr>
                     ))}
 
-                    {/* Totals Row */}
                     <tr>
                       <td
                         style={{
@@ -523,7 +497,7 @@ const EvaluationMatrix = () => {
                         }}
                       >
                         <Typography variant='body2' sx={{ color: '#333', fontWeight: 'bold' }}>
-                          {totals.weight.toFixed(1)}
+                          {totals?.weight?.toFixed(1)}
                         </Typography>
                       </td>
                       {pmaColumns.length > 0 ? (
@@ -593,20 +567,6 @@ const EvaluationMatrix = () => {
           >
             <EvaluationInstructions />
           </CommonModal>
-          <Snackbar
-            open={toast.open}
-            autoHideDuration={6000}
-            onClose={() => setToast(prev => ({ ...prev, open: false }))}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          >
-            <Alert
-              onClose={() => setToast(prev => ({ ...prev, open: false }))}
-              severity={toast.severity}
-              sx={{ width: '100%' }}
-            >
-              {toast.message}
-            </Alert>
-          </Snackbar>
         </>
       )}
     </>

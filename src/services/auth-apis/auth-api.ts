@@ -60,6 +60,52 @@ export const loginUser = async (data: LoginPayload): Promise<LoginResponse> => {
   }
 }
 
+export interface MyAccountPayload {
+  name: string
+  email: string
+  mobile_number: string
+  logo?: File
+  notify_email: boolean
+  notify_message: boolean
+  notify_portal: boolean
+}
+
+export interface MyAccountResponse {
+  data: any
+  status: string
+  success: boolean
+  message: string
+}
+
+export const updateMyAccount = async (data: MyAccountPayload): Promise<MyAccountResponse> => {
+  try {
+    const url = apiEndpoints.myAccount()
+    
+    const formData = new FormData()
+    formData.append('name', data.name)
+    formData.append('email', data.email)
+    formData.append('mobile_number', data.mobile_number)
+    formData.append('notify_email', data.notify_email.toString())
+    formData.append('notify_message', data.notify_message.toString())
+    formData.append('notify_portal', data.notify_portal.toString())
+    
+    if (data.logo) {
+      formData.append('logo', data.logo)
+    }
+    
+    const response = await axiosClient.post(url, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+
+    return response.data
+  } catch (error) {
+    console.error('My Account API error:', error)
+    throw error
+  }
+}
+
 export const forgotPassword = async (data: ForgotPasswordPayload): Promise<ForgotPasswordResponse> => {
   try {
     const url = apiEndpoints.forgotPassword()
