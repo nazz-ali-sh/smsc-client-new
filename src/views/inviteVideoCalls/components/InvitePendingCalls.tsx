@@ -1,6 +1,6 @@
 'use client'
 
-import React, {  useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Box } from '@mui/material'
 import { createColumnHelper } from '@tanstack/react-table'
@@ -39,7 +39,7 @@ const InvitePendingCalls: React.FC<InvitePendingCallsProps> = ({ pendingInviteDa
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
   const [visitsSchedualInviteId, setVisitsSchedualInviteId] = useState<number | undefined>(undefined)
   const [onlineCallsModalOpen, setOnlineCallsModalOpen] = useState(false)
-
+  const [selectedPmaName, setSelectedPmaName] = useState<string | number | null>(null)
 
   const tableData: RescheduledCallType[] =
     pendingInviteData?.data?.invites?.map(
@@ -67,7 +67,21 @@ const InvitePendingCalls: React.FC<InvitePendingCallsProps> = ({ pendingInviteDa
       })
     ) || []
 
+  useEffect(() => {
+    if (visitsSchedualInviteId === undefined || visitsSchedualInviteId === null) {
+      setSelectedPmaName(null)
 
+      return
+    }
+
+    const matched = tableData.find(row => Number(row.invite_id) === Number(visitsSchedualInviteId))
+
+    if (matched) {
+      setSelectedPmaName(matched.pmaId)
+    } else {
+      setSelectedPmaName(null)
+    }
+  }, [visitsSchedualInviteId, tableData])
 
   const columns = [
     columnHelper.accessor((row, index) => index + 1, {
@@ -174,7 +188,7 @@ const InvitePendingCalls: React.FC<InvitePendingCallsProps> = ({ pendingInviteDa
       <CancelVideoCallsAndSiteVisist
         open={confirmOpen}
         title='Reschedule Request Cancel!'
-        description='You have rejected the reschedule request from [PMA Name]. The meeting will not be updated.Please provide a reason for the rejection in the box below. This explanation will be sent to the managing agent.'
+        description={`You have rejected the reschedule request from  ${selectedPmaName}. The meeting will not be updated.Please provide a reason for the rejection in the box below. This explanation will be sent to the managing agent.'`}
         onClose={() => setConfirmOpen(false)}
         onConfirm={() => {}}
         RejectInviteData={tableData}

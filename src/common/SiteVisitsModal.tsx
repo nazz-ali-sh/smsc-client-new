@@ -101,7 +101,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)
   const [allPmaids, setAllPmaIds] = useState<[]>([])
   const [showSlotError, setShowSlotError] = useState(false)
- 
+
   const [userSelectedSlots, setUserSelectedSlots] = useState<{ selectedIds: string; slotName: string | null }>({
     selectedIds: '',
     slotName: ''
@@ -118,6 +118,8 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     handleSubmit,
     setValue,
     watch,
+    setError,
+    clearErrors,
     formState: { errors }
   } = useForm({
     resolver: valibotResolver(videoCallSchema),
@@ -129,8 +131,44 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     }
   })
 
-
   const selectedDate = watch('selectedDate')
+
+  const today = new Date().toISOString().split('T')[0]
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value
+
+    if (!val) return
+
+    const pickedDay = new Date(val).getDay()
+
+    if (pickedDay === 0 || pickedDay === 6) {
+      setError('selectedDate', {
+        type: 'manual',
+        message: 'Weekends are not allowed. Please choose a weekday.'
+      })
+      setValue('selectedDate', today, { shouldValidate: true, shouldDirty: true })
+    } else {
+      clearErrors('selectedDate')
+      setValue('selectedDate', val, { shouldValidate: true, shouldDirty: true })
+    }
+  }
+
+  useEffect(() => {
+    if (selectedDate) {
+      const day = new Date(selectedDate).getDay()
+
+      if (day === 0 || day === 6) {
+        setError('selectedDate', {
+          type: 'manual',
+          message: 'Weekends are not allowed. Please choose a weekday.'
+        })
+        setValue('selectedDate', today)
+      } else {
+        clearErrors('selectedDate')
+      }
+    }
+  }, [selectedDate, setError, clearErrors, setValue, today])
 
   const { data: allshortlsitedPmaData } = useQuery<ShortlistedPmaResponse, Error>({
     queryKey: ['shortlisted', tender_id],
@@ -196,7 +234,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     onSuccess: (data: any) => {
       setInviteData(data?.data?.invites)
       toast.success(data?.message || 'Invite sent successfully!')
-       queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: ['calendarDates']
       })
       reset()
@@ -248,7 +286,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     onSuccess: (data: any) => {
       setInviteData(data?.data?.invites)
       toast.success(data?.message || 'Invite sent successfully!')
-        queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: ['calendarDates']
       })
       reset()
@@ -313,7 +351,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       setInviteData(data?.data?.invites)
       toast.success(data?.message || 'Invite sent successfully!')
       reset()
-       queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: ['calendarDates']
       })
       queryClient.invalidateQueries({
@@ -471,9 +509,14 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
               label='Select Date'
               type='date'
               InputLabelProps={{ shrink: true }}
+              inputProps={{
+                min: today,
+                onChange: handleDateChange
+              }}
+              error={!!errors.selectedDate}
+              helperText={errors.selectedDate?.message || 'Note: Weekends are not allowed.'}
             />
           </Grid>
-
           <Grid item xs={12} sm={6}>
             <Controller
               name='availableSlots'
@@ -560,7 +603,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
               )}
             />
           </Grid>
-
           <Grid item xs={12}>
             <Typography variant='h6' sx={{ mb: 2, color: '#333', fontWeight: '600' }}>
               Availability Set for
@@ -622,7 +664,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
               </CustomButton>
             </Box>
           </Grid>
-
           {types == 'Reschedual' || types == 'SiteVisits' ? (
             ''
           ) : (
@@ -672,7 +713,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                             {...tagProps}
                             label={option.pma_number}
                             sx={{
-                              backgroundColor: 'customColors.darkGray',
+                              backgroundColor: '#35C0ED',
                               color: 'white',
                               '& .MuiChip-deleteIcon': { color: 'white' }
                             }}
@@ -680,6 +721,20 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                         )
                       })
                     }
+                    sx={{
+                      "& .MuiAutocomplete-option[aria-selected='true']": {
+                        backgroundColor: '#35C0ED',
+                        color: 'white'
+                      },
+                      '& .MuiAutocomplete-option.Mui-focused': {
+                        backgroundColor: '#35C0ED',
+                        color: 'white'
+                      },
+                      '& .MuiAutocomplete-option:hover': {
+                        backgroundColor: '#35C0ED33',
+                        color: '#000'
+                      }
+                    }}
                   />
                 )}
               />
@@ -692,9 +747,10 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
               render={({ field }) => {
                 const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                   const text = e.target.value
-                  const words = text.trim().split(/\s+/) 
+                  const words = text.trim().split(/\s+/)
+
                   if (words.length <= 300) {
-                    field.onChange(text) 
+                    field.onChange(text)
                   }
                 }
 

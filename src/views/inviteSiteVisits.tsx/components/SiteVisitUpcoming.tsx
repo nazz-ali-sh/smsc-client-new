@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Box } from '@mui/material'
 import { createColumnHelper } from '@tanstack/react-table'
@@ -31,6 +31,8 @@ const SiteVisitUpcoming = ({ SiteUpComingData }: any) => {
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
   const [visitsSchedualInviteId, setVisitsSchedualInviteId] = useState<number>()
   const [confirmOpen, setConfirmOpen] = useState(false)
+  const [selectedPmaName, setSelectedPmaName] = useState<string | number | null>(null)
+
 
   const tableData: RescheduledCallType[] =
     SiteUpComingData?.data?.invites?.map(
@@ -59,6 +61,24 @@ const SiteVisitUpcoming = ({ SiteUpComingData }: any) => {
       })
     ) || []
 
+  useEffect(() => {
+    if (visitsSchedualInviteId === undefined || visitsSchedualInviteId === null) {
+      setSelectedPmaName(null)
+
+      return
+    }
+
+    const matched = tableData.find(row => Number(row.invite_id) === Number(visitsSchedualInviteId))
+
+    if (matched) {
+      setSelectedPmaName(matched.pmaId)
+    } else {
+      setSelectedPmaName(null)
+    }
+  }, [visitsSchedualInviteId, tableData])
+
+  console.log(tableData)
+
   const columns = [
     columnHelper.accessor((row, index) => index + 1, {
       id: 'sr',
@@ -68,7 +88,7 @@ const SiteVisitUpcoming = ({ SiteUpComingData }: any) => {
       enableSorting: true
     }),
     columnHelper.accessor('pmaId', {
-      header: 'PMA ID',
+      header: 'PMA Name',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true
@@ -181,7 +201,7 @@ const SiteVisitUpcoming = ({ SiteUpComingData }: any) => {
         open={confirmOpen}
         setConfirmOpen={setConfirmOpen}
         title='Reschedule Request Rejected!'
-        description='You have rejected the reschedule request from [PMA Name]. The meeting will not be updated.Please provide a reason for the rejection in the box below. This explanation will be sent to the managing agent.'
+        description={`You have rejected the reschedule request from ${selectedPmaName}. The meeting will not be updated. Please provide a reason for the rejection in the box below. This explanation will be sent to the managing agent.`}
         onClose={() => setConfirmOpen(false)}
         onConfirm={function (): void {}}
         RejectInviteData={tableData}
@@ -189,6 +209,7 @@ const SiteVisitUpcoming = ({ SiteUpComingData }: any) => {
         SideVisitsSchedualInviteId={visitsSchedualInviteId}
         sitePendingData={undefined}
         VideoCallInviteId={undefined}
+        selectedPmaName={selectedPmaName}
       />
     </Box>
   )

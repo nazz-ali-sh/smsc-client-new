@@ -77,6 +77,40 @@ export interface MyAccountResponse {
   message: string
 }
 
+export interface MyAccountData {
+  user: {
+    id: number
+    name: string
+    email: string
+    mobile_number: string
+    logo: string
+    logo_url: string
+  }
+  notification_preferences: {
+    notify_email: boolean
+    notify_message: boolean
+    notify_portal: boolean
+  }
+}
+
+export interface GetMyAccountResponse {
+  status: string
+  message: string
+  data: MyAccountData
+}
+
+export const getMyAccount = async (): Promise<GetMyAccountResponse> => {
+  try {
+    const url = apiEndpoints.myAccount()
+    const response = await axiosClient.get(url)
+
+    return response.data
+  } catch (error) {
+    console.error('Get My Account API error:', error)
+    throw error
+  }
+}
+
 export const updateMyAccount = async (data: MyAccountPayload): Promise<MyAccountResponse> => {
   try {
     const url = apiEndpoints.myAccount()

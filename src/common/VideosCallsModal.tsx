@@ -105,12 +105,14 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
   const [slotError, setSlotError] = useState('')
   const [SuccessOpen, setSuccessOpen] = useState(false)
   const [schedualCalanderDate, setSchedualCalanderDate] = useState('')
+
   console.log(schedualCalanderDate)
 
   const [userSelectedSlots, setUserSelectedSlots] = useState<{ selectedIds: string; slotName: string | null }>({
     selectedIds: '',
     slotName: ''
   })
+
   const { invalidateCache } = useDashboardData()
 
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)
@@ -356,7 +358,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     }
   })
 
-
   const handleReschedualaModal = async (formData: any) => {
     if (!formData.availableSlots) {
       setSlotError('Select the slots')
@@ -416,6 +417,47 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     }
   }, [calanderReschedualData, setValue])
 
+  // --- Define today's date (YYYY-MM-DD) ---
+  const today = new Date().toISOString().split('T')[0]
+
+  // --- Handle date selection ---
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value
+
+    if (!val) return
+
+    const pickedDay = new Date(val).getDay() // 0 = Sunday, 6 = Saturday
+
+    // If weekend selected
+    if (pickedDay === 0 || pickedDay === 6) {
+      setError('selectedDate', {
+        type: 'manual',
+        message: 'Weekends are not allowed. Please choose a weekday.'
+      })
+      setValue('selectedDate', today, { shouldValidate: true, shouldDirty: true })
+    } else {
+      clearErrors('selectedDate')
+      setValue('selectedDate', val, { shouldValidate: true, shouldDirty: true })
+    }
+  }
+
+  // --- Validate if selected date changes externally (like reset or API load) ---
+  useEffect(() => {
+    if (selectedDate) {
+      const day = new Date(selectedDate).getDay()
+
+      if (day === 0 || day === 6) {
+        setError('selectedDate', {
+          type: 'manual',
+          message: 'Weekends are not allowed. Please choose a weekday.'
+        })
+        setValue('selectedDate', today)
+      } else {
+        clearErrors('selectedDate')
+      }
+    }
+  }, [selectedDate, setError, clearErrors, setValue, today])
+
   return (
     <Dialog
       open={open}
@@ -466,6 +508,12 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
               label='Select Date'
               type='date'
               InputLabelProps={{ shrink: true }}
+              inputProps={{
+                min: today, // Disable past dates
+                onChange: handleDateChange
+              }}
+              error={!!errors.selectedDate}
+              helperText={errors.selectedDate?.message || 'Note: Weekends are not allowed.'}
             />
           </Grid>
 

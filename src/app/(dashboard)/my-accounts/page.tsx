@@ -1,7 +1,7 @@
-import MyAccount from '@/views/MyAccount/MyAccount'
+import MyAccountView from '@/views/MyAccount/MyAccountView'
 
 const MyAccountPage = () => {
-  return <MyAccount />
+  return <MyAccountView />
 }
 
 export default MyAccountPage

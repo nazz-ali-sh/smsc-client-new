@@ -1,39 +1,62 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+
+import { useRouter } from 'next/navigation'
 
 import { useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
-
 import type { InferOutput } from 'valibot'
-import { Box, CardContent, Typography, Grid, Paper } from '@mui/material'
 
 import { profileSchema } from '@/schemas/validation-schemas'
 import FormInput from '@/components/form-components/FormInput'
 import CustomButton from '@/common/CustomButton'
 import { updateMyAccount, type MyAccountPayload } from '@/services/auth-apis/auth-api'
+import { useMyAccount } from '@/hooks/useMyAccount'
 
 type ProfileFormData = InferOutput<typeof profileSchema>
 
 const MyAccount: React.FC = () => {
+  const router = useRouter()
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [dragActive, setDragActive] = useState(false)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [fileError, setFileError] = useState<string | null>(null)
 
-  const { control, handleSubmit, setValue, watch } = useForm<ProfileFormData>({
+  const { data: accountData, invalidateCache } = useMyAccount()
+  const user = accountData?.user
+  const notificationPreferences = accountData?.notification_preferences
+
+  const { control, handleSubmit, setValue, watch, reset } = useForm<ProfileFormData>({
     resolver: valibotResolver(profileSchema),
     defaultValues: {
-      name: '',
-      email: '',
-      mobile_number: '',
-      notify_email: true,
-      notify_message: true,
-      notify_portal: true
+      name: user?.name || '',
+      email: user?.email || '',
+      mobile_number: user?.mobile_number || '',
+      notify_email: notificationPreferences?.notify_email ?? true,
+      notify_message: notificationPreferences?.notify_message ?? true,
+      notify_portal: notificationPreferences?.notify_portal ?? true
     }
   })
+
+  useEffect(() => {
+    if (user && notificationPreferences) {
+      reset({
+        name: user.name || '',
+        email: user.email || '',
+        mobile_number: user.mobile_number || '',
+        notify_email: notificationPreferences.notify_email ?? true,
+        notify_message: notificationPreferences.notify_message ?? true,
+        notify_portal: notificationPreferences.notify_portal ?? true
+      })
+
+      if (user.logo_url) {
+        setImagePreview(user.logo_url)
+      }
+    }
+  }, [user, notificationPreferences, reset])
 
   const notifyEmail = watch('notify_email')
   const notifyMessage = watch('notify_message')
@@ -65,6 +88,7 @@ const MyAccount: React.FC = () => {
     mutationFn: (data: MyAccountPayload) => updateMyAccount(data),
     onSuccess: response => {
       toast.success(response.message || 'Profile updated successfully!')
+      invalidateCache()
     },
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || error?.message || 'Failed to update profile'
@@ -91,344 +115,132 @@ const MyAccount: React.FC = () => {
     }
   }
 
+  const handleFileChange = (file: File) => {
+    if (handleFileValidation(file)) {
+      setSelectedFile(file)
+      const reader = new FileReader()
+
+      reader.onload = e => setImagePreview(e.target?.result as string)
+      reader.readAsDataURL(file)
+    }
+  }
+
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault()
     e.stopPropagation()
-
-    if (e.type === 'dragenter' || e.type === 'dragover') {
-      setDragActive(true)
-    } else if (e.type === 'dragleave') {
-      setDragActive(false)
-    }
+    if (e.type === 'dragenter' || e.type === 'dragover') setDragActive(true)
+    else if (e.type === 'dragleave') setDragActive(false)
   }
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault()
     e.stopPropagation()
     setDragActive(false)
-
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const file = e.dataTransfer.files[0]
-
-      if (handleFileValidation(file)) {
-        setSelectedFile(file)
-
-        const reader = new FileReader()
-
-        reader.onload = e => {
-          setImagePreview(e.target?.result as string)
-        }
-
-        reader.readAsDataURL(file)
-      }
-    }
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) handleFileChange(e.dataTransfer.files[0])
   }
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0]
+    if (e.target.files && e.target.files[0]) handleFileChange(e.target.files[0])
+  }
 
-      if (handleFileValidation(file)) {
-        setSelectedFile(file)
-
-        const reader = new FileReader()
-
-        reader.onload = e => {
-          setImagePreview(e.target?.result as string)
-        }
-
-        reader.readAsDataURL(file)
-      }
-    }
+  const handleBack = () => {
+    router.push('/my-accounts')
   }
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        justifyContent: 'center'
-      }}
-    >
-      <Paper
-        sx={{
-          maxWidth: '100%',
-          width: '100%',
-          borderRadius: '12px',
-          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-          backgroundColor: 'white'
-        }}
-      >
-        <CardContent sx={{ padding: '32px' }}>
-          <Box sx={{ marginBottom: '32px' }}>
-            <Typography
-              variant='h4'
-              component='h1'
-              sx={{
-                color: '#1F2937',
-                fontWeight: 600,
-                fontSize: '24px',
-                marginBottom: '8px'
-              }}
-            >
-              Edit Profile
-            </Typography>
-            <Typography
-              variant='body2'
-              sx={{
-                color: '#6B7280',
-                fontSize: '14px'
-              }}
-            >
-              Sub Text
-            </Typography>
-          </Box>
+    <div className='min-h-screen flex justify-center bg-white'>
+      <div className='w-full rounded-xl shadow-md p-8 '>
+        <div className='mb-8'>
+          <h1 className='text-2xl font-semibold text-gray-800 mb-2'>Edit Profile</h1>
+          <p className='text-sm text-gray-500'>Sub Text</p>
+        </div>
 
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Box sx={{ marginBottom: '32px' }}>
-              <Grid container spacing={6}>
-                <Grid item xs={12} sm={6}>
-                  <FormInput name='name' control={control} label='Full Name' placeholder='Full Name' />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <FormInput name='email' control={control} label='Email' placeholder='Email' type='email' />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <FormInput name='mobile_number' control={control} label='Mobile Number' placeholder='Mobile Number' />
-                </Grid>
-              </Grid>
-            </Box>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className='mb-8'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 gap-6'>
+              <FormInput name='name' control={control} label='Full Name' placeholder='Full Name' />
+              <FormInput name='email' control={control} label='Email' placeholder='Email' type='email' />
+              <FormInput name='mobile_number' control={control} label='Mobile Number' placeholder='Mobile Number' />
+            </div>
+          </div>
 
-            <Box sx={{ marginBottom: '32px' }}>
-              <Typography
-                variant='h6'
-                sx={{
-                  color: '#1F2937',
-                  fontWeight: 600,
-                  fontSize: '18px',
-                  marginBottom: '16px'
-                }}
+          <div className='mb-8'>
+            <h2 className='text-lg font-semibold text-gray-800 mb-4'>Notification Preferences</h2>
+
+            {[
+              { label: 'Get notification through Email', field: 'notify_email', value: notifyEmail },
+              { label: 'Get notification through Message', field: 'notify_message', value: notifyMessage },
+              { label: 'Get notification in Portal', field: 'notify_portal', value: notifyPortal }
+            ].map(({ label, field, value }) => (
+              <div
+                key={field}
+                className='flex justify-between items-center py-2 border-b border-gray-100 last:border-0'
               >
-                Notification Preferences
-              </Typography>
+                <p className='text-gray-700 text-[15px]'>{label}</p>
+                <div className='flex gap-1 items-center'>
+                  <span
+                    onClick={() => setValue(field as any, false)}
+                    className={`text-sm cursor-pointer ${!value ? 'text-blue-500 underline' : 'text-gray-400'}`}
+                  >
+                    No
+                  </span>
+                  <span className='text-gray-400'>/</span>
+                  <span
+                    onClick={() => setValue(field as any, true)}
+                    className={`text-sm cursor-pointer ${value ? 'text-blue-500 underline' : 'text-gray-400'}`}
+                  >
+                    Yes
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
 
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 1 }}>
-                    <Typography variant='body1' sx={{ color: '#374151' }}>
-                      Get notification through Email
-                    </Typography>
-                    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                      <Typography
-                        variant='body2'
-                        onClick={() => setValue('notify_email', false)}
-                        sx={{
-                          color: !notifyEmail ? '#3B82F6' : '#9CA3AF',
-                          textDecoration: !notifyEmail ? 'underline' : 'none',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        No
-                      </Typography>
-                      <Typography variant='body2' sx={{ color: '#9CA3AF' }}>
-                        /
-                      </Typography>
-                      <Typography
-                        variant='body2'
-                        onClick={() => setValue('notify_email', true)}
-                        sx={{
-                          color: notifyEmail ? '#3B82F6' : '#9CA3AF',
-                          textDecoration: notifyEmail ? 'underline' : 'none',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        Yes
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 1 }}>
-                    <Typography variant='body1' sx={{ color: '#374151' }}>
-                      Get notification through Message
-                    </Typography>
-                    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                      <Typography
-                        variant='body2'
-                        onClick={() => setValue('notify_message', false)}
-                        sx={{
-                          color: !notifyMessage ? '#3B82F6' : '#9CA3AF',
-                          textDecoration: !notifyMessage ? 'underline' : 'none',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        No
-                      </Typography>
-                      <Typography variant='body2' sx={{ color: '#9CA3AF' }}>
-                        /
-                      </Typography>
-                      <Typography
-                        variant='body2'
-                        onClick={() => setValue('notify_message', true)}
-                        sx={{
-                          color: notifyMessage ? '#3B82F6' : '#9CA3AF',
-                          textDecoration: notifyMessage ? 'underline' : 'none',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        Yes
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 1 }}>
-                    <Typography variant='body1' sx={{ color: '#374151' }}>
-                      Get notification in Portal
-                    </Typography>
-                    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                      <Typography
-                        variant='body2'
-                        onClick={() => setValue('notify_portal', false)}
-                        sx={{
-                          color: !notifyPortal ? '#3B82F6' : '#9CA3AF',
-                          textDecoration: !notifyPortal ? 'underline' : 'none',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        No
-                      </Typography>
-                      <Typography variant='body2' sx={{ color: '#9CA3AF' }}>
-                        /
-                      </Typography>
-                      <Typography
-                        variant='body2'
-                        onClick={() => setValue('notify_portal', true)}
-                        sx={{
-                          color: notifyPortal ? '#3B82F6' : '#9CA3AF',
-                          textDecoration: notifyPortal ? 'underline' : 'none',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        Yes
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Grid>
-              </Grid>
-            </Box>
-
-            <Box sx={{ marginBottom: '32px' }}>
-              <Box
-                onDragEnter={handleDrag}
-                onDragLeave={handleDrag}
-                onDragOver={handleDrag}
-                onDrop={handleDrop}
-                onClick={() => document.getElementById('file-upload')?.click()}
-                sx={{
-                  border: '2px dashed #3B82F6',
-                  borderRadius: '8px',
-                  padding: '40px',
-                  textAlign: 'center',
-                  backgroundColor: dragActive ? '#EFF6FF' : '#F8FAFC',
-                  cursor: 'pointer',
-                  transition: 'background-color 0.2s',
-                  position: 'relative',
-                  '&:hover': {
-                    backgroundColor: '#EFF6FF'
-                  }
-                }}
-              >
-                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-                  {imagePreview ? (
-                    <Box
-                      sx={{
-                        width: '120px',
-                        height: '120px',
-                        borderRadius: '8px',
-                        overflow: 'hidden',
-                        border: '2px solid #3B82F6',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                      }}
-                    >
-                      <img
-                        src={imagePreview}
-                        alt='Preview'
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover'
-                        }}
-                      />
-                    </Box>
-                  ) : (
-                    <>
-                      <Typography
-                        variant='h4'
-                        sx={{
-                          color: '#3B82F6',
-                          fontSize: '24px'
-                        }}
-                      >
-                        ↑
-                      </Typography>
-                      <Typography
-                        variant='body1'
-                        sx={{
-                          color: '#3B82F6',
-                          fontWeight: 500
-                        }}
-                      >
-                        Drag & Drop or Browse File
-                      </Typography>
-                    </>
-                  )}
-                </Box>
-                <input
-                  type='file'
-                  onChange={handleFileInput}
-                  accept='image/jpeg,image/png,image/jpg,image/webp,image/svg+xml'
-                  style={{ display: 'none' }}
-                  id='file-upload'
-                />
-              </Box>
-
-              {fileError && (
-                <Typography
-                  variant='caption'
-                  sx={{
-                    color: '#EF4444',
-                    fontSize: '12px',
-                    marginTop: '8px',
-                    display: 'block'
-                  }}
-                >
-                  {fileError}
-                </Typography>
-              )}
-            </Box>
-
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: 2,
-                marginTop: '32px'
-              }}
+          <div className='mb-8'>
+            <div
+              onDragEnter={handleDrag}
+              onDragLeave={handleDrag}
+              onDragOver={handleDrag}
+              onDrop={handleDrop}
+              onClick={() => document.getElementById('file-upload')?.click()}
+              className={`border-2 border-dashed rounded-lg p-10 text-center cursor-pointer transition-colors ${
+                dragActive ? 'bg-[#A8E8FD66]' : 'bg-[#F8FAFC]'
+              }`}
             >
-              <CustomButton variant='outlined'>Cancel</CustomButton>
-              <CustomButton type='submit' variant='contained' disabled={updateProfileMutation.isPending}>
-                {updateProfileMutation.isPending ? 'Saving...' : 'Save Changes'}
-              </CustomButton>
-            </Box>
-          </form>
-        </CardContent>
-      </Paper>
-    </Box>
+              <div className='flex flex-col items-center gap-3'>
+                {imagePreview ? (
+                  <div className='w-28 h-28 rounded-lg overflow-hidden border-2 border-blue-500 flex items-center justify-center'>
+                    <img src={imagePreview} alt='Preview' className='w-full h-full object-cover' />
+                  </div>
+                ) : (
+                  <>
+                    <p className='text-2xl text-blue-500'>↑</p>
+                    <p className='text-blue-500 font-medium'>Drag & Drop or Browse File</p>
+                  </>
+                )}
+              </div>
+              <input
+                id='file-upload'
+                type='file'
+                onChange={handleFileInput}
+                accept='image/jpeg,image/png,image/jpg,image/webp,image/svg+xml'
+                className='hidden'
+              />
+            </div>
+            {fileError && <p className='text-red-500 text-xs mt-2'>{fileError}</p>}
+          </div>
+
+          <div className='flex justify-end gap-3 mt-8'>
+            <CustomButton onClick={handleBack} variant='outlined'>
+              Cancel
+            </CustomButton>
+            <CustomButton type='submit' variant='contained' disabled={updateProfileMutation.isPending}>
+              {updateProfileMutation.isPending ? 'Saving...' : 'Save Changes'}
+            </CustomButton>
+          </div>
+        </form>
+      </div>
+    </div>
   )
 }
 

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Box } from '@mui/material'
 import { createColumnHelper } from '@tanstack/react-table'
@@ -35,6 +35,9 @@ const SiteVisitPending = ({ sitePendingData }: any) => {
 
   const [visitsSchedualInviteId, setVisitsSchedualInviteId] = useState<number>()
 
+  const [selectedPmaName, setSelectedPmaName] = useState<string | number | null>(null)
+
+
   const tableData: RescheduledCallType[] =
     sitePendingData?.data?.invites?.map(
       (invite: {
@@ -62,6 +65,22 @@ const SiteVisitPending = ({ sitePendingData }: any) => {
       })
     ) || []
 
+  useEffect(() => {
+    if (visitsSchedualInviteId === undefined || visitsSchedualInviteId === null) {
+      setSelectedPmaName(null)
+
+      return
+    }
+
+    const matched = tableData.find(row => Number(row.invite_id) === Number(visitsSchedualInviteId))
+
+    if (matched) {
+      setSelectedPmaName(matched.pmaId)
+    } else {
+      setSelectedPmaName(null)
+    }
+  }, [visitsSchedualInviteId, tableData])
+
   const columns = [
     columnHelper.accessor((row, index) => index + 1, {
       id: 'sr',
@@ -71,7 +90,7 @@ const SiteVisitPending = ({ sitePendingData }: any) => {
       enableSorting: true
     }),
     columnHelper.accessor('pmaId', {
-      header: 'PMA ID',
+      header: 'PMA Name',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true
@@ -115,12 +134,8 @@ const SiteVisitPending = ({ sitePendingData }: any) => {
       size: 150,
       enableSorting: true
     }),
-    // columnHelper.accessor('rescheduled', {
-    //   header: 'Rescheduled',
-    //   cell: info => info.getValue(),
-    //   size: 150,
-    //   enableSorting: true
-    // }),
+
+   
     columnHelper.accessor('invited_at', {
       header: 'Scheduled Date',
       cell: info => info.getValue(),
@@ -171,12 +186,11 @@ const SiteVisitPending = ({ sitePendingData }: any) => {
         pageSizeOptions={[5, 10, 25]}
         enableSorting={true}
       />
-
       <RejectModal
         open={confirmOpen}
         setConfirmOpen={setConfirmOpen}
         title='Reschedule Request Cancel!'
-        description='You have rejected the reschedule request from [PMA Name]. The meeting will not be updated.Please provide a reason for the rejection in the box below. This explanation will be sent to the managing agent.'
+        description={`You have rejected the reschedule request from  ${selectedPmaName}. The meeting will not be updated.Please provide a reason for the rejection in the box below. This explanation will be sent to the managing agent.'`}
         onClose={() => setConfirmOpen(false)}
         onConfirm={function (): void {}}
         RejectInviteData={tableData}

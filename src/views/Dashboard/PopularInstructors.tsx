@@ -466,7 +466,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
               >
                 Please launch a tender first. The shortlisting process begins after tender submission closes.
               </Typography>
-            ) : !shortlistedCurrentStage && sinceLastshortlisted === '0' ? (
+            ) : !shortlistedCurrentStage && sinceLastshortlisted === 0 ? (
               <Typography
                 sx={{
                   color: 'customColors.textGray',
@@ -478,7 +478,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
               >
                 Shortlist your preferred agents from the Results tab to unlock this section.
               </Typography>
-            ) : shortlistedCurrentStage && sinceLastshortlisted === '0' ? (
+            ) : shortlistedCurrentStage && sinceLastshortlisted === 0 ? (
               <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
                 <Typography
                   sx={{
@@ -586,7 +586,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
               >
                 Video Calls Can Not Be Scheduled.
               </Typography>
-            ) : !CallCurrentStage && sinceLastVideoCall === '0' ? (
+            ) : !CallCurrentStage && sinceLastVideoCall === 0 ? (
               <Typography
                 sx={{
                   paddingTop: '8px',
@@ -598,7 +598,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
               >
                 Shortlist Agent to unlock this section
               </Typography>
-            ) : CallCurrentStage && sinceLastVideoCall === '0' ? (
+            ) : CallCurrentStage && sinceLastVideoCall === 0 ? (
               <Typography
                 sx={{
                   paddingTop: '8px',
@@ -640,7 +640,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
                 You must launch a tender first. Video calls are scheduled with shortlisted candidates only after the
                 initial review is complete
               </Typography>
-            ) : !CallCurrentStage && sinceLastVideoCall === '0' ? (
+            ) : !CallCurrentStage && sinceLastVideoCall === 0 ? (
               <Typography
                 sx={{
                   color: 'customColors.textGray',
@@ -652,7 +652,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
               >
                 You’ll be able to invite agents to site visits once you have shortlisted from your results.
               </Typography>
-            ) : CallCurrentStage && sinceLastVideoCall === '0' ? (
+            ) : CallCurrentStage && sinceLastVideoCall === 0 ? (
               <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
                 <Typography
                   sx={{
@@ -834,7 +834,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
                 You must launch a tender first. Site visits are scheduled with shortlisted candidates only after the
                 initial review is complete.
               </Typography>
-            ) : !siteVistCurrentStage && sinceLastSiteVisit === '0' ? (
+            ) : !siteVistCurrentStage && sinceLastSiteVisit === 0 ? (
               <Typography
                 sx={{
                   color: 'customColors.textGray',
@@ -846,7 +846,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
               >
                 You’ll be able to invite agents to site visits once you have shortlisted from your results.
               </Typography>
-            ) : siteVistCurrentStage && sinceLastSiteVisit === '0' ? (
+            ) : siteVistCurrentStage && sinceLastSiteVisit === 0 ? (
               <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
                 <Typography
                   sx={{

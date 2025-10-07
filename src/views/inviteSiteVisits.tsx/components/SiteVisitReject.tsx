@@ -62,7 +62,7 @@ const SiteVisitReject = ({ siteRejectedData }: any) => {
       enableSorting: true
     }),
     columnHelper.accessor('pmaId', {
-      header: 'PMA ID',
+      header: 'PMA Name',
       cell: info => info.getValue(),
       size: 150,
       enableSorting: true

@@ -37,6 +37,7 @@ type DeleteModalProps = {
   VideoCallInviteId?: any
   setConfirmOpen?: any
   calanderSiteVisitReject?: any
+  selectedPmaName?: any
 }
 
 const DeleteModal = ({
@@ -49,7 +50,7 @@ const DeleteModal = ({
   SideVisitsSchedualInviteId,
   VideoCallInviteId,
   setConfirmOpen,
-  calanderSiteVisitReject
+  calanderSiteVisitReject,
 }: DeleteModalProps) => {
   const [textValue, setTextValue] = useState('')
   const [error, setError] = useState('')
@@ -152,7 +153,6 @@ const DeleteModal = ({
       return
     }
 
-    debugger
 
     if (types === 'SiteVisits' || types === 'reject' || types === 'siteVisitRejectCalander') {
       const invite_Id = SideVisitsSchedualInviteId || calanderSiteVisitReject?.invite_Id
