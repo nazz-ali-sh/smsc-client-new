@@ -79,6 +79,7 @@ export const useAvailability = () => {
   const handleTimeChange = (day: string, field: 'startTime' | 'endTime', value: string) => {
     if (field === 'startTime') {
       const startTimeIndex = TIME_OPTIONS.indexOf(value)
+
       const endTimeIndex = startTimeIndex + 1
 
       if (endTimeIndex < TIME_OPTIONS.length) {
@@ -105,30 +106,89 @@ export const useAvailability = () => {
         ...prev,
         [day]: {
           ...prev[day],
-          [field]: value
+          endTime: value
         }
       }))
     }
+  }
+
+  const convertApiTimeToDisplayFormat = (apiTime: string) => {
+    if (!apiTime) return ''
+
+    return apiTime.substring(0, 5)
   }
 
   const getAvailableStartTimes = (day: string) => {
     const existingSlots = daySlots[day]
 
     if (existingSlots?.length === 0) {
-      return TIME_OPTIONS
+      return TIME_OPTIONS?.filter(time => time <= '20:15')
     }
 
-    const latestEndTime = existingSlots?.reduce((latest, slot) => {
-      return slot.endTime > latest ? slot.endTime : latest
-    }, '00:00')
+    const usedTimes = new Set()
 
-    return TIME_OPTIONS?.filter(time => time >= latestEndTime)
+    existingSlots?.forEach(slot => {
+      const startTime = convertApiTimeToDisplayFormat(slot?.startTime)
+      const endTime = convertApiTimeToDisplayFormat(slot?.endTime)
+
+      if (startTime) {
+        usedTimes.add(startTime)
+      }
+
+      const startIndex = TIME_OPTIONS?.indexOf(startTime)
+      const endIndex = TIME_OPTIONS?.indexOf(endTime)
+
+      if (startIndex !== -1 && endIndex !== -1) {
+        for (let i = startIndex; i < endIndex; i++) {
+          usedTimes.add(TIME_OPTIONS[i])
+        }
+      }
+    })
+
+    return TIME_OPTIONS?.filter(time => !usedTimes.has(time) && time <= '20:15')
   }
 
   const getAvailableEndTimes = (day: string, startTime: string) => {
-    if (!startTime) return TIME_OPTIONS
+    if (!startTime) {
+      return TIME_OPTIONS?.filter(time => time <= '21:00')
+    }
 
-    return TIME_OPTIONS?.filter(time => time > startTime)
+    const existingSlots = daySlots[day]
+
+    if (existingSlots?.length === 0) {
+      return TIME_OPTIONS?.filter(time => time > startTime && time <= '21:00')
+    }
+
+    const usedTimes = new Set()
+
+    existingSlots?.forEach(slot => {
+      const slotStartTime = convertApiTimeToDisplayFormat(slot.startTime)
+      const slotEndTime = convertApiTimeToDisplayFormat(slot.endTime)
+
+      if (slotStartTime) {
+        usedTimes.add(slotStartTime)
+      }
+
+      const startIndex = TIME_OPTIONS?.indexOf(slotStartTime)
+      const endIndex = TIME_OPTIONS?.indexOf(slotEndTime)
+
+      if (startIndex !== -1 && endIndex !== -1) {
+        for (let i = startIndex; i < endIndex; i++) {
+          usedTimes.add(TIME_OPTIONS[i])
+        }
+      }
+    })
+
+    const startTimeIndex = TIME_OPTIONS.indexOf(startTime)
+    const autoEndTime = startTimeIndex + 1 < TIME_OPTIONS?.length ? TIME_OPTIONS[startTimeIndex + 1] : null
+
+    const filteredTimes = TIME_OPTIONS?.filter(time => time > startTime && !usedTimes?.has(time) && time <= '21:00')
+
+    if (autoEndTime && !filteredTimes?.includes(autoEndTime) && autoEndTime <= '21:00') {
+      filteredTimes.unshift(autoEndTime)
+    }
+
+    return filteredTimes
   }
 
   const handleAddSlot = (day: string) => {

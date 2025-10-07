@@ -3,7 +3,7 @@ const generateTimeOptions = () => {
   let currentHour = 9
   let currentMinute = 0
 
-  while (currentHour <= 21) {
+  while (currentHour < 21 || (currentHour === 21 && currentMinute === 0)) {
     const timeString = `${currentHour?.toString()?.padStart(2, '0')}:${currentMinute?.toString()?.padStart(2, '0')}`
 
     times?.push(timeString)
