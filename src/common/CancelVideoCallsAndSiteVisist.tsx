@@ -2,9 +2,19 @@
 
 import React, { useState } from 'react'
 
-import { Dialog, DialogTitle, DialogContent, DialogContentText, Button, TextField, Box } from '@mui/material'
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  TextField,
+  Box,
+  Typography,
+  Divider,
+  IconButton
+} from '@mui/material'
 import { toast } from 'react-toastify'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSelector } from 'react-redux'
 
 import {
@@ -12,6 +22,7 @@ import {
   rmcSiteVisitCancel,
   rmcVideoCallsCancel
 } from '@/services/site_visit_apis/site_visit_api'
+import CustomButton from './CustomButton'
 
 type DeleteModalProps = {
   open: boolean
@@ -44,6 +55,7 @@ const CancelVideoCallsAndSiteVisist = ({
   const [error, setError] = useState('')
 
   const rmctender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
+  const queryClient = useQueryClient()
 
   const rechedualRmcAgain = useMutation({
     mutationFn: ({
@@ -57,6 +69,9 @@ const CancelVideoCallsAndSiteVisist = ({
     }) => reSchedualRejectInvite(VideoCallInviteId, rmctender_id, message),
     onSuccess: (data: any) => {
       toast.success(data?.message || 'Invite rejected successfully!')
+      queryClient.invalidateQueries({
+        queryKey: ['calendarDates']
+      })
       if (onConfirm) onConfirm()
       onClose()
       setTextValue('')
@@ -85,6 +100,9 @@ const CancelVideoCallsAndSiteVisist = ({
     }) => rmcVideoCallsCancel(VideoCallInviteId, rmctender_id, message),
     onSuccess: (data: any) => {
       toast.success(data?.message || 'Invite rejected successfully!')
+      queryClient.invalidateQueries({
+        queryKey: ['calendarDates']
+      })
       if (onConfirm) onConfirm()
       onClose()
       setTextValue('')
@@ -101,6 +119,7 @@ const CancelVideoCallsAndSiteVisist = ({
     }
   })
 
+  // site vsist cancel
   const sideVisitCancel = useMutation({
     mutationFn: ({
       SideVisitsSchedualInviteId,
@@ -113,6 +132,9 @@ const CancelVideoCallsAndSiteVisist = ({
     }) => rmcSiteVisitCancel(SideVisitsSchedualInviteId, rmctender_id, message),
     onSuccess: (data: any) => {
       toast.success(data?.message || 'Invite rejected successfully!')
+      queryClient.invalidateQueries({
+        queryKey: ['calendarDates']
+      })
       if (onConfirm) onConfirm()
       onClose()
       setTextValue('')
@@ -129,6 +151,10 @@ const CancelVideoCallsAndSiteVisist = ({
     }
   })
 
+  console.log(types)
+
+  const normalizedType = types?.trim()?.toLowerCase()
+
   const handleConfirm = () => {
     if (!textValue.trim()) {
       setError('Reason is required')
@@ -136,25 +162,27 @@ const CancelVideoCallsAndSiteVisist = ({
       return
     }
 
-    if (types === 'SiteVisits' || types === 'reject') {
+    console.log('types:', types)
+
+    if (normalizedType === 'sitevisits' || normalizedType === 'reject') {
       sideVisitCancel.mutate({
         SideVisitsSchedualInviteId,
         rmctender_id,
         message: textValue
       })
-    } else if (types === 'fromSiteVisitCalander') {
+    } else if (normalizedType === 'fromsitevisitcalander') {
       sideVisitCancel.mutate({
         SideVisitsSchedualInviteId: calanderCancelData?.invite_Id,
         rmctender_id,
         message: textValue
       })
-    } else if (types === 'VideoCallcancel') {
+    } else if (normalizedType === 'videocallcancel') {
       videoCallCancel.mutate({
         VideoCallInviteId,
         rmctender_id,
         message: textValue
       })
-    } else if (types?.trim().toLowerCase() === 'fromvideocalander') {
+    } else if (normalizedType === 'fromvideocalander') {
       videoCallCancel.mutate({
         VideoCallInviteId: calanderCancelData?.invite_Id,
         rmctender_id,
@@ -171,12 +199,33 @@ const CancelVideoCallsAndSiteVisist = ({
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
-      <DialogTitle>{title}</DialogTitle>
+      {/* <DialogTitle>{title}</DialogTitle> */}
+      <DialogTitle sx={{ pb: 1, px: 3, pt: 3 }}>
+        <Box display='flex' justifyContent='space-between' alignItems='flex-start' sx={{ paddingTop: '16px' }}>
+          <Typography
+            variant='h4'
+            sx={{
+              color: '#1F4E8D',
+              fontSize: '1.7rem',
+              paddingLeft: '6px'
+            }}
+          >
+            {title}
+          </Typography>
+          <IconButton onClick={onClose} sx={{ color: 'customColors.textGray' }}>
+            <i className='ri-close-line' />
+          </IconButton>
+        </Box>
+        <Box sx={{ paddingY: '12px' }}>
+          <Divider />
+        </Box>
+      </DialogTitle>
       <DialogContent>
         <DialogContentText sx={{ mb: 2 }}>{description}</DialogContentText>
 
         {/* TextArea */}
         <TextField
+          sx={{ marginTop: '5px' }}
           multiline
           rows={4}
           fullWidth
@@ -192,12 +241,12 @@ const CancelVideoCallsAndSiteVisist = ({
         />
 
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: '20px' }}>
-          <Button onClick={onClose} variant='outlined'>
+          <CustomButton onClick={onClose} variant='outlined'>
             Cancel
-          </Button>
-          <Button variant='contained' onClick={handleConfirm}>
+          </CustomButton>
+          <CustomButton variant='contained' onClick={handleConfirm}>
             Confirm
-          </Button>
+          </CustomButton>
         </Box>
       </DialogContent>
     </Dialog>

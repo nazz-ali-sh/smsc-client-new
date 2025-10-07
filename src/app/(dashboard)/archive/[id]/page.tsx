@@ -30,7 +30,7 @@ const Page = ({ params }: PageProps) => {
     isArchiveDetailsLoading: isLoading,
     archiveDetailsError
   } = useArchiveData({ tenderId: param_id, pmaUserId: selectedPma ? Number(selectedPma) : undefined })
-  
+
   const isError = !!archiveDetailsError
 
   const { data: tenderDetailData } = useTenderDetail()
@@ -49,6 +49,7 @@ const Page = ({ params }: PageProps) => {
   return (
     <>
       <SummaryCards />
+      
       <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', marginTop: '35px' }}>
         <CardContent sx={{ pb: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>

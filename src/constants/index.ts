@@ -347,3 +347,9 @@ export const onboardingRoutes = [
   '/rmc-onboarding-verification',
   '/tender-information-update'
 ]
+
+ export const links = [
+    { href: '/invites-site-visits', label: 'Site Visit' },
+    { href: '/invites-video-calls', label: 'Video Call' },
+    { href: '/rmc-calendar', label: 'Calendar' }
+  ]

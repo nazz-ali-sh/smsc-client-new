@@ -101,7 +101,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)
   const [allPmaids, setAllPmaIds] = useState<[]>([])
   const [showSlotError, setShowSlotError] = useState(false)
-
+ 
   const [userSelectedSlots, setUserSelectedSlots] = useState<{ selectedIds: string; slotName: string | null }>({
     selectedIds: '',
     slotName: ''
@@ -109,7 +109,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
 
   const { invalidateCache } = useDashboardData()
 
-  console.log(shorlistedPmas)
   const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
   const queryClient = useQueryClient()
 
@@ -129,6 +128,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       additionalNotes: ''
     }
   })
+
 
   const selectedDate = watch('selectedDate')
 
@@ -177,7 +177,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     }
   }, [isError, error])
 
-  //  video call reschedual
   const rechedualRmcAgain = useMutation({
     mutationFn: ({
       invite_id,
@@ -197,6 +196,9 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     onSuccess: (data: any) => {
       setInviteData(data?.data?.invites)
       toast.success(data?.message || 'Invite sent successfully!')
+       queryClient.invalidateQueries({
+        queryKey: ['calendarDates']
+      })
       reset()
       setSuccessOpen(true)
       setSiteVisitsModalOpen(false)
@@ -246,6 +248,9 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     onSuccess: (data: any) => {
       setInviteData(data?.data?.invites)
       toast.success(data?.message || 'Invite sent successfully!')
+        queryClient.invalidateQueries({
+        queryKey: ['calendarDates']
+      })
       reset()
       setSuccessOpen(true)
     },
@@ -308,6 +313,9 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       setInviteData(data?.data?.invites)
       toast.success(data?.message || 'Invite sent successfully!')
       reset()
+       queryClient.invalidateQueries({
+        queryKey: ['calendarDates']
+      })
       queryClient.invalidateQueries({
         queryKey: ['shortlistData', tender_id]
       })
@@ -434,12 +442,12 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
               }}
             >
               {types == 'Reschedual'
-                ? 'Reschedual Site Visit Invites'
+                ? 'Reschedule Site Visit Invites'
                 : types == 'SiteVisits'
-                  ? 'Reschedual Site Visit'
-                  : types == 'fromDashboard' || types == 'fromSiteVisitTable'
+                  ? 'Reschedule Site Visit Invites'
+                  : types == 'fromDashboard' || types == 'fromSiteVisitTable' || types == 'siteVisitFromCalender'
                     ? 'Site Visits Invites'
-                    : '  Reschedual Site Visit'}
+                    : '  Reschedule Site Visit Invites'}
             </Typography>
             <Typography variant='body2' sx={{ paddingY: '12px' }}>
               Use this section to invite PMAs to meeting
@@ -684,10 +692,9 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
               render={({ field }) => {
                 const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                   const text = e.target.value
-                  const words = text.trim().split(/\s+/) // split by whitespace
-
+                  const words = text.trim().split(/\s+/) 
                   if (words.length <= 300) {
-                    field.onChange(text) // allow update if <= 300 words
+                    field.onChange(text) 
                   }
                 }
 

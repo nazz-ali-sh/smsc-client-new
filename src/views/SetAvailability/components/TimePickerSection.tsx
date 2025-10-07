@@ -41,7 +41,7 @@ const TimePickerSection = ({
   formatTimeForDisplay
 }: TimePickerSectionProps) => {
   return (
-    <Box sx={{ display: 'flex', gap: '8px', alignItems: 'center', flex: 1, minWidth: 0 }}>
+    <Box sx={{ display: 'flex', gap: '8px', alignItems: 'center', flex: '1 1 0', minWidth: '300px', maxWidth: '40%' }}>
       <StyledFormControl>
         <InputLabel>Start time</InputLabel>
         <Select
@@ -129,7 +129,7 @@ const TimePickerSection = ({
         </Select>
       </StyledFormControl>
 
-      <div className='flex justify-end'>
+      <div className='flex justify-end ml-3'>
         <button
           className='bg-[#35C0ED] cursor-pointer text-white size-9 rounded-md flex justify-center items-center'
           onClick={() => onAddSlot(day)}

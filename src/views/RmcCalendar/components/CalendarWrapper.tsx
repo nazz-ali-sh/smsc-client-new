@@ -13,6 +13,7 @@ import Calendar from './Calendar'
 import SidebarLeft from './SidebarLeft'
 import { gettingCalanderDates } from '@/services/final_result_and_archeive_apis/final_results_apis'
 import type { RootState } from '@/redux-store'
+import { formatDates } from '@/utils/dateFormater'
 
 const calendarsColor: CalendarColors = {
   Personal: 'primary',
@@ -88,6 +89,7 @@ const CalendarWrapper = () => {
   const [addEventSidebarOpen, setAddEventSidebarOpen] = useState<boolean>(false)
   const [eventsData, setEventsData] = useState<CalendarEvent[]>([])
 
+
   const dispatch = useDispatch()
   const mdAbove = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'))
   const handleLeftSidebarToggle = () => setLeftSidebarOpen(!leftSidebarOpen)
@@ -134,6 +136,8 @@ const CalendarWrapper = () => {
         rmcCalendarData?.data?.video_call_invites?.map(invite => {
           const date = invite.scheduled_date.split('T')[0]
 
+          console.log(invite)
+
           return {
             invite_Id: invite.id,
             pma_user_id: invite?.pma_user_id,
@@ -147,6 +151,7 @@ const CalendarWrapper = () => {
             zoom_link: invite?.zoom_meeting_link,
             start: `${date}T${invite?.slot?.start_time}`,
             end: `${date}T${invite?.slot?.end_time}`,
+            schedualDate: formatDates(invite?.scheduled_date),
             allDay: false,
 
             status: invite?.status,
@@ -171,8 +176,8 @@ const CalendarWrapper = () => {
             slot: invite?.slot?.slot_name,
             start: `${date}T${invite?.slot?.start_time}`,
             end: `${date}T${invite?.slot?.end_time}`,
+            schedualDate: formatDates(invite?.scheduled_date),
             allDay: false,
-
             status: invite?.status,
             calendartype: 'SiteVisit'
           }

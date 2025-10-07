@@ -4,16 +4,13 @@ import { createContext, forwardRef, useMemo, useState } from 'react'
 import type { ForwardRefRenderFunction, MenuHTMLAttributes, ReactElement } from 'react'
 
 import Link from 'next/link'
-
 import { usePathname } from 'next/navigation'
 
 import { useSelector } from 'react-redux'
-
 import { FloatingTree } from '@floating-ui/react'
 
 import { routesWithNavbarContent } from '@/constants'
 import CustomTooltip from '@/common/CustomTooltip'
-
 import type { MenuProps as VerticalMenuProps } from '../vertical-menu/Menu'
 import type {
   ChildrenType,
@@ -22,8 +19,8 @@ import type {
   RenderExpandedMenuItemIcon,
   RootStylesType
 } from '../../types'
-
 import { horizontalSubMenuToggleDuration } from '../../defaultConfigs'
+import HorizontalMenuPopOver from './HorizontalMenuPopOver'
 
 export type HorizontalMenuContextProps = {
   triggerPopout?: 'hover' | 'click'
@@ -71,33 +68,19 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
   } = props
 
   const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
-
   const hasTenderId = tender_id && tender_id !== null && tender_id !== undefined
 
-  const providerValue = useMemo(
-    () => ({
-      triggerPopout,
-      browserScroll,
-      menuItemStyles,
-      renderExpandIcon,
-      renderExpandedMenuItemIcon,
-      transitionDuration,
-      popoutMenuOffset,
-      textTruncate,
-      verticalMenuProps
-    }),
-    [
-      triggerPopout,
-      browserScroll,
-      menuItemStyles,
-      renderExpandIcon,
-      renderExpandedMenuItemIcon,
-      transitionDuration,
-      popoutMenuOffset,
-      textTruncate,
-      verticalMenuProps
-    ]
-  )
+  // --- Popover state ---
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
+  const open = Boolean(anchorEl)
+
+  const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null)
+  }
 
   const [menuData] = useState([
     {
@@ -127,8 +110,10 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
     {
       image: <i className='ri-file-list-2-line'></i>,
       menuItem: 'Invites',
-      href: '/rmc-calendar',
-      alwaysEnabled: false
+
+      // href: '/rmc-calendar',
+      alwaysEnabled: false,
+      isInvite: true
     },
     {
       image: <i className='ri-pages-line'></i>,
@@ -153,32 +138,79 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
   const pathname = usePathname()
   const isOnboardingRoute = routesWithNavbarContent?.some(route => pathname?.includes(route))
 
+  const providerValue = useMemo(
+    () => ({
+      triggerPopout,
+      browserScroll,
+      menuItemStyles,
+      renderExpandIcon,
+      renderExpandedMenuItemIcon,
+      transitionDuration,
+      popoutMenuOffset,
+      textTruncate,
+      verticalMenuProps
+    }),
+    [
+      triggerPopout,
+      browserScroll,
+      menuItemStyles,
+      renderExpandIcon,
+      renderExpandedMenuItemIcon,
+      transitionDuration,
+      popoutMenuOffset,
+      textTruncate,
+      verticalMenuProps
+    ]
+  )
+
   return (
     <HorizontalMenuContext.Provider value={providerValue}>
       <FloatingTree>
         <div
-          className={`flex items-center justify-center ${isOnboardingRoute ? 'gap-x-[13px]' : 'gap-x-[20px]'} min-w-[1300px] w-full`}
+          className={`flex items-center justify-center ${
+            isOnboardingRoute ? 'gap-x-[13px]' : 'gap-x-[20px]'
+          } min-w-[1300px] w-full`}
         >
           {menuData.map((items, index) => {
             const isDisabled = !items.alwaysEnabled && !hasTenderId
-            const isActive = pathname === items.href
 
+            const isActive =
+              pathname === items.href ||
+              (items.isInvite &&
+                ['/invites-site-visits', '/invites-video-calls', '/rmc-calendar'].some(p => pathname.startsWith(p)))
+
+            if (items.isInvite) {
+              return (
+                <div key={index} onMouseEnter={handlePopoverOpen} onMouseLeave={handlePopoverClose}>
+                  <div
+                    className={`flex items-center justify-center py-2 rounded-lg min-w-[140px] ${
+                      isActive ? 'bg-[#35C0ED] text-white' : ''
+                    } ${isDisabled ? 'cursor-default pointer-events-none' : 'cursor-pointer'}`}
+                  >
+                    <section className='flex gap-x-[8px] px-3'>
+                      <div className='size-[22px]' style={{ color: 'inherit' }}>
+                        {items.image}
+                      </div>
+                      <div className='text-[15px]'>{items.menuItem}</div>
+                    </section>
+                  </div>
+
+                  <HorizontalMenuPopOver open={open} anchorEl={anchorEl} handlePopoverClose={handlePopoverClose} />
+                </div>
+              )
+            }
+
+            // ✅ Normal menu items
             const menuItem = (
               <Link
                 key={index}
-                href={isDisabled ? '#' : items.href}
+                href={isDisabled ? '#' : (items.href ?? '#')}
                 onClick={e => {
-                  if (isDisabled) {
-                    e.preventDefault()
-                  }
+                  if (isDisabled) e.preventDefault()
                 }}
                 className={`flex items-center ${isActive ? 'bg-[#35C0ED] text-white' : ''} ${
                   isDisabled ? 'cursor-default pointer-events-none' : 'cursor-pointer'
                 } justify-center py-2 rounded-lg min-w-[140px]`}
-                style={{
-                  cursor: isDisabled ? 'default' : 'pointer',
-                  pointerEvents: isDisabled ? 'none' : 'auto'
-                }}
               >
                 <section className='flex gap-x-[8px] px-3'>
                   <div className='size-[22px]' style={{ color: 'inherit' }}>

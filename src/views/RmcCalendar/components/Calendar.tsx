@@ -9,9 +9,11 @@ import interactionPlugin from '@fullcalendar/interaction'
 import type { CalendarOptions } from '@fullcalendar/core'
 import { useSelector } from 'react-redux'
 
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { toast } from 'react-toastify'
+
+import { Box, DialogContent, DialogContentText} from '@mui/material'
 
 import type { CalendarColors, CalendarType } from '@/types/apps/calendarTypes'
 import VideosCallsModal from '@/common/VideosCallsModal'
@@ -22,6 +24,7 @@ import RejectModal from '@/common/RejectModal'
 import PendingSiteVisitModal from '@/common/PendingSiteVisitModal'
 import { reSchedualAccepted, rmcSideVisitAccept } from '@/services/site_visit_apis/site_visit_api'
 import JoinMeetingModal from '@/common/JoinMeetingModal'
+import CommonModal from '@/common/CommonModal'
 
 type CalenderProps = {
   calendarStore?: CalendarType
@@ -37,7 +40,6 @@ type CalenderProps = {
 const Calendar = (props: CalenderProps) => {
   const { calendarApi, setCalendarApi, calendarsColor, calenderEventData } = props
 
-  console.log(calenderEventData)
   const [onlineCallsModalOpen, setOnlineCallsModalOpen] = useState(false)
   const [pendingsModalOpen, setPendingsModalOpen] = useState(false)
   const [sitependingsModalOpen, setSitePendingsModalOpen] = useState(false)
@@ -45,7 +47,7 @@ const Calendar = (props: CalenderProps) => {
 
   const [siteVisitRejectedModal, setsiteVisitRejectedModal] = useState(false)
   const [selectedPillsData, setselectedPillsData] = useState<PillsData>()
-  const [callsAndSiteStatus, setCallsAndSiteStatus] = useState()
+  const [isOpen, setIsOpen] = useState(false)
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
   const [joinSiteVisitmetting, setJoinSiteVisitMetting] = useState(false)
 
@@ -55,11 +57,17 @@ const Calendar = (props: CalenderProps) => {
     status?: any
     zoom_link: string
     calendartype?: any
+  slot?:any
+  block_name?: any
+  region?: any
+  location?: any
   }
+
 
   const calendarRef = useRef<FullCalendar>(null)
 
   const rmctender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
+  const queryClient = useQueryClient()
 
   useEffect(() => {
     if (calendarApi === null) {
@@ -72,6 +80,10 @@ const Calendar = (props: CalenderProps) => {
   const handleReject = () => {
     setPendingsModalOpen(false)
     setConfirmOpen(true)
+  }
+
+  const handleModalClose = () => {
+    setIsOpen(false)
   }
 
   const handleReschedualVideoCall = () => {
@@ -92,11 +104,35 @@ const Calendar = (props: CalenderProps) => {
     setsiteVisitRejectedModal(true)
   }
 
+  const rescheduledCallDate = () => {
+    setOnlineCallsModalOpen(true)
+  }
+
+  const reschedualeSiteInvite = () => {
+    setSiteVisitsModalOpen(true)
+  }
+
+  const cancelSiteVisitCancel = () => {
+    setConfirmOpen(true)
+  }
+
+  const onVideoCallRejected = () => {
+    setsiteVisitRejectedModal(true)
+  }
+
+  const cancelVideoCall = () => {
+    setConfirmOpen(true)
+  }
+
   const rechedualRmcAgain = useMutation({
     mutationFn: ({ invite_id, tender_id }: { invite_id: number; tender_id: number }) =>
       rmcSideVisitAccept(invite_id, tender_id),
     onSuccess: (data: any) => {
       toast.success(data?.message || 'Invite sent successfully!')
+
+      queryClient.invalidateQueries({
+        queryKey: ['calendarDates']
+      })
     },
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || error?.message || 'Failed to send invite'
@@ -118,6 +154,9 @@ const Calendar = (props: CalenderProps) => {
       reSchedualAccepted(invite_id, tender_id),
     onSuccess: (data: any) => {
       toast.success(data?.message || 'Invite sent successfully!')
+      queryClient.invalidateQueries({
+        queryKey: ['calendarDates']
+      })
     },
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || error?.message || 'Failed to send invite'
@@ -167,12 +206,9 @@ const Calendar = (props: CalenderProps) => {
     eventClassNames({ event: calendarEvent }: any) {
       // @ts-ignore
       const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
-
       const classes = [`event-bg-${colorName}`]
 
       const status = calendarEvent._def.extendedProps?.status
-
-      setCallsAndSiteStatus(status)
 
       if (status === 'pending') {
         classes.push('bg-gray-300')
@@ -180,6 +216,10 @@ const Calendar = (props: CalenderProps) => {
         classes.push('bg-[#35c0ed]')
       } else if (status === 'rescheduled') {
         classes.push('bg-yellow-300')
+      } else if (status === 'cancelled') {
+        classes.push('bg-red-400')
+      } else if (status === 'rejected') {
+        classes.push('bg-red-400')
       }
 
       return classes
@@ -192,6 +232,9 @@ const Calendar = (props: CalenderProps) => {
         invite_Id: clickedEvent._def.extendedProps.invite_Id
       }
 
+      console.log(selectedEventData)
+
+      console.log(selectedEventData?.extendedProps)
       setselectedPillsData(selectedEventData?.extendedProps)
 
       if (
@@ -215,14 +258,19 @@ const Calendar = (props: CalenderProps) => {
         selectedEventData?.extendedProps?.calendartype === 'VideoCall' &&
         selectedEventData?.extendedProps?.status === 'accepted'
       ) {
-        {
-          setJoinSiteVisitMetting(true)
-        }
+        setJoinSiteVisitMetting(true)
+      } else if (
+        selectedEventData?.extendedProps?.calendartype === 'VideoCall' ||
+        (selectedEventData?.extendedProps?.calendartype === 'SiteVisit' &&
+          selectedEventData?.extendedProps?.status === 'cancelled')
+      ) {
+        setIsOpen(true)
       } else {
         setJoinSiteVisitMetting(true)
       }
     }
   }
+
 
   return (
     <>
@@ -236,6 +284,11 @@ const Calendar = (props: CalenderProps) => {
           .fc .fc-timegrid-event {
             min-height: 50px !important; /* make events inside look taller */
           }
+             .fc-event, 
+    .fc-daygrid-event, 
+    .fc-timegrid-event {
+      cursor: pointer !important; /* show pointer on hover */
+    }
         `}
       </style>
       <FullCalendar ref={calendarRef} {...calendarOptions} />
@@ -257,12 +310,12 @@ const Calendar = (props: CalenderProps) => {
         onClose={() => setsiteVisitRejectedModal(false)}
         onConfirm={function (): void {}}
         calanderSiteVisitReject={selectedPillsData}
-        types='siteVisitRejectCalander'
+        types={`${selectedPillsData?.calendartype == 'SiteVisit' ? 'siteVisitRejectCalander' : 'fromVideoCalander'} `}
       />
 
       <CancelVideoCallsAndSiteVisist
         open={confirmOpen}
-        title={`${callsAndSiteStatus == 'pending' ? 'Reschedule Request Cancel' : callsAndSiteStatus == 'rescheduled' ? 'Reschedule Request Cancel ' : ''}`}
+        title={`${selectedPillsData?.status == 'pending' ? 'Rescheduled Request Cancel' : selectedPillsData?.status == 'rescheduled' ? 'Rescheduled Request Cancel ' : 'Rescheduled Request Cancel'}`}
         description='You have rejected the reschedule request from [PMA Name]. The meeting will not be updated.Please provide a reason for the rejection in the box below. This explanation will be sent to the managing agent.'
         onClose={() => setConfirmOpen(false)}
         calanderCancelData={selectedPillsData}
@@ -277,18 +330,22 @@ const Calendar = (props: CalenderProps) => {
         calanderReschedualData={selectedPillsData}
       />
 
+    
       <PendingModal
-        title={`Pending Meeting`}
+        title={` ${selectedPillsData?.status == 'rescheduled' ? ' Rescheduled Meeting' : selectedPillsData?.status == 'pending' ? 'Pending Meeting' : ''} `}
         open={pendingsModalOpen}
         onClose={() => setPendingsModalOpen(false)}
         onReject={handleReject}
         onReschedule={handleReschedualVideoCall}
         onConfirmVideCall={onConfirmVideCall}
+        onVideoCallRejected={onVideoCallRejected}
+        siteVisitData={selectedPillsData}
         types={`${selectedPillsData?.status == 'rescheduled' ? ' rescheduled ' : ''}`}
       />
 
       <PendingSiteVisitModal
-        title={`Pending Meeting `}
+        title={` ${selectedPillsData?.status == 'rescheduled' ? ' Rescheduled Meeting' : selectedPillsData?.status == 'pending' ? 'Pending Meeting' : ''} `}
+        siteVisitData={selectedPillsData}
         open={sitependingsModalOpen}
         onClose={() => setSitePendingsModalOpen(false)}
         onCanceledSiteVisit={onCanceledSiteVisit}
@@ -300,13 +357,49 @@ const Calendar = (props: CalenderProps) => {
 
       <JoinMeetingModal
         open={joinSiteVisitmetting}
-        title={` ${selectedPillsData?.calendartype == 'SiteVisit' ? ' Sitevisit Details' : selectedPillsData?.calendartype == 'VideoCall' ? 'Join Metting' : ''} `}
+        title={` ${selectedPillsData?.calendartype == 'SiteVisit' ? ' Site Visit Details' : selectedPillsData?.calendartype == 'VideoCall' ? 'Join Metting' : ''} `}
         onClose={() => setJoinSiteVisitMetting(false)}
         siteVisitData={selectedPillsData}
         siteVisitJoinCall={siteVisitJoinCall}
+        rescheduledCallDate={rescheduledCallDate}
+        reschedualeSiteInvite={reschedualeSiteInvite}
+        cancelSiteVisitCancel={cancelSiteVisitCancel}
+        cancelVideoCall={cancelVideoCall}
       />
+
+      <CommonModal
+        isOpen={isOpen}
+        handleClose={handleModalClose}
+        header={` Cancel And Rejected Data `}
+        maxWidth='sm'
+        fullWidth
+        headerSx={{ color: '#1F4E8D', fontSize: '26px', fontWeight: 600 }}
+        isBorder
+      >
+        <Box sx={{ py: 2 }}>
+          <DialogContent>
+            <DialogContentText>
+              <span className='font-bold'>Meeting Types :</span> {selectedPillsData?.calendartype}
+            </DialogContentText>
+            <DialogContentText sx={{ marginTop: '5px' }}>
+              <strong className='font-bold '>Date & Time: </strong> {selectedPillsData?.slot}
+            </DialogContentText>
+            <DialogContentText sx={{ marginTop: '5px' }}>
+              <span className='font-bold'>Block Name: </span> {selectedPillsData?.block_name || 'no data '}{' '}
+            </DialogContentText>
+            <DialogContentText sx={{ marginTop: '5px' }}>
+              <span className='font-bold'>Region: </span> {selectedPillsData?.region || 'No data'}{' '}
+            </DialogContentText>
+            <DialogContentText sx={{ marginTop: '5px' }}>
+              {selectedPillsData?.location && <span className='font-bold'>Location: </span>}{' '}
+              {selectedPillsData?.location && selectedPillsData?.location}{' '}
+            </DialogContentText>
+          </DialogContent>
+        </Box>
+      </CommonModal>
     </>
   )
 }
 
 export default Calendar
+

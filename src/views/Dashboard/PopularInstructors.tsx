@@ -95,6 +95,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
   const shortlistedCurrentStage = stages?.shortlisted?.is_completed
   const sinceLastshortlisted = dashboardResponce?.data?.days_since_last_shorlisted
 
+
   const shortlistedCompletedAtDate = stages?.shortlisted?.completed_at
   const daysSinceShortlist = getDaysPassed(shortlistedCompletedAtDate)
 

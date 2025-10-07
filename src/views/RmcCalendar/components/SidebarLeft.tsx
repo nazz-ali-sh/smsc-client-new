@@ -16,6 +16,7 @@ import SiteVisitsModal from '@/common/SiteVisitsModal'
 import VideosCallsModal from '@/common/VideosCallsModal'
 import { setCalendarApiPayload, setCalendarStatus } from '@/redux-store/slices/rmcCalendar'
 import type { SidebarLeftProps } from '@/types/apps/calendarTypes'
+import CustomButton from '@/common/CustomButton'
 
 const SidebarLeft = (props: SidebarLeftProps) => {
   const { mdAbove, leftSidebarOpen, calendarApi, handleLeftSidebarToggle } = props
@@ -94,35 +95,15 @@ const SidebarLeft = (props: SidebarLeftProps) => {
         }}
       >
         <div className='is-full p-5'>
-          <Button
-            fullWidth
-            sx={{
-              color: 'white',
-              backgroundColor: 'customColors.ligthBlue',
-              '&:hover': {
-                backgroundColor: 'customColors.ligthBlue'
-              }
-            }}
-            onClick={() => setOnlineCallsModalOpen(true)}
-          >
+          <CustomButton fullWidth onClick={() => setOnlineCallsModalOpen(true)}>
             Schedule Video Call
-          </Button>
+          </CustomButton>
         </div>
 
         <div className='is-full p-5'>
-          <Button
-            fullWidth
-            sx={{
-              color: 'white',
-              backgroundColor: 'customColors.ligthBlue',
-              '&:hover': {
-                backgroundColor: 'customColors.ligthBlue'
-              }
-            }}
-            onClick={() => setSiteVisitsModalOpen(true)}
-          >
+          <CustomButton fullWidth onClick={() => setSiteVisitsModalOpen(true)}>
             Schedule Site Visit
-          </Button>
+          </CustomButton>
         </div>
 
         <Divider className='is-full' />

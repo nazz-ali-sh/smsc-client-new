@@ -58,17 +58,18 @@ const DayRow = ({
             flexDirection: 'row',
             flexWrap: 'wrap',
             gap: '8px',
-            flex: 1,
-            minWidth: 0
+            flex: '2 1 0',
+            minWidth: '400px',
+            maxWidth: '50%'
           }}
         >
           {slots.map(slot => (
             <Box
               key={slot.id}
               sx={{
-                flex: '1 1 1',
                 display: 'flex',
-                justifyContent: 'center'
+                justifyContent: 'flex-start',
+                marginBottom: '8px'
               }}
             >
               <TimeSlotChip

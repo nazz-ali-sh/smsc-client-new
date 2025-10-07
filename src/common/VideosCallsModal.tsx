@@ -104,12 +104,13 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
   const [allPmaids, setAllPmaIds] = useState<[]>([])
   const [slotError, setSlotError] = useState('')
   const [SuccessOpen, setSuccessOpen] = useState(false)
+  const [schedualCalanderDate, setSchedualCalanderDate] = useState('')
+  console.log(schedualCalanderDate)
 
   const [userSelectedSlots, setUserSelectedSlots] = useState<{ selectedIds: string; slotName: string | null }>({
     selectedIds: '',
     slotName: ''
   })
-
   const { invalidateCache } = useDashboardData()
 
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)
@@ -178,7 +179,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     }
   }, [isError, error])
 
-  //  simple invbite api
   const videoCallInviteMutation = useMutation({
     mutationFn: ({
       value,
@@ -203,6 +203,10 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       queryClient.invalidateQueries({
         queryKey: ['shortlistData', tender_id]
       })
+      queryClient.invalidateQueries({
+        queryKey: ['calendarDates']
+      })
+
       queryClient.invalidateQueries({
         queryKey: ['dashboardDatas']
       })
@@ -334,11 +338,12 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       message: string
     }) => rmcReSchedualAgain(invite_id, tender_id, value, day_id, slot_ids, message),
     onSuccess: (data: any) => {
-      debugger
       toast.success(data?.message || 'Invite sent successfully!')
       reset()
       onClose
-
+      queryClient.invalidateQueries({
+        queryKey: ['calendarDates']
+      })
       setSuccessOpen(true)
       setSlotError('')
     },
@@ -350,6 +355,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       setSlotError('')
     }
   })
+
 
   const handleReschedualaModal = async (formData: any) => {
     if (!formData.availableSlots) {
@@ -373,8 +379,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     }
   }
 
-  //  video call reschedual
-
   const normalizedOptions = Array.from(new Map(normalizedOptionsRaw.map(item => [String(item.id), item])).values())
 
   useEffect(() => {
@@ -393,6 +397,24 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
   const handleSlots = () => {
     router.push('/set-availability')
   }
+
+  useEffect(() => {
+    if (calanderReschedualData?.schedualDate) {
+      const dateString = calanderReschedualData.schedualDate
+      let formattedDate = ''
+
+      if (dateString.includes('/')) {
+        const [day, month, year] = dateString.split('/')
+
+        formattedDate = `${year}-${month}-${day}`
+      } else {
+        formattedDate = new Date(dateString).toISOString().split('T')[0]
+      }
+
+      setSchedualCalanderDate(formattedDate)
+      setValue('selectedDate', formattedDate)
+    }
+  }, [calanderReschedualData, setValue])
 
   return (
     <Dialog
@@ -419,7 +441,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                 fontSize: '1.75rem'
               }}
             >
-              {types == 'videoCallReschedual' ? 'Reschedule Video call Invites' : ' Video Call Invites'}
+              {types == 'reschedual' ? 'Rescheduled Video Call Invites ' : ' Video Call Invites'}
             </Typography>
             <Typography variant='body2' sx={{ paddingY: '12px' }}>
               Use this section to invite PMAs to meeting
@@ -711,7 +733,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       </DialogContent>
 
       <DialogActions sx={{ px: 3, pb: 8, mt: 5 }}>
-        {types == 'videoCallReschedual' ? (
+        {types == 'videoCallReschedual' || types == 'reschedual' ? (
           <>
             <CustomButton
               variant='contained'

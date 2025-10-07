@@ -2,9 +2,19 @@
 
 import React, { useState } from 'react'
 
-import { Dialog, DialogTitle, DialogContent, DialogContentText, TextField, Box } from '@mui/material'
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  TextField,
+  Box,
+  Typography,
+  IconButton,
+  Divider
+} from '@mui/material'
 import { toast } from 'react-toastify'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSelector } from 'react-redux'
 
 import {
@@ -45,6 +55,7 @@ const DeleteModal = ({
   const [error, setError] = useState('')
 
   const rmctender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
+  const queryClient = useQueryClient()
 
   const rechedualRmcAgain = useMutation({
     mutationFn: ({
@@ -58,6 +69,9 @@ const DeleteModal = ({
     }) => reSchedualRejectInvite(VideoCallInviteId, rmctender_id, message),
     onSuccess: (data: any) => {
       toast.success(data?.message || 'Invite rejected successfully!')
+        queryClient.invalidateQueries({
+        queryKey: ['calendarDates']
+      })
       if (onConfirm) onConfirm()
       onClose()
       setTextValue('')
@@ -79,6 +93,9 @@ const DeleteModal = ({
       rmcSiteVisitRejected(invite_Id, rmctender_id, message),
     onSuccess: (data: any) => {
       toast.success(data?.message || 'Invite rejected successfully!')
+        queryClient.invalidateQueries({
+        queryKey: ['calendarDates']
+      })
       if (onConfirm) onConfirm()
       onClose()
       setTextValue('')
@@ -107,6 +124,9 @@ const DeleteModal = ({
     }) => rmcSiteVisitCancel(SideVisitsSchedualInviteId, rmctender_id, message),
     onSuccess: (data: any) => {
       toast.success(data?.message || 'Invite rejected successfully!')
+        queryClient.invalidateQueries({
+        queryKey: ['calendarDates']
+      })
       if (onConfirm) onConfirm()
       onClose()
       setTextValue('')
@@ -124,42 +144,66 @@ const DeleteModal = ({
   })
 
   const handleConfirm = () => {
-    if (!textValue.trim()) {
+    const trimmedValue = textValue.trim()
+
+    if (!trimmedValue) {
       setError('Reason is required')
 
       return
     }
 
-    if (types === 'SiteVisits' || types === 'reject' || types == 'siteVisitRejectCalander') {
+    debugger
+
+    if (types === 'SiteVisits' || types === 'reject' || types === 'siteVisitRejectCalander') {
       const invite_Id = SideVisitsSchedualInviteId || calanderSiteVisitReject?.invite_Id
 
       sideVisitRejected.mutate({
         invite_Id,
         rmctender_id,
-        message: textValue
+        message: trimmedValue
       })
     } else if (types === 'cancel') {
       sideVisitCancel.mutate({
         SideVisitsSchedualInviteId,
         rmctender_id,
-        message: textValue
+        message: trimmedValue
       })
-    } else {
+    } else if (types === 'fromVideoCalander') {
       rechedualRmcAgain.mutate({
         VideoCallInviteId,
         rmctender_id,
-        message: textValue
+        message: trimmedValue
       })
     }
   }
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
-      <DialogTitle>{title}</DialogTitle>
+      <DialogTitle sx={{ pb: 1, px: 3, pt: 3 }}>
+        <Box display='flex' justifyContent='space-between' alignItems='flex-start' sx={{ paddingTop: '16px' }}>
+          <Typography
+            variant='h4'
+            sx={{
+              color: '#1F4E8D',
+              fontSize: '1.7rem',
+              paddingLeft: '8px'
+            }}
+          >
+            {title}
+          </Typography>
+          <IconButton onClick={onClose} sx={{ color: 'customColors.textGray' }}>
+            <i className='ri-close-line' />
+          </IconButton>
+        </Box>
+        <Box sx={{ paddingY: '12px' }}>
+          <Divider />
+        </Box>
+      </DialogTitle>
       <DialogContent>
         <DialogContentText sx={{ mb: 2 }}>{description}</DialogContentText>
 
         <TextField
+          sx={{ marginTop: '5px' }}
           multiline
           rows={4}
           fullWidth

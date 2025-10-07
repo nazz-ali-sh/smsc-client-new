@@ -59,3 +59,17 @@ export function getDaysPassed(dateString?: string): number {
     minutes: minutes.toString()
   }
 }
+
+
+  export const handleCalendarDate = (dateString: string, setSelectedFullDate: any, setSelectedYearMonth : any) => {
+    if (!dateString) return
+
+    const date = new Date(dateString)
+
+    const fullDate = date.toISOString().split('T')[0]
+
+    const yearMonth = fullDate.slice(0, 7)
+
+    setSelectedFullDate(fullDate)
+    setSelectedYearMonth(yearMonth)
+  }

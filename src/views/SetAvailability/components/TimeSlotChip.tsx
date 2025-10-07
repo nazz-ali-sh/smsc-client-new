@@ -13,13 +13,15 @@ const TimeSlotChip = ({ startTime, endTime, onDelete, formatTimeForDisplay }: Ti
       label={`${formatTimeForDisplay(startTime)} to ${formatTimeForDisplay(endTime)}`}
       sx={{
         backgroundColor: '#DDF6FE',
-        width: 180,
+        minWidth: 'fit-content',
+        maxWidth: 'none',
         color: '#35C0ED',
         borderRadius: '16px',
-        padding: '8px 8px',
+        padding: '8px 12px',
         '& .MuiChip-label': {
           fontSize: '14px',
-          fontWeight: 500
+          fontWeight: 500,
+          whiteSpace: 'nowrap'
         }
       }}
       deleteIcon={
