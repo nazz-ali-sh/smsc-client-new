@@ -3,8 +3,7 @@
 import React from 'react'
 
 import { useRouter } from 'next/navigation'
-
-import { Box, Typography, Paper } from '@mui/material'
+import Image from 'next/image'
 
 import CustomButton from '@/common/CustomButton'
 import { useMyAccount } from '@/hooks/useMyAccount'
@@ -20,255 +19,92 @@ const MyAccountView: React.FC = () => {
   const user = accountData?.user
   const notificationPreferences = accountData?.notification_preferences
 
+  const notificationOptions = [
+    {
+      label: 'Get notification through Email',
+      key: 'notify_email' as const
+    },
+    {
+      label: 'Get notification through Message',
+      key: 'notify_message' as const
+    },
+    {
+      label: 'Get notification in Portal',
+      key: 'notify_portal' as const
+    }
+  ]
+
+  const detailFields = [
+    { label: 'Contact Name', value: user?.name || 'N/A' },
+    { label: 'Phone Number', value: user?.mobile_number || 'N/A' },
+    { label: 'Email', value: user?.email || 'N/A' }
+  ]
+
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        padding: '24px',
-        backgroundColor: '#F8FAFC'
-      }}
-    >
-      <Paper
-        sx={{
-          maxWidth: '100%',
-          width: '100%',
-          borderRadius: '12px',
-          boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.05)',
-          padding: '32px'
-        }}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
-          <Box
-            sx={{
-              width: '48px',
-              height: '48px',
-              backgroundColor: '#1F2937',
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginRight: '16px',
-              overflow: 'hidden'
-            }}
-          >
+    <div className='min-h-[60vh] flex justify-center bg-[#F8FAFC] mt-4'>
+      <div className='w-full max-w-full bg-white rounded-[12px] shadow-[0px_4px_10px_rgba(0,0,0,0.05)] p-8'>
+        <div className='flex items-center mb-6'>
+          <div className='w-20 h-20 bg-[#1F2937] rounded-lg flex items-center justify-center mr-4 overflow-hidden'>
             {user?.logo_url ? (
-              <img
+              <Image
                 src={user.logo_url}
                 alt='User Logo'
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover'
-                }}
+                width={60}
+                height={60}
+                className='w-full h-full object-cover'
               />
             ) : (
-              <Typography
-                sx={{
-                  color: '#FFFFFF',
-                  fontSize: '20px',
-                  fontWeight: 'bold'
-                }}
-              >
-                S
-              </Typography>
+              <p className='text-white text-[20px] font-bold'>{user?.name?.charAt(0)?.toUpperCase() || 'S'}</p>
             )}
-          </Box>
-          <Typography
-            variant='h4'
-            sx={{
-              color: '#1F2937',
-              fontWeight: 700,
-              fontSize: '28px'
-            }}
-          >
-            {user?.name || 'RMC Name'}
-          </Typography>
-        </Box>
+          </div>
+          <h1 className='text-[#1F2937] font-bold text-[28px]'>{user?.name || 'RMC Name'}</h1>
+        </div>
 
-        <Box
-          sx={{
-            height: '1px',
-            backgroundColor: '#E5E7EB',
-            marginBottom: '24px'
-          }}
-        />
+        <div className='h-px bg-[#E5E7EB] mb-6' />
 
-        <Box sx={{ marginBottom: '32px' }}>
-          <Typography
-            variant='h6'
-            sx={{
-              color: '#1F2937',
-              fontWeight: 600,
-              fontSize: '18px',
-              marginBottom: '16px'
-            }}
-          >
-            Details
-          </Typography>
+        <div className='mb-8'>
+          <h2 className='text-[#262B43E5] font-medium text-[18px] mb-4'>Details</h2>
+          <div className='flex flex-col gap-3 mt-3'>
+            {detailFields.map(({ label, value }) => (
+              <div key={label} className='flex justify-between'>
+                <p className='text-[#777981] font-normal text-[14px]'>{label}</p>
+                <p className='text-[#777981] font-normal text-[14px]'>{value}</p>
+              </div>
+            ))}
+          </div>
+        </div>
 
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Typography variant='body1' sx={{ color: '#6B7280' }}>
-                Contact Name
-              </Typography>
-              <Typography variant='body1' sx={{ color: '#1F2937', fontWeight: 500 }}>
-                {user?.name || 'N/A'}
-              </Typography>
-            </Box>
+        <div className='mb-8'>
+          <h2 className='text-[#262B43E5] font-medium text-[18px] mb-4 mt-8'>Notification Preferences</h2>
+          <div className='flex flex-col gap-4'>
+            {notificationOptions.map(({ label, key }) => {
+              const isEnabled = notificationPreferences?.[key]
 
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Typography variant='body1' sx={{ color: '#6B7280' }}>
-                Phone Number
-              </Typography>
-              <Typography variant='body1' sx={{ color: '#1F2937', fontWeight: 500 }}>
-                {user?.mobile_number || 'N/A'}
-              </Typography>
-            </Box>
+              return (
+                <div key={key} className='flex justify-between items-center'>
+                  <p className='text-[#777981] font-normal text-[14px]'>{label}</p>
+                  <div className='flex items-center gap-1'>
+                    <span className={`text-[16px] font-normal ${!isEnabled ? 'text-[#35C0ED]' : 'text-[#9CA3AF]'}`}>
+                      No
+                    </span>
+                    <span className='text-[#9CA3AF]'>/</span>
+                    <span className={`text-[16px] font-normal ${isEnabled ? 'text-[#35C0ED]' : 'text-[#9CA3AF]'}`}>
+                      Yes
+                    </span>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
 
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Typography variant='body1' sx={{ color: '#6B7280' }}>
-                Email
-              </Typography>
-              <Typography variant='body1' sx={{ color: '#1F2937', fontWeight: 500 }}>
-                {user?.email || 'N/A'}
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
-
-        <Box sx={{ marginBottom: '32px' }}>
-          <Typography
-            variant='h6'
-            sx={{
-              color: '#1F2937',
-              fontWeight: 600,
-              fontSize: '18px',
-              marginBottom: '16px'
-            }}
-          >
-            Notification Preferences
-          </Typography>
-
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography variant='body1' sx={{ color: '#374151' }}>
-                Get notification through Email
-              </Typography>
-              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                <Typography
-                  variant='body2'
-                  sx={{
-                    color: !notificationPreferences?.notify_email ? '#3B82F6' : '#9CA3AF',
-                    textDecoration: !notificationPreferences?.notify_email ? 'underline' : 'none',
-                    fontWeight: 500
-                  }}
-                >
-                  No
-                </Typography>
-                <Typography variant='body2' sx={{ color: '#9CA3AF' }}>
-                  /
-                </Typography>
-                <Typography
-                  variant='body2'
-                  sx={{
-                    color: notificationPreferences?.notify_email ? '#3B82F6' : '#9CA3AF',
-                    textDecoration: notificationPreferences?.notify_email ? 'underline' : 'none',
-                    fontWeight: 500
-                  }}
-                >
-                  Yes
-                </Typography>
-              </Box>
-            </Box>
-
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography variant='body1' sx={{ color: '#374151' }}>
-                Get notification through Message
-              </Typography>
-              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                <Typography
-                  variant='body2'
-                  sx={{
-                    color: !notificationPreferences?.notify_message ? '#3B82F6' : '#9CA3AF',
-                    textDecoration: !notificationPreferences?.notify_message ? 'underline' : 'none',
-                    fontWeight: 500
-                  }}
-                >
-                  No
-                </Typography>
-                <Typography variant='body2' sx={{ color: '#9CA3AF' }}>
-                  /
-                </Typography>
-                <Typography
-                  variant='body2'
-                  sx={{
-                    color: notificationPreferences?.notify_message ? '#3B82F6' : '#9CA3AF',
-                    textDecoration: notificationPreferences?.notify_message ? 'underline' : 'none',
-                    fontWeight: 500
-                  }}
-                >
-                  Yes
-                </Typography>
-              </Box>
-            </Box>
-
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography variant='body1' sx={{ color: '#374151' }}>
-                Get notification in Portal
-              </Typography>
-              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                <Typography
-                  variant='body2'
-                  sx={{
-                    color: !notificationPreferences?.notify_portal ? '#3B82F6' : '#9CA3AF',
-                    textDecoration: !notificationPreferences?.notify_portal ? 'underline' : 'none',
-                    fontWeight: 500
-                  }}
-                >
-                  No
-                </Typography>
-                <Typography variant='body2' sx={{ color: '#9CA3AF' }}>
-                  /
-                </Typography>
-                <Typography
-                  variant='body2'
-                  sx={{
-                    color: notificationPreferences?.notify_portal ? '#3B82F6' : '#9CA3AF',
-                    textDecoration: notificationPreferences?.notify_portal ? 'underline' : 'none',
-                    fontWeight: 500
-                  }}
-                >
-                  Yes
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
-        </Box>
-
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            marginTop: '32px'
-          }}
-        >
-          <CustomButton
-            variant='contained'
-            onClick={handleEditProfile}
-            sx={{
-              backgroundColor: '#3B82F6',
-              '&:hover': {
-                backgroundColor: '#2563EB'
-              }
-            }}
-          >
+        <div className='flex justify-end mt-8'>
+          <CustomButton variant='contained' onClick={handleEditProfile}>
             Edit Profile
           </CustomButton>
-        </Box>
-      </Paper>
-    </Box>
+        </div>
+      </div>
+    </div>
   )
 }
 

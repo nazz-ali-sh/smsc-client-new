@@ -148,7 +148,7 @@ const MyAccount: React.FC = () => {
   }
 
   return (
-    <div className='min-h-screen flex justify-center bg-white'>
+    <div className='min-h-screen flex justify-center bg-white mt-3'>
       <div className='w-full rounded-xl shadow-md p-8 '>
         <div className='mb-8'>
           <h1 className='text-2xl font-semibold text-gray-800 mb-2'>Edit Profile</h1>
@@ -172,22 +172,19 @@ const MyAccount: React.FC = () => {
               { label: 'Get notification through Message', field: 'notify_message', value: notifyMessage },
               { label: 'Get notification in Portal', field: 'notify_portal', value: notifyPortal }
             ].map(({ label, field, value }) => (
-              <div
-                key={field}
-                className='flex justify-between items-center py-2 border-b border-gray-100 last:border-0'
-              >
-                <p className='text-gray-700 text-[15px]'>{label}</p>
+              <div key={field} className='flex justify-between items-center py-3 '>
+                <p className='text-[#777981] font-medium text-[15px]'>{label}</p>
                 <div className='flex gap-1 items-center'>
                   <span
                     onClick={() => setValue(field as any, false)}
-                    className={`text-sm cursor-pointer ${!value ? 'text-blue-500 underline' : 'text-gray-400'}`}
+                    className={`text-sm cursor-pointer ${!value ? 'text-[#35C0ED]' : 'text-gray-400'}`}
                   >
                     No
                   </span>
                   <span className='text-gray-400'>/</span>
                   <span
                     onClick={() => setValue(field as any, true)}
-                    className={`text-sm cursor-pointer ${value ? 'text-blue-500 underline' : 'text-gray-400'}`}
+                    className={`text-sm cursor-pointer ${value ? 'text-[#35C0ED]' : 'text-gray-400'}`}
                   >
                     Yes
                   </span>
