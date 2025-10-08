@@ -19,7 +19,21 @@ const RmcOnboardingFooter = () => {
         color: '#333',
         fontSize: '12px',
         gap: 16,
-        marginTop: 2
+        marginTop: 2,
+        width: '100%',
+        position: 'relative',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '99vw',
+          height: '100%',
+          backgroundColor: '#fff',
+          zIndex: -1,
+          maxWidth: '100vw',
+        }
       }}
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', maxWidth: '300px' }}>

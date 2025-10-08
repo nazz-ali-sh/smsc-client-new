@@ -138,11 +138,24 @@ const NavbarContent = () => {
     <div
       className={classnames(
         horizontalLayoutClasses.navbarContent,
-        'flex items-center justify-between gap-4 is-full',
+        'flex items-center justify-between gap-4',
+        'is-full',
         !isOnboardingRoute && 'mt-2'
       )}
+      style={
+        isOnboardingRoute
+          ? {
+              width: '100%',
+              maxWidth: 'none',
+              paddingLeft: '0',
+              paddingRight: '0',
+              marginLeft: '0',
+              marginRight: '0'
+            }
+          : {}
+      }
     >
-      <div className='flex items-center gap-4'>
+      <div className='flex items-center gap-4' style={isOnboardingRoute ? { marginLeft: '200px' } : {}}>
         <NavToggle />
         {!isBreakpointReached && (
           <Link href={getLocalizedUrl('/', locale as Locale)}>
@@ -151,7 +164,7 @@ const NavbarContent = () => {
         )}
       </div>
 
-      <div className='flex items-center'>
+      <div className='flex items-center' style={isOnboardingRoute ? { marginRight: '200px' } : {}}>
         {!shouldHideElements && (
           <div className='w-[200px]'>
             <Grid item xs={12} sm={6}>

@@ -24,7 +24,6 @@ const NavbarContent = () => {
           <UserDropdown />
         </div>
       </div>
-      <h1>Hello!</h1>
     </>
   )
 }
