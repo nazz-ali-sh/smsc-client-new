@@ -1,20 +1,16 @@
-// MUI Imports
 import Button from '@mui/material/Button'
 
-// Type Imports
 import type { ChildrenType } from '@core/types'
 import type { Locale } from '@configs/i18n'
 
-// Layout Imports
 import LayoutWrapper from '@layouts/LayoutWrapper'
 
 import HorizontalLayout from '@layouts/HorizontalLayout'
 
-// Component Imports
 import Providers from '@components/Providers'
 import ScrollToTop from '@core/components/scroll-to-top'
+import RetenderNotificationWrapper from '@/components/layout/horizontal/RetenderNotificationWrapper'
 
-// Util Imports
 import { getSystemMode } from '@core/utils/serverHelpers'
 import Header from '@/components/layout/horizontal/Header'
 import HorizontalFooter from '@components/layout/horizontal/Footer'
@@ -22,7 +18,6 @@ import HorizontalFooter from '@components/layout/horizontal/Footer'
 import { getDictionary } from '@/utils/getDictionary'
 
 const Layout = async ({ children, params }: ChildrenType & { params: { lang: Locale } }) => {
-  // Vars
   const direction = 'ltr'
   const systemMode = getSystemMode()
   const dictionary = await getDictionary(params.lang)
@@ -33,6 +28,7 @@ const Layout = async ({ children, params }: ChildrenType & { params: { lang: Loc
         systemMode={systemMode}
         horizontalLayout={
           <HorizontalLayout header={<Header dictionary={dictionary} />} footer={<HorizontalFooter />}>
+            <RetenderNotificationWrapper />
             {children}
           </HorizontalLayout>
         }

@@ -13,6 +13,7 @@ import { useDispatch } from 'react-redux'
 
 import CustomButton from '@/common/CustomButton'
 import FormInput from '@/components/form-components/FormInput'
+import ConfirmationRegistration from '@/views/PmaOnboardingForm/components/ConfirmationRegistration'
 import { directorOfRMCSchema } from '@/schemas/validation-schemas'
 import {
   submitRmcOnboardingStep1,
@@ -25,6 +26,8 @@ export default function OnboardingForm() {
   const router = useRouter()
   const dispatch = useDispatch()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showConfirmation, setShowConfirmation] = useState(false)
+  const [userData, setUserData] = useState<{ firstName: string; lastName: string; email: string } | null>(null)
 
   const { control, handleSubmit } = useForm<DirectorOfRMCFormData>({
     resolver: valibotResolver(directorOfRMCSchema),
@@ -56,7 +59,7 @@ export default function OnboardingForm() {
 
         dispatch(setRmcData(rmcData))
 
-        router.replace('/rmc-onboarding-verification')
+        setShowConfirmation(true)
       }
     },
     onError: (error: any) => {
@@ -71,6 +74,12 @@ export default function OnboardingForm() {
     if (isSubmitting || mutation.isPending) return
 
     setIsSubmitting(true)
+
+    setUserData({
+      firstName: data.fullName,
+      lastName: data.lastName,
+      email: data.email
+    })
 
     const payload: RmcOnboardingStep1Payload = {
       name: `${data?.fullName} ${data?.lastName}`.trim(),
@@ -91,72 +100,85 @@ export default function OnboardingForm() {
     router.push('/rmc-onboarding')
   }
 
+  const handleConfirmationComplete = () => {
+    router.replace('/rmc-onboarding-verification')
+  }
+
   return (
     <>
       <h1 className='text-[48px] text-center font-bold text-[#262B43E5] mt-8 '>RMC Onboarding</h1>
       <div className='flex items-center justify-center p-4 bg-white mt-8 mb-20'>
-        <div className='p-4 rounded-lg w-full '>
-          <div>
-            <Box component='form'>
-              <Typography
-                variant='h6'
-                sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1', mb: 10 }}
-              >
-                Director Of RMC
-              </Typography>
+        {showConfirmation ? (
+          <ConfirmationRegistration
+            onComplete={handleConfirmationComplete}
+            firstName={userData?.firstName}
+            lastName={userData?.lastName}
+            email={userData?.email}
+          />
+        ) : (
+          <div className='p-4 rounded-lg w-full '>
+            <div>
+              <Box component='form'>
+                <Typography
+                  variant='h6'
+                  sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1', mb: 10 }}
+                >
+                  Director Of RMC
+                </Typography>
 
-              <Grid container spacing={6}>
-                {rmcDirectorFormInputs?.map(field => {
-                  const getInputProps = () => {
-                    if (field.name === 'fullName' || field.name === 'lastName') {
-                      return {
-                        maxLength: 15,
-                        inputMode: 'text' as const,
-                        onInput: (e: any) => {
-                          e.target.value = e.target.value?.replace(/[^a-zA-Z\s'-]/g, '')
+                <Grid container spacing={6}>
+                  {rmcDirectorFormInputs?.map(field => {
+                    const getInputProps = () => {
+                      if (field.name === 'fullName' || field.name === 'lastName') {
+                        return {
+                          maxLength: 15,
+                          inputMode: 'text' as const,
+                          onInput: (e: any) => {
+                            e.target.value = e.target.value?.replace(/[^a-zA-Z\s'-]/g, '')
+                          }
                         }
                       }
+
+                      return {}
                     }
 
-                    return {}
-                  }
+                    return (
+                      <Grid item xs={12} md={4} key={field.name}>
+                        <FormInput
+                          name={field?.name as keyof DirectorOfRMCFormData}
+                          control={control}
+                          label={field?.label}
+                          type={field?.type}
+                          disabled={mutation.isPending}
+                          showPasswordToggle={field.showPasswordToggle}
+                          inputProps={getInputProps()}
+                        />
+                      </Grid>
+                    )
+                  })}
+                </Grid>
+              </Box>
 
-                  return (
-                    <Grid item xs={12} md={4} key={field.name}>
-                      <FormInput
-                        name={field?.name as keyof DirectorOfRMCFormData}
-                        control={control}
-                        label={field?.label}
-                        type={field?.type}
-                        disabled={mutation.isPending}
-                        showPasswordToggle={field.showPasswordToggle}
-                        inputProps={getInputProps()}
-                      />
-                    </Grid>
-                  )
-                })}
-              </Grid>
-            </Box>
-
-            <div className='flex justify-between gap-2 items-center mt-40'>
-              <CustomButton
-                onClick={handleBackStep}
-                startIcon={<i className='ri-arrow-left-line'></i>}
-                variant='outlined'
-              >
-                Back
-              </CustomButton>
-              <CustomButton
-                endIcon={<i className='ri-arrow-right-line'></i>}
-                onClick={handleNext}
-                isLoading={isSubmitting || mutation.isPending}
-                disabled={isSubmitting || mutation.isPending}
-              >
-                {isSubmitting || mutation.isPending ? 'Submitting...' : 'Next'}
-              </CustomButton>
+              <div className='flex justify-between gap-2 items-center mt-40'>
+                <CustomButton
+                  onClick={handleBackStep}
+                  startIcon={<i className='ri-arrow-left-line'></i>}
+                  variant='outlined'
+                >
+                  Back
+                </CustomButton>
+                <CustomButton
+                  endIcon={<i className='ri-arrow-right-line'></i>}
+                  onClick={handleNext}
+                  isLoading={isSubmitting || mutation.isPending}
+                  disabled={isSubmitting || mutation.isPending}
+                >
+                  {isSubmitting || mutation.isPending ? 'Submitting...' : 'Next'}
+                </CustomButton>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </>
   )

@@ -29,11 +29,9 @@ const RenderExpandIcon = ({ open, transitionDuration }: RenderExpandIconProps) =
 )
 
 const VerticalMenu = ({ scrollMenu }: Props) => {
-  // Hooks
   const theme = useTheme()
   const verticalNavOptions = useVerticalNav()
 
-  // Vars
   const { isBreakpointReached, transitionDuration } = verticalNavOptions
 
   const ScrollWrapper = isBreakpointReached ? 'div' : PerfectScrollbar
@@ -66,8 +64,7 @@ const VerticalMenu = ({ scrollMenu }: Props) => {
             )
           }
 
-          
-return null
+          return null
         })}
       </Menu>
     </ScrollWrapper>

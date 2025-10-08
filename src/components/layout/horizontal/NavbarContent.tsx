@@ -6,7 +6,7 @@ import { useParams, usePathname } from 'next/navigation'
 
 import Image from 'next/image'
 
-import { FormControl, InputLabel, Select, MenuItem, Grid, Button, type SelectChangeEvent } from '@mui/material'
+import { FormControl, InputLabel, Select, MenuItem, Grid, type SelectChangeEvent } from '@mui/material'
 
 import classnames from 'classnames'
 
@@ -152,22 +152,6 @@ const NavbarContent = () => {
       </div>
 
       <div className='flex items-center'>
-        {!shouldHideElements && (
-          <Button
-            variant='contained'
-            startIcon={<i className='ri-add-line text-[20px]'></i>}
-            sx={{
-              backgroundColor: 'customColors.ligthBlue',
-              paddingX: '20px',
-              marginRight: '20px',
-              '&:hover': {
-                backgroundColor: 'customColors.ligthBlue'
-              }
-            }}
-          >
-            Launch New Tender
-          </Button>
-        )}
         {!shouldHideElements && (
           <div className='w-[200px]'>
             <Grid item xs={12} sm={6}>

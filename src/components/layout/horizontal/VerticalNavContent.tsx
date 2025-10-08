@@ -81,7 +81,7 @@ const VerticalNavContent = ({ children }: ChildrenType) => {
       <ScrollWrapper
         {...(isBreakpointReached
           ? {
-              className: 'bs-full overflow-y-auto overflow-x-hidden',
+              className: 'bs-full overflow-y-auto  overflow-x-hidden',
               onScroll: container => scrollMenu(container, false)
             }
           : {
@@ -89,20 +89,53 @@ const VerticalNavContent = ({ children }: ChildrenType) => {
               onScrollY: container => scrollMenu(container, true)
             })}
       >
-        {React.Children.map(mapHorizontalToVerticalMenu(children), (child: any) => {
-          if (child && child.props) {
-            const { href } = child.props
+        {React.Children.map(mapHorizontalToVerticalMenu(children), (parentChild: any) => {
+          if (parentChild && parentChild.props && parentChild.props.children) {
+            const menuItems = parentChild.props.children
 
-            const isDisabled =
-              !href || href === '#' || (!href.includes('/dashboard') && !href.includes('/insurance') && !hasTenderId)
+            return React.cloneElement(parentChild, {
+              children: React.Children.map(menuItems, (child: any) => {
+                if (child && child.props) {
+                  const href = child.props.href
+                  const menuText = child.props.children
 
-            return React.cloneElement(child, {
-              disabled: isDisabled,
-              href: isDisabled ? '#' : href
+                  const isDashboard = menuText === 'Dashboard'
+                  const isInsurance = menuText === 'Insurance'
+                  const alwaysEnabled = isDashboard || isInsurance
+
+                  const isDisabled = !alwaysEnabled && !hasTenderId
+
+                  return React.cloneElement(child, {
+                    disabled: isDisabled,
+                    href: isDisabled ? '#' : href,
+                    onClick: (e: any) => {
+                      if (isDisabled) {
+                        e.preventDefault()
+                        e.stopPropagation()
+
+                        return false
+                      }
+
+                      if (child.props.onClick) {
+                        child.props.onClick(e)
+                      }
+                    },
+                    style: {
+                      ...child.props.style,
+                      cursor: isDisabled ? 'default' : 'pointer',
+                      opacity: isDisabled ? 0.5 : 1,
+                      pointerEvents: isDisabled ? 'none' : 'auto'
+                    },
+                    className: `${child.props.className || ''} ${child.props.active ? 'active-menu-item' : ''}`.trim()
+                  })
+                }
+
+                return child
+              })
             })
           }
 
-          return child
+          return parentChild
         })}
       </ScrollWrapper>
     </>

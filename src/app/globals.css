@@ -157,3 +157,8 @@ code {
 .Mui-disabled .MuiListItemIcon-root i {
   color: #9e9e9e !important;
 }
+
+.mui-1949x8i > .ts-menu-button.ts-active {
+  background-color: #35c0ed !important;
+  color: white !important;
+}
