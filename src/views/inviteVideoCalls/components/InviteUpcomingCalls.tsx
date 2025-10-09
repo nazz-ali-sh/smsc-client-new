@@ -10,6 +10,7 @@ import RejectModal from '@/common/RejectModal'
 import CancelVideoCallsAndSiteVisist from '@/common/CancelVideoCallsAndSiteVisist'
 import { formatDates } from '@/utils/dateFormater'
 import VideosCallsModal from '@/common/VideosCallsModal'
+import CustomTooltip from '@/common/CustomTooltip'
 
 interface RescheduledCallType {
   pmaId: string
@@ -141,24 +142,29 @@ const InviteUpcomingCalls: React.FC<pendingInviteData> = ({ pendingInviteData })
       header: 'Action',
       cell: ({ row }) => (
         <div className='flex gap-2'>
-          <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#F5DADB] text-[#DE481A] flex justify-center items-center'>
-            <i
-              onClick={() => {
-                setVisitsSchedualInviteId(row.original.invite_id)
-                setConfirmOpen(true)
-              }}
-              className='ri-close-line'
-            />
-          </span>
-          <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'>
-            <i
-              onClick={() => {
-                setVisitsSchedualInviteId(row.original.invite_id)
-                setOnlineCallsModalOpen(true)
-              }}
-              className='ri-edit-box-line'
-            />
-          </span>
+          <CustomTooltip text='Cancel The Reschedule Call' position='left' align='left'>
+            <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#F5DADB] text-[#DE481A] flex justify-center items-center'>
+              <i
+                onClick={() => {
+                  setVisitsSchedualInviteId(row.original.invite_id)
+                  setConfirmOpen(true)
+                }}
+                className='ri-close-line'
+              />
+            </span>
+          </CustomTooltip>
+
+          <CustomTooltip text=' Reschedule Call ' position='left' align='left'>
+            <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'>
+              <i
+                onClick={() => {
+                  setVisitsSchedualInviteId(row.original.invite_id)
+                  setOnlineCallsModalOpen(true)
+                }}
+                className='ri-edit-box-line'
+              />
+            </span>
+          </CustomTooltip>
         </div>
       ),
       size: 100,
@@ -201,8 +207,8 @@ const InviteUpcomingCalls: React.FC<pendingInviteData> = ({ pendingInviteData })
 
       <CancelVideoCallsAndSiteVisist
         open={confirmOpen}
-        title='Reschedule Request Rejected!'
-        description={`You have rejected the reschedule request from ${selectedPmaName}. The meeting will not be updated.Please provide a reason for the rejection in the box below. This explanation will be sent to the managing agent.'`}
+        title='Upcoming Call Cancelled!'
+        description={`You have successfully cancelled your scheduled call with ${selectedPmaName}. Please provide a brief reason for the cancellation in the box below. This explanation will be sent to the Managing Agent`}
         onClose={() => setConfirmOpen(false)}
         onConfirm={() => {}}
         RejectInviteData={tableData}

@@ -23,7 +23,6 @@ const AgentInviteStats = () => {
     refetchOnWindowFocus: false
   })
 
-  console.log(rmcShortlistStats)
 
   const cardsData = [
     {

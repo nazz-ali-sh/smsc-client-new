@@ -42,6 +42,7 @@ import type { ShortlistedPmaResponse } from './type'
 import { useDashboardData } from '@/hooks/useDashboardData'
 import CustomButton from './CustomButton'
 import FormInput from '@/components/form-components/FormInput'
+import { isSlotDisabled } from '@/utils/dateFormater'
 
 interface Guest {
   id: string
@@ -118,7 +119,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     handleSubmit,
     setValue,
     watch,
-    setError,
     clearErrors,
     formState: { errors }
   } = useForm({
@@ -139,36 +139,15 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     const val = e.target.value
 
     if (!val) return
-
-    const pickedDay = new Date(val).getDay()
-
-    if (pickedDay === 0 || pickedDay === 6) {
-      setError('selectedDate', {
-        type: 'manual',
-        message: 'Weekends are not allowed. Please choose a weekday.'
-      })
-      setValue('selectedDate', today, { shouldValidate: true, shouldDirty: true })
-    } else {
-      clearErrors('selectedDate')
-      setValue('selectedDate', val, { shouldValidate: true, shouldDirty: true })
-    }
+    clearErrors('selectedDate')
+    setValue('selectedDate', val, { shouldValidate: true, shouldDirty: true })
   }
 
   useEffect(() => {
     if (selectedDate) {
-      const day = new Date(selectedDate).getDay()
-
-      if (day === 0 || day === 6) {
-        setError('selectedDate', {
-          type: 'manual',
-          message: 'Weekends are not allowed. Please choose a weekday.'
-        })
-        setValue('selectedDate', today)
-      } else {
-        clearErrors('selectedDate')
-      }
+      clearErrors('selectedDate')
     }
-  }, [selectedDate, setError, clearErrors, setValue, today])
+  }, [selectedDate, clearErrors])
 
   const { data: allshortlsitedPmaData } = useQuery<ShortlistedPmaResponse, Error>({
     queryKey: ['shortlisted', tender_id],
@@ -480,12 +459,12 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
               }}
             >
               {types == 'Reschedual'
-                ? 'Reschedule Site Visit Invites'
+                ? 'Reschedule Site Visit '
                 : types == 'SiteVisits'
-                  ? 'Reschedule Site Visit Invites'
+                  ? 'Schedule Site Visit'
                   : types == 'fromDashboard' || types == 'fromSiteVisitTable' || types == 'siteVisitFromCalender'
-                    ? 'Site Visits Invites'
-                    : '  Reschedule Site Visit Invites'}
+                    ? 'Schedule Site Visits '
+                    : '  Schedule Site Visit '}
             </Typography>
             <Typography variant='body2' sx={{ paddingY: '12px' }}>
               Use this section to invite PMAs to meeting
@@ -514,7 +493,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                 onChange: handleDateChange
               }}
               error={!!errors.selectedDate}
-              helperText={errors.selectedDate?.message || 'Note: Weekends are not allowed.'}
+              helperText={errors.selectedDate?.message}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -536,6 +515,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                   >
                     Available Slots
                   </InputLabel>
+
                   <Select
                     {...field}
                     value={field.value || ''}
@@ -563,14 +543,8 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                           }
                         }
                       },
-                      anchorOrigin: {
-                        vertical: 'bottom',
-                        horizontal: 'left'
-                      },
-                      transformOrigin: {
-                        vertical: 'top',
-                        horizontal: 'left'
-                      }
+                      anchorOrigin: { vertical: 'bottom', horizontal: 'left' },
+                      transformOrigin: { vertical: 'top', horizontal: 'left' }
                     }}
                   >
                     {showSlotError && (
@@ -578,31 +552,45 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                         Please select a slot
                       </MenuItem>
                     )}
-                    {finalSelectedSlots.map((item, index) => (
-                      <MenuItem
-                        key={index}
-                        value={String(item.id)}
-                        disabled={item?.booked}
-                        className={`${item?.booked ? 'bg-gray-200' : ''} my-2 `}
-                      >
-                        {item.slot_name}
-                      </MenuItem>
-                    ))}
+
+                    {finalSelectedSlots.map((item, index) => {
+                      const isDisabled = isSlotDisabled(item, selectedDate)
+
+                      return (
+                        <MenuItem
+                          key={index}
+                          value={String(item.id)}
+                          disabled={isDisabled}
+                          sx={{
+                            my: 1,
+                            bgcolor: isDisabled ? '#d1d5dc' : 'inherit',
+                            color: isDisabled ? '#ff2056' : 'inherit',
+                            cursor: isDisabled ? 'not-allowed' : 'pointer',
+                            opacity: isDisabled ? 0.8 : 1
+                          }}
+                        >
+                          {item.slot_name}
+                        </MenuItem>
+                      )
+                    })}
                   </Select>
+
                   {errors.availableSlots && (
                     <Typography variant='caption' color='error'>
                       {errors.availableSlots.message as string}
                     </Typography>
                   )}
-                  {
-                    <MenuItem value='' disabled className='text-red-500'>
-                      {showSlotError || errors.availableSlots ? 'Select the slot' : ''}
-                    </MenuItem>
-                  }
+
+                  {showSlotError && !errors.availableSlots && (
+                    <Typography variant='caption' color='error'>
+                      Select a slot
+                    </Typography>
+                  )}
                 </FormControl>
               )}
             />
           </Grid>
+
           <Grid item xs={12}>
             <Typography variant='h6' sx={{ mb: 2, color: '#333', fontWeight: '600' }}>
               Availability Set for
@@ -805,7 +793,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       ) : types == 'SiteVisits' || types == 'siteVisistfromCalander' ? (
         <DialogActions sx={{ px: 3, pb: 8, mt: 5 }}>
           <CustomButton variant='contained' onClick={handleSubmit(handleSiteVisitReschedual)}>
-            Reschedual
+            Reschedule
           </CustomButton>
         </DialogActions>
       ) : (

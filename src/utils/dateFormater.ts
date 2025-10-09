@@ -13,17 +13,17 @@ export const formatDate = (isoDateString: string) => {
   }
 }
 
- export const formatDates = (dateString?: string | null): string => {
-    if (!dateString) return ''
-    const date = new Date(dateString)
+export const formatDates = (dateString?: string | null): string => {
+  if (!dateString) return ''
+  const date = new Date(dateString)
 
-    if (isNaN(date.getTime())) return ''
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-    const year = date.getFullYear()
+  if (isNaN(date.getTime())) return ''
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  const year = date.getFullYear()
 
-    return `${day}/${month}/${year}`
-  }
+  return `${day}/${month}/${year}`
+}
 
 export function getDaysPassed(dateString?: string): number {
   if (!dateString) return 0
@@ -37,16 +37,15 @@ export function getDaysPassed(dateString?: string): number {
   return diffDays > 0 ? diffDays : 0
 }
 
-
- export function calculateTimeLeft(expiryAt: string) {
-  if (!expiryAt) return { days: "0", hours: "0", minutes: "0" }
+export function calculateTimeLeft(expiryAt: string) {
+  if (!expiryAt) return { days: '0', hours: '0', minutes: '0' }
 
   const now = dayjs()
   const target = dayjs(expiryAt)
   const diff = target.diff(now)
 
   if (diff <= 0) {
-    return { days: "0", hours: "0", minutes: "0" }
+    return { days: '0', hours: '0', minutes: '0' }
   }
 
   const days = Math.floor(diff / (1000 * 60 * 60 * 24))
@@ -60,16 +59,29 @@ export function getDaysPassed(dateString?: string): number {
   }
 }
 
+export const handleCalendarDate = (dateString: string, setSelectedFullDate: any, setSelectedYearMonth: any) => {
+  if (!dateString) return
 
-  export const handleCalendarDate = (dateString: string, setSelectedFullDate: any, setSelectedYearMonth : any) => {
-    if (!dateString) return
+  const date = new Date(dateString)
 
-    const date = new Date(dateString)
+  const fullDate = date.toISOString().split('T')[0]
 
-    const fullDate = date.toISOString().split('T')[0]
+  const yearMonth = fullDate.slice(0, 7)
 
-    const yearMonth = fullDate.slice(0, 7)
+  setSelectedFullDate(fullDate)
+  setSelectedYearMonth(yearMonth)
+}
 
-    setSelectedFullDate(fullDate)
-    setSelectedYearMonth(yearMonth)
-  }
+export const isSlotDisabled = (slot: any, selectedDate: string): boolean => {
+  const currentTime = new Date()
+  const currentDate = currentTime.toISOString().split('T')[0]
+  const slotDateTime = new Date(`${selectedDate}T${slot.start_time}`)
+
+  if (new Date(selectedDate) < new Date(currentDate)) return true
+
+  if (selectedDate === currentDate && slotDateTime < currentTime) return true
+
+  if (slot.booked) return true
+
+  return false
+}

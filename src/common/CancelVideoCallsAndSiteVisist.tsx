@@ -119,7 +119,6 @@ const CancelVideoCallsAndSiteVisist = ({
     }
   })
 
-  // site vsist cancel
   const sideVisitCancel = useMutation({
     mutationFn: ({
       SideVisitsSchedualInviteId,
@@ -151,8 +150,6 @@ const CancelVideoCallsAndSiteVisist = ({
     }
   })
 
-  console.log(types)
-
   const normalizedType = types?.trim()?.toLowerCase()
 
   const handleConfirm = () => {
@@ -161,8 +158,6 @@ const CancelVideoCallsAndSiteVisist = ({
 
       return
     }
-
-    console.log('types:', types)
 
     if (normalizedType === 'sitevisits' || normalizedType === 'reject') {
       sideVisitCancel.mutate({
@@ -198,8 +193,19 @@ const CancelVideoCallsAndSiteVisist = ({
   }
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
-      {/* <DialogTitle>{title}</DialogTitle> */}
+    <Dialog
+      open={open}
+      onClose={onClose}
+      PaperProps={{
+        sx: {
+          borderRadius: 2,
+          minHeight: '300px',
+          paddingX: '16px',
+          minWidth: '700px',
+          maxwidth: '800px'
+        }
+      }}
+    >
       <DialogTitle sx={{ pb: 1, px: 3, pt: 3 }}>
         <Box display='flex' justifyContent='space-between' alignItems='flex-start' sx={{ paddingTop: '16px' }}>
           <Typography
@@ -222,8 +228,6 @@ const CancelVideoCallsAndSiteVisist = ({
       </DialogTitle>
       <DialogContent>
         <DialogContentText sx={{ mb: 2 }}>{description}</DialogContentText>
-
-        {/* TextArea */}
         <TextField
           sx={{ marginTop: '5px' }}
           multiline
@@ -239,7 +243,6 @@ const CancelVideoCallsAndSiteVisist = ({
           error={!!error}
           helperText={error}
         />
-
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: '20px' }}>
           <CustomButton onClick={onClose} variant='outlined'>
             Cancel

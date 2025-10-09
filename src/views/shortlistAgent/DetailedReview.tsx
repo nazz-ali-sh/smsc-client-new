@@ -182,7 +182,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                   <div className='flex gap-2 items-center cursor-default'>
                     <Typography variant='h3' className='text-[#1F4E8D] text-[21px] font-bold py-1'>
                       {shortlistexpiryDate?.days} days {shortlistexpiryDate?.hours} hours {shortlistexpiryDate?.minutes}
-                      minutes
+                      <span className='pl-[1px]'> minutes</span>
                     </Typography>
                     <CustomTooltip
                       text='During this time period, your contact information will be hidden. This setting is in place to allow you to initiate video calls securely.'

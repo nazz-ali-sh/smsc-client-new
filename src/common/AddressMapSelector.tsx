@@ -3,8 +3,8 @@
 import React, { useCallback, useState, useEffect } from 'react'
 
 import { useForm, Controller } from 'react-hook-form'
-import { Grid, TextField, Box } from '@mui/material'
-import { Map, Marker, useMapsLibrary } from '@vis.gl/react-google-maps'
+import { Grid, TextField, Typography, Box } from '@mui/material'
+import { Map, AdvancedMarker, useMapsLibrary } from '@vis.gl/react-google-maps'
 import { toast } from 'react-toastify'
 
 import GoogleMapsProvider from './GoogleMapsProvider'
@@ -52,6 +52,7 @@ interface AddressMapSelectorProps {
   onManualAddressData?: (data: AddressFormData) => void
   initialData?: Partial<AddressFormData>
   showManualEntry?: boolean
+  resetTrigger?: number
 }
 
 const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
@@ -59,15 +60,17 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
   onManualAddressChange,
   onManualAddressData,
   initialData = {},
-  showManualEntry = true
+  showManualEntry = true,
+  resetTrigger
 }) => {
   const [selectedLocation, setSelectedLocation] = useState<{ lat: number; lng: number } | null>(
     initialData.coordinates ? { lat: initialData.coordinates.lat, lng: initialData.coordinates.lng } : null
   )
 
   const places = useMapsLibrary('places')
+  const googleMapId = process.env.NEXT_PUBLIC_Maps_Id || ''
 
-  const { control, handleSubmit, setValue, watch } = useForm<AddressFormData>({
+  const { control, handleSubmit, setValue, reset, watch } = useForm<AddressFormData>({
     defaultValues: {
       addressLine1: initialData?.addressLine1 || '',
       addressLine2: initialData?.addressLine2 || '',
@@ -85,17 +88,8 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
   const county = watch('county')
   const coordinates = watch('coordinates')
 
-  const handleManualAddressData = useCallback(
-    (formData: AddressFormData) => {
-      if (onManualAddressData) {
-        onManualAddressData(formData)
-      }
-    },
-    [onManualAddressData]
-  )
-
   useEffect(() => {
-    if (!addressLine1?.trim()) return
+    if (!onManualAddressData || !addressLine1?.trim()) return
 
     const timeoutId = setTimeout(() => {
       const hasValidData = addressLine1?.trim() && (postcode?.trim() || region?.trim() || county?.trim())
@@ -110,12 +104,26 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
           coordinates
         }
 
-        handleManualAddressData(formData)
+        onManualAddressData(formData)
       }
     }, 500)
 
     return () => clearTimeout(timeoutId)
-  }, [addressLine1, addressLine2, postcode, region, county, coordinates, handleManualAddressData])
+  }, [addressLine1, addressLine2, postcode, region, county, coordinates, onManualAddressData])
+
+  useEffect(() => {
+    if (resetTrigger !== undefined) {
+      reset({
+        addressLine1: '',
+        addressLine2: '',
+        postcode: '',
+        region: '',
+        county: '',
+        coordinates: { lat: 0, lng: 0 }
+      })
+      setSelectedLocation(null)
+    }
+  }, [resetTrigger, reset])
 
   useEffect(() => {
     if (initialData && Object.keys(initialData)?.length > 0) {
@@ -221,6 +229,12 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
           <Grid container spacing={3}>
             {showManualEntry && (
               <>
+                <Grid item xs={12}>
+                  <Typography variant='body2' color='text.secondary' sx={{ mb: 2 }}>
+                    Can't find your address or is it incorrect? You can enter the full address manually below.
+                  </Typography>
+                </Grid>
+
                 <Grid item xs={12} sm={6}>
                   <Controller
                     name='addressLine1'
@@ -353,14 +367,15 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
             <Grid item xs={12}>
               <Box sx={{ width: '100%', height: '600px', borderRadius: 2, overflow: 'hidden' }}>
                 <Map
-                  defaultZoom={selectedLocation ? 15 : 6}
-                  defaultCenter={selectedLocation || { lat: 54.5, lng: -3.5 }}
+                  mapId={googleMapId}
+                  defaultZoom={6}
+                  defaultCenter={{ lat: 54.5, lng: -3.5 }}
                   gestureHandling='cooperative'
                   disableDefaultUI={false}
                   onClick={handleMapClick}
                   style={{ width: '100%', height: '100%' }}
                 >
-                  {selectedLocation && <Marker position={selectedLocation} title='Selected Location' />}
+                  {selectedLocation && <AdvancedMarker position={selectedLocation} title='Selected Location' />}
                 </Map>
               </Box>
             </Grid>

@@ -6,11 +6,11 @@ import { Box } from '@mui/material'
 import { createColumnHelper } from '@tanstack/react-table'
 
 import CommonTable from '@/common/CommonTable'
-import SiteVisitsModal from '@/common/SiteVisitsModal'
 import SuccessModal from '@/common/SucessModal'
 import CancelVideoCallsAndSiteVisist from '@/common/CancelVideoCallsAndSiteVisist'
 import VideosCallsModal from '@/common/VideosCallsModal'
 import { formatDates } from '@/utils/dateFormater'
+import CustomTooltip from '@/common/CustomTooltip'
 
 interface RescheduledCallType {
   data: any
@@ -36,7 +36,6 @@ interface InvitePendingCallsProps {
 const InvitePendingCalls: React.FC<InvitePendingCallsProps> = ({ pendingInviteData }) => {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [successOpen, setSuccessOpen] = useState(false)
-  const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
   const [visitsSchedualInviteId, setVisitsSchedualInviteId] = useState<number | undefined>(undefined)
   const [onlineCallsModalOpen, setOnlineCallsModalOpen] = useState(false)
   const [selectedPmaName, setSelectedPmaName] = useState<string | number | null>(null)
@@ -149,24 +148,29 @@ const InvitePendingCalls: React.FC<InvitePendingCallsProps> = ({ pendingInviteDa
       header: 'Action',
       cell: ({ row }) => (
         <div className='flex gap-2'>
-          <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#F5DADB] text-[#DE481A] flex justify-center items-center'>
-            <i
-              onClick={() => {
-                setVisitsSchedualInviteId(row.original.invite_id)
-                setConfirmOpen(true)
-              }}
-              className='ri-close-line'
-            />
-          </span>
-          <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'>
-            <i
-              onClick={() => {
-                setVisitsSchedualInviteId(row.original.invite_id)
-                setOnlineCallsModalOpen(true)
-              }}
-              className='ri-edit-box-line'
-            />
-          </span>
+          <CustomTooltip text='Cancel The Reschedule Call ' position='left' align='left'>
+            <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#F5DADB] text-[#DE481A] flex justify-center items-center'>
+              <i
+                onClick={() => {
+                  setVisitsSchedualInviteId(row.original.invite_id)
+                  setConfirmOpen(true)
+                }}
+                className='ri-close-line'
+              />
+            </span>
+          </CustomTooltip>
+
+          <CustomTooltip text=' Reschedule Call ' position='left' align='left'>
+            <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'>
+              <i
+                onClick={() => {
+                  setVisitsSchedualInviteId(row.original.invite_id)
+                  setOnlineCallsModalOpen(true)
+                }}
+                className='ri-edit-box-line'
+              />
+            </span>
+          </CustomTooltip>
         </div>
       ),
       size: 100,
@@ -187,8 +191,8 @@ const InvitePendingCalls: React.FC<InvitePendingCallsProps> = ({ pendingInviteDa
 
       <CancelVideoCallsAndSiteVisist
         open={confirmOpen}
-        title='Reschedule Request Cancel!'
-        description={`You have rejected the reschedule request from  ${selectedPmaName}. The meeting will not be updated.Please provide a reason for the rejection in the box below. This explanation will be sent to the managing agent.'`}
+        title='Pending Call Cancelled !'
+        description={`You have successfully cancelled your pending call with ${selectedPmaName}.Please provide a brief reason for the cancellation in the box below. This explanation will be sent to the Managing Agent.`}
         onClose={() => setConfirmOpen(false)}
         onConfirm={() => {}}
         RejectInviteData={tableData}
@@ -198,24 +202,11 @@ const InvitePendingCalls: React.FC<InvitePendingCallsProps> = ({ pendingInviteDa
         SideVisitsSchedualInviteId={undefined}
       />
 
-      <SiteVisitsModal
-        open={siteVisitsModalOpen}
-        onClose={() => setSiteVisitsModalOpen(false)}
-        shorlistedPmas={undefined}
-        VideoCallInviteId={visitsSchedualInviteId}
-        types='Reschedual'
-        Reschedual={undefined}
-        siteVisitDate={undefined}
-        SideVisitsSchedualInviteId={undefined}
-        completedShorlistedPmas={undefined}
-      />
-
       <VideosCallsModal
         open={onlineCallsModalOpen}
         VideoCallInviteId={visitsSchedualInviteId}
         onClose={() => setOnlineCallsModalOpen(false)}
         shorlistedPmas={null}
-        mainSiteVisitVideoCalls={undefined}
         types='videoCallReschedual'
       />
 
@@ -223,7 +214,7 @@ const InvitePendingCalls: React.FC<InvitePendingCallsProps> = ({ pendingInviteDa
         open={successOpen}
         onClose={() => setSuccessOpen(false)}
         onConfirm={() => setSuccessOpen(false)}
-        cancelButton='Ok'
+        cancelButton='Cancel'
         message='Success! You have Sent the new meeting time.'
         title='Reschedule Request Accepted!'
         confirmButtonText='Confirm'

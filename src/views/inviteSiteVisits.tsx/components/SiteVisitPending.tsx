@@ -10,6 +10,7 @@ import RejectModal from '@/common/RejectModal'
 import SiteVisitsModal from '@/common/SiteVisitsModal'
 import SuccessModal from '@/common/SucessModal'
 import { formatDates } from '@/utils/dateFormater'
+import CustomTooltip from '@/common/CustomTooltip'
 
 interface RescheduledCallType {
   pmaId: string
@@ -36,7 +37,6 @@ const SiteVisitPending = ({ sitePendingData }: any) => {
   const [visitsSchedualInviteId, setVisitsSchedualInviteId] = useState<number>()
 
   const [selectedPmaName, setSelectedPmaName] = useState<string | number | null>(null)
-
 
   const tableData: RescheduledCallType[] =
     sitePendingData?.data?.invites?.map(
@@ -116,12 +116,7 @@ const SiteVisitPending = ({ sitePendingData }: any) => {
     columnHelper.accessor('videoCallLink', {
       header: 'location',
       cell: info => (
-        <a
-          href={info.getValue()}
-          target='_blank'
-          rel='noopener noreferrer'
-          className='text-[#26C6F9] text-[13px] underline'
-        >
+        <a href={info.getValue()} className=' text-[13px]'>
           {info.getValue()}
         </a>
       ),
@@ -135,7 +130,6 @@ const SiteVisitPending = ({ sitePendingData }: any) => {
       enableSorting: true
     }),
 
-   
     columnHelper.accessor('invited_at', {
       header: 'Scheduled Date',
       cell: info => info.getValue(),
@@ -147,28 +141,33 @@ const SiteVisitPending = ({ sitePendingData }: any) => {
       header: 'Action',
       cell: info => (
         <div className='flex gap-2'>
-          <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#F5DADB] text-[#DE481A] flex justify-center items-center'>
-            <i
-              onClick={() => {
-                const row = info.row.original
+          <CustomTooltip text='Cancel Pending Site Visit' position='left' align='left'>
+            <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#F5DADB] text-[#DE481A] flex justify-center items-center'>
+              <i
+                onClick={() => {
+                  const row = info.row.original
 
-                setVisitsSchedualInviteId(row.invite_id)
-                setConfirmOpen(true)
-              }}
-              className='ri-close-line '
-            />
-          </span>
-          <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'>
-            <i
-              onClick={() => {
-                const row = info.row.original
+                  setVisitsSchedualInviteId(row.invite_id)
+                  setConfirmOpen(true)
+                }}
+                className='ri-close-line '
+              />
+            </span>
+          </CustomTooltip>
 
-                setVisitsSchedualInviteId(row.invite_id)
-                setSiteVisitsModalOpen(true)
-              }}
-              className='ri-edit-box-line'
-            ></i>
-          </span>
+          <CustomTooltip text='Reschedule Pending Site Visit ' position='left' align='left'>
+            <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'>
+              <i
+                onClick={() => {
+                  const row = info.row.original
+
+                  setVisitsSchedualInviteId(row.invite_id)
+                  setSiteVisitsModalOpen(true)
+                }}
+                className='ri-edit-box-line'
+              ></i>
+            </span>
+          </CustomTooltip>
         </div>
       ),
       size: 100,
@@ -189,8 +188,8 @@ const SiteVisitPending = ({ sitePendingData }: any) => {
       <RejectModal
         open={confirmOpen}
         setConfirmOpen={setConfirmOpen}
-        title='Reschedule Request Cancel!'
-        description={`You have rejected the reschedule request from  ${selectedPmaName}. The meeting will not be updated.Please provide a reason for the rejection in the box below. This explanation will be sent to the managing agent.'`}
+        title='Pending Site Visit Cancelled !'
+        description={`You have successfully cancelled your pending call with ${selectedPmaName}. Please provide a brief reason for the cancellation in the box below. This explanation will be sent to the Managing Agent`}
         onClose={() => setConfirmOpen(false)}
         onConfirm={function (): void {}}
         RejectInviteData={tableData}
@@ -206,7 +205,7 @@ const SiteVisitPending = ({ sitePendingData }: any) => {
         onClose={() => setSiteVisitsModalOpen(false)}
         shorlistedPmas={undefined}
         siteVisitDate={tableData}
-        types='SiteVisits'
+        types='Reschedual'
         SideVisitsSchedualInviteId={visitsSchedualInviteId}
         Reschedual={undefined}
         VideoCallInviteId={undefined}

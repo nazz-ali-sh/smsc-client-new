@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { useMutation } from '@tanstack/react-query'
 
-import { Typography, Select, MenuItem, FormControl, InputLabel, Grid } from '@mui/material'
+import { Typography, Select, MenuItem, FormControl, InputLabel } from '@mui/material'
 
 import CustomButton from '@/common/CustomButton'
 import AddressMapSelector from '@/common/AddressMapSelector'
@@ -41,6 +41,7 @@ const OnboardingAddress = () => {
   const [selectedAddressId, setSelectedAddressId] = useState('')
   const [mapSelectedAddress, setMapSelectedAddress] = useState<MapAddressData | null>(null)
   const [manualAddressData, setManualAddressData] = useState<MapAddressData | null>(null)
+  const [resetMapTrigger, setResetMapTrigger] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const hasAttemptedFetch = useRef(false)
 
@@ -118,37 +119,20 @@ const OnboardingAddress = () => {
 
       postcodeMutation.mutate(payload)
     }
-  }, [addresses, onboardingData?.steps?.step_3?.postcode])
+  }, [addresses, onboardingData?.steps?.step_3?.postcode, postcodeMutation])
 
   useEffect(() => {
     if (onboardingData?.steps?.step_3) {
       const savedData = onboardingData?.steps.step_3
 
-      if (savedData?.address_type === 'api') {
-        let foundAddress = null
-
-        if (addresses && addresses?.length > 0) {
-          foundAddress = addresses?.find(
-            (address: any) =>
-              address?.line_1 === savedData?.address &&
-              address?.line_2 === savedData?.address_line2 &&
-              (address as any).line_3 === savedData?.address_line3 &&
-              address?.postcode === savedData?.postcode
-          )
-        }
-
-        if (!foundAddress) {
-          foundAddress = {
-            line_1: savedData?.address || '',
-            line_2: savedData?.address_line2 || '',
-            line_3: savedData?.address_line3 || '',
-            postcode: savedData?.postcode || '',
-            post_town: savedData?.region || '',
-            county: savedData?.county || '',
-            latitude: savedData?.lat?.toString() || '0',
-            longitude: savedData?.lng?.toString() || '0'
-          }
-        }
+      if (savedData?.address_type === 'api' && addresses && addresses?.length > 0) {
+        const foundAddress = addresses?.find(
+          (address: any) =>
+            address?.line_1 === savedData?.address &&
+            address?.line_2 === savedData?.address_line2 &&
+            (address as any).line_3 === savedData?.address_line3 &&
+            address?.postcode === savedData?.postcode
+        )
 
         if (foundAddress) {
           const addressId =
@@ -159,20 +143,6 @@ const OnboardingAddress = () => {
           setSelectedAddressId(addressId)
           dispatch(setPostcodeSelectedAddress(foundAddress))
           dispatch(setSelectedAddress(foundAddress))
-
-          const manualData: MapAddressData = {
-            addressLine1: foundAddress.line_1 || '',
-            addressLine2: foundAddress.line_2 || '',
-            postcode: foundAddress.postcode || '',
-            region: foundAddress.post_town || '',
-            county: foundAddress.county || '',
-            coordinates: {
-              lat: parseFloat(foundAddress.latitude) || 0,
-              lng: parseFloat(foundAddress.longitude) || 0
-            }
-          }
-
-          setManualAddressData(manualData)
         }
       } else if (savedData?.address_type === 'manual') {
         const manualData: MapAddressData = {
@@ -224,7 +194,9 @@ const OnboardingAddress = () => {
     const addressId = event.target.value
 
     setSelectedAddressId(addressId)
+    setMapSelectedAddress(null)
     setManualAddressData(null)
+    setResetMapTrigger(prev => prev + 1)
 
     const address = addresses?.find((addr: any) => {
       const addrId =
@@ -238,29 +210,14 @@ const OnboardingAddress = () => {
     if (address) {
       dispatch(setPostcodeSelectedAddress(address))
       dispatch(setSelectedAddress(address))
-
-      const mapAddressData: MapAddressData = {
-        addressLine1: address.line_1 || '',
-        addressLine2: address.line_2 || '',
-        postcode: address.postcode || '',
-        region: address.post_town || '',
-        county: address.county || '',
-        coordinates: {
-          lat: parseFloat(address.latitude) || 0,
-          lng: parseFloat(address.longitude) || 0
-        }
-      }
-
-      setMapSelectedAddress(mapAddressData)
-
-      setManualAddressData(mapAddressData)
     }
   }
 
   const handleMapAddressSelect = (data: MapAddressData) => {
     setMapSelectedAddress(data)
     setSelectedAddressId('')
-    setManualAddressData(data)
+
+    setManualAddressData(null)
 
     dispatch(setPostcodeSelectedAddress(null as any))
     dispatch(setSelectedAddress(null as any))
@@ -286,7 +243,6 @@ const OnboardingAddress = () => {
 
     if (!hasDropdownAddress && !hasMapOrManualAddress) {
       toast.error('Please select an address from the dropdown or use the map to select a location')
-      setIsSubmitting(false)
 
       return
     }
@@ -371,7 +327,7 @@ const OnboardingAddress = () => {
         address_line3: '',
         step: 3,
         state: '',
-        address_type: hasDropdownAddress ? 'api' : 'manual'
+        address_type: 'manual'
       }
     }
 
@@ -380,11 +336,6 @@ const OnboardingAddress = () => {
 
   const handleChangePostcode = () => {
     dispatch(clearPostcodeData())
-    setSelectedAddressId('')
-    setMapSelectedAddress(null)
-    setManualAddressData(null)
-    dispatch(setPostcodeSelectedAddress(null as any))
-    dispatch(setSelectedAddress(null as any))
     router.push('/rmc-onboarding-postcode')
   }
 
@@ -531,22 +482,33 @@ const OnboardingAddress = () => {
                 })}
               </Select>
             </FormControl>
-            <Grid item xs={12}>
-              <Typography variant='body2' color='text.secondary' sx={{ mb: 2 }}>
-                Can't find your address or is it incorrect? You can enter the full address manually below.
-              </Typography>
-            </Grid>
           </div>
         </div>
 
         <div className='mt-4'>
+          <Typography
+            variant='h6'
+            sx={{
+              fontSize: '20px',
+              fontWeight: 500,
+              color: mapSelectedAddress ? '#26C6F9' : 'customColors.darkGray1',
+              mb: 3,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1
+            }}
+          >
+            {mapSelectedAddress && <i className='ri-check-line' style={{ color: '#26C6F9' }}></i>}
+            Select Location on Map
+            {mapSelectedAddress && <span style={{ fontSize: '14px', color: '#26C6F9' }}>(Selected)</span>}
+          </Typography>
           <AddressMapSelector
-            key={`map-${mapSelectedAddress?.coordinates?.lat}-${mapSelectedAddress?.coordinates?.lng}`}
             onLocationSelect={handleMapAddressSelect}
             onManualAddressChange={handleManualAddressChange}
             onManualAddressData={handleManualAddressData}
             showManualEntry={true}
-            initialData={mapSelectedAddress || manualAddressData || undefined}
+            resetTrigger={resetMapTrigger}
+            initialData={manualAddressData || undefined}
           />
         </div>
 

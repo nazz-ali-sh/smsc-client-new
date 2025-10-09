@@ -12,6 +12,7 @@ import CommonTable from '@/common/CommonTable'
 import person from '../../../../public/images/TenderResults/person.svg'
 import AppointManagemnetModal from '@/common/AppointManagemnetAgent'
 import { formatDates } from '@/utils/dateFormater'
+import CustomTooltip from '@/common/CustomTooltip'
 
 interface CompletedCallType {
   pmaId: string
@@ -59,7 +60,6 @@ const SiteVisitCompletedCalls = ({ siteCompleted }: any) => {
       })
     ) || []
 
-
   const columns = [
     columnHelper.accessor((row, index) => index + 1, {
       id: 'sr',
@@ -95,12 +95,7 @@ const SiteVisitCompletedCalls = ({ siteCompleted }: any) => {
     columnHelper.accessor('videoCallLink', {
       header: 'Location',
       cell: info => (
-        <a
-          href={info.getValue()}
-          target='_blank'
-          rel='noopener noreferrer'
-          className='text-[#26C6F9] text-[13px] underline'
-        >
+        <a href={info.getValue()} className=' text-[13px]'>
           {info.getValue()}
         </a>
       ),
@@ -119,17 +114,20 @@ const SiteVisitCompletedCalls = ({ siteCompleted }: any) => {
       size: 150,
       enableSorting: true
     }),
-    columnHelper.accessor('action', {
+    columnHelper.accessor('action', { 
       header: 'Action',
       cell: () => (
         <>
           <div className='flex gap-2'>
-            <span
+              <CustomTooltip text='Appoint the Agent' position='left' align='left'>
+                    <span
               onClick={() => setApointAgentModalOpen(true)}
               className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#DE481A] flex justify-center items-center'
             >
               <Image src={person} alt='person' />
             </span>
+              </CustomTooltip>
+        
           </div>
         </>
       ),

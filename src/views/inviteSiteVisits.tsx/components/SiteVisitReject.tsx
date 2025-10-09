@@ -90,9 +90,8 @@ const SiteVisitReject = ({ siteRejectedData }: any) => {
       cell: info => (
         <a
           href={info.getValue()}
-          target='_blank'
-          rel='noopener noreferrer'
-          className='text-[#26C6F9] text-[13px] underline'
+      
+          className='text-[13px] '
         >
           {info.getValue()}
         </a>

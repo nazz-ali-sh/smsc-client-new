@@ -40,6 +40,7 @@ import { useDashboardData } from '@/hooks/useDashboardData'
 import CustomButton from './CustomButton'
 import FormInput from '@/components/form-components/FormInput'
 import SuccessModal from './SucessModal'
+import { isSlotDisabled } from '@/utils/dateFormater'
 
 interface Guest {
   id: string
@@ -52,7 +53,7 @@ interface OnlineCallsModalProps {
   onClose: () => void
   shorlistedPmas?: any
   siteVisitshorlistedPmas?: any
-  mainSiteVisitVideoCalls: any
+  mainSiteVisitVideoCalls?: any
   defaultmultiselect?: any
   types?: any
   componentTypes?: any
@@ -105,7 +106,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
   const [slotError, setSlotError] = useState('')
   const [SuccessOpen, setSuccessOpen] = useState(false)
   const [schedualCalanderDate, setSchedualCalanderDate] = useState('')
-
   console.log(schedualCalanderDate)
 
   const [userSelectedSlots, setUserSelectedSlots] = useState<{ selectedIds: string; slotName: string | null }>({
@@ -322,7 +322,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     ...(defaultmultiselect ? [defaultmultiselect] : [])
   ]
 
-  //  Reschedual vidoe call
   const rmcVideoCallSchedual = useMutation({
     mutationFn: ({
       invite_id,
@@ -417,31 +416,17 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     }
   }, [calanderReschedualData, setValue])
 
-  // --- Define today's date (YYYY-MM-DD) ---
   const today = new Date().toISOString().split('T')[0]
 
-  // --- Handle date selection ---
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value
 
     if (!val) return
 
-    const pickedDay = new Date(val).getDay() // 0 = Sunday, 6 = Saturday
-
-    // If weekend selected
-    if (pickedDay === 0 || pickedDay === 6) {
-      setError('selectedDate', {
-        type: 'manual',
-        message: 'Weekends are not allowed. Please choose a weekday.'
-      })
-      setValue('selectedDate', today, { shouldValidate: true, shouldDirty: true })
-    } else {
-      clearErrors('selectedDate')
-      setValue('selectedDate', val, { shouldValidate: true, shouldDirty: true })
-    }
+    setValue('selectedDate', val, { shouldValidate: true, shouldDirty: true })
+    clearErrors('selectedDate')
   }
 
-  // --- Validate if selected date changes externally (like reset or API load) ---
   useEffect(() => {
     if (selectedDate) {
       const day = new Date(selectedDate).getDay()
@@ -483,7 +468,9 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                 fontSize: '1.75rem'
               }}
             >
-              {types == 'reschedual' ? 'Rescheduled Video Call Invites ' : ' Video Call Invites'}
+              {types == 'reschedual' || types == 'videoCallReschedual'
+                ? 'Reschedule Video Call  '
+                : ' Schedule Video Call '}
             </Typography>
             <Typography variant='body2' sx={{ paddingY: '12px' }}>
               Use this section to invite PMAs to meeting
@@ -509,11 +496,11 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
               type='date'
               InputLabelProps={{ shrink: true }}
               inputProps={{
-                min: today, // Disable past dates
+                min: today,
                 onChange: handleDateChange
               }}
               error={!!errors.selectedDate}
-              helperText={errors.selectedDate?.message || 'Note: Weekends are not allowed.'}
+              helperText={errors.selectedDate?.message}
             />
           </Grid>
 
@@ -536,6 +523,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                   >
                     Available Slots
                   </InputLabel>
+
                   <Select
                     {...field}
                     value={field.value || ''}
@@ -584,17 +572,22 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                       }
                     }}
                   >
-                    {finalSelectedSlots.map((item, index) => (
-                      <MenuItem
-                        key={index}
-                        disabled={item?.booked}
-                        value={String(item.id)}
-                        className={`${item?.booked ? 'bg-gray-200' : ''} my-2 `}
-                      >
-                        <span className='my-2'>{item.slot_name}</span>
-                      </MenuItem>
-                    ))}
+                    {finalSelectedSlots.map((item, index) => {
+                      const isDisabled = isSlotDisabled(item, selectedDate)
+
+                      return (
+                        <MenuItem
+                          key={index}
+                          disabled={isDisabled}
+                          value={String(item.id)}
+                          className={`${isDisabled ? 'bg-gray-200 text-gray-500' : ''} my-2 `}
+                        >
+                          <span className='my-2'>{item.slot_name}</span>
+                        </MenuItem>
+                      )
+                    })}
                   </Select>
+
                   {(errors.availableSlots || slotError) && (
                     <FormHelperText>{errors.availableSlots?.message || slotError}</FormHelperText>
                   )}
@@ -771,7 +764,8 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                     },
                     '& .MuiInputLabel-root.Mui-focused': {
                       color: 'customColors.ligthBlue'
-                    }
+                    },
+                    mb: 10
                   }}
                 />
               )}
@@ -780,7 +774,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
         </Grid>
       </DialogContent>
 
-      <DialogActions sx={{ px: 3, pb: 8, mt: 5 }}>
+      <DialogActions sx={{ px: 3, pb: 8, mt: types === 'videoCallReschedual' ? 0 : 5 }}>
         {types == 'videoCallReschedual' || types == 'reschedual' ? (
           <>
             <CustomButton

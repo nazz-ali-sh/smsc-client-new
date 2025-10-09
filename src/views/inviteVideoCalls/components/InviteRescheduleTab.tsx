@@ -19,6 +19,7 @@ import SuccessModal from '@/common/SucessModal'
 import { reSchedualAccepted } from '@/services/site_visit_apis/site_visit_api'
 import { formatDates } from '@/utils/dateFormater'
 import VideosCallsModal from '@/common/VideosCallsModal'
+import CustomTooltip from '@/common/CustomTooltip'
 
 interface RescheduledCallType {
   pmaId: string
@@ -174,35 +175,41 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
       header: 'Action',
       cell: ({ row }) => (
         <div className='flex gap-2'>
-          <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#F5DADB] text-[#DE481A] flex justify-center items-center'>
-            <i
-              onClick={() => {
-                setVisitsSchedualInviteId(row?.original?.invite_id)
-                setConfirmOpen(true)
-              }}
-              className='ri-close-line'
-            />
-          </span>
+          <CustomTooltip text='Reject The Reschedule Call ' position='left' align='left'>
+            <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#F5DADB] text-[#DE481A] flex justify-center items-center'>
+              <i
+                onClick={() => {
+                  setVisitsSchedualInviteId(row?.original?.invite_id)
+                  setConfirmOpen(true)
+                }}
+                className='ri-close-line'
+              />
+            </span>
+          </CustomTooltip>
 
-          <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'>
-            <i
-              onClick={() => {
-                setVisitsSchedualInviteId(row.original.invite_id)
-                setSuccessOpen(true)
-              }}
-              className='ri-check-line '
-            />
-          </span>
+          <CustomTooltip text='Reschedule Request Accepted' position='left' align='left'>
+            <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'>
+              <i
+                onClick={() => {
+                  setVisitsSchedualInviteId(row.original.invite_id)
+                  setSuccessOpen(true)
+                }}
+                className='ri-check-line '
+              />
+            </span>
+          </CustomTooltip>
 
-          <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'>
-            <i
-              onClick={() => {
-                setVisitsSchedualInviteId(row.original.invite_id)
-                setOnlineCallsModalOpen(true)
-              }}
-              className='ri-edit-box-line'
-            />
-          </span>
+          <CustomTooltip text=' Reschedule Call ' position='left' align='left'>
+            <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'>
+              <i
+                onClick={() => {
+                  setVisitsSchedualInviteId(row.original.invite_id)
+                  setOnlineCallsModalOpen(true)
+                }}
+                className='ri-edit-box-line'
+              />
+            </span>
+          </CustomTooltip>
         </div>
       ),
       size: 100,
@@ -223,15 +230,12 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
 
       <RejectModal
         open={confirmOpen}
-        title='Reschedule Request Rejected!'
-        description={`You have rejected the reschedule request from ${selectedPmaName}. The meeting will not be updated.Please provide a reason for the rejection in the box below. This explanation will be sent to the managing agent.'`}
+        title='Rescheduled Call Rejected !'
+        description={`You have successfully rejected call rescheduled by  ${selectedPmaName}. Please provide a brief reason for the cancellation in the box below. This explanation will be sent to the Managing Agent.'`}
         onClose={() => setConfirmOpen(false)}
         VideoCallInviteId={visitsSchedualInviteId}
         onConfirm={function (): void {}}
-        RejectInviteData={undefined}
-        types={undefined}
-        sitePendingData={undefined}
-        SideVisitsSchedualInviteId={undefined}
+        types='fromVideoCallRejected'
       />
 
       <SiteVisitsModal
@@ -241,9 +245,6 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
         Reschedual={tableData}
         VideoCallInviteId={visitsSchedualInviteId}
         types='Reschedual'
-        siteVisitDate={undefined}
-        SideVisitsSchedualInviteId={undefined}
-        completedShorlistedPmas={undefined}
       />
 
       <VideosCallsModal
@@ -251,7 +252,6 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
         VideoCallInviteId={visitsSchedualInviteId}
         onClose={() => setOnlineCallsModalOpen(false)}
         shorlistedPmas={null}
-        mainSiteVisitVideoCalls={undefined}
         types='videoCallReschedual'
       />
 
@@ -259,7 +259,7 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
         open={SuccessOpen}
         onClose={() => setSuccessOpen(false)}
         onConfirm={handleAgainReschedual} //
-        cancelButton='Ok'
+        cancelButton='Cancel'
         message='Success! You have Sent the new meeting time.'
         title='Reschedule Request Accepted!'
         confirmButtonText='Confirm'

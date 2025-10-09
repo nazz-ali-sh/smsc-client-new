@@ -13,6 +13,7 @@ import person1 from '../../../../public/images/TenderResults/person1.svg'
 import SiteVisitsModal from '../../../common/SiteVisitsModal'
 import AppointManagemnetModal from '@/common/AppointManagemnetAgent'
 import { formatDates } from '@/utils/dateFormater'
+import CustomTooltip from '@/common/CustomTooltip'
 
 interface CompletedCallType {
   pmaId: string
@@ -123,18 +124,23 @@ const InviteCompletedCalls = ({ videoInviteData }: any) => {
       cell: () => (
         <>
           <div className='flex gap-2'>
-            <span
-              onClick={() => setApointAgentModalOpen(true)}
-              className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#DE481A] flex justify-center items-center'
-            >
-              <Image src={person} alt='person' />
-            </span>
-            <span
-              onClick={() => setSiteVisitsModalOpen(true)}
-              className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'
-            >
-              <Image src={person1} alt='person1' />
-            </span>
+            <CustomTooltip text=' Appoint The Agent ' position='left' align='left'>
+              <span
+                onClick={() => setApointAgentModalOpen(true)}
+                className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#DE481A] flex justify-center items-center'
+              >
+                <Image src={person} alt='person' />
+              </span>
+            </CustomTooltip>
+
+            <CustomTooltip text=' Reschedule The Site Visit' position='left' align='left'>
+              <span
+                onClick={() => setSiteVisitsModalOpen(true)}
+                className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'
+              >
+                <Image src={person1} alt='person1' />
+              </span>{' '}
+            </CustomTooltip>
           </div>
         </>
       ),
@@ -162,7 +168,7 @@ const InviteCompletedCalls = ({ videoInviteData }: any) => {
         siteVisitDate={undefined}
         SideVisitsSchedualInviteId={undefined}
         VideoCallInviteId={undefined}
-        types = 'fromSiteVisitTable'
+        types='fromSiteVisitTable'
       />
 
       <AppointManagemnetModal
@@ -172,8 +178,6 @@ const InviteCompletedCalls = ({ videoInviteData }: any) => {
         pmaSelectedID={null}
         InviteCompletedCalls={tableData}
       />
-
-      
     </Box>
   )
 }

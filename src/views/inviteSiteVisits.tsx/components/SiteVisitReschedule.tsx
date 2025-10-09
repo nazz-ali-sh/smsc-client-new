@@ -17,6 +17,7 @@ import SiteVisitsModal from '@/common/SiteVisitsModal'
 import SuccessModal from '@/common/SucessModal'
 import { rmcSideVisitAccept } from '@/services/site_visit_apis/site_visit_api'
 import { formatDates } from '@/utils/dateFormater'
+import CustomTooltip from '@/common/CustomTooltip'
 
 interface RescheduledCallType {
   pmaId: string
@@ -147,12 +148,7 @@ const SiteVisitReschedule = ({ siteRechedual }: any) => {
     columnHelper.accessor('videoCallLink', {
       header: 'Location',
       cell: info => (
-        <a
-          href={info.getValue()}
-          target='_blank'
-          rel='noopener noreferrer'
-          className='text-[#26C6F9] text-[13px] underline'
-        >
+        <a href={info.getValue()} className='text-[13px] '>
           {info.getValue()}
         </a>
       ),
@@ -178,33 +174,39 @@ const SiteVisitReschedule = ({ siteRechedual }: any) => {
       header: 'Action',
       cell: info => (
         <div className='flex gap-2'>
-          <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'>
-            <i onClick={() => setSuccessOpen(true)} className='ri-check-line ' />
-          </span>
+          <CustomTooltip text='Accept Rescheduled Site Visit' position='left' align='left'>
+            <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'>
+              <i onClick={() => setSuccessOpen(true)} className='ri-check-line ' />
+            </span>
+          </CustomTooltip>
 
-          <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#F5DADB] text-[#DE481A] flex justify-center items-center'>
-            <i
-              onClick={() => {
-                const row = info.row.original
+          <CustomTooltip text='Reject Rescheduled Site Visit' position='left' align='left'>
+            <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#F5DADB] text-[#DE481A] flex justify-center items-center'>
+              <i
+                onClick={() => {
+                  const row = info.row.original
 
-                setVisitsSchedualInviteId(row.invite_id)
-                setConfirmOpen(true)
-              }}
-              className='ri-close-line '
-            />
-          </span>
+                  setVisitsSchedualInviteId(row.invite_id)
+                  setConfirmOpen(true)
+                }}
+                className='ri-close-line '
+              />
+            </span>
+          </CustomTooltip>
 
-          <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'>
-            <i
-              onClick={() => {
-                const row = info.row.original
+          <CustomTooltip text='Reschedule Site Visit' position='left' align='left'>
+            <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'>
+              <i
+                onClick={() => {
+                  const row = info.row.original
 
-                setVisitsSchedualInviteId(row.invite_id)
-                setSiteVisitsModalOpen(true)
-              }}
-              className='ri-edit-box-line'
-            ></i>
-          </span>
+                  setVisitsSchedualInviteId(row.invite_id)
+                  setSiteVisitsModalOpen(true)
+                }}
+                className='ri-edit-box-line'
+              ></i>
+            </span>
+          </CustomTooltip>
         </div>
       ),
       size: 100,
@@ -213,7 +215,7 @@ const SiteVisitReschedule = ({ siteRechedual }: any) => {
   ]
 
   return (
-    <Box className='bg-white  overflow-y-auto'>
+    <Box className='bg-white overflow-y-auto'>
       <CommonTable
         data={tableData}
         columns={columns}
@@ -226,8 +228,8 @@ const SiteVisitReschedule = ({ siteRechedual }: any) => {
       <RejectModal
         open={confirmOpen}
         setConfirmOpen={setConfirmOpen}
-        title='Reschedule Request Rejected!'
-        description={`You have rejected the reschedule request from ${selectedPmaName}. The meeting will not be updated.Please provide a reason for the rejection in the box below. This explanation will be sent to the managing agent.'`}
+        title='Rescheduled Site Visit Rejected !'
+        description={`You have successfully rejected call rescheduled by ${selectedPmaName}.Please provide a brief reason for the cancellation in the box below. This explanation will be sent to the Managing Agent`}
         onClose={() => setConfirmOpen(false)}
         onConfirm={function (): void {}}
         types='SiteVisits'
@@ -243,7 +245,7 @@ const SiteVisitReschedule = ({ siteRechedual }: any) => {
         shorlistedPmas={undefined}
         Reschedual={tableData}
         SideVisitsSchedualInviteId={visitsSchedualInviteId}
-        types='SiteVisits'
+        types='Reschedual'
         siteVisitDate={undefined}
         VideoCallInviteId={undefined}
         completedShorlistedPmas={undefined}
@@ -253,7 +255,7 @@ const SiteVisitReschedule = ({ siteRechedual }: any) => {
         open={SuccessOpen}
         onClose={() => setSuccessOpen(false)}
         onConfirm={handleAgainReschedual}
-        cancelButton='Ok'
+        cancelButton='Cancel'
         message='Success! You have Sent the new meeting time.'
         title='Reschedule Request Accepted!'
         confirmButtonText='Confirm'

@@ -10,6 +10,7 @@ import RejectModal from '@/common/RejectModal'
 
 import SiteVisitsModal from '@/common/SiteVisitsModal'
 import { formatDates } from '@/utils/dateFormater'
+import CustomTooltip from '@/common/CustomTooltip'
 
 interface RescheduledCallType {
   pmaId: string
@@ -32,7 +33,6 @@ const SiteVisitUpcoming = ({ SiteUpComingData }: any) => {
   const [visitsSchedualInviteId, setVisitsSchedualInviteId] = useState<number>()
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [selectedPmaName, setSelectedPmaName] = useState<string | number | null>(null)
-
 
   const tableData: RescheduledCallType[] =
     SiteUpComingData?.data?.invites?.map(
@@ -77,8 +77,6 @@ const SiteVisitUpcoming = ({ SiteUpComingData }: any) => {
     }
   }, [visitsSchedualInviteId, tableData])
 
-  console.log(tableData)
-
   const columns = [
     columnHelper.accessor((row, index) => index + 1, {
       id: 'sr',
@@ -114,12 +112,7 @@ const SiteVisitUpcoming = ({ SiteUpComingData }: any) => {
     columnHelper.accessor('videoCallLink', {
       header: 'Location',
       cell: info => (
-        <a
-          href={info.getValue()}
-          target='_blank'
-          rel='noopener noreferrer'
-          className='text-[#26C6F9] text-[13px] underline'
-        >
+        <a href={info.getValue()} className='text-[13px]'>
           {info.getValue()}
         </a>
       ),
@@ -144,28 +137,33 @@ const SiteVisitUpcoming = ({ SiteUpComingData }: any) => {
       header: 'Action',
       cell: info => (
         <div className='flex gap-2'>
-          <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'>
-            <i
-              onClick={() => {
-                const row = info.row.original
+          <CustomTooltip text='Reschedule Upcoming Site Visit' position='left' align='left'>
+            <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'>
+              <i
+                onClick={() => {
+                  const row = info.row.original
 
-                setVisitsSchedualInviteId(row.invite_id)
-                setSiteVisitsModalOpen(true)
-              }}
-              className='ri-edit-box-line'
-            ></i>
-          </span>
-          <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#F5DADB] text-[#DE481A] flex justify-center items-center'>
-            <i
-              onClick={() => {
-                const row = info.row.original
+                  setVisitsSchedualInviteId(row.invite_id)
+                  setSiteVisitsModalOpen(true)
+                }}
+                className='ri-edit-box-line'
+              ></i>
+            </span>
+          </CustomTooltip>
 
-                setVisitsSchedualInviteId(row.invite_id)
-                setConfirmOpen(true)
-              }}
-              className='ri-close-line '
-            />
-          </span>
+          <CustomTooltip text='Cancel Upcoming Site Visit' position='left' align='left'>
+            <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#F5DADB] text-[#DE481A] flex justify-center items-center'>
+              <i
+                onClick={() => {
+                  const row = info.row.original
+
+                  setVisitsSchedualInviteId(row.invite_id)
+                  setConfirmOpen(true)
+                }}
+                className='ri-close-line '
+              />
+            </span>
+          </CustomTooltip>
         </div>
       ),
       size: 100,
@@ -200,8 +198,8 @@ const SiteVisitUpcoming = ({ SiteUpComingData }: any) => {
       <RejectModal
         open={confirmOpen}
         setConfirmOpen={setConfirmOpen}
-        title='Reschedule Request Rejected!'
-        description={`You have rejected the reschedule request from ${selectedPmaName}. The meeting will not be updated. Please provide a reason for the rejection in the box below. This explanation will be sent to the managing agent.`}
+        title='Upcoming Site Visit Cancelled !'
+        description={`You have successfully cancelled your scheduled call with ${selectedPmaName}. Please provide a brief reason for the cancellation in the box below. This explanation will be sent to the Managing Agent .`}
         onClose={() => setConfirmOpen(false)}
         onConfirm={function (): void {}}
         RejectInviteData={tableData}
