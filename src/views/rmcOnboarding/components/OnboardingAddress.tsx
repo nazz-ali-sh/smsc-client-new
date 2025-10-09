@@ -294,17 +294,10 @@ const OnboardingAddress = () => {
     setIsSubmitting(true)
 
     if (manualAddressData && manualAddressData.addressLine1) {
-      const { addressLine1, addressLine2, postcode, region, county } = manualAddressData
+      const { addressLine1, postcode, region, county } = manualAddressData
 
       if (!addressLine1?.trim()) {
         toast.error('Address Line 1 is required')
-        setIsSubmitting(false)
-
-        return
-      }
-
-      if (!addressLine2?.trim()) {
-        toast.error('Address Line 2 is required')
         setIsSubmitting(false)
 
         return
@@ -341,7 +334,9 @@ const OnboardingAddress = () => {
 
     let payload: RmcBlockDetailsPayload
 
-    if (hasDropdownAddress) {
+    const hasManualData = manualAddressData && manualAddressData.addressLine1
+
+    if (hasDropdownAddress && !hasManualData) {
       payload = {
         tender_onboarding_id: onboardingData?.onboarding_id ?? rmcData?.tender_onboarding_id,
         postcode: selectedAddress?.postcode || '',
@@ -357,7 +352,7 @@ const OnboardingAddress = () => {
         address_type: 'api'
       }
     } else {
-      const addressData = mapSelectedAddress || manualAddressData
+      const addressData = manualAddressData || mapSelectedAddress
 
       payload = {
         tender_onboarding_id: onboardingData?.onboarding_id ?? rmcData?.tender_onboarding_id,
@@ -371,7 +366,7 @@ const OnboardingAddress = () => {
         address_line3: '',
         step: 3,
         state: '',
-        address_type: hasDropdownAddress ? 'api' : 'manual'
+        address_type: 'manual'
       }
     }
 
@@ -532,7 +527,7 @@ const OnboardingAddress = () => {
               </Select>
             </FormControl>
             <Grid item xs={12}>
-              <Typography variant='body2' color='text.secondary' sx={{ mb: 2 }}>
+              <Typography variant='body2' color='text.secondary' sx={{ mb: 2, mt: 2 }}>
                 Can't find your address or is it incorrect? You can enter the full address manually below.
               </Typography>
             </Grid>

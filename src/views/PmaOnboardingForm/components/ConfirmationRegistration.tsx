@@ -5,7 +5,7 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
-import { Box, Typography, } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 
 import circular from '../../../../public/svgs/circular.svg'
 import { BLUR_DATA_URLS } from '../../../utils/blurDataUrls'
@@ -29,7 +29,7 @@ const ConfirmationRegistration: React.FC<ConfirmationRegistrationProps> = ({
   React.useEffect(() => {
     const timer = setTimeout(() => {
       onComplete()
-    }, 5000)
+    }, 50000000000000000000000000)
 
     return () => clearTimeout(timer)
   }, [onComplete])
@@ -50,19 +50,27 @@ const ConfirmationRegistration: React.FC<ConfirmationRegistrationProps> = ({
         padding: '2rem'
       }}
     >
-      <Box sx={{ marginBottom: '2rem', position: 'relative', minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-       
-        <Image 
-          src={circular} 
-          alt='confirmation' 
-          width={200} 
-          height={200} 
-          priority 
+      <Box
+        sx={{
+          marginBottom: '2rem',
+          position: 'relative',
+          minHeight: '200px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
+        <Image
+          src={circular}
+          alt='confirmation'
+          width={200}
+          height={200}
+          priority
           loading='eager'
           placeholder='blur'
           blurDataURL={BLUR_DATA_URLS.GENERIC}
           onLoad={() => setImageLoaded(true)}
-          style={{ 
+          style={{
             opacity: imageLoaded ? 1 : 0,
             transition: 'opacity 0.3s ease-in-out'
           }}

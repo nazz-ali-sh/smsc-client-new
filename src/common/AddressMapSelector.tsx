@@ -237,10 +237,6 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
                         sx={getAddressFieldStyles(!!field.value)}
                         onChange={e => {
                           field.onChange(e)
-
-                          if (onManualAddressChange && e.target.value.trim()) {
-                            onManualAddressChange()
-                          }
                         }}
                       />
                     )}
@@ -255,17 +251,13 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
                         {...field}
                         fullWidth
                         label='Address Line 2'
-                        placeholder='Enter address line 2 (optional)'
+                        placeholder='Enter address line 2'
                         error={!!error}
                         helperText={error?.message}
                         variant='outlined'
                         sx={getAddressFieldStyles(!!field.value)}
                         onChange={e => {
                           field.onChange(e)
-
-                          if (onManualAddressChange && e.target.value.trim()) {
-                            onManualAddressChange()
-                          }
                         }}
                       />
                     )}
@@ -287,10 +279,6 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
                         sx={getAddressFieldStyles(!!field.value)}
                         onChange={e => {
                           field.onChange(e)
-
-                          if (onManualAddressChange && e.target.value.trim()) {
-                            onManualAddressChange()
-                          }
                         }}
                       />
                     )}
@@ -312,10 +300,6 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
                         sx={getAddressFieldStyles(!!field.value)}
                         onChange={e => {
                           field.onChange(e)
-
-                          if (onManualAddressChange && e.target.value.trim()) {
-                            onManualAddressChange()
-                          }
                         }}
                       />
                     )}
@@ -338,10 +322,6 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
                         sx={getAddressFieldStyles(!!field.value)}
                         onChange={e => {
                           field.onChange(e)
-
-                          if (onManualAddressChange && e.target.value.trim()) {
-                            onManualAddressChange()
-                          }
                         }}
                       />
                     )}
