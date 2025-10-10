@@ -16,7 +16,7 @@ import MenuList from '@mui/material/MenuList'
 import Typography from '@mui/material/Typography'
 import MenuItem from '@mui/material/MenuItem'
 
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { useSettings } from '@core/hooks/useSettings'
 
@@ -41,6 +41,7 @@ const UserDropdown = () => {
   const router = useRouter()
   const pathname = usePathname()
   const dispatch = useDispatch()
+  const tenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   const { settings } = useSettings()
 
@@ -65,9 +66,11 @@ const UserDropdown = () => {
   const handleSignOut = () => {
     clearTokenCookie()
     dispatch(clearRmcData())
+
     if (typeof window !== 'undefined') {
       localStorage.removeItem('rmc-onboarding-postcode')
     }
+
     setOpen(false)
     router.push('/login')
   }
@@ -119,18 +122,18 @@ const UserDropdown = () => {
                       <Typography color='text.primary'>My Account</Typography>
                     </MenuItem>
                   )}
-                  {!isOnboardingRoute && (
+                  {!isOnboardingRoute && tenderId && (
                     <MenuItem className='gap-3 pli-4' onClick={e => handleDropdownClose(e, '/set-availability')}>
                       <Typography color='text.primary'>Set Availability </Typography>
                     </MenuItem>
                   )}
-                  {!isOnboardingRoute && (
+                  {!isOnboardingRoute && tenderId && (
                     <MenuItem className='gap-3 pli-4' onClick={hanldeArchive}>
                       <Typography color='text.primary'>Archive</Typography>
                     </MenuItem>
                   )}
                   <MenuItem className='gap-3 pli-4' onClick={handleSignOut}>
-                    <Typography color='text.primary'>Sign out</Typography>
+                    <Typography color='text.primary'>Sign Out</Typography>
                   </MenuItem>
                 </MenuList>
               </ClickAwayListener>
