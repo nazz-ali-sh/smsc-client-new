@@ -5,9 +5,10 @@ import { Dialog, DialogTitle, DialogContent, Typography, Box, IconButton, useThe
 interface ToolTipModalProps {
   open: boolean
   onClose: () => void
+  pmaCompanyName?: any
 }
 
-const ContactModal: React.FC<ToolTipModalProps> = ({ open, onClose }) => {
+const ContactModal: React.FC<ToolTipModalProps> = ({ open, onClose, pmaCompanyName }) => {
   const theme = useTheme()
 
   return (
@@ -60,7 +61,9 @@ const ContactModal: React.FC<ToolTipModalProps> = ({ open, onClose }) => {
                 paddingY: '6px',
                 fontSize: '0.875rem'
               }}
-            ></Box>
+            >
+              {pmaCompanyName && pmaCompanyName}
+            </Box>
 
             <>
               <Box

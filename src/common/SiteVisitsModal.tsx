@@ -42,7 +42,7 @@ import type { ShortlistedPmaResponse } from './type'
 import { useDashboardData } from '@/hooks/useDashboardData'
 import CustomButton from './CustomButton'
 import FormInput from '@/components/form-components/FormInput'
-import { isSlotDisabled } from '@/utils/dateFormater'
+import { formatToIdealDate, isSlotDisabled } from '@/utils/dateFormater'
 
 interface Guest {
   id: string
@@ -101,13 +101,15 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
   const [inviteData, setInviteData] = useState<[]>([])
   const [SuccessOpen, setSuccessOpen] = useState(false)
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)
-  const [allPmaids, setAllPmaIds] = useState<[]>([])
   const [showSlotError, setShowSlotError] = useState(false)
 
   const [userSelectedSlots, setUserSelectedSlots] = useState<{ selectedIds: string; slotName: string | null }>({
     selectedIds: '',
     slotName: ''
   })
+
+
+  const CaanderReschedualdate = formatToIdealDate(calanderReschedualData?.schedualDate)
 
   const { invalidateCache } = useDashboardData()
 
@@ -145,10 +147,10 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
   }
 
   useEffect(() => {
-    if (selectedDate) {
-      clearErrors('selectedDate')
+    if (CaanderReschedualdate) {
+      setValue('selectedDate', CaanderReschedualdate, { shouldValidate: true })
     }
-  }, [selectedDate, clearErrors])
+  }, [CaanderReschedualdate, setValue])
 
   const { data: allshortlsitedPmaData } = useQuery<ShortlistedPmaResponse, Error>({
     queryKey: ['shortlisted', tender_id],
@@ -355,11 +357,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     }
   })
 
-  useEffect(() => {
-    const pmaIds = shorlistedPmas?.map((item: { pma_user: { id: any } }) => item?.pma_user?.id)
-
-    setAllPmaIds(pmaIds)
-  }, [shorlistedPmas])
 
   const handleSendVideoCall = (formData: any) => {
     if (!formData.availableSlots) {
@@ -373,24 +370,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       day_id: Number(dayId),
       slot_ids: Number(formData.availableSlots),
       pma_user_ids: formData.pmaGuest.map((g: Guest) => g.id),
-      message: formData.additionalNotes,
-      rmctender_id: tender_id,
-      location
-    })
-  }
-
-  const handleSendVideoCalls = (formData: any) => {
-    if (!formData.availableSlots) {
-      setShowSlotError(true)
-
-      return
-    }
-
-    videoCallInviteMutation.mutate({
-      value: selectedDate,
-      day_id: Number(dayId),
-      slot_ids: Number(formData.availableSlots),
-      pma_user_ids: allPmaids,
       message: formData.additionalNotes,
       rmctender_id: tender_id,
       location
@@ -787,7 +766,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                 '&:hover': { backgroundColor: 'customColors.ligthBlue' }
               }}
             >
-            Reschedule
+              Reschedule
             </Button>
           </DialogActions>
         </>
@@ -800,10 +779,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       ) : (
         <>
           <DialogActions sx={{ px: 3, pb: 8, mt: 5 }}>
-            <CustomButton variant='contained' onClick={handleSubmit(handleSendVideoCalls)}>
-              Send To All Shortlisted Agents
-            </CustomButton>
-
+     
             <CustomButton variant='contained' onClick={handleSubmit(handleSendVideoCall)}>
               Send To Selected Agents
             </CustomButton>

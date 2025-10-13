@@ -85,3 +85,19 @@ export const isSlotDisabled = (slot: any, selectedDate: string): boolean => {
 
   return false
 }
+
+  export function formatToIdealDate(dateStr?: string): string | null {
+    if (!dateStr) return null // safeguard for undefined/null values
+
+    const parts = dateStr.split('/')
+
+    if (parts.length !== 3) return null // invalid format check
+
+    const [day, month, year] = parts
+
+    // Zero-pad day/month if needed (safety for single digits)
+    const formattedDay = day.padStart(2, '0')
+    const formattedMonth = month.padStart(2, '0')
+
+    return `${year}-${formattedMonth}-${formattedDay}`
+  }

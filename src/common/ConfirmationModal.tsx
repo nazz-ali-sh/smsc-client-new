@@ -15,7 +15,6 @@ interface ConfirmationModalProps {
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ open, onClose, inviteData, type, selectcomapny }) => {
   const theme = useTheme()
 
-
   return (
     <Dialog
       open={open}
@@ -50,6 +49,13 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ open, onClose, in
         <Box sx={{ paddingY: '12px' }}>
           <Divider />
         </Box>
+
+        <Typography
+          variant='body2'
+          sx={{ mb: 1.5, color: 'customColors.textGray', lineHeight: 1.4, fontSize: '0.875rem', pt: '5px' }}
+        >
+          {`Your request for a ${type === 'videoCall' ? 'video call' : 'site visit'}  has been successfully submitted to the following agent:`}
+        </Typography>
       </DialogTitle>
 
       <DialogContent sx={{ px: 3, py: 2 }}>
@@ -105,19 +111,16 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ open, onClose, in
                 </Typography>
               </Box>
             </Box>
-          ) : type === 'appointAgent' ? (
+          ) : 
+          type === 'appointAgent' ? (
             <Box>
-              {selectcomapny?.map((item: any, index: React.Key | null | undefined) => {
-                return (
                   <>
-                    <Typography key={index} variant='body2' sx={{ fontSize: '0.875rem', marginBottom: '10px' }}>
-                      <span className='font-bold'>{item || ''}</span> Have Been Notified & Will Be In Touch With You
+                    <Typography  variant='body2' sx={{ fontSize: '0.875rem', marginBottom: '10px' }}>
+                      <span className='font-bold'>{selectcomapny && selectcomapny }</span> Have Been Notified & Will Be In Touch With You
                       Very Shortly.
                     </Typography>
                   </>
-                )
-              })}
-
+              
               <Typography variant='body2' sx={{ fontSize: '0.875rem', marginBottom: '10px' }}>
                 We hope you found our service valuable and would appreciate any feedback to help us continue improving
                 for future leaseholders.

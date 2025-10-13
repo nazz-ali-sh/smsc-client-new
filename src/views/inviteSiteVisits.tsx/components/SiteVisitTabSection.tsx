@@ -25,7 +25,7 @@ interface InviteTabsProps {
 
 const InviteTabItems: InviteTabItem[] = [
   {
-    label: 'Upcoming Visits',
+    label: 'Upcoming  Visits',
     icon: () => <Image src={upcomingIcon} alt='Upcoming Calls' width={24} height={24} />,
     bg: '#E8F9FE',
     color: '#26C6F9'
@@ -49,7 +49,7 @@ const InviteTabItems: InviteTabItem[] = [
     color: '#FDB528'
   },
   {
-    label: 'Rejected / Cancelled Calls',
+    label: 'Rejected / Cancelled Visits',
     icon: () => <Image src={cancalled} alt='Rejected / Cancelled Calls' width={24} height={24} />,
     bg: '#f5dadb',
     color: '#FDB528'

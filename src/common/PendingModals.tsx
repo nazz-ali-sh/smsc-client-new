@@ -42,6 +42,7 @@ const PendingModal = ({
   types,
   siteVisitData
 }: DeleteModalProps) => {
+
   return (
     <Dialog
       open={open}
@@ -75,23 +76,24 @@ const PendingModal = ({
         </Box>
       </DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          <span className='font-bold'>Meeting Types :</span> {siteVisitData?.calendartype}
-        </DialogContentText >
+       
+        <DialogContentText sx={{ marginTop: '5px' }}>
+          <span className='font-bold'>Pma Name: </span> {siteVisitData?.pma_username}
+        </DialogContentText>
         <DialogContentText sx={{ marginTop: '5px' }}>
           <span className='font-bold'>Date & Time: </span> {siteVisitData?.slot}{' '}
         </DialogContentText>
         <DialogContentText sx={{ marginTop: '5px' }}>
-          <span className='font-bold'>Block Name: </span> {siteVisitData?.block_name || 'no data '}{' '}
+          <span className='font-bold'>Block Name: </span> {siteVisitData?.block_name || 'no data '}
         </DialogContentText>
         <DialogContentText sx={{ marginTop: '5px' }}>
-          <span className='font-bold'>Region: </span> {siteVisitData?.region || 'No data'}{' '}
+          <span className='font-bold'>Region: </span> {siteVisitData?.region || 'No data'}
         </DialogContentText>
         <DialogContentText sx={{ marginTop: '5px' }}>
-          {siteVisitData?.location && 'location :'} {siteVisitData?.location && siteVisitData?.location}{' '}
+          {siteVisitData?.location && 'location :'} {siteVisitData?.location && siteVisitData?.location}
         </DialogContentText>
       </DialogContent>
-  
+
       <DialogActions>
         {types?.trim() === 'rescheduled' ? (
           <>

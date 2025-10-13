@@ -62,8 +62,6 @@ interface OnlineCallsModalProps {
   VideoCallInviteId?: any
   reschedulGuest?: any
   shorlistedshortlisted_pmas?: any
-  
-  
 }
 
 interface Slot {
@@ -98,7 +96,8 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
   componentTypes,
   calanderReschedualData,
   VideoCallInviteId,
-  reschedulGuest
+  reschedulGuest,
+  
 }) => {
   const theme = useTheme()
   const router = useRouter()
@@ -116,6 +115,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     selectedIds: '',
     slotName: ''
   })
+
 
   const { invalidateCache } = useDashboardData()
 
@@ -300,14 +300,14 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     ),
 
     ...(mainSiteVisitVideoCalls?.data?.invites || [])?.map((invite: any) => ({
-      id: invite.pma_user_id,
-      pma_number: invite.pma_name
+      id: invite?.pma_user_id,
+      pma_number: invite?.pma_name
     })),
 
-    // ...(mainSiteVisitVideoCalls || [])?.map((item: any) => ({
-    //   id: item?.id,
-    //   pma_number: item?.pma_number
-    // })),
+    ...(mainSiteVisitVideoCalls || [])?.map((item: any) => ({
+      id: item?.id,
+      pma_number: item?.pma_number
+    })),
 
     ...(Array.isArray(mainSiteVisitVideoCalls)
       ? mainSiteVisitVideoCalls.map((item: any) => ({
@@ -430,22 +430,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     setValue('selectedDate', val, { shouldValidate: true, shouldDirty: true })
     clearErrors('selectedDate')
   }
-
-  useEffect(() => {
-    if (selectedDate) {
-      const day = new Date(selectedDate).getDay()
-
-      if (day === 0 || day === 6) {
-        setError('selectedDate', {
-          type: 'manual',
-          message: 'Weekends are not allowed. Please choose a weekday.'
-        })
-        setValue('selectedDate', today)
-      } else {
-        clearErrors('selectedDate')
-      }
-    }
-  }, [selectedDate, setError, clearErrors, setValue, today])
 
   return (
     <Dialog
@@ -608,7 +592,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
             <Grid container spacing={2} alignItems='center' sx={{ mb: 2, mt: 6 }}>
               <Grid container spacing={4} alignItems='center' sx={{ mb: 2 }}>
                 {gettingSlotsAndDays?.data?.slots?.map(item => {
-                  console.log(item)
                   const isSelected = userSelectedSlots?.selectedIds === String(item.id)
 
                   return (

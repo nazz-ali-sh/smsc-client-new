@@ -148,7 +148,7 @@ const InvitePendingCalls: React.FC<InvitePendingCallsProps> = ({ pendingInviteDa
       header: 'Action',
       cell: ({ row }) => (
         <div className='flex gap-2'>
-          <CustomTooltip text='Cancel The Reschedule Call ' position='left' align='left'>
+          <CustomTooltip text='Cancel Pending Call ' position='left' align='left'>
             <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#F5DADB] text-[#DE481A] flex justify-center items-center'>
               <i
                 onClick={() => {

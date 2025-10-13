@@ -89,6 +89,8 @@ const CalendarWrapper = () => {
   const [addEventSidebarOpen, setAddEventSidebarOpen] = useState<boolean>(false)
   const [eventsData, setEventsData] = useState<CalendarEvent[]>([])
 
+  console.log(eventsData)
+
   const dispatch = useDispatch()
   const mdAbove = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'))
   const handleLeftSidebarToggle = () => setLeftSidebarOpen(!leftSidebarOpen)
@@ -157,6 +159,7 @@ const CalendarWrapper = () => {
           }
         }) ?? []
 
+
       const siteVisitEvents: CalendarEvent[] =
         rmcCalendarData?.data?.site_visit_invites?.map(invite => {
           const date = invite.scheduled_date.split('T')[0]
@@ -180,6 +183,7 @@ const CalendarWrapper = () => {
             calendartype: 'SiteVisit'
           }
         }) ?? []
+
 
       return [...videoCallEvents, ...siteVisitEvents]
     }

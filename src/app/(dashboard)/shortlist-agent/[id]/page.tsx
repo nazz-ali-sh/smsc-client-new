@@ -20,7 +20,6 @@ interface PageProps {
 export default function AgentDetail({ params }: PageProps) {
   const activeTab = useSelector((state: RootState) => state?.tabSwitch?.activeTab)
 
-
   const { data, isLoading, isError } = useQuery({
     queryKey: ['companyDetails', params.id, activeTab],
     queryFn: () => getPmaCompanyDetails(Number(params.id), activeTab)
@@ -31,7 +30,7 @@ export default function AgentDetail({ params }: PageProps) {
   }
 
   if (isError) {
-    return <div className='text-center'>Data Not Found </div>
+    return <div className='text-center flex justify-center items-center w-full mt-[20px]'>Data Not Found </div>
   }
 
   return (

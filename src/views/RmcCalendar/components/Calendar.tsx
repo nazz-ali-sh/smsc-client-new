@@ -52,6 +52,7 @@ const Calendar = (props: CalenderProps) => {
   const [joinSiteVisitmetting, setJoinSiteVisitMetting] = useState(false)
 
   interface PillsData {
+    pma_username: PillsData | undefined
     invite_Id: any
     tender_id?: any
     status?: any
@@ -304,7 +305,7 @@ const Calendar = (props: CalenderProps) => {
         open={siteVisitRejectedModal}
         setConfirmOpen={siteVisitRejectedModal}
         title='Reschedule Request Rejected!'
-        description='You have rejected the reschedule request from [PMA Name]. The meeting will not be updated.Please provide a reason for the rejection in the box below. This explanation will be sent to the managing agent.'
+        description={`You have rejected the reschedule request from ${selectedPillsData && selectedPillsData?.pma_username}. The meeting will not be updated.Please provide a reason for the rejection in the box below. This explanation will be sent to the managing agent.`}
         onClose={() => setsiteVisitRejectedModal(false)}
         onConfirm={function (): void {}}
         calanderSiteVisitReject={selectedPillsData}
@@ -313,8 +314,8 @@ const Calendar = (props: CalenderProps) => {
 
       <CancelVideoCallsAndSiteVisist
         open={confirmOpen}
-        title={`${selectedPillsData?.status == 'pending' ? 'Rescheduled Request Cancel' : selectedPillsData?.status == 'rescheduled' ? 'Rescheduled Request Cancel ' : 'Rescheduled Request Cancel'}`}
-        description='You have rejected the reschedule request from [PMA Name]. The meeting will not be updated.Please provide a reason for the rejection in the box below. This explanation will be sent to the managing agent.'
+        title={`${selectedPillsData?.status == 'pending' ? `Pending ${selectedPillsData?.calendartype == 'VideoCall' ? 'Call' : 'Site Visit'} Cancelled !` : selectedPillsData?.status == 'rescheduled' ? 'Rescheduled Request Cancel ' : 'Rescheduled Request Cancel'}`}
+        description={`You have successfully cancelled your scheduled ${selectedPillsData?.calendartype == 'VideoCall' ? 'call' : 'site visit'}  with ${selectedPillsData && selectedPillsData?.pma_username} . Please provide a brief reason for the cancellation in the box below. This explanation will be sent to the Managing Agent.`}
         onClose={() => setConfirmOpen(false)}
         calanderCancelData={selectedPillsData}
         onConfirm={() => {}}
@@ -375,9 +376,6 @@ const Calendar = (props: CalenderProps) => {
       >
         <Box sx={{ py: 2 }}>
           <DialogContent>
-            <DialogContentText>
-              <span className='font-bold'>Meeting Types :</span> {selectedPillsData?.calendartype}
-            </DialogContentText>
             <DialogContentText sx={{ marginTop: '5px' }}>
               <strong className='font-bold '>Date & Time: </strong> {selectedPillsData?.slot}
             </DialogContentText>

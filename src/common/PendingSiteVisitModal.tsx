@@ -37,7 +37,6 @@ const PendingSiteVisitModal = ({
   onSiteVisitReschedule = () => {},
   onRejectedSiteVisit = () => {},
   onConfirmSiteVisit = () => {},
-  itemName = 'item',
   title,
   types,
   siteVisitData
@@ -75,8 +74,8 @@ const PendingSiteVisitModal = ({
         </Box>
       </DialogTitle>
       <DialogContent>
-        <DialogContentText >
-          <span className='font-bold'>Meeting Types :</span> {siteVisitData?.calendartype}
+        <DialogContentText sx={{ marginTop: '5px' }}>
+          <span className='font-bold'>Pma Name: </span> {siteVisitData?.pma_username}
         </DialogContentText>
         <DialogContentText sx={{ marginTop: '5px' }}>
           <span className='font-bold'>Date & Time: </span> {siteVisitData?.slot}{' '}
@@ -90,11 +89,6 @@ const PendingSiteVisitModal = ({
         <DialogContentText sx={{ marginTop: '5px' }}>
           {siteVisitData?.location && <span className='font-bold'>Location: </span>}
           {siteVisitData?.location && siteVisitData?.location}{' '}
-        </DialogContentText>
-      </DialogContent>
-      <DialogContent>
-        <DialogContentText>
-          Are you sure you want to delete this {itemName}? This action cannot be undone.
         </DialogContentText>
       </DialogContent>
       <DialogActions>

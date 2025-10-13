@@ -56,11 +56,11 @@ const SiteVisitTabs = () => {
       case 1:
         return 'Rescheduled Site Visits'
       case 2:
-        return 'Completed Visits'
+        return 'Completed Site Visits'
       case 3:
-        return 'RMC Pending Visits'
+        return 'Pending Site Visits'
       case 4:
-        return 'Rejected / Cancelled tabs'
+        return 'Rejected / Cancelled Site Visits'
       default:
         return 'Site Visits'
     }

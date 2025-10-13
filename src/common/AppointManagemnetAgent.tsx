@@ -70,13 +70,14 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
   setpmaValue,
   selectedPmaName,
   companyNames
-  
 }) => {
   const theme = useTheme()
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)
   const [feedbacks, setFeedbacks] = useState<{ [key: number]: { feedback: string; noFeedback: boolean } }>({})
   const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
   const reschedual_pma_user_id = (InviteCompletedCalls ?? [])[0]?.pma_user_ids || '0'
+
+  console.log(companyNames)
 
   const queryClient = useQueryClient()
 
@@ -114,7 +115,6 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
 
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || ''
-
       toast.error(errorMessage)
       setpmaValue('')
       onClose()
@@ -270,7 +270,7 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
         </Grid>
       </DialogContent>
 
-      <DialogActions sx={{ p: 3, pt: 1 }}>
+      <DialogActions sx={{ p: 3, pt: 2 }}>
         <CustomButton onClick={onClose} variant='outlined'>
           Cancel
         </CustomButton>

@@ -80,9 +80,7 @@ const JoinMeetingModal = ({
         </Box>
       </DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          <span className='font-bold'>Meeting Types :</span> {siteVisitData?.calendartype}
-        </DialogContentText>
+     
         <DialogContentText sx={{ marginTop: '5px' }}>
           <strong className='font-bold '>Date & Time: </strong> {siteVisitData?.slot}
         </DialogContentText>

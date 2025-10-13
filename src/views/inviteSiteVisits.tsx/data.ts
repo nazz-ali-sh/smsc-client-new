@@ -24,7 +24,7 @@ export const InviteTabItems = [
     color: '#FDB528'
   },
   {
-    label: 'Rejected / Cancelled tabs',
+    label: 'Rejected / Cancelled Visits',
     icon: 'ri-calendar-schedule-line',
     bg: '#FDF3DC',
     color: '#FDB528'

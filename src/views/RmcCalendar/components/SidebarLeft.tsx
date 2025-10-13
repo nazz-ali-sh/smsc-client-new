@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import Button from '@mui/material/Button'
+import { useRouter } from 'next/navigation'
+
 import Drawer from '@mui/material/Drawer'
 import Divider from '@mui/material/Divider'
 import Checkbox from '@mui/material/Checkbox'
@@ -20,6 +21,8 @@ import CustomButton from '@/common/CustomButton'
 
 const SidebarLeft = (props: SidebarLeftProps) => {
   const { mdAbove, leftSidebarOpen, calendarApi, handleLeftSidebarToggle } = props
+
+  const router = useRouter()
 
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
   const [onlineCallsModalOpen, setOnlineCallsModalOpen] = useState(false)
@@ -94,13 +97,32 @@ const SidebarLeft = (props: SidebarLeftProps) => {
           }
         }}
       >
-        <div className='is-full p-5'>
+        <section className='ml-[42px] w-full'>
+          <div className='mt-[20px] text-[18px] font-bold leading-[28px] mb-[10px]'>Meeting Status</div>
+
+          <div className='text-[15px] leading-[22px] font-normal flex items-center  gap-2'>
+            <span className='inline-block w-3 h-3 rounded-full bg-buttonPrimary ml-[6px]'></span>
+            Confirmed meetings
+          </div>
+
+          <div className='text-[15px] leading-[22px] font-normal flex items-center gap-2 mt-[10px]'>
+            <span className='inline-block w-3 h-3 rounded-full bg-[#B2B2B2] ml-[6px]'></span>
+            Pending meetings
+          </div>
+
+          <div className='text-[15px] leading-[22px] font-normal flex items-center gap-2 mt-[10px]'>
+            <span className='inline-block w-3 h-3 rounded-full bg-yellow-600 ml-[6px]'></span>
+            Rescheduled meetings
+          </div>
+        </section>
+
+        <div className='is-full px-5 pt-5 pb-1'>
           <CustomButton fullWidth onClick={() => setOnlineCallsModalOpen(true)}>
             Schedule Video Call
           </CustomButton>
         </div>
 
-        <div className='is-full p-5'>
+        <div className='is-full px-5 pb-5 pt-3'>
           <CustomButton fullWidth onClick={() => setSiteVisitsModalOpen(true)}>
             Schedule Site Visit
           </CustomButton>
@@ -171,13 +193,31 @@ const SidebarLeft = (props: SidebarLeftProps) => {
             <FormControlLabel
               label='Site Visit'
               control={
-                <Checkbox checked={selectedFilter === 'site_visit'} onChange={() => handleChange('site_visit')} />
+                <Checkbox
+                  sx={{
+                    color: '#FF4D49',
+                    '&.Mui-checked': {
+                      color: '#FF4D49'
+                    }
+                  }}
+                  checked={selectedFilter === 'site_visit'}
+                  onChange={() => handleChange('site_visit')}
+                />
               }
             />
             <FormControlLabel
               label='Video Call'
               control={
-                <Checkbox checked={selectedFilter === 'video_call'} onChange={() => handleChange('video_call')} />
+                <Checkbox
+                  sx={{
+                    color: '#35C0ED',
+                    '&.Mui-checked': {
+                      color: '#35C0ED'
+                    }
+                  }}
+                  checked={selectedFilter === 'video_call'}
+                  onChange={() => handleChange('video_call')}
+                />
               }
             />
           </>
@@ -188,49 +228,19 @@ const SidebarLeft = (props: SidebarLeftProps) => {
         {/* Meeting Requests */}
         <div className='flex flex-col p-5 is-full'>
           <Typography variant='h5' className='mbe-4'>
-            Meeting Requests
+            Events Notification
           </Typography>
           <div className='flex items-center justify-between mbe-3'>
             <Typography variant='body2'>Site Visits</Typography>
-            <Button
-              variant='outlined'
-              size='small'
-              onClick={() => setSiteVisitsModalOpen(true)}
-              sx={{
-                height: 20,
-                borderColor: 'customColors.cyan2',
-                color: 'customColors.cyan2',
-                backgroundColor: 'transparent !important',
-                '&:hover': {
-                  borderColor: 'customColors.cyan2',
-                  backgroundColor: 'transparent !important',
-                  color: 'customColors.cyan2'
-                }
-              }}
-            >
-              Invite
-            </Button>
+            <CustomButton variant='outlined' size='small' onClick={() => router.push(`invites/site-visits`)}>
+              View
+            </CustomButton>
           </div>
           <div className='flex items-center justify-between'>
             <Typography variant='body2'>Online Calls</Typography>
-            <Button
-              variant='outlined'
-              size='small'
-              onClick={() => setOnlineCallsModalOpen(true)}
-              sx={{
-                height: 20,
-                borderColor: 'customColors.cyan2',
-                color: 'customColors.cyan2',
-                backgroundColor: 'transparent !important',
-                '&:hover': {
-                  borderColor: 'customColors.cyan2',
-                  backgroundColor: 'transparent !important',
-                  color: 'customColors.cyan2'
-                }
-              }}
-            >
-              Invite
-            </Button>
+            <CustomButton variant='outlined' size='small' onClick={() => router.push(`invites/video-calls`)}>
+              View
+            </CustomButton>
           </div>
         </div>
       </Drawer>
