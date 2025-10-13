@@ -43,7 +43,7 @@ const SiteVisitHeader = ({ title = 'Video Calls', actionButton }: InviteCallHead
           maxWidth: '660px'
         }}
       >
-        Manage your entire call history here. You can view all upcoming, rescheduled and completed calls in one
+        Manage your entire visits history here. You can view all upcoming, rescheduled and completed visits in one
         centralized location.
       </Typography>
 

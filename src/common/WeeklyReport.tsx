@@ -19,6 +19,7 @@ import tendersend from '../../public/images/dashboardImages/tenderSend.svg'
 import tenderResponce from '../../public/images/dashboardImages/tenderResponce.svg'
 import tenderExpire from '../../public/images/dashboardImages/tenderExpire.svg'
 import { dashboardData } from '@/services/dashboard-apis/dashboard-api'
+import { formatDates } from '@/utils/dateFormater'
 
 interface DashboardResponse {
   dashboardResponce?: any
@@ -77,20 +78,6 @@ const WeeklyReport = ({ text }: { text?: string }) => {
 
   const currentStageLabel = getCurrentStageDisplayName(dashboardResponce)
 
-  const formatDate = (dateString?: string | null): string => {
-    if (!dateString) return '--'
-    const date = new Date(dateString)
-
-    if (isNaN(date.getTime())) return '--'
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-    const year = date.getFullYear()
-
-    return `${month}-${day}-${year}`
-  }
-
-  console.log(currentStageLabel, 'currentStageLabel')
-
   return (
     <div className='flex max-md:flex-col md:items-center gap-6 plb-5 w-full'>
       <div className='md:is-8/12 shadow-lg px-[25px] py-[32px] rounded-xl bg-white'>
@@ -145,7 +132,7 @@ const WeeklyReport = ({ text }: { text?: string }) => {
             <div>
               <Typography sx={{ fontSize: '14px', fontWeight: 400 }}>Tender Ends on</Typography>
               <Typography variant='h5' sx={{ color: 'customColors.orange2', fontSize: '18px', fontWeight: 700 }}>
-                {tenderExpireDaat ? formatDate(tenderExpireDaat) : '--'}
+                {tenderExpireDaat ? formatDates(tenderExpireDaat) : '--'}
               </Typography>
             </div>
           </div>
@@ -174,7 +161,7 @@ const WeeklyReport = ({ text }: { text?: string }) => {
               variant='body1'
               sx={{ fontSize: '15px', fontWeight: 400, paddingTop: '6px', color: 'customColors.gray7' }}
             >
-              {currentStageLabel ? `${currentStageLabel} on ${formatDate(completedAtDate)}` : '--'}
+              {currentStageLabel ? `${currentStageLabel} on ${formatDates(completedAtDate)}` : '--'}
             </Typography>
           </div>
         </div>

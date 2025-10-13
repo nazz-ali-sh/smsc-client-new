@@ -349,7 +349,9 @@ export const onboardingRoutes = [
 ]
 
  export const links = [
-    { href: '/invites-site-visits', label: 'Site Visit' },
-    { href: '/invites-video-calls', label: 'Video Call' },
-    { href: '/rmc-calendar', label: 'Calendar' }
+    { href: '/rmc-calendar', label: 'Calendar' },
+     { href: '/invites-video-calls', label: 'Video Call' },
+    { href: '/invites-site-visits', label: 'Site Visit' }
+   
+  
   ]

@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { useSelector } from 'react-redux'
 
@@ -25,16 +25,11 @@ type ShortListAgentProps = {
   fianlExpireDate?: any
 }
 
-const ShortListAgent = ({
-  open,
-  onClose,
-  onConfirm,
-  pmaSelectedID,
-  fianlExpireDate
-}: ShortListAgentProps) => {
+const ShortListAgent = ({ open, onClose, onConfirm, pmaSelectedID, fianlExpireDate }: ShortListAgentProps) => {
   const router = useRouter()
 
   const rmcTenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
+  const queryClient = useQueryClient()
 
   const mutation = useMutation({
     mutationFn: () => rmcExtendThreeDays(Number(rmcTenderId), pmaSelectedID),
@@ -42,6 +37,10 @@ const ShortListAgent = ({
       toast.success('Tender extended successfully!')
       toast.success(data?.message)
       if (onConfirm) onConfirm()
+
+      queryClient.invalidateQueries({
+        queryKey: ['finalAgents', rmcTenderId]
+      })
     },
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || 'Failed to Extend Tender'

@@ -33,7 +33,7 @@ const BadgeContentSpan = styled('span')({
   boxShadow: '0 0 0 2px var(--mui-palette-background-paper)'
 })
 
-const UserDropdown = () => {
+const UserDropdown = ({ selectedTenderInitial }: { selectedTenderInitial?: string }) => {
   const [open, setOpen] = useState(false)
 
   const anchorRef = useRef<HTMLDivElement>(null)
@@ -81,28 +81,28 @@ const UserDropdown = () => {
 
   return (
     <>
-      <Badge
-        ref={anchorRef}
-        overlap='circular'
-        badgeContent={<BadgeContentSpan onClick={handleDropdownOpen} />}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        className='mis-2'
-      >
-        <Avatar
-          ref={anchorRef}
-          alt='John Doe'
-          src='/images/avatars/1.png'
+      <div ref={anchorRef} className='flex items-center cursor-pointer'>
+        <Badge
+          overlap='circular'
+          badgeContent={<BadgeContentSpan />}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
           onClick={handleDropdownOpen}
-          className='cursor-pointer bs-[38px] is-[38px]'
-        />
-      </Badge>
+        >
+          <Avatar className='bs-[38px] is-[38px] bg-[#35C0ED] text-white font-semibold'>
+            {selectedTenderInitial || 'TN'}
+          </Avatar>
+        </Badge>
+      </div>
       <Popper
         open={open}
+        anchorEl={anchorRef.current}
+        placement='bottom-end' 
         transition
         disablePortal
-        placement='bottom-end'
-        anchorEl={anchorRef.current}
-        className='min-is-[240px] !mbs-4 z-[1]'
+        modifiers={[
+          { name: 'offset', options: { offset: [0, 8] } }
+        ]}
+        className='z-[10]'
       >
         {({ TransitionProps, placement }) => (
           <Fade

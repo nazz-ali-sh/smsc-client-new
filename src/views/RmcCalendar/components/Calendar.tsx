@@ -13,7 +13,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { toast } from 'react-toastify'
 
-import { Box, DialogContent, DialogContentText} from '@mui/material'
+import { Box, DialogContent, DialogContentText } from '@mui/material'
 
 import type { CalendarColors, CalendarType } from '@/types/apps/calendarTypes'
 import VideosCallsModal from '@/common/VideosCallsModal'
@@ -57,12 +57,11 @@ const Calendar = (props: CalenderProps) => {
     status?: any
     zoom_link: string
     calendartype?: any
-  slot?:any
-  block_name?: any
-  region?: any
-  location?: any
+    slot?: any
+    block_name?: any
+    region?: any
+    location?: any
   }
-
 
   const calendarRef = useRef<FullCalendar>(null)
 
@@ -271,7 +270,6 @@ const Calendar = (props: CalenderProps) => {
     }
   }
 
-
   return (
     <>
       {/* Inline style to increase slot box height */}
@@ -330,7 +328,6 @@ const Calendar = (props: CalenderProps) => {
         calanderReschedualData={selectedPillsData}
       />
 
-    
       <PendingModal
         title={` ${selectedPillsData?.status == 'rescheduled' ? ' Rescheduled Meeting' : selectedPillsData?.status == 'pending' ? 'Pending Meeting' : ''} `}
         open={pendingsModalOpen}
@@ -402,4 +399,3 @@ const Calendar = (props: CalenderProps) => {
 }
 
 export default Calendar
-

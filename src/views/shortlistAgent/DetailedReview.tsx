@@ -38,22 +38,30 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
   const [apointAgentModalOpen, setApointAgentModalOpen] = useState(false)
   const [contactModalOpen, setContactModalOpen] = useState(false)
   const [shortlistedModalOpen, setShortListedSuccessModalOpen] = useState(false)
-  const [pmaSelectedID, setPmaSelectedID] = useState<number | any>()
+  const [shortlisted_pmaselectedID, setshortlisted_pmaselectedID] = useState<number | any>()
+
   const [selectedPma, setSelectedPma] = useState<{ id: number; pma_number: string } | null>(null)
 
-  const extendedCheck = finalShortListedResponce?.data?.shortlisted_pmas[0]?.shortlisting_extended
+  const extendedCheck = Array.isArray(finalShortListedResponce?.data?.shortlisted_pmas)
+    ? (finalShortListedResponce.data.shortlisted_pmas[0]?.shortlisting_extended ?? false)
+    : false
 
-  const shortlistexpiryDate = calculateTimeLeft(
-    finalShortListedResponce?.data?.shortlisted_pmas[0]?.shortlisting_expiry_at
-  )
+
+  const expiryAt =
+    Array.isArray(finalShortListedResponce?.data?.shortlisted_pmas) &&
+    finalShortListedResponce.data.shortlisted_pmas.length > 0
+      ? finalShortListedResponce.data.shortlisted_pmas[0]?.shortlisting_expiry_at
+      : null
+
+  const shortlistexpiryDate = calculateTimeLeft(expiryAt || '')
 
   const handkeAppointAgnet = (selected_pma_id: any) => {
-    setPmaSelectedID(selected_pma_id)
+    setshortlisted_pmaselectedID(selected_pma_id)
     setApointAgentModalOpen(true)
   }
 
   const handleExtendByThree = (selected_pma_id: any) => {
-    setPmaSelectedID(selected_pma_id)
+    setshortlisted_pmaselectedID(selected_pma_id)
     setShortListedSuccessModalOpen(true)
   }
 
@@ -72,7 +80,8 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
   })
 
   const handlecontactAgent = (selected_pma_id: number) => {
-    setPmaSelectedID(selected_pma_id)
+    console.log(selected_pma_id)
+    setshortlisted_pmaselectedID(selected_pma_id)
 
     sendContactPmaMutation.mutate({
       pma_user_id: Number(selected_pma_id),
@@ -105,188 +114,220 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
     <>
       <div className='pb-[70px]'>
         <section className=' mt-8 '>
-          {finalShortListedResponce?.data?.shortlisted_pmas?.map((company: any, index: number) => (
-            <section key={index} className='flex justify-between items-center mt-8 shadow-md  rounded-xl px-6 py-4'>
-              <div className='flex items-start gap-6 cursor-pointer'>
-                <div className='flex flex-col'>
-                  <Image
-                    onClick={() => router.push(`/shortlist-agent/${company?.pma_user?.id}`)}
-                    src={companyImage}
-                    alt={`${company.title} logo`}
-                    width={180}
-                    height={212}
-                    className='rounded-xl'
-                  />
+          {finalShortListedResponce?.data?.shortlisted_pmas?.map(
+            (company: any, index: number) => (
+              (
+                <section key={index} className='flex justify-between items-center mt-8 shadow-md  rounded-xl px-6 py-4'>
+                  <div className='flex items-start gap-6 cursor-pointer'>
+                    <div className='flex flex-col'>
+                      <Image
+                        onClick={() => router.push(`/shortlist-agent/${company?.pma_user?.id}`)}
+                        src={companyImage}
+                        alt={`${company.title} logo`}
+                        width={180}
+                        height={212}
+                        className='rounded-xl'
+                      />
 
-                  <div className='mt-[19px] text-[12px] text-buttonPrimary font-bold text-center flex items-center justify-center '>
-                    <div className='flex items-center'>
-                      <CustomButton onClick={() => handkeAppointAgnet(company?.pma_user?.id)}>
-                        <Image src={whiteperson} alt='person' className='mr-[10px]' />
-                        Appoint the agent
-                      </CustomButton>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <Typography variant='h3' className='text-[#1F4E8D] text-[34px] font-bold py-1'>
-                    €{company?.fee_amount}
-                  </Typography>
-                  <div className='text-[20px] font-bold leading-[32px]'>{company?.company_details?.name}</div>
-                  <div className='text-[12px] font-normal leading-[32px] text-buttonPrimary'>
-                    {company?.company_details?.website || 'No Website'}
-                  </div>
-
-                  <section className='pb-4 mt-2.5'>
-                    <div className='flex space-x-4'>
-                      <div
-                        className={`flex items-center space-x-2 px-[15px] py-0 rounded-full ${company?.video_call_booked ? 'bg-[#f1f1f1]' : 'bg-[#26C6F929]'} font-semibold `}
-                      >
-                        <span
-                          className={`w-2 h-2  ${!company?.video_call_booked ? 'bg-[#26C6F9]' : 'bg-[#bbbbbb]'} rounded-full pt-1`}
-                        ></span>
-                        <span
-                          className={` ${!company?.video_call_booked ? 'text-[#26C6F9]' : 'text-[#bbbbbb]'} font-medium text-xs `}
-                        >
-                          {!company?.video_call_booked ? 'Not Contacted' : 'Not Contacted'}
-                        </span>
-                      </div>
-
-                      <div
-                        className={`flex items-center space-x-2 px-[15px] py-0 rounded-full ${company?.video_call_booked ? 'bg-[#DDF6FE]' : 'bg-[#6969691A] '}   font-semibold `}
-                      >
-                        <span
-                          className={`w-2 h-2 ${company?.video_call_booked ? 'bg-[#26C6F9]' : 'bg-[#bbbbbb] '}  rounded-full pt-1`}
-                        ></span>
-                        <span
-                          className={` ${company?.video_call_booked ? 'text-[#26C6F9]' : 'text-[#69696966]'} font-medium text-xs py-1 `}
-                        >
-                          Call Booked
-                        </span>
-                      </div>
-
-                      <div
-                        className={`flex items-center space-x-2 px-[15px] py-0 rounded-full ${company?.site_visit_booked ? 'bg-[#DDF6FE]' : 'bg-[#6969691A] '} font-semibold `}
-                      >
-                        <span
-                          className={`w-2 h-2 ${company?.site_visit_booked ? 'bg-[#26C6F9]' : 'bg-[#bbbbbb]'}  rounded-full pt-1`}
-                        ></span>
-                        <span
-                          className={` ${company?.site_visit_booked ? 'text-[#26C6F9]' : 'text-[#69696966]'} font-medium text-xs `}
-                        >
-                          Visit Arranged
-                        </span>
+                      <div className='mt-[27px] text-[12px] text-buttonPrimary font-bold text-center flex items-center justify-center '>
+                        <div className='flex items-center'>
+                          <CustomButton onClick={() => handkeAppointAgnet(company?.pma_user?.id)}>
+                            <Image src={whiteperson} alt='person' className='mr-[10px]' />
+                            Appoint the agent
+                          </CustomButton>
+                        </div>
                       </div>
                     </div>
-                  </section>
-                  <div className='flex gap-2 items-center cursor-default'>
-                    <Typography variant='h3' className='text-[#1F4E8D] text-[21px] font-bold py-1'>
-                      {shortlistexpiryDate?.days} days {shortlistexpiryDate?.hours} hours {shortlistexpiryDate?.minutes}
-                      <span className='pl-[1px]'> minutes</span>
-                    </Typography>
-                    <CustomTooltip
-                      text='During this time period, your contact information will be hidden. This setting is in place to allow you to initiate video calls securely.'
-                      position='right'
-                      align='right'
-                      width='350px'
-                    >
-                      <i className='ri-information-line text-[#1F4E8D] cursor-default'></i>
-                    </CustomTooltip>
-                  </div>
 
-                  <div className='mt-[20px]'>
-                    <CustomButton
-                      disabled={!extendedCheck == false}
-                      onClick={() => handleExtendByThree(company?.pma_user?.id)}
-                      variant='outlined'
-                    >
-                      Extend by 3 days
-                    </CustomButton>
-                  </div>
-                </div>
-                <div className='pl-10 pt-[50px]'>
-                  <Typography variant='h4'>Contact Details</Typography>
-
-                  <div className='flex items-center gap-x-[30px] mt-[20px]'>
                     <div>
-                      <Image src={person} alt='person' />
-                    </div>
-                    <Typography variant='body2'>{company?.pma_user?.full_name}</Typography>
-                  </div>
-
-                  <div className='flex items-center gap-x-[30px] mt-[20px]'>
-                    <span>
-                      <i className='ri-mail-line size-[14px]'></i>
-                    </span>
-                    <Typography variant='body2'>{company?.pma_user?.email}</Typography>
-                  </div>
-
-                  <div className='flex items-center gap-x-[30px] mt-[20px]'>
-                    <span>
-                      <Image src={phone} alt='phone' className='size-[14px]' />
-                    </span>
-                    <Typography variant='body2'>{company?.pma_user?.mobile_number}</Typography>
-                  </div>
-
-                  <div className='flex items-center gap-x-[30px] mt-[20px]'>
-                    <span>
-                      <i className='ri-map-pin-line size-[14px]'></i>
-                    </span>
-                    <Typography variant='body2'>{company?.pma_user?.address}</Typography>
-                  </div>
-                </div>
-              </div>
-
-              <div className='flex items-start'>
-                <section className='relative flex flex-col justify-between items-center w-[100%]'>
-                  <section className='relative flex flex-col justify-between items-center w-[100%]'>
-                    <Image src={demePfd} alt='pdf download' />
-                    <section className='w-[100%] flex justify-center space-x-2.5 '>
-                      <i className='ri-download-2-fill text-[#26C6F9] mt-[2px]'></i>
-                      <Typography
-                        variant='body1'
-                        align='center'
-                        className='mt-2 cursor-pointer text-[#26C6F9] hover:underline hover:underline-offset-4 flex items-center'
-                      >
-                        Download
+                      <Typography variant='h3' className='text-[#1F4E8D] text-[34px] font-bold pb-1'>
+                        €{company?.fee_amount}
                       </Typography>
+                      <div
+                        className={`text-[22px] font-bold leading-[32px] ${shortlistexpiryDate?.minutes == '0' ? 'mt-[14px]' : ''}`}
+                      >
+                        {company?.company_details?.name}
+                      </div>
+                      <div
+                        className={`text-[17px] font-normal leading-[32px] text-[#1F4E8D]  ${shortlistexpiryDate?.minutes == '0' ? 'mt-[21px]' : 'mt-[5px]'} `}
+                      >
+                        {company?.company_details?.website || 'No webite'}
+                      </div>
+
+                      <section className={`pb-4  ${shortlistexpiryDate?.minutes == '0' ? 'mt-[26px]' : 'mt-4'} `}>
+                        <div className='flex space-x-4'>
+                          <div
+                            className={`flex items-center space-x-2 px-[15px] py-0 rounded-full ${company?.video_call_booked ? 'bg-[#f1f1f1]' : 'bg-[#26C6F929]'} font-semibold `}
+                          >
+                            <span
+                              className={`w-2 h-2  ${!company?.video_call_booked ? 'bg-[#26C6F9]' : 'bg-[#bbbbbb]'} rounded-full pt-1`}
+                            ></span>
+                            <span
+                              className={` ${!company?.video_call_booked ? 'text-[#26C6F9]' : 'text-[#bbbbbb]'} font-medium text-xs `}
+                            >
+                              {!company?.video_call_booked ? 'Not Contacted' : 'Not Contacted'}
+                            </span>
+                          </div>
+
+                          <div
+                            className={`flex items-center space-x-2 px-[15px] py-0 rounded-full ${company?.video_call_booked ? 'bg-[#DDF6FE]' : 'bg-[#6969691A] '}   font-semibold `}
+                          >
+                            <span
+                              className={`w-2 h-2 ${company?.video_call_booked ? 'bg-[#26C6F9]' : 'bg-[#bbbbbb] '}  rounded-full pt-1`}
+                            ></span>
+                            <span
+                              className={` ${company?.video_call_booked ? 'text-[#26C6F9]' : 'text-[#69696966]'} font-medium text-xs py-1 `}
+                            >
+                              Call Booked
+                            </span>
+                          </div>
+
+                          <div
+                            className={`flex items-center space-x-2 px-[15px] py-0 rounded-full ${company?.site_visit_booked ? 'bg-[#DDF6FE]' : 'bg-[#6969691A] '} font-semibold `}
+                          >
+                            <span
+                              className={`w-2 h-2 ${company?.site_visit_booked ? 'bg-[#26C6F9]' : 'bg-[#bbbbbb]'}  rounded-full pt-1`}
+                            ></span>
+                            <span
+                              className={` ${company?.site_visit_booked ? 'text-[#26C6F9]' : 'text-[#69696966]'} font-medium text-xs `}
+                            >
+                              Visit Arranged
+                            </span>
+                          </div>
+                        </div>
+                      </section>
+
+                      {shortlistexpiryDate?.minutes == '0' ? (
+                        ''
+                      ) : (
+                        <>
+                          <div className='flex gap-2 items-center cursor-default'>
+                            <Typography variant='h3' className='text-[#1F4E8D] text-[21px] font-bold py-1'>
+                              {shortlistexpiryDate?.days !== '0' && <span>{shortlistexpiryDate?.days} days </span>}
+                              {shortlistexpiryDate?.hours !== '0' && <span>{shortlistexpiryDate?.hours} hours </span>}
+                              {shortlistexpiryDate?.minutes !== '0' && (
+                                <span> {shortlistexpiryDate?.minutes} minutes </span>
+                              )}
+                            </Typography>
+                            <CustomTooltip
+                              text='During this time period, your contact information will be hidden. This setting is in place to allow you to initiate video calls securely.'
+                              position='right'
+                              align='right'
+                              width='350px'
+                            >
+                              <i className='ri-information-line text-[#1F4E8D] cursor-default'></i>
+                            </CustomTooltip>
+                          </div>
+
+                          <div className='mt-[20px]'>
+                            <CustomButton
+                              disabled={extendedCheck === false}
+                              onClick={() => handleExtendByThree(company?.pma_user?.id)}
+                              variant='outlined'
+                            >
+                              Extend by 3 days
+                            </CustomButton>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                    <div className='pl-10 pt-[50px]'>
+                      <Typography variant='h4'>Contact Details</Typography>
+
+                      <div className='flex items-center gap-x-[30px] mt-[20px]'>
+                        <div>
+                          <Image src={person} alt='person' />
+                        </div>
+                        <Typography variant='body2'>{company?.pma_user?.full_name}</Typography>
+                      </div>
+
+                      <div className='flex items-center gap-x-[30px] mt-[20px]'>
+                        <span>
+                          <i className='ri-mail-line size-[14px]'></i>
+                        </span>
+                        <Typography variant='body2'>{company?.pma_user?.email}</Typography>
+                      </div>
+
+                      <div className='flex items-center gap-x-[30px] mt-[20px]'>
+                        <span>
+                          <Image src={phone} alt='phone' className='size-[14px]' />
+                        </span>
+                        <Typography variant='body2'>{company?.pma_user?.mobile_number}</Typography>
+                      </div>
+
+                      <div className='flex items-center gap-x-[30px] mt-[20px]'>
+                        <span>
+                          <i className='ri-map-pin-line size-[14px]'></i>
+                        </span>
+
+                        <Typography
+                          variant='body2'
+                          className='max-w-[210px] truncate cursor-pointer'
+                          title={company?.pma_user?.address}
+                        >
+                          {`${company?.pma_user?.address}`.split(' ').slice(0, 16).join(' ') + '...'}
+                        </Typography>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className='flex items-start'>
+                    <section className='relative flex flex-col justify-between items-center w-[100%]'>
+                      <section className='relative flex flex-col justify-between items-center w-[100%]'>
+                        <Image src={demePfd} alt='pdf download' />
+                        <section className='w-[100%] flex justify-center space-x-2.5 '>
+                          <i className='ri-download-2-fill text-[#26C6F9] mt-[2px]'></i>
+                          <Typography
+                            variant='body1'
+                            align='center'
+                            className='mt-2 cursor-pointer text-[#26C6F9] hover:underline hover:underline-offset-4 flex items-center'
+                          >
+                            Download
+                          </Typography>
+                        </section>
+                      </section>
                     </section>
+                  </div>
+
+                  <section className='flex flex-col space-y-4'>
+                    <CustomTooltip text='Invite to Video Call ' position='left' align='center'>
+                      <Image
+                        src={videoCalls}
+                        alt='videocalls'
+                        className='cursor-pointer'
+                        onClick={() => handleVideoCallClick(company)}
+                      />
+                    </CustomTooltip>
+                    <CustomTooltip text='Invite to Site Visit' position='left' align='center'>
+                      <Image
+                        src={visitLocation}
+                        alt='location'
+                        className='cursor-pointer'
+                        onClick={() => handleSiteVisitclick(company)}
+                      />
+                    </CustomTooltip>
+                    <CustomTooltip text='Request a Call Back' position='left' align='center'>
+                      <Image
+                        src={phoneCalls}
+                        alt='phoneCalls'
+                        className='cursor-pointer'
+                        onClick={() => handlecontactAgent(company?.pma_user?.id)}
+                      />
+                    </CustomTooltip>
+                    <CustomTooltip text='Chat' position='left' align='center'>
+                      <div className='bg-[#cbf2fe] px-2 py-[10px] flex justify-center items-center rounded-md'>
+                        <i className='ri-chat-4-line text-[#26C6F9]'></i>
+                      </div>
+                    </CustomTooltip>
                   </section>
                 </section>
-              </div>
-
-              <section className='flex flex-col space-y-4'>
-                <CustomTooltip text='Invite to Video Call ' position='left' align='center'>
-                  <Image
-                    src={videoCalls}
-                    alt='videocalls'
-                    className='cursor-pointer'
-                    onClick={() => handleVideoCallClick(company)}
-                  />
-                </CustomTooltip>
-                <CustomTooltip text='Invite to Site Visit' position='left' align='center'>
-                  <Image
-                    src={visitLocation}
-                    alt='location'
-                    className='cursor-pointer'
-                    onClick={() => handleSiteVisitclick(company)}
-                  />
-                </CustomTooltip>
-                <CustomTooltip text='Request a Call Back' position='left' align='center'>
-                  <Image
-                    src={phoneCalls}
-                    alt='phoneCalls'
-                    className='cursor-pointer'
-                    onClick={() => handlecontactAgent(company?.pma_user?.id)}
-                  />
-                </CustomTooltip>
-              </section>
-            </section>
-          ))}
+              )
+            )
+          )}
           <VideosCallsModal
             open={onlineCallsModalOpen}
             onClose={() => setOnlineCallsModalOpen(false)}
-            shorlistedPmas={finalShortListedResponce?.data?.shortlisted_pmas}
+            shorlistedshortlisted_pmas={finalShortListedResponce?.data?.shortlisted_pmas}
             mainSiteVisitVideoCalls={undefined}
             defaultmultiselect={selectedPma}
             setOnlineCallsModalOpen={setOnlineCallsModalOpen}
@@ -296,13 +337,13 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
             defaultmultiselect={selectedPma}
             onClose={() => setSiteVisitsModalOpen(false)}
             types={null}
-            shorlistedPmas={finalShortListedResponce?.data?.shortlisted_pmas}
+            shorlistedshortlisted_pmas={finalShortListedResponce?.data?.shortlisted_pmas}
           />
           <AppointManagemnetModal
             open={apointAgentModalOpen}
             onClose={() => setApointAgentModalOpen(false)}
             finalShortListedResponce={finalShortListedResponce}
-            pmaSelectedID={pmaSelectedID}
+            pmaSelectedID={shortlisted_pmaselectedID}
             InviteCompletedCalls={undefined}
             companyNames={companyNames}
           />
@@ -312,7 +353,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
           <ShortListAgent
             open={shortlistedModalOpen}
             onClose={() => setShortListedSuccessModalOpen(false)}
-            pmaSelectedID={pmaSelectedID}
+            pmaSelectedID={shortlisted_pmaselectedID}
           />
         </section>
       </div>

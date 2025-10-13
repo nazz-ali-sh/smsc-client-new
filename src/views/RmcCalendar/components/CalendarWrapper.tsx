@@ -89,7 +89,6 @@ const CalendarWrapper = () => {
   const [addEventSidebarOpen, setAddEventSidebarOpen] = useState<boolean>(false)
   const [eventsData, setEventsData] = useState<CalendarEvent[]>([])
 
-
   const dispatch = useDispatch()
   const mdAbove = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'))
   const handleLeftSidebarToggle = () => setLeftSidebarOpen(!leftSidebarOpen)
@@ -98,10 +97,9 @@ const CalendarWrapper = () => {
   const calendarApiPayload = useSelector((state: RootState) => state.rmcCalendarReducer.calendarApiPayload)
   const calendarActiveStatus = useSelector((state: RootState) => state.rmcCalendarReducer.calendarStatus)
 
-
   const [calendarFilters, setCalendarFilters] = useState({
     status: 'month',
-    view: 'site_visit',
+    view: calendarActiveStatus,
     selectedYearMonth: today.format('YYYY-MM'),
     selectedFullDate: today.format('YYYY-MM-DD')
   })

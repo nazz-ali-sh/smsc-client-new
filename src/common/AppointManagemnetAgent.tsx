@@ -37,6 +37,7 @@ interface SiteVisitsModalProps {
   setpmaValue?: any
   selectedPmaName?: any
   companyNames?: any
+  shortlisted_pmaselectedID?: any
 }
 
 interface shortListedFinalAgent {
@@ -69,6 +70,7 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
   setpmaValue,
   selectedPmaName,
   companyNames
+  
 }) => {
   const theme = useTheme()
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)

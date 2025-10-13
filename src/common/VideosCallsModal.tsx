@@ -61,6 +61,9 @@ interface OnlineCallsModalProps {
   setOnlineCallsModalOpen?: any
   VideoCallInviteId?: any
   reschedulGuest?: any
+  shorlistedshortlisted_pmas?: any
+  
+  
 }
 
 interface Slot {
@@ -106,6 +109,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
   const [slotError, setSlotError] = useState('')
   const [SuccessOpen, setSuccessOpen] = useState(false)
   const [schedualCalanderDate, setSchedualCalanderDate] = useState('')
+
   console.log(schedualCalanderDate)
 
   const [userSelectedSlots, setUserSelectedSlots] = useState<{ selectedIds: string; slotName: string | null }>({
@@ -230,7 +234,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
   })
 
   useEffect(() => {
-    const pmaIds = shorlistedPmas?.map((item: { pma_user: { id: any } }) => item.pma_user.id)
+    const pmaIds = shorlistedPmas?.map((item: { pma_user: { id: any } }) => item?.pma_user?.id)
 
     setAllPmaIds(pmaIds)
   }, [shorlistedPmas])
@@ -283,8 +287,8 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
 
   const normalizedOptionsRaw = [
     ...(shorlistedPmas || []).map((item: any) => ({
-      id: item.pma_user.id,
-      pma_number: item.pma_user.pma_number
+      id: item?.pma_user?.id,
+      pma_number: item?.pma_user?.pma_number
     })),
 
     ...(siteVisitshorlistedPmas || []).flatMap(
@@ -604,6 +608,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
             <Grid container spacing={2} alignItems='center' sx={{ mb: 2, mt: 6 }}>
               <Grid container spacing={4} alignItems='center' sx={{ mb: 2 }}>
                 {gettingSlotsAndDays?.data?.slots?.map(item => {
+                  console.log(item)
                   const isSelected = userSelectedSlots?.selectedIds === String(item.id)
 
                   return (
@@ -617,7 +622,11 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                               alignItems: 'flex-start'
                             }}
                           >
-                            <Typography variant='body1' fontWeight='bold' sx={{ color: 'white' }}>
+                            <Typography
+                              variant='body1'
+                              fontWeight='bold'
+                              sx={{ color: 'white', bgcolor: item?.booked ? '#35C0ED' : '' }}
+                            >
                               {item.slot_name.split('from')[0]}
                             </Typography>
                             <Typography sx={{ color: 'white' }} variant='body2'>
@@ -627,9 +636,10 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                         }
                         onClick={() => handleSlotSelection(String(item.id))}
                         sx={{
-                          backgroundColor: isSelected
-                            ? 'customColors.ligthBlue'
-                            : theme => theme.colorSchemes.light.palette.customColors.darkGray,
+                          backgroundColor:
+                            isSelected || item?.booked
+                              ? 'customColors.ligthBlue'
+                              : theme => theme.colorSchemes.light.palette.customColors.darkGray,
                           color: 'white',
                           '& .MuiChip-label': {
                             display: 'flex',
@@ -643,7 +653,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                           cursor: 'pointer',
                           justifyContent: 'flex-start',
                           border: isSelected ? '2px solid' : 'none',
-                          borderColor: isSelected ? 'customColors.ligthBlue' : 'transparent'
+                          borderColor: isSelected || item?.booked ? 'customColors.ligthBlue' : 'transparent'
                         }}
                       />
                     </Grid>
@@ -782,7 +792,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
               onClick={handleSubmit(handleReschedualaModal)}
               disabled={videoCallInviteMutation.isPending}
             >
-              {videoCallInviteMutation.isPending ? 'Sending...' : 'Reschedual'}
+              {videoCallInviteMutation.isPending ? 'Sending...' : 'Reschedule'}
             </CustomButton>
           </>
         ) : (

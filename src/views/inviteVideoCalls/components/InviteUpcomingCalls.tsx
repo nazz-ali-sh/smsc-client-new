@@ -142,7 +142,7 @@ const InviteUpcomingCalls: React.FC<pendingInviteData> = ({ pendingInviteData })
       header: 'Action',
       cell: ({ row }) => (
         <div className='flex gap-2'>
-          <CustomTooltip text='Cancel The Reschedule Call' position='left' align='left'>
+          <CustomTooltip text='Cancel Upcoming Call' position='left' align='left'>
             <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#F5DADB] text-[#DE481A] flex justify-center items-center'>
               <i
                 onClick={() => {
@@ -154,7 +154,7 @@ const InviteUpcomingCalls: React.FC<pendingInviteData> = ({ pendingInviteData })
             </span>
           </CustomTooltip>
 
-          <CustomTooltip text=' Reschedule Call ' position='left' align='left'>
+          <CustomTooltip text=' Reschedule Upcoming Call ' position='left' align='left'>
             <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'>
               <i
                 onClick={() => {

@@ -64,6 +64,7 @@ interface OnlineCallsModalProps {
   defaultmultiselect?: any
   item?: any
   calanderReschedualData?: any
+  shorlistedshortlisted_pmas?: any
 }
 
 interface Slot {
@@ -786,7 +787,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                 '&:hover': { backgroundColor: 'customColors.ligthBlue' }
               }}
             >
-              Reschedual
+            Reschedule
             </Button>
           </DialogActions>
         </>

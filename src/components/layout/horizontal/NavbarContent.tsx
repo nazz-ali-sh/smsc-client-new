@@ -11,7 +11,7 @@ import { FormControl, InputLabel, Select, MenuItem, Grid, type SelectChangeEvent
 import classnames from 'classnames'
 
 import { useQuery } from '@tanstack/react-query'
-import { useSelector, useDispatch } from 'react-redux'
+import {  useDispatch } from 'react-redux'
 
 import type { Locale } from '@configs/i18n'
 import type { NotificationsType } from '@components/layout/shared/NotificationsDropdown'
@@ -104,7 +104,8 @@ const NavbarContent = () => {
   const isOnboardingRoute = pathname.includes('rmc-onboarding')
 
   const [rmctenderId, setRmctenderId] = useState<string>('')
-  const currentTenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
+  const [tendersWithInitials, setTendersWithInitials] = useState<any[]>([])
+  const [selectedTenderInitial, setSelectedTenderInitial] = useState<string>('')
 
   const { data: rmcTenderIDData, isLoading } = useQuery<TenderIdResponse, Error>({
     queryKey: ['rmcTenderIds'],
@@ -112,25 +113,42 @@ const NavbarContent = () => {
     retry: 2
   })
 
-  useEffect(() => {
-    if (currentTenderId) {
-      setRmctenderId(currentTenderId?.toString())
-    }
-  }, [currentTenderId, rmctenderId])
 
   useEffect(() => {
-    if (rmcTenderIDData) {
-      const firstTenderId = rmcTenderIDData?.data?.tenders[0]?.id
+    if (rmcTenderIDData?.data?.tenders?.length) {
+      const updatedTenders = rmcTenderIDData.data.tenders.map(tender => ({
+        ...tender,
+        initials: tender.name
+          ?.split(/[-\s]/)
+          .map(word => word.charAt(0))
+          .join('')
+          .slice(0, 2)
+          .toUpperCase()
+      }))
 
-      setRmctenderId(firstTenderId as any)
-      dispatch(setRmcTenderId(firstTenderId))
+      setTendersWithInitials(updatedTenders)
+
+      const firstTender = updatedTenders[0]
+
+      if (firstTender) {
+        setRmctenderId(firstTender.id.toString())
+        setSelectedTenderInitial(firstTender.initials)
+        dispatch(setRmcTenderId(firstTender.id))
+      }
     }
-  }, [rmcTenderIDData, rmctenderId, dispatch])
+  }, [rmcTenderIDData, dispatch])
 
   const handleTenderChange = (event: SelectChangeEvent) => {
-    const selectedTenderId = event.target.value as any
+    const selectedTenderId = event.target.value as string
 
     setRmctenderId(selectedTenderId)
+
+    const selectedTender = tendersWithInitials.find(t => t.id === Number(selectedTenderId))
+
+    if (selectedTender) {
+      setSelectedTenderInitial(selectedTender.initials)
+    }
+
     dispatch(setRmcTenderId(Number(selectedTenderId)))
   }
 
@@ -239,7 +257,7 @@ const NavbarContent = () => {
         )}
         {!shouldHideElements && <NavSearch />}
         {!shouldHideElements && <NotificationsDropdown notifications={notifications} />}
-        <UserDropdown />
+        <UserDropdown selectedTenderInitial = {selectedTenderInitial}  />
       </div>
     </div>
   )

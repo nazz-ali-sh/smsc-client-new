@@ -59,8 +59,8 @@ const HorizontalMenuPopOver = ({ open, anchorEl, handlePopoverClose }: Horizonta
           <Link
             key={link.href}
             href={link.href}
-            onClick={handlePopoverClose} // ✅ Close popover when clicked
-            className={`hover:bg-[#35C0ED] p-2 ${pathname === link.href ? 'bg-[#35C0ED] text-white' : ''}`}
+            onClick={handlePopoverClose} 
+            className={`hover:bg-[#35C0ED] hover:text-white p-2 ${pathname === link.href ? 'bg-[#35C0ED] text-white' : ''}`}
           >
             {link.label}
           </Link>

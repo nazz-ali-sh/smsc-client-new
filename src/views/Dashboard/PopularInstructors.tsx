@@ -33,7 +33,7 @@ import SiteVisitsModal from '@/common/SiteVisitsModal'
 import AppointManagemnetModal from '@/common/AppointManagemnetAgent'
 import CommonModal from '@/common/CommonModal'
 import CustomButton from '@/common/CustomButton'
-import { formatDate, getDaysPassed } from '@/utils/dateFormater'
+import { formatDates, getDaysPassed } from '@/utils/dateFormater'
 import { getLeaseholderTypeLabel } from '@/constants'
 import DashboardSkeletonGrid from '@/components/DashboardSkeletonGrid'
 import { useShortlistedPmas } from '@/hooks/useShortlistedPmasData'
@@ -94,7 +94,6 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
 
   const shortlistedCurrentStage = stages?.shortlisted?.is_completed
   const sinceLastshortlisted = dashboardResponce?.data?.days_since_last_shorlisted
-
 
   const shortlistedCompletedAtDate = stages?.shortlisted?.completed_at
   const daysSinceShortlist = getDaysPassed(shortlistedCompletedAtDate)
@@ -195,7 +194,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
                     paddingTop: '2px'
                   }}
                 >
-                  Submitted On: {formatDate(stages?.went_live?.details?.tender_creation_date)}
+                  Submitted On: {formatDates(stages?.went_live?.details?.tender_creation_date)}
                 </Typography>
                 <Typography
                   sx={{
@@ -206,7 +205,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
                     paddingTop: '2px'
                   }}
                 >
-                  Tender ends on: {formatDate(dashboardResponce?.data?.tender_end_date?.date)}
+                  Tender ends on: {formatDates(dashboardResponce?.data?.tender_end_date?.date)}
                 </Typography>
               </CardContent>
             ) : (
@@ -325,7 +324,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
                     lineHeight: '22px'
                   }}
                 >
-                  Tender ended on : {formatDate(stages?.result_received?.details?.tender_end_date)}
+                  Tender ended on : {formatDates(stages?.result_received?.details?.tender_end_date)}
                 </Typography>
                 <Typography
                   sx={{
@@ -336,7 +335,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
                     paddingTop: '2px'
                   }}
                 >
-                  Results received on : {formatDate(stages?.result_received?.details?.tender_response_date)}
+                  Results received on : {formatDates(stages?.result_received?.details?.tender_response_date)}
                 </Typography>
                 <Typography
                   sx={{
@@ -659,11 +658,11 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
                     color: 'customColors.textGray',
                     fontSize: '13px',
                     fontWeight: 400,
-                    paddingX: '22px',
+                    paddingX: '1px',
                     marginTop: '14px'
                   }}
                 >
-                  Next Scheduled Call : {stages?.video_call?.details?.upcoming?.date || ''}{' '}
+                  Next Scheduled Call : {formatDates(stages?.video_call?.details?.upcoming?.date) || ''}{' '}
                   {stages?.video_call?.details?.upcoming?.slot && <>({stages?.video_call?.details?.upcoming?.slot})</>}
                 </Typography>
 
@@ -672,11 +671,11 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
                     color: 'customColors.textGray',
                     fontSize: '13px',
                     fontWeight: 400,
-                    paddingX: '22px',
+                    paddingX: '1px',
                     marginTop: '14px'
                   }}
                 >
-                  Last Completed Call : {stages?.video_call?.details?.completed?.date || ''}{' '}
+                  Last Completed Call : {formatDates(stages?.video_call?.details?.completed?.date) || ''}{' '}
                   {stages?.video_call?.details?.completed?.slot && (
                     <>({stages?.video_call?.details?.completed?.slot})</>
                   )}
@@ -751,7 +750,6 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
         <Grid item xs={12} sm={6} md={4}>
           <Card elevation={0} sx={{ borderRadius: 1, height: '370PX' }} className=' relative '>
             <div className='bg-[#c4edfa] mx-[22px] p-2 rounded-full flex items-center justify-center mt-[24px] size-[44px]'>
-              {/* <Image src={person} alt='site-visit-image' /> */}
               <i
                 className={`ri-user-location-line ${stages?.site_visit?.is_current ? 'text-[#26C6F9]' : 'text-white'}   `}
               ></i>
@@ -780,7 +778,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
               >
                 Site Visits Can Not Be Scheduled
               </Typography>
-            ) : !siteVistCurrentStage && sinceLastSiteVisit === '0' ? (
+            ) : !siteVistCurrentStage && sinceLastSiteVisit === 0 ? (
               <Typography
                 sx={{
                   paddingTop: '8px',
@@ -792,7 +790,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
               >
                 Shortlist Agent to unlock this section
               </Typography>
-            ) : siteVistCurrentStage && sinceLastSiteVisit === '0' ? (
+            ) : siteVistCurrentStage && sinceLastSiteVisit === 0 ? (
               <Typography
                 sx={{
                   paddingTop: '8px',
@@ -802,7 +800,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
                   fontWeight: 300
                 }}
               >
-                You’ve invited {dashboardResponce?.data?.schedule_calls} agents to video calls.
+                You’ve invited {dashboardResponce?.data?.schedule_calls} agents to site visit.
               </Typography>
             ) : !siteVistCurrentStage && Number(sinceLastSiteVisit) >= 1 ? (
               <Typography
@@ -854,10 +852,10 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
                     fontSize: '13px',
                     fontWeight: 400,
                     marginTop: '14px',
-                    paddingX: '24px'
+                    paddingX: '1px'
                   }}
                 >
-                  Next Scheduled Visit : {stages?.site_visit?.details?.upcoming?.date || ''}{' '}
+                  Next Scheduled Visit : {formatDates(stages?.site_visit?.details?.upcoming?.date) || ''}{' '}
                   {stages?.site_visit?.details?.upcoming?.slot && <>({stages?.site_visit?.details?.upcoming?.slot})</>}
                 </Typography>
 
@@ -867,7 +865,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
                     fontSize: '13px',
                     fontWeight: 400,
                     marginTop: '14px',
-                    paddingX: '24px'
+                    paddingX: '1px'
                   }}
                 >
                   Last Completed Visit : {stages?.site_visit?.details?.completed?.date || ''}{' '}
@@ -1001,7 +999,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
                 }}
               >
                 {stages?.appointment?.details?.appointed_pma_name
-                  ? `Agent Name: ${stages?.appointment?.details?.appointed_pma_name} Date of Appointment :  ${formatDate(stages?.appointment?.completed_at) == null ? '' : formatDate(stages?.appointment?.completed_at)}`
+                  ? `Agent Name: ${stages?.appointment?.details?.appointed_pma_name} Date of Appointment :  ${formatDates(stages?.appointment?.completed_at) == null ? '' : formatDates(stages?.appointment?.completed_at)}`
                   : 'You can choose an agent after one call or visit is done.'}
               </Typography>
             )}

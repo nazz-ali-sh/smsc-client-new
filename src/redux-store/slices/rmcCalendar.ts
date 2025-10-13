@@ -3,7 +3,6 @@ import { createSlice } from '@reduxjs/toolkit'
 
 import type { CalendarFiltersType, CalendarType } from '@/types/apps/calendarTypes'
 
-// ✅ extended type for storing API payload & status
 interface ExtendedCalendarType extends CalendarType {
   calendarApiPayload: any | null
   calendarStatus: any
@@ -14,8 +13,8 @@ const initialState: ExtendedCalendarType = {
   selectedEvent: null,
   selectedCalendars: ['Site Visits', 'Online Calls'],
   filteredEvents: [],
-  calendarApiPayload: null, // ✅ API payload
-  calendarStatus: 'site_visit' //
+  calendarApiPayload: null, 
+  calendarStatus: '' 
 }
 
 const rmcCalendarSlice = createSlice({
@@ -48,12 +47,10 @@ const rmcCalendarSlice = createSlice({
       return state
     },
 
-    // ✅ new reducer to store API payload
     setCalendarApiPayload: (state, action: PayloadAction<any>) => {
       state.calendarApiPayload = action.payload
     },
 
-    // ✅ new reducer to store calendarStatus
     setCalendarStatus: (state, action: PayloadAction<string | null>) => {
       state.calendarStatus = action.payload
     }
