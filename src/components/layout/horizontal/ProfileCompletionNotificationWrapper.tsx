@@ -12,17 +12,22 @@ const ProfileCompletionNotificationWrapper = () => {
   const pathname = usePathname()
   const tenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
   const tenderInformation = useSelector((state: any) => state?.tenderInformation?.onboarding)
+  const token = typeof window !== 'undefined' ? document.cookie.includes('token=') : false
 
   const isOnboardingRoute = pathname.includes('rmc-onboarding')
 
   const isAuthRoute =
     pathname.includes('/login') || pathname.includes('/forgot-password') || pathname.includes('/reset-password')
 
+  if (!token) {
+    return null
+  }
+
   if (isOnboardingRoute || isAuthRoute) {
     return null
   }
 
-  if (tenderId && tenderId !== null && tenderId !== undefined) {
+  if (tenderId && tenderId !== null) {
     return null
   }
 

@@ -64,6 +64,7 @@ const UserDropdown = ({ selectedTenderInitial }: { selectedTenderInitial?: strin
   }
 
   const handleSignOut = () => {
+    router.push('/login')
     clearTokenCookie()
     dispatch(clearRmcData())
 
@@ -72,7 +73,6 @@ const UserDropdown = ({ selectedTenderInitial }: { selectedTenderInitial?: strin
     }
 
     setOpen(false)
-    router.push('/login')
   }
 
   const hanldeArchive = () => {
@@ -96,12 +96,10 @@ const UserDropdown = ({ selectedTenderInitial }: { selectedTenderInitial?: strin
       <Popper
         open={open}
         anchorEl={anchorRef.current}
-        placement='bottom-end' 
+        placement='bottom-end'
         transition
         disablePortal
-        modifiers={[
-          { name: 'offset', options: { offset: [0, 8] } }
-        ]}
+        modifiers={[{ name: 'offset', options: { offset: [0, 8] } }]}
         className='z-[10]'
       >
         {({ TransitionProps, placement }) => (
