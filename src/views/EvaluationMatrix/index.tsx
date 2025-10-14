@@ -451,15 +451,18 @@ const EvaluationMatrix = () => {
                                 ) : (
                                   category[pma as keyof typeof category] || '--'
                                 )}
-                                <div className='text-green-600 mt-2'>
-                                  <span className=''>
-                                    {category?.weight} *{category[pma as keyof typeof category] || '0'}
-                                  </span>
-                                  <span className='pr-2'> = </span>
-                                  <span>
-                                    {Number(category?.weight) * Number(category[pma as keyof typeof category] || 0)}
-                                  </span>
-                                </div>
+
+                                {Number(category[pma as keyof typeof category]) > 0 && (
+                                  <div className='text-green-600 mt-2'>
+                                    <span>
+                                      {category?.weight} * {category[pma as keyof typeof category] || '0'}
+                                    </span>
+                                    <span className='pr-[2px]'> = </span>
+                                    <span>
+                                      {Number(category?.weight) * Number(category[pma as keyof typeof category] || 0)}
+                                    </span>
+                                  </div>
+                                )}
                               </td>
                             </>
                           ))

@@ -62,6 +62,7 @@ interface OnlineCallsModalProps {
   VideoCallInviteId?: any
   reschedulGuest?: any
   shorlistedshortlisted_pmas?: any
+  selectAllPmas?: any
 }
 
 interface Slot {
@@ -97,14 +98,13 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
   calanderReschedualData,
   VideoCallInviteId,
   reschedulGuest,
-  
+  selectAllPmas
 }) => {
   const theme = useTheme()
   const router = useRouter()
   const [dayId, setDayId] = useState('')
   const [finalSelectedSlots, setFinalSelectedSlots] = useState<Slot[]>([])
   const [inviteData, setInviteData] = useState<[]>([])
-  const [allPmaids, setAllPmaIds] = useState<[]>([])
   const [slotError, setSlotError] = useState('')
   const [SuccessOpen, setSuccessOpen] = useState(false)
   const [schedualCalanderDate, setSchedualCalanderDate] = useState('')
@@ -115,6 +115,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     selectedIds: '',
     slotName: ''
   })
+
 
 
   const { invalidateCache } = useDashboardData()
@@ -233,11 +234,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     }
   })
 
-  useEffect(() => {
-    const pmaIds = shorlistedPmas?.map((item: { pma_user: { id: any } }) => item?.pma_user?.id)
-
-    setAllPmaIds(pmaIds)
-  }, [shorlistedPmas])
 
   const handleSendVideoCalls = async (formData: any) => {
     if (!formData.availableSlots) {
@@ -252,7 +248,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
         value: selectedDate,
         day_id: Number(dayId),
         slot_ids: Number(formData.availableSlots),
-        pma_user_ids: allPmaids,
+        pma_user_ids: selectAllPmas,
         message: formData.additionalNotes,
         tender_id: tender_id
       })
@@ -361,6 +357,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     }
   })
 
+  //  reschedual
   const handleReschedualaModal = async (formData: any) => {
     if (!formData.availableSlots) {
       setSlotError('Select the slots')

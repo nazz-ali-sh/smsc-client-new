@@ -111,16 +111,15 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ open, onClose, in
                 </Typography>
               </Box>
             </Box>
-          ) : 
-          type === 'appointAgent' ? (
+          ) : type === 'appointAgent' ? (
             <Box>
-                  <>
-                    <Typography  variant='body2' sx={{ fontSize: '0.875rem', marginBottom: '10px' }}>
-                      <span className='font-bold'>{selectcomapny && selectcomapny }</span> Have Been Notified & Will Be In Touch With You
-                      Very Shortly.
-                    </Typography>
-                  </>
-              
+              <>
+                <Typography variant='body2' sx={{ fontSize: '0.875rem', marginBottom: '10px' }}>
+                  <span className='font-bold'>{selectcomapny && selectcomapny}</span> Have Been Notified & Will Be In
+                  Touch With You Very Shortly.
+                </Typography>
+              </>
+
               <Typography variant='body2' sx={{ fontSize: '0.875rem', marginBottom: '10px' }}>
                 We hope you found our service valuable and would appreciate any feedback to help us continue improving
                 for future leaseholders.

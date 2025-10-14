@@ -79,6 +79,7 @@ const KitchenSink = () => {
   const { invalidateCache } = useDashboardData()
 
   const [selectedResponse, setSelectedResponse] = useState<ApiResponseItem | null>(null)
+  
 
   const { data: responceData, isLoading: isTableLoading } = useQuery<TenderResponse, Error>({
     queryKey: ['tendeResponce', tender_id],
@@ -556,6 +557,7 @@ const KitchenSink = () => {
             onClose={handleCloseAndNavigate}
             pmaSelectedID={allselectedpma}
             fianlExpireDate={fianlExpireDate}
+             navigateOnClose={true}  
           />
 
           <CommonModal

@@ -41,11 +41,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
   const [shortlisted_pmaselectedID, setshortlisted_pmaselectedID] = useState<number | any>()
   const [pmaCompanyName, setPmaCompanyName] = useState<string | any>('')
 
-  console.log(shortlisted_pmaselectedID)
-
   const [selectedPma, setSelectedPma] = useState<{ id: number; pma_number: string } | null>(null)
-
-  console.log(selectedPma)
 
   const extendedCheck = Array.isArray(finalShortListedResponce?.data?.shortlisted_pmas)
     ? (finalShortListedResponce.data.shortlisted_pmas[0]?.shortlisting_extended ?? false)
@@ -61,7 +57,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
 
   const handkeAppointAgnet = (selected_pma_id: any, pmaCompanyName: string) => {
     setshortlisted_pmaselectedID(selected_pma_id)
-     setPmaCompanyName(pmaCompanyName)
+    setPmaCompanyName(pmaCompanyName)
     setApointAgentModalOpen(true)
   }
 
@@ -99,7 +95,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
     setOnlineCallsModalOpen(true)
     setSelectedPma({
       id: company?.pma_user?.id,
-      pma_number: company?.pma_user?.pma_number
+      pma_number: company?.pma_user?.full_name
     })
   }
 
@@ -107,9 +103,13 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
     setSiteVisitsModalOpen(true)
     setSelectedPma({
       id: company?.pma_user?.id,
-      pma_number: company?.pma_user?.pma_number
+      pma_number: company?.pma_user?.full_name
     })
   }
+
+  const pmaIds = finalShortListedResponce?.data?.shortlisted_pmas
+    ?.map((item: { pma_user?: { id?: number } }) => item?.pma_user?.id)
+    ?.filter((id: number | undefined): id is number => typeof id === 'number')
 
   return (
     <>
@@ -130,7 +130,9 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
 
                   <div className='mt-[27px] text-[12px] text-buttonPrimary font-bold text-center flex items-center justify-center '>
                     <div className='flex items-center'>
-                      <CustomButton onClick={() => handkeAppointAgnet(company?.pma_user?.id, company?.company_details?.name)}>
+                      <CustomButton
+                        onClick={() => handkeAppointAgnet(company?.pma_user?.id, company?.company_details?.name)}
+                      >
                         <Image src={whiteperson} alt='person' className='mr-[10px]' />
                         Appoint the agent
                       </CustomButton>
@@ -333,6 +335,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
             shorlistedshortlisted_pmas={finalShortListedResponce?.data?.shortlisted_pmas}
             mainSiteVisitVideoCalls={undefined}
             defaultmultiselect={selectedPma}
+            selectAllPmas={pmaIds}
             setOnlineCallsModalOpen={setOnlineCallsModalOpen}
           />
           <SiteVisitsModal
@@ -361,6 +364,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
             open={shortlistedModalOpen}
             onClose={() => setShortListedSuccessModalOpen(false)}
             pmaSelectedID={shortlisted_pmaselectedID}
+            disabledChecks={extendedCheck}
           />
         </section>
       </div>

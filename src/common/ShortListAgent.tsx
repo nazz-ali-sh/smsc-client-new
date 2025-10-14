@@ -23,9 +23,19 @@ type ShortListAgentProps = {
   confirmColor?: 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success'
   pmaSelectedID?: any
   fianlExpireDate?: any
+  navigateOnClose?: boolean
+  disabledChecks?: boolean
 }
 
-const ShortListAgent = ({ open, onClose, onConfirm, pmaSelectedID, fianlExpireDate }: ShortListAgentProps) => {
+const ShortListAgent = ({
+  open,
+  onClose,
+  onConfirm,
+  pmaSelectedID,
+  fianlExpireDate,
+  navigateOnClose = false,
+  disabledChecks
+}: ShortListAgentProps) => {
   const router = useRouter()
 
   const rmcTenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
@@ -50,8 +60,12 @@ const ShortListAgent = ({ open, onClose, onConfirm, pmaSelectedID, fianlExpireDa
     }
   })
 
-  const handleCloseAndNavigate = () => {
-    router.push('/shortlist-agent')
+  const handleClose = () => {
+    if (navigateOnClose) {
+      router.push('/shortlist-agent')
+    }
+
+    onClose()
   }
 
   return (
@@ -68,7 +82,7 @@ const ShortListAgent = ({ open, onClose, onConfirm, pmaSelectedID, fianlExpireDa
         An Agent is Shortlisted!
       </DialogTitle>
       <DialogContent>
-        <DialogContentText>
+        <DialogContentText sx={{ marginTop: '15px' }}>
           Your contact details will be hidden for 3 working days to allow you to initiate video calls.
         </DialogContentText>
       </DialogContent>
@@ -84,11 +98,16 @@ const ShortListAgent = ({ open, onClose, onConfirm, pmaSelectedID, fianlExpireDa
         </p>
       </section>
       <DialogActions className='flex justify-between'>
-        <CustomButton variant='outlined' onClick={handleCloseAndNavigate}>
+        <CustomButton variant='outlined' onClick={handleClose}>
           Close
         </CustomButton>
 
-        <CustomButton variant='contained' onClick={() => mutation.mutate()} disabled={mutation.isPending}>
+        <CustomButton
+      
+          variant='contained'
+          onClick={() => mutation.mutate()}
+          disabled={disabledChecks === true}
+        >
           {mutation.isPending ? 'Extending...' : 'Extend by 3 days'}
         </CustomButton>
       </DialogActions>
