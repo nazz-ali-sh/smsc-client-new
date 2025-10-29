@@ -39,7 +39,7 @@ const OnboardingSpaces = () => {
     mutationFn: submitRmcLeaseholderType,
     onSuccess: () => {
       invalidateCache()
-      router.push('/rmc-onboarding-priorities')
+      router.push('/priorities')
     },
     onError: (error: any) => {
       toast.error(error?.response?.data?.message || 'Failed to submit outdoor space. Please try again.')
@@ -68,7 +68,7 @@ const OnboardingSpaces = () => {
   }
 
   const handleBack = () => {
-    router.push('/rmc-onboarding-blocks')
+    router.push('/blocks')
   }
 
   return (

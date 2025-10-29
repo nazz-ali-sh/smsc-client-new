@@ -26,6 +26,32 @@ const validateUKPhoneNumber = (value: string): boolean => {
   return false
 }
 
+const validateUKLandlineNumber = (value: string): boolean => {
+  const cleanNumber = value.replace(/\s+/g, '')
+
+  if (/^\+44[12]\d{9,10}$/.test(cleanNumber)) {
+    return true
+  }
+
+  if (/^0[12]\d{8,9}$/.test(cleanNumber)) {
+    return true
+  }
+
+  return false
+}
+
+const validateWebsiteURL = (value: string): boolean => {
+  try {
+    const urlToTest = value.startsWith('http://') || value.startsWith('https://') ? value : `https://${value}`
+
+    const url = new URL(urlToTest)
+
+    return url.hostname.includes('.') && url.hostname.length > 3
+  } catch {
+    return false
+  }
+}
+
 export const directorOfRMCSchema = pipe(
   object({
     fullName: pipe(
@@ -357,16 +383,8 @@ export const retenderSchema = object({
 
 export const profileSchema = pipe(
   object({
-    name: pipe(
-      string(),
-      nonEmpty('Name is required'),
-      minLength(2, 'Name must be at least 2 characters')
-    ),
-    email: pipe(
-      string(),
-      nonEmpty('Email is required'),
-      email('Please enter a valid email address')
-    ),
+    name: pipe(string(), nonEmpty('Name is required'), minLength(2, 'Name must be at least 2 characters')),
+    email: pipe(string(), nonEmpty('Email is required'), email('Please enter a valid email address')),
     mobile_number: pipe(
       string(),
       nonEmpty('Mobile number is required'),
@@ -376,4 +394,163 @@ export const profileSchema = pipe(
     notify_message: boolean(),
     notify_portal: boolean()
   })
+)
+
+export const reviewsFormSchema = object({
+  averageRating: pipe(
+    string(),
+    nonEmpty('Average Rating is required'),
+    check((value: string) => {
+      const num = Number(value.trim())
+
+      return !isNaN(num) && num >= 1 && num <= 5
+    }, 'Average Rating must be between 1 and 5')
+  ),
+  numberOfReviews: pipe(
+    string(),
+    nonEmpty('Number of Reviews is required'),
+    check((value: string) => {
+      const num = Number(value.trim())
+
+      return !isNaN(num) && num >= 1 && num <= 900
+    }, 'Number of Reviews must be between 1 and 900')
+  )
+})
+
+export const businessProfileSchema = object({
+  tradingYears: pipe(string(), nonEmpty('Trading Years is required')),
+  unitsManaged: pipe(
+    string(),
+    nonEmpty('Units Managed By Company is required'),
+    check((value: string) => {
+      const num = Number(value.trim())
+
+      return !isNaN(num) && num >= 1 && num <= 1000
+    }, 'Units Managed By Company must be between 1 and 1000')
+  ),
+  unitsAccountManager: pipe(
+    string(),
+    nonEmpty('Units Managed by account manager is required'),
+    check((value: string) => {
+      const num = Number(value.trim())
+
+      return !isNaN(num) && num >= 1 && num <= 1000
+    }, 'Units Managed by account manager must be between 1 and 1000')
+  ),
+  preferredContactNumber: pipe(string(), nonEmpty('Preferred Contact Number is required')),
+  secondaryFullName: optional(string()),
+  secondaryEmail: optional(string()),
+  secondaryPhone: optional(string()),
+  secondaryMobile: optional(string())
+})
+
+export const trustpilotFormSchema = object({
+  averageRating: pipe(
+    string(),
+    nonEmpty('Average Rating is required'),
+    check((value: string) => {
+      const num = Number(value.trim())
+
+      return !isNaN(num) && num >= 1 && num <= 5
+    }, 'Average Rating must be between 1 and 5')
+  ),
+  numberOfReviews: pipe(
+    string(),
+    nonEmpty('Number of Reviews is required'),
+    check((value: string) => {
+      const num = Number(value.trim())
+
+      return !isNaN(num) && num >= 1 && num <= 900
+    }, 'Number of Reviews must be between 1 and 900')
+  )
+})
+
+export const managementFeeSchema = object({
+  minimumFeePerUnit: pipe(
+    string(),
+    nonEmpty('Minimum Fee per Unit is required'),
+    check((value: string) => {
+      const num = Number(value.trim())
+
+      return !isNaN(num) && num >= 100 && num <= 900
+    }, 'Minimum Fee per Unit must be between 100 and 900')
+  ),
+  maximumFeePerUnit: pipe(
+    string(),
+    nonEmpty('Maximum Fee per Unit is required'),
+    check((value: string) => {
+      const num = Number(value.trim())
+
+      return !isNaN(num) && num >= 100 && num <= 900
+    }, 'Maximum Fee per Unit must be between 100 and 900')
+  )
+})
+
+export const branchLocationSchema = object({
+  contactName: pipe(string(), nonEmpty('Contact Name is required')),
+  contactEmail: pipe(string(), nonEmpty('Contact Email is required'), email('Please enter a valid email address')),
+  contactPhoneNumber: pipe(
+    string(),
+    nonEmpty('Contact Phone Number is required'),
+    check(validateUKPhoneNumber, 'Please enter a valid UK phone number (e.g., 07123456789)')
+  ),
+  branchName: pipe(string(), nonEmpty('Branch Name is required')),
+  postcode: pipe(string(), nonEmpty('Postcode is required'))
+})
+
+export const pmaOnboardingSchema = pipe(
+  object({
+    companyName: pipe(
+      string(),
+      nonEmpty('Company name is required'),
+      minLength(2, 'Company name must be at least 2 characters')
+    ),
+    website: pipe(
+      string(),
+      nonEmpty('Company website is required'),
+      check(validateWebsiteURL, 'Please enter a valid website URL (e.g., https://example.co.uk)')
+    ),
+    landline: pipe(
+      string(),
+      nonEmpty('Company landline is required'),
+      check(validateUKLandlineNumber, 'Please enter a valid UK landline number (e.g., 02071234567)')
+    ),
+    fullName: pipe(
+      string(),
+      nonEmpty('First name is required'),
+      minLength(2, 'First name must be at least 2 characters'),
+      check((value: string) => value.length <= 15, 'First name cannot exceed 15 characters'),
+      check(
+        (value: string) => /^[a-zA-Z\s'-]+$/.test(value.trim()),
+        'First name can only contain letters, spaces, hyphens, and apostrophes'
+      ),
+      check((value: string) => !/^\s|\s$/.test(value), 'First name cannot start or end with spaces'),
+      check((value: string) => !/\d/.test(value), 'First name cannot contain numbers'),
+      check(
+        (value: string) => !/[!@#$%^&*()_+=\[\]{};':"\\|,.<>\/?]/.test(value),
+        'First name cannot contain special characters'
+      )
+    ),
+    lastName: string(),
+    mobileNumber: pipe(
+      string(),
+      nonEmpty('Mobile number is required'),
+      check(validateUKPhoneNumber, 'Please enter a valid UK mobile number (e.g., 07123456789)')
+    ),
+    email: pipe(string(), nonEmpty('Email is required'), email('Please enter a valid email address')),
+    password: pipe(
+      string(),
+      nonEmpty('Password is required'),
+      minLength(8, 'Password must be at least 8 characters'),
+      check((value: string) => /[A-Z]/.test(value), 'Password must contain at least one uppercase letter'),
+      check((value: string) => /[a-z]/.test(value), 'Password must contain at least one lowercase letter'),
+      check((value: string) => /[0-9]/.test(value), 'Password must contain at least one number'),
+      check((value: string) => /[^A-Za-z0-9]/.test(value), 'Password must contain at least one special character')
+    ),
+    confirmPassword: pipe(string(), nonEmpty('Please confirm your password'))
+  }),
+  forward(
+    check(input => input.password === input.confirmPassword, 'Passwords do not match'),
+    ['confirmPassword']
+  )
 )

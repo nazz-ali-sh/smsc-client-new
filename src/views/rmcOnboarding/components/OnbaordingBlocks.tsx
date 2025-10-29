@@ -41,7 +41,7 @@ const OnbaordingBlocks = () => {
     mutationFn: submitRmcLeaseholderType,
     onSuccess: () => {
       invalidateCache()
-      router.push('/rmc-onboarding-spaces')
+      router.push('/spaces')
     },
     onError: (error: any) => {
       toast.error(error?.response?.data?.message || 'Failed to submit block condition. Please try again.')
@@ -70,7 +70,7 @@ const OnbaordingBlocks = () => {
   }
 
   const handleBack = () => {
-    router.push('/rmc-onboarding-buildings')
+    router.push('/buildings')
   }
 
   return (

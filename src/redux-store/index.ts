@@ -12,8 +12,10 @@ import calendarReducer from '@/redux-store/slices/rmcCalendar'
 import rmcCalendarReducer from '@/redux-store/slices/rmcCalendar'
 import siteVisitAndCallStatsReducer from '@/redux-store/slices/sideVisitAndCallStatsSlice'
 import rmcOnboardingReducer from '@/redux-store/slices/rmcOnboardingSlice'
+import pmaOnboardingReducer from '@/redux-store/slices/pmaOnboardingSlice'
 import rtmNonDirectorReducer from '@/redux-store/slices/rtmNonDirectorSlice'
 import postcodeReducer from '@/redux-store/slices/postcodeSlice'
+import pmaPostcodeReducer from '@/redux-store/slices/pmaPostcodeSlice'
 import tabSlice from '@/redux-store/slices/tabSlice'
 import tenderInformationReducer from '@/redux-store/slices/tenderInformationSlice'
 
@@ -25,6 +27,7 @@ const persistConfig = {
     'tenderForm',
     'pmaRegistration',
     'pmaOnboardingForm',
+    'pmaOnboarding',
     'branches',
     'users',
     'rmcOnboarding',
@@ -38,6 +41,7 @@ const rootReducer = combineReducers({
   tenderForm: persistedTenderFormReducer,
   pmaRegistration: pmaRegistrationReducer,
   pmaOnboardingForm: pmaOnboardingFormReducer,
+  pmaOnboarding: pmaOnboardingReducer,
   branches: branchReducer,
   users: userReducer,
   calendarReducer: calendarReducer,
@@ -46,6 +50,7 @@ const rootReducer = combineReducers({
   rmcOnboarding: rmcOnboardingReducer,
   rtmNonDirector: rtmNonDirectorReducer,
   postcode: postcodeReducer,
+  pmaPostcode: pmaPostcodeReducer,
   tabSwitch: tabSlice,
   tenderInformation: tenderInformationReducer
 })

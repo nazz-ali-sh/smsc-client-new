@@ -20,16 +20,16 @@ const OnboardingResidentRtm = () => {
   const handleCardClick = (value: string) => {
     if (value === 'no') {
       dispatch(clearRtmNonDirectorData())
-      router.push('/rmc-onboarding')
+      router.push('/onboarding')
     } else {
       dispatch(setRtmSetup(value))
-      router.push('/rmc-onboarding-questions')
+      router.push('/questions')
     }
   }
 
   const handleBack = () => {
     dispatch(clearRtmNonDirectorData())
-    router.push('/rmc-onboarding')
+    router.push('/onboarding')
   }
 
   return (

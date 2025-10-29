@@ -71,36 +71,36 @@ export const rtmQuestions = [
     id: 1,
     question: 'Are the blocks capable of independent redevelopment?',
     questionKey: 'q_independent_redevelopment' as const,
-    nextRoute: '/rmc-onboarding-second',
-    backRoute: '/rmc-onboarding-resident'
+    nextRoute: '/second',
+    backRoute: '/resident'
   },
   {
     id: 2,
     question: 'Can the blocks be separated from shared services?',
     questionKey: 'q_separable_shared_services' as const,
-    nextRoute: '/rmc-onboarding-third',
-    backRoute: '/rmc-onboarding-questions'
+    nextRoute: '/third',
+    backRoute: '/questions'
   },
   {
     id: 3,
     question: 'Are the units flats (not houses)?',
     questionKey: 'q_units_are_flats' as const,
-    nextRoute: '/rmc-onboarding-four',
-    backRoute: '/rmc-onboarding-second'
+    nextRoute: '/four',
+    backRoute: '/second'
   },
   {
     id: 4,
     question: 'Are at least two-thirds of flats leasehold with leases over 21 years?',
     questionKey: 'q_two_thirds_leasehold_over_21_years' as const,
-    nextRoute: '/rmc-onboarding-five',
-    backRoute: '/rmc-onboarding-third'
+    nextRoute: '/five',
+    backRoute: '/third'
   },
   {
     id: 5,
     question: 'Is the building at least 50% residential?',
     questionKey: 'q_at_least_50_percent_residential' as const,
-    nextRoute: '/rmc-onboarding-rtm',
-    backRoute: '/rmc-onboarding-four'
+    nextRoute: '/rtm',
+    backRoute: '/four'
   }
 ] as const
 
@@ -162,6 +162,26 @@ export const rmcDirectorFormInputs = [
   { name: 'lastName', label: 'Last Name', type: 'text' as const },
   { name: 'email', label: 'Email', type: 'email' as const },
   { name: 'phoneNumber', label: 'Phone Number', type: 'tel' as const },
+  { name: 'password', label: 'Password', type: 'password' as const, showPasswordToggle: true },
+  { name: 'confirmPassword', label: 'Confirm Password', type: 'password' as const, showPasswordToggle: true }
+]
+
+export const rmcContactDetailsInputs = [
+  { name: 'companyWebsite', label: 'Company Website', type: 'text' as const },
+  { name: 'companyLandlineNumber', label: 'Company Landline Number', type: 'tel' as const }
+]
+
+export const pmaOnboardingCompanyInputs = [
+  { name: 'companyName', label: 'Company Name', type: 'text' as const },
+  { name: 'website', label: 'Company Website', type: 'text' as const },
+  { name: 'landline', label: 'Company Landline Number', type: 'tel' as const }
+]
+
+export const pmaOnboardingAccountInputs = [
+  { name: 'fullName', label: 'First Name', type: 'text' as const },
+  { name: 'lastName', label: 'Last Name', type: 'text' as const },
+  { name: 'mobileNumber', label: 'Mobile Number', type: 'tel' as const },
+  { name: 'email', label: 'Email', type: 'email' as const },
   { name: 'password', label: 'Password', type: 'password' as const, showPasswordToggle: true },
   { name: 'confirmPassword', label: 'Confirm Password', type: 'password' as const, showPasswordToggle: true }
 ]
@@ -310,48 +330,170 @@ export const steps = [
   }
 ]
 
-export const routesWithNavbarContent = [
-  'rmc-onboarding-postcode',
-  'rmc-onboarding-address',
-  'rmc-onboarding-details',
-  'rmc-onboarding-budget',
-  'rmc-onboarding-leaseholder',
-  'rmc-onboarding-buildings',
-  'rmc-onboarding-blocks',
-  'rmc-onboarding-spaces',
-  'rmc-onboarding-priorities',
-  'rmc-onboarding-open'
+export const rmcRoutesWithoutSlash = [
+  'postcode',
+  'address',
+  'details',
+  'budget',
+  'leaseholder',
+  'buildings',
+  'blocks',
+  'spaces',
+  'priorities',
+  'open'
 ]
 
-export const onboardingRoutes = [
-  '/rmc-onboarding',
-  '/rmc-onboarding-address',
-  '/rmc-onboarding-blocks',
-  '/rmc-onboarding-budget',
-  '/rmc-onboarding-buildings',
-  '/rmc-onboarding-details',
-  '/rmc-onboarding-director',
-  '/rmc-onboarding-five',
-  '/rmc-onboarding-four',
-  '/rmc-onboarding-leaseholder',
-  '/rmc-onboarding-open',
-  '/rmc-onboarding-otp',
-  '/rmc-onboarding-postcode',
-  '/rmc-onboarding-priorities',
-  '/rmc-onboarding-questions',
-  '/rmc-onboarding-resident',
-  '/rmc-onboarding-rtm',
-  '/rmc-onboarding-second',
-  '/rmc-onboarding-spaces',
-  '/rmc-onboarding-third',
-  '/rmc-onboarding-verification',
-  '/tender-information-update'
+export const rmcRoutes = [
+  '/onboarding',
+  '/director',
+  '/verification',
+  '/otp',
+  '/resident',
+  '/rtm',
+  '/questions',
+  '/second',
+  '/third',
+  '/four',
+  '/five',
+  '/postcode',
+  '/address',
+  '/details',
+  '/budget',
+  '/leaseholder',
+  '/buildings',
+  '/blocks',
+  '/spaces',
+  '/priorities',
+  '/open'
 ]
 
- export const links = [
-    { href: '/rmc-calendar', label: 'Calendar' },
-     { href: '/invites-video-calls', label: 'Video Call' },
-    { href: '/invites-site-visits', label: 'Site Visit' }
-   
-  
-  ]
+export const pmaRoutes = [
+  '/director',
+  '/pma-verification',
+  '/pma-otp',
+  '/otp-verification',
+  '/verify-otp',
+  '/company',
+  '/company-details',
+  '/business-profile',
+  '/tenders-notification',
+  '/email-notification',
+  '/management',
+  '/trustpilot-form',
+  '/reviews-form',
+  '/trustpilot-reviews',
+  '/google-reviews',
+  '/location',
+  '/location-form',
+  '/locationcode',
+  '/pinlocation'
+]
+
+export const routesWithNavbarContent = rmcRoutesWithoutSlash
+
+export const onboardingRoutes = [...rmcRoutes, '/tender-information']
+
+export const links = [
+  { href: '/calendar', label: 'Calendar' },
+  { href: '/video-calls', label: 'Video Call' },
+  { href: '/site-visits', label: 'Site Visit' }
+]
+
+export const companyBioPlaceholder =
+  'Write a short, engaging introduction about your company’s approach and strengths. Do not include your company name, location, email address, or contact number — this is an anonymous stage of the process. Breaching these rules may result in your account being suspended. Focus on what makes you stand out and how you deliver value to residential blocks. This is the first thing RMCs will read before deciding who to shortlist.'
+
+export const bioDetails = `"This is the first thing an RMC sees when you're shortlisted. Make it count: highlight your strengths,  your unique selling points, what you specialise in, and what makes you stand out from the rest. Think  about what an RMC would want in a partner and present it clearly and confidently."`
+
+export const PMA_ROUTES = {
+  COMPANY: '/company',
+  OTP_VERIFICATION: '/otp-verification',
+  VERIFY_OTP: '/verify-otp',
+  LOCATIONCODE: '/locationcode',
+  PINLOCATION: '/pinlocation',
+  BUSINESS_PROFILE: '/business-profile',
+  GOOGLE_REVIEWS: '/google-reviews',
+  REVIEWS_FORM: '/reviews-form',
+  TRUSTPILOT_REVIEWS: '/trustpilot-reviews',
+  TRUSTPILOT_FORM: '/trustpilot-form',
+  EMAIL_NOTIFICATION: '/email-notification',
+  MANAGEMENT: '/management',
+  COMPANY_DETAILS: '/company-details',
+  LOCATION_FORM: '/location-form',
+  TENDERS_NOTIFICATION: '/tenders-notification'
+} as const
+
+export const RMC_ROUTES = {
+  ONBOARDING: '/onboarding',
+  DIRECTOR: '/director',
+  VERIFICATION: '/verification',
+  OTP: '/otp',
+  POSTCODE: '/postcode',
+  ADDRESS: '/address',
+  DETAILS: '/details',
+  BUDGET: '/budget',
+  LEASEHOLDER: '/leaseholder',
+  BUILDINGS: '/buildings',
+  BLOCKS: '/blocks',
+  SPACES: '/spaces',
+  PRIORITIES: '/priorities',
+  OPEN: '/open',
+  RESIDENT: '/resident',
+  RTM: '/rtm',
+  QUESTIONS: '/questions',
+  SECOND: '/second',
+  THIRD: '/third',
+  FOUR: '/four',
+  FIVE: '/five'
+} as const
+
+export const tenderTypeDetails = {
+  went_live: {
+    title: 'Live Tenders',
+    description:
+      'These are open tenders currently accepting submissions. You are eligible to respond if the block falls within your service radius. The tender remains live for 5 working days unless extended by the RMC.'
+  },
+  expired: {
+    title: 'Expired Tenders',
+    description:
+      'You were eligible for this tender but did not submit a reply before the deadline. These entries are visible for 30 days before being removed from your archive. No further action is needed.'
+  },
+  shortlisted: {
+    title: 'Shortlisted Tenders',
+    description:
+      'This is an overview of the tenders you’ve been shortlisted for. Please visit the Shortlisted page to view the RMC’s name and block address.Note: Once shortlisted, you gain visibility of the block, and a 3-day anonymity countdown begins before full contact details are released (unless a video call or site visit is booked sooner). Messaging is now unlocked and can be used to communicate directly with the RMC.'
+  },
+  closed: {
+    title: 'Closed Tenders',
+    description:
+      'These are tenders you responded to but were not shortlisted for. The RMC has now appointed a different managing agent. Your submission is viewable here for 30 days following the appointment, for reference and review.'
+  },
+  not_appointed: {
+    title: 'Not Appointed Tenders',
+    description:
+      'You were shortlisted and considered during the selection stage. RMC has chosen to appoint a different managing agent. These tenders will remain visible for 90 days. Your original submission and any feedback left by the RMC (if provided).'
+  },
+  date_registered: {
+    title: 'Appointed Tenders',
+    description:
+      'These are the tenders where you’ve been successfully appointed as the managing agent. Keep track of key dates, documents, and next steps here.'
+  },
+  appointment: {
+    title: 'Submitted Tenders',
+    description:
+      "These are tenders you've responded to, but the RMC has not shortlisted your company yet. Your submission is locked and cannot be edited. Tenders remain in this section until either:\n• You are shortlisted, or\n• The RMC appoints a new managing agent.\nPlease note: An RMC may initially shortlist other PMAs, conduct meetings, and later return to shortlist additional agents if needed. You remain eligible for shortlisting until the RMC makes a final appointment."
+  }
+}
+
+export const tenderFilterMenuItems = [
+  { value: 'went_live', label: 'Live Tenders' },
+  { value: 'appointment', label: 'Submitted Tenders' },
+  { value: 'expired', label: 'Expired Tenders' },
+  { value: 'closed', label: 'Closed Tenders' },
+  { value: 'not_appointed', label: 'Not Appointed Tenders' },
+  { value: 'shortlisted', label: 'Shortlisted Tenders' },
+  { value: 'date_registered', label: 'Won Tenders' }
+]
+
+export const getTenderDetails = (value: string) => {
+  return tenderTypeDetails[value as keyof typeof tenderTypeDetails] || tenderTypeDetails.went_live
+}

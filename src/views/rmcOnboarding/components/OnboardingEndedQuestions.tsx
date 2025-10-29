@@ -129,7 +129,7 @@ const OnboardingEndedQuestions = () => {
   }
 
   const handleBack = () => {
-    router.push('/rmc-onboarding-priorities')
+    router.push('/priorities')
   }
 
   const handleDashbaord = () => {

@@ -15,7 +15,11 @@ const ConditionalOnboardingHeader = () => {
   const pathname = usePathname()
   const { isBreakpointReached } = useHorizontalNav()
 
-  const shouldShowNavbarContent = routesWithNavbarContent?.some(route => pathname?.includes(route))
+  const shouldShowNavbarContent = routesWithNavbarContent?.some(route => {
+    const regex = new RegExp(`(^|/)${route}(/|$|\\?)`)
+
+    return regex.test(pathname)
+  })
 
   if (shouldShowNavbarContent) {
     return (

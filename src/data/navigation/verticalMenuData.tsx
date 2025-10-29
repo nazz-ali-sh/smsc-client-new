@@ -9,7 +9,7 @@ const verticalMenuData = (): VerticalMenuDataType[] => [
   } as VerticalMenuItemDataType,
   {
     label: 'Tender Information',
-    href: '/tender-information-update',
+    href: '/tender-information',
     icon: 'ri-mail-open-line'
   } as VerticalMenuItemDataType,
   {
@@ -24,7 +24,7 @@ const verticalMenuData = (): VerticalMenuDataType[] => [
   } as VerticalMenuItemDataType,
   {
     label: 'Invites',
-    href: '/rmc-calendar',
+    href: '/calendar',
     icon: 'ri-file-list-2-line'
   } as VerticalMenuItemDataType,
   {

@@ -5,7 +5,12 @@ import { Box, Card, Grid, Typography } from '@mui/material'
 
 import type { PrioritiesSectionProps } from '../types'
 
-const PrioritiesSection: React.FC<PrioritiesSectionProps> = ({ priorities }) => {
+interface ExtendedPrioritiesSectionProps extends PrioritiesSectionProps {
+  cardsPerRow?: number
+}
+
+const PrioritiesSection: React.FC<ExtendedPrioritiesSectionProps> = ({ priorities, cardsPerRow = 4 }) => {
+  const gridSize = 12 / cardsPerRow
   return (
     <Box sx={{ marginBottom: 4 }}>
       <Box
@@ -30,7 +35,7 @@ const PrioritiesSection: React.FC<PrioritiesSectionProps> = ({ priorities }) => 
       </Box>
       <Grid container spacing={4} sx={{ marginTop: '24px' }}>
         {priorities?.map((priority, index) => (
-          <Grid item xs={12} sm={6} md={3} key={priority?.id}>
+          <Grid item xs={12} sm={6} md={gridSize} key={priority?.id}>
             <Card sx={{ height: '100px' }} className='border-l-[4px] border-l-[#35C0ED]'>
               <Box
                 sx={{

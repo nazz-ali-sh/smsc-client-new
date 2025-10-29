@@ -39,7 +39,7 @@ const OnboardingBuildings = () => {
     mutationFn: submitRmcLeaseholderType,
     onSuccess: () => {
       invalidateCache()
-      router.push('/rmc-onboarding-blocks')
+      router.push('/blocks')
     },
     onError: (error: any) => {
       toast.error(error?.response?.data?.message || 'Failed to submit building height. Please try again.')
@@ -68,7 +68,7 @@ const OnboardingBuildings = () => {
   }
 
   const handleBack = () => {
-    router.push('/rmc-onboarding-leaseholder')
+    router.push('/leaseholder')
   }
 
   return (

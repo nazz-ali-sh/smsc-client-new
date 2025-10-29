@@ -83,7 +83,7 @@ const OnboardingBudget = () => {
   }, [onboardingData, existingBudgetData, reset])
 
   const handleSkip = () => {
-    router.push('/rmc-onboarding-leaseholder')
+    router.push('/leaseholder')
   }
 
   const mutation = useMutation({
@@ -170,7 +170,7 @@ const OnboardingBudget = () => {
   }
 
   const handleBackScreen = () => {
-    router.push('/rmc-onboarding-details')
+    router.push('/details')
   }
 
   return (

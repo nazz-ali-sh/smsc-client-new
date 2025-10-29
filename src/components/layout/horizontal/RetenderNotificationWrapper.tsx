@@ -4,12 +4,15 @@ import { usePathname } from 'next/navigation'
 
 import RetenderNotification from '@/common/RetenderNotification'
 import { useDashboardData } from '@/hooks/useDashboardData'
+import { rmcRoutes, pmaRoutes } from '@/constants'
 
 const RetenderNotificationWrapper = () => {
   const pathname = usePathname()
   const { data: dashboardData } = useDashboardData()
 
-  const isOnboardingRoute = pathname.includes('rmc-onboarding')
+  const isOnboardingRoute =
+    rmcRoutes.some(route => pathname === route || pathname.startsWith(route)) ||
+    pmaRoutes.some(route => pathname === route || pathname.startsWith(route))
 
   const isAuthRoute =
     pathname.includes('/login') || pathname.includes('/forgot-password') || pathname.includes('/reset-password')

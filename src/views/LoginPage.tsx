@@ -74,7 +74,7 @@ const LoginPage = () => {
   }
 
   const handleOnboarding = () => {
-    router.push('/rmc-onboarding')
+    router.push('/onboarding')
   }
 
   const commonStyles = { background: 'white', borderRadius: '6px' }

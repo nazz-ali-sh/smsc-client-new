@@ -9,7 +9,7 @@ import { usePathname } from 'next/navigation'
 import { useSelector } from 'react-redux'
 import { FloatingTree } from '@floating-ui/react'
 
-import { routesWithNavbarContent } from '@/constants'
+import { routesWithNavbarContent, pmaRoutes, rmcRoutes } from '@/constants'
 import CustomTooltip from '@/common/CustomTooltip'
 import type { MenuProps as VerticalMenuProps } from '../vertical-menu/Menu'
 import type {
@@ -92,7 +92,7 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
     {
       image: <i className='ri-mail-open-line'></i>,
       menuItem: 'Tender Information',
-      href: '/tender-information-update',
+      href: '/tender-information',
       alwaysEnabled: false
     },
     {
@@ -111,7 +111,7 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
       image: <i className='ri-file-list-2-line'></i>,
       menuItem: 'Invites',
 
-      // href: '/rmc-calendar',
+      // href: '/calendar',
       alwaysEnabled: false,
       isInvite: true
     },
@@ -136,7 +136,11 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
   ])
 
   const pathname = usePathname()
-  const isOnboardingRoute = routesWithNavbarContent?.some(route => pathname?.includes(route))
+
+  const isOnboardingRoute =
+    routesWithNavbarContent?.some(route => pathname?.includes(route)) ||
+    pmaRoutes.some(route => pathname === route || pathname.startsWith(route)) ||
+    rmcRoutes.some(route => pathname === route || pathname.startsWith(route))
 
   const providerValue = useMemo(
     () => ({
@@ -176,8 +180,7 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
 
             const isActive =
               pathname === items.href ||
-              (items.isInvite &&
-                ['/invites-site-visits', '/invites-video-calls', '/rmc-calendar'].some(p => pathname.startsWith(p)))
+              (items.isInvite && ['/site-visits', '/video-calls', '/calendar'].some(p => pathname.startsWith(p)))
 
             if (items.isInvite) {
               return (

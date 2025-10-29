@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect, useRef } from 'react'
 
 import { useForm, Controller } from 'react-hook-form'
 import { Grid, TextField, Box } from '@mui/material'
@@ -9,7 +9,7 @@ import { toast } from 'react-toastify'
 
 import GoogleMapsProvider from './GoogleMapsProvider'
 
-const getAddressFieldStyles = (hasValue: boolean) => ({
+export const getAddressFieldStyles = (hasValue: boolean) => ({
   '& .MuiOutlinedInput-root': {
     '& fieldset': {
       borderColor: hasValue ? '#26C6F9' : '#D1D5DB'
@@ -65,9 +65,11 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
     initialData.coordinates ? { lat: initialData.coordinates.lat, lng: initialData.coordinates.lng } : null
   )
 
+  const [isManualEdit, setIsManualEdit] = useState(false)
+
   const places = useMapsLibrary('places')
 
-  const { control, handleSubmit, setValue, watch } = useForm<AddressFormData>({
+  const { control, handleSubmit, setValue, watch, getValues } = useForm<AddressFormData>({
     defaultValues: {
       addressLine1: initialData?.addressLine1 || '',
       addressLine2: initialData?.addressLine2 || '',
@@ -83,16 +85,104 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
   const postcode = watch('postcode')
   const region = watch('region')
   const county = watch('county')
-  const coordinates = watch('coordinates')
 
-  const handleManualAddressData = useCallback(
-    (formData: AddressFormData) => {
-      if (onManualAddressData) {
-        onManualAddressData(formData)
-      }
-    },
-    [onManualAddressData]
-  )
+  const onManualAddressDataRef = useRef(onManualAddressData)
+
+  useEffect(() => {
+    onManualAddressDataRef.current = onManualAddressData
+  }, [onManualAddressData])
+
+  const handleManualAddressData = useCallback((formData: AddressFormData) => {
+    if (onManualAddressDataRef.current) {
+      onManualAddressDataRef.current(formData)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!addressLine1?.trim() || !postcode?.trim()) return
+    if (!places) return
+
+    if (!isManualEdit) {
+      return
+    }
+
+    const timeoutId = setTimeout(() => {
+      const geocoder = new google.maps.Geocoder()
+      const addressParts = [addressLine1, addressLine2, county, region, postcode].filter(part => part && part.trim())
+      const fullAddressString = addressParts.join(', ')
+
+      geocoder.geocode({ address: fullAddressString }, (results, status) => {
+        if (status === 'OK' && results && results[0]) {
+          const location = results[0].geometry.location
+          const lat = location.lat()
+          const lng = location.lng()
+
+          setValue('coordinates.lat', lat)
+          setValue('coordinates.lng', lng)
+          setSelectedLocation({ lat, lng })
+
+          if (onManualAddressChange) {
+            onManualAddressChange()
+          }
+
+          const formData = {
+            addressLine1,
+            addressLine2,
+            postcode,
+            region,
+            county,
+            coordinates: { lat, lng }
+          }
+
+          handleManualAddressData(formData)
+        } else {
+          const fallbackAddress = `${addressLine1}, ${postcode}`
+
+          geocoder.geocode({ address: fallbackAddress }, (fallbackResults, fallbackStatus) => {
+            if (fallbackStatus === 'OK' && fallbackResults && fallbackResults[0]) {
+              const location = fallbackResults[0].geometry.location
+              const lat = location.lat()
+              const lng = location.lng()
+
+              setValue('coordinates.lat', lat)
+              setValue('coordinates.lng', lng)
+              setSelectedLocation({ lat, lng })
+
+              if (onManualAddressChange) {
+                onManualAddressChange()
+              }
+
+              const formData = {
+                addressLine1,
+                addressLine2,
+                postcode,
+                region,
+                county,
+                coordinates: { lat, lng }
+              }
+
+              handleManualAddressData(formData)
+            } else {
+              toast.warning('Could not find exact location. Please click on the map to set the location manually.')
+            }
+          })
+        }
+      })
+    }, 1000)
+
+    return () => clearTimeout(timeoutId)
+  }, [
+    addressLine1,
+    addressLine2,
+    postcode,
+    region,
+    county,
+    places,
+    isManualEdit,
+    setValue,
+    onManualAddressChange,
+    handleManualAddressData
+  ])
 
   useEffect(() => {
     if (!addressLine1?.trim()) return
@@ -101,13 +191,15 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
       const hasValidData = addressLine1?.trim() && (postcode?.trim() || region?.trim() || county?.trim())
 
       if (hasValidData) {
+        const currentCoordinates = getValues('coordinates')
+
         const formData = {
           addressLine1,
           addressLine2,
           postcode,
           region,
           county,
-          coordinates
+          coordinates: currentCoordinates
         }
 
         handleManualAddressData(formData)
@@ -115,10 +207,14 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
     }, 500)
 
     return () => clearTimeout(timeoutId)
-  }, [addressLine1, addressLine2, postcode, region, county, coordinates, handleManualAddressData])
+  }, [addressLine1, addressLine2, postcode, region, county, handleManualAddressData, getValues])
+
+  const hasInitialDataLoaded = useRef(false)
 
   useEffect(() => {
     if (initialData && Object.keys(initialData)?.length > 0) {
+      const isFirstLoad = !hasInitialDataLoaded.current
+
       setValue('addressLine1', initialData?.addressLine1 || '')
       setValue('addressLine2', initialData?.addressLine2 || '')
       setValue('postcode', initialData?.postcode || '')
@@ -132,6 +228,11 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
           lng: initialData?.coordinates?.lng
         })
       }
+
+      if (isFirstLoad) {
+        setIsManualEdit(false)
+        hasInitialDataLoaded.current = true
+      }
     }
   }, [initialData, setValue])
 
@@ -144,6 +245,7 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
         setSelectedLocation({ lat, lng })
         setValue('coordinates.lat', lat)
         setValue('coordinates.lng', lng)
+        setIsManualEdit(false)
 
         if (onManualAddressChange) {
           onManualAddressChange()
@@ -188,7 +290,18 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
               setValue('region', state)
               setValue('county', city)
 
-              toast.success('Location selected successfully')
+              const mapData = {
+                addressLine1: address,
+                addressLine2: '',
+                postcode: postcode,
+                region: state,
+                county: city,
+                coordinates: { lat, lng }
+              }
+
+              if (onLocationSelect) {
+                onLocationSelect(mapData)
+              }
             } else {
               console.error('Geocoder failed due to: ' + status)
               toast.error('Failed to get address details')
@@ -197,7 +310,7 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
         }
       }
     },
-    [places, setValue, onManualAddressChange]
+    [places, setValue, onManualAddressChange, onLocationSelect]
   )
 
   const onSubmit = (data: AddressFormData) => {
@@ -237,6 +350,7 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
                         sx={getAddressFieldStyles(!!field.value)}
                         onChange={e => {
                           field.onChange(e)
+                          setIsManualEdit(true)
                         }}
                       />
                     )}
@@ -258,6 +372,7 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
                         sx={getAddressFieldStyles(!!field.value)}
                         onChange={e => {
                           field.onChange(e)
+                          setIsManualEdit(true)
                         }}
                       />
                     )}
@@ -279,6 +394,7 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
                         sx={getAddressFieldStyles(!!field.value)}
                         onChange={e => {
                           field.onChange(e)
+                          setIsManualEdit(true)
                         }}
                       />
                     )}
@@ -300,6 +416,7 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
                         sx={getAddressFieldStyles(!!field.value)}
                         onChange={e => {
                           field.onChange(e)
+                          setIsManualEdit(true)
                         }}
                       />
                     )}
@@ -322,6 +439,7 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
                         sx={getAddressFieldStyles(!!field.value)}
                         onChange={e => {
                           field.onChange(e)
+                          setIsManualEdit(true)
                         }}
                       />
                     )}
@@ -333,8 +451,9 @@ const AddressMapSelector: React.FC<AddressMapSelectorProps> = ({
             <Grid item xs={12}>
               <Box sx={{ width: '100%', height: '600px', borderRadius: 2, overflow: 'hidden' }}>
                 <Map
-                  defaultZoom={selectedLocation ? 15 : 6}
-                  defaultCenter={selectedLocation || { lat: 54.5, lng: -3.5 }}
+                  key={selectedLocation ? `${selectedLocation.lat}-${selectedLocation.lng}` : 'no-location'}
+                  zoom={selectedLocation ? 15 : 6}
+                  center={selectedLocation || { lat: 54.5, lng: -3.5 }}
                   gestureHandling='cooperative'
                   disableDefaultUI={false}
                   onClick={handleMapClick}

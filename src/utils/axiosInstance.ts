@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { clearTokenCookie } from '@/utils/tokenSync'
+import { clearAllTokenCookies } from '@/utils/tokenSync'
 
 const TENDER_ID = '63168138167'
 
@@ -12,10 +12,15 @@ const getTokenFromCookie = () => {
   try {
     if (typeof document !== 'undefined') {
       const cookies = document.cookie.split(';')
-      const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('rmc-token='))
+      const rmcTokenCookie = cookies.find(cookie => cookie.trim().startsWith('rmc-token='))
+      const pmaTokenCookie = cookies.find(cookie => cookie.trim().startsWith('pma-token='))
 
-      if (tokenCookie) {
-        return tokenCookie.split('=')[1]
+      if (rmcTokenCookie) {
+        return rmcTokenCookie.split('=')[1]
+      }
+
+      if (pmaTokenCookie) {
+        return pmaTokenCookie.split('=')[1]
       }
     }
 
@@ -57,7 +62,7 @@ axiosClient.interceptors.response.use(
     if (error.response?.status === 401) {
       console.log('🚪 401 Unauthorized - Logging out user')
 
-      clearTokenCookie()
+      clearAllTokenCookies()
 
       if (typeof window !== 'undefined') {
         localStorage.removeItem('persist:root')

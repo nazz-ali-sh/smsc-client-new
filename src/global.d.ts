@@ -1,5 +1,7 @@
 import type { Control, FieldPath, FieldValues } from 'react-hook-form'
 
+import { type ColumnDef } from '@tanstack/react-table'
+
 declare global {
   interface FormInputProps<T extends FieldValues = FieldValues> {
     name: FieldPath<T>
@@ -25,6 +27,17 @@ declare global {
   }
 
   interface DirectorOfRMCFormData {
+    fullName: string
+    lastName: string
+    email: string
+    phoneNumber: string
+    password: string
+    confirmPassword: string
+    companyWebsite: string
+    companyLandlineNumber: string
+  }
+
+  interface registrationFormData {
     fullName: string
     lastName: string
     email: string
@@ -100,6 +113,22 @@ declare global {
     size?: 'small' | 'medium'
     className?: string
     sx?: any
+  }
+  interface OnboardingPortalProps {
+    portal: 'rmc_portal' | 'pma_portal'
+  }
+
+  interface CommonTableProps<T> {
+    data: T[]
+    columns: ColumnDef<T, any>[]
+    title?: string
+    description?: string
+    actionButton?: React.ReactNode
+    pagination?: PaginationState
+    onPaginationChange?: (pagination: PaginationState) => void
+    pageSizeOptions?: number[]
+    className?: string
+    enableSorting?: boolean
   }
 }
 

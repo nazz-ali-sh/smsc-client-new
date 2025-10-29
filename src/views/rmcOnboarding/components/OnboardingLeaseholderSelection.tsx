@@ -10,11 +10,11 @@ const OnboardingLeaseholderSelection = () => {
   const router = useRouter()
 
   const handleCardClick = () => {
-    router.push('/rmc-onboarding-director')
+    router.push('/director')
   }
 
   const handleRTM = () => {
-    router.push('/rmc-onboarding-resident')
+    router.push('/resident')
   }
 
   return (

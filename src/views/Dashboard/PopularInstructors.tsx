@@ -224,7 +224,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
             )}
 
             <Box
-              onClick={!stages?.went_live?.is_completed ? undefined : () => router.push('/tender-information-update')}
+              onClick={!stages?.went_live?.is_completed ? undefined : () => router.push('/tender-information')}
               sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '30px', marginTop: '75px' }}
               className=' absolute bottom-[18px] right-2'
             >
@@ -704,7 +704,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
             >
               <CustomTooltip text='View All Video Calls' position='left' align='left'>
                 <Box
-                  onClick={!stages?.shortlisted?.is_current ? undefined : () => router.push('/invites-video-calls')}
+                  onClick={!stages?.shortlisted?.is_current ? undefined : () => router.push('/video-calls')}
                   sx={{
                     width: '36px',
                     height: '36px',
@@ -916,7 +916,7 @@ const TenderCards: React.FC<dashboardResponceprops> = ({ dashboardResponce, isLo
 
               <CustomTooltip text='Appoint Agent' position='left' align='left'>
                 <Box
-                  onClick={!stages?.shortlisted?.is_current ? undefined : () => router.push('/invites-site-visits')}
+                  onClick={!stages?.shortlisted?.is_current ? undefined : () => router.push('/site-visits')}
                   sx={{
                     width: '36px',
                     height: '36px',

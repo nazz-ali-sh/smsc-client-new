@@ -49,7 +49,7 @@ const OnboardingLeaseholderType = () => {
     mutationFn: submitRmcLeaseholderType,
     onSuccess: () => {
       invalidateCache()
-      router.push('/rmc-onboarding-buildings')
+      router.push('/buildings')
     },
     onError: (error: any) => {
       let errorMessage = 'Failed to submit leaseholder type. Please try again.'
@@ -88,7 +88,7 @@ const OnboardingLeaseholderType = () => {
   }
 
   const handleBack = () => {
-    router.push('/rmc-onboarding-budget')
+    router.push('/budget')
   }
 
   return (

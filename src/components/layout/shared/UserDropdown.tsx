@@ -22,7 +22,7 @@ import { useSettings } from '@core/hooks/useSettings'
 
 import { clearTokenCookie } from '@/utils/tokenSync'
 import { clearRmcData } from '@/redux-store/slices/rmcOnboardingSlice'
-import { routesWithNavbarContent } from '@/constants'
+import { routesWithNavbarContent, rmcRoutes, pmaRoutes } from '@/constants'
 
 const BadgeContentSpan = styled('span')({
   width: 8,
@@ -45,7 +45,10 @@ const UserDropdown = ({ selectedTenderInitial }: { selectedTenderInitial?: strin
 
   const { settings } = useSettings()
 
-  const isOnboardingRoute = routesWithNavbarContent.some(route => pathname.includes(route))
+  const isOnboardingRoute =
+    routesWithNavbarContent.some(route => pathname.includes(route)) ||
+    rmcRoutes.some(route => pathname === route || pathname.startsWith(route)) ||
+    pmaRoutes.some(route => pathname === route || pathname.startsWith(route))
 
   const handleDropdownOpen = () => {
     !open ? setOpen(true) : setOpen(false)
@@ -116,7 +119,7 @@ const UserDropdown = ({ selectedTenderInitial }: { selectedTenderInitial?: strin
               <ClickAwayListener onClickAway={e => handleDropdownClose(e as MouseEvent | TouchEvent)}>
                 <MenuList>
                   {!isOnboardingRoute && (
-                    <MenuItem className='gap-3 pli-4' onClick={e => handleDropdownClose(e, '/my-accounts')}>
+                    <MenuItem className='gap-3 pli-4' onClick={e => handleDropdownClose(e, '/account')}>
                       <Typography color='text.primary'>My Account</Typography>
                     </MenuItem>
                   )}

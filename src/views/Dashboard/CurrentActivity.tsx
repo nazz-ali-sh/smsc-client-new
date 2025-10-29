@@ -103,7 +103,7 @@ const CurrentActivity: React.FC<DashboardResponseProps> = ({ dashboardResponce }
                   </div>
                   <section className='flex justify-end items-end mt-5 mb-2 mr-2'>
                     <Button
-                      onClick={() => router.push('/invites-video-calls')}
+                      onClick={() => router.push('/video-calls')}
                       variant='contained'
                       className='bg-buttonPrimary w-[110px] text-[11px] whitespace-nowrap'
                     >

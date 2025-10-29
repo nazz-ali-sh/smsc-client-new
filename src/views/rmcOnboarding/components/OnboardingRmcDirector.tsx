@@ -13,14 +13,11 @@ import { useDispatch } from 'react-redux'
 
 import CustomButton from '@/common/CustomButton'
 import FormInput from '@/components/form-components/FormInput'
-import ConfirmationRegistration from '@/views/PmaOnboardingForm/components/ConfirmationRegistration'
 import { directorOfRMCSchema } from '@/schemas/validation-schemas'
-import {
-  submitRmcOnboardingStep1,
-  type RmcOnboardingStep1Payload
-} from '@/services/rmc-onboarding-apis/rmc-onboarding-api'
+import { submitRmcOnboardingStep1, type registrationPayload } from '@/services/rmc-onboarding-apis/rmc-onboarding-api'
 import { setRmcData } from '@/redux-store/slices/rmcOnboardingSlice'
 import { rmcDirectorFormInputs } from '@/constants'
+import ConfirmationRegistration from '@/common/ConfirmationRegistration'
 
 export default function OnboardingForm() {
   const router = useRouter()
@@ -29,7 +26,7 @@ export default function OnboardingForm() {
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [userData, setUserData] = useState<{ firstName: string; lastName: string; email: string } | null>(null)
 
-  const { control, handleSubmit } = useForm<DirectorOfRMCFormData>({
+  const { control, handleSubmit } = useForm<registrationFormData>({
     resolver: valibotResolver(directorOfRMCSchema),
     defaultValues: {
       fullName: '',
@@ -70,7 +67,7 @@ export default function OnboardingForm() {
     }
   })
 
-  const handleFormSubmit = (data: DirectorOfRMCFormData) => {
+  const handleFormSubmit = (data: registrationFormData) => {
     if (isSubmitting || mutation.isPending) return
 
     setIsSubmitting(true)
@@ -81,7 +78,7 @@ export default function OnboardingForm() {
       email: data.email
     })
 
-    const payload: RmcOnboardingStep1Payload = {
+    const payload: registrationPayload = {
       name: `${data?.fullName} ${data?.lastName}`.trim(),
       email: data.email,
       phone_no: data.phoneNumber,
@@ -97,11 +94,11 @@ export default function OnboardingForm() {
   }
 
   const handleBackStep = () => {
-    router.push('/rmc-onboarding')
+    router.push('/onboarding')
   }
 
   const handleConfirmationComplete = () => {
-    router.replace('/rmc-onboarding-verification')
+    router.replace('/verification')
   }
 
   return (
@@ -114,6 +111,7 @@ export default function OnboardingForm() {
             firstName={userData?.firstName}
             lastName={userData?.lastName}
             email={userData?.email}
+            portal='rmc_portal'
           />
         ) : (
           <div className='p-4 rounded-lg w-full '>
@@ -145,7 +143,7 @@ export default function OnboardingForm() {
                     return (
                       <Grid item xs={12} md={4} key={field.name}>
                         <FormInput
-                          name={field?.name as keyof DirectorOfRMCFormData}
+                          name={field?.name as keyof registrationFormData}
                           control={control}
                           label={field?.label}
                           type={field?.type}

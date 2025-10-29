@@ -1,16 +1,20 @@
+import { rmcRoutes as importedRmcRoutes } from '@/constants'
+
+export const rmcRoutes = importedRmcRoutes
+
 export const getOnboardingRoute = (step?: number): string => {
   switch (step) {
     case 3:
-      return '/rmc-onboarding-postcode'
+      return '/postcode'
     case 4:
-      return '/rmc-onboarding-budget'
+      return '/budget'
     case 5:
-      return '/rmc-onboarding-leaseholder'
+      return '/leaseholder'
     case 6:
-      return '/rmc-onboarding-priorities'
+      return '/priorities'
     case 7:
-      return '/rmc-onboarding-open'
+      return '/open'
     default:
-      return '/rmc-onboarding'
+      return '/onboarding'
   }
 }

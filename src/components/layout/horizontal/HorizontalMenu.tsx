@@ -72,7 +72,7 @@ const HorizontalMenu = () => {
         <MenuItem href='/dashboard' icon={<i className='ri-home-smile-line' />}>
           Dashboard
         </MenuItem>
-        <MenuItem href='/tender-information-update' icon={<i className='ri-mail-open-line' />}>
+        <MenuItem href='/tender-information' icon={<i className='ri-mail-open-line' />}>
           Tender Information
         </MenuItem>
         <MenuItem href='/tender-result' icon={<i className='ri-database-line' />}>
@@ -81,7 +81,7 @@ const HorizontalMenu = () => {
         <MenuItem href='/shortlist-agent' icon={<i className='ri-pantone-line' />}>
           Shortlisted Agents
         </MenuItem>
-        <MenuItem href='/rmc-calendar' icon={<i className='ri-file-list-2-line' />}>
+        <MenuItem href='/calendar' icon={<i className='ri-file-list-2-line' />}>
           Invites
         </MenuItem>
         <MenuItem href='/chats' icon={<i className='ri-pages-line' />}>

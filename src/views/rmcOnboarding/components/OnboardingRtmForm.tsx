@@ -41,7 +41,7 @@ const OnboardingRtmForm = () => {
     onSuccess: data => {
       if (data) {
         dispatch(clearRtmNonDirectorData())
-        router.replace('/rmc-onboarding')
+        router.replace('/onboarding')
       }
 
       setIsSubmitting(false)
@@ -82,7 +82,7 @@ const OnboardingRtmForm = () => {
   }
 
   const handleNext = () => handleSubmit(handleFormSubmit)()
-  const handleBackStep = () => router.push('/rmc-onboarding-five')
+  const handleBackStep = () => router.push('/five')
 
   return (
     <>

@@ -11,7 +11,7 @@ import { FormControl, InputLabel, Select, MenuItem, Grid, type SelectChangeEvent
 import classnames from 'classnames'
 
 import { useQuery } from '@tanstack/react-query'
-import {  useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 import type { Locale } from '@configs/i18n'
 import type { NotificationsType } from '@components/layout/shared/NotificationsDropdown'
@@ -31,7 +31,7 @@ import { gettingRmcTenderId } from '@/services/dashboard-apis/dashboard-api'
 import { setRmcTenderId } from '@/redux-store/slices/rmcOnboardingSlice'
 
 import appLogo from '../../../../public/images/customImages/appLogo.png'
-import { routesWithNavbarContent } from '@/constants'
+import { routesWithNavbarContent, pmaRoutes, rmcRoutes } from '@/constants'
 
 const notifications: NotificationsType[] = [
   {
@@ -101,7 +101,10 @@ const NavbarContent = () => {
   const dispatch = useDispatch()
 
   const shouldHideElements = routesWithNavbarContent.some(route => pathname.includes(route))
-  const isOnboardingRoute = pathname.includes('rmc-onboarding')
+
+  const isOnboardingRoute =
+    pmaRoutes.some(route => pathname === route || pathname.startsWith(route)) ||
+    rmcRoutes.some(route => pathname === route || pathname.startsWith(route))
 
   const [rmctenderId, setRmctenderId] = useState<string>('')
   const [tendersWithInitials, setTendersWithInitials] = useState<any[]>([])
@@ -112,7 +115,6 @@ const NavbarContent = () => {
     queryFn: gettingRmcTenderId,
     retry: 2
   })
-
 
   useEffect(() => {
     if (rmcTenderIDData?.data?.tenders?.length) {
@@ -257,7 +259,7 @@ const NavbarContent = () => {
         )}
         {!shouldHideElements && <NavSearch />}
         {!shouldHideElements && <NotificationsDropdown notifications={notifications} />}
-        <UserDropdown selectedTenderInitial = {selectedTenderInitial}  />
+        <UserDropdown selectedTenderInitial={selectedTenderInitial} />
       </div>
     </div>
   )

@@ -10,29 +10,17 @@ import {
   getSortedRowModel,
   useReactTable,
   flexRender,
-  type ColumnDef,
   type PaginationState,
   type SortingState
 } from '@tanstack/react-table'
 
 import tableStyles from '@core/styles/table.module.css'
 
-interface CommonTableProps<T> {
-  data: T[]
-  columns: ColumnDef<T, any>[]
-  title?: string
-  actionButton?: React.ReactNode
-  pagination?: PaginationState
-  onPaginationChange?: (pagination: PaginationState) => void
-  pageSizeOptions?: number[]
-  className?: string
-  enableSorting?: boolean
-}
-
 function CommonTable<T>({
   data,
   columns,
   title,
+  description,
   actionButton,
   pagination: externalPagination,
   onPaginationChange,
@@ -72,11 +60,28 @@ function CommonTable<T>({
         <CardHeader
           title={
             title ? (
-              <div className='flex justify-between items-center pb-5 pt-2'>
-                <Typography variant='h4' component='h2' className='font-bold'>
-                  {title}
-                </Typography>
-                {actionButton}
+              <div>
+                <div className='flex justify-between items-center pb-5 pt-2'>
+                  <Typography variant='h4' component='h2' className='font-bold'>
+                    {title}
+                  </Typography>
+                  {actionButton}
+                </div>
+                {description && (
+                  <Typography
+                    variant='body2'
+                    sx={{
+                      color: '#696969',
+                      fontSize: '14px',
+                      lineHeight: '23px',
+                      whiteSpace: 'pre-line',
+                      paddingBottom: '16px',
+                      maxWidth: '75%'
+                    }}
+                  >
+                    {description}
+                  </Typography>
+                )}
               </div>
             ) : undefined
           }

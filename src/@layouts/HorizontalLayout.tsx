@@ -14,6 +14,7 @@ import LayoutContent from './components/horizontal/LayoutContent'
 import { horizontalLayoutClasses } from './utils/layoutClasses'
 
 import StyledContentWrapper from './styles/horizontal/StyledContentWrapper'
+import { rmcRoutes, pmaRoutes } from '@/constants'
 
 type HorizontalLayoutProps = ChildrenType & {
   header?: ReactNode
@@ -23,8 +24,10 @@ type HorizontalLayoutProps = ChildrenType & {
 const HorizontalLayout = (props: HorizontalLayoutProps) => {
   const { header, footer, children } = props
   const pathname = usePathname()
-  const hideHeader = pathname.startsWith('/rmc-onboarding')
-  const hideFooter = pathname.startsWith('/rmc-onboarding')
+  const isRmcRoute = rmcRoutes.some(route => pathname === route)
+  const isPmaRoute = pmaRoutes.some(route => pathname === route || pathname.startsWith(route))
+  const hideHeader = isRmcRoute || isPmaRoute
+  const hideFooter = isRmcRoute || isPmaRoute
 
   return (
     <div className={classnames(horizontalLayoutClasses.root, 'flex flex-auto')}>

@@ -144,7 +144,7 @@ const MyAccount: React.FC = () => {
   }
 
   const handleBack = () => {
-    router.push('/my-accounts')
+    router.push('/account')
   }
 
   const preferencesList = [

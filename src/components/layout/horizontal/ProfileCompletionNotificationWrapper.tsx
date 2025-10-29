@@ -5,7 +5,8 @@ import { useRouter, usePathname } from 'next/navigation'
 import { useSelector } from 'react-redux'
 
 import RetenderNotification from '@/common/RetenderNotification'
-import { getOnboardingRoute } from '@/utils/onboarding'
+import { getOnboardingRoute, rmcRoutes } from '@/utils/onboarding'
+import { pmaRoutes } from '@/constants'
 
 const ProfileCompletionNotificationWrapper = () => {
   const router = useRouter()
@@ -14,7 +15,9 @@ const ProfileCompletionNotificationWrapper = () => {
   const tenderInformation = useSelector((state: any) => state?.tenderInformation?.onboarding)
   const token = typeof window !== 'undefined' ? document.cookie.includes('token=') : false
 
-  const isOnboardingRoute = pathname.includes('rmc-onboarding')
+  const isOnboardingRoute =
+    rmcRoutes.some(route => pathname === route) ||
+    pmaRoutes.some(route => pathname === route || pathname.startsWith(route))
 
   const isAuthRoute =
     pathname.includes('/login') || pathname.includes('/forgot-password') || pathname.includes('/reset-password')

@@ -9,7 +9,10 @@ export const apiEndpoints = {
   //---------------------- Onboarding Stepper----------------------//
   // onboarding: (step: any) => `rmc-onboarding?step=${step}`,
   rmcOnboarding: () => `/rmc/onboarding`,
-  rmcOnboardingVerification: () => `/rmc/verification`,
+  rmcOnboardingVerification: () => `/verification`,
+
+  pmaOnboarding: () => `/pma/onboarding`,
+  comapnyAccount: () => `/pma/company/account`,
 
   rmcBudget: () => `/rmc/tender-onboarding`,
   rmcStep5Status: () => `/rmc/tender-onboarding/step-5/status`,
@@ -50,11 +53,9 @@ export const apiEndpoints = {
 
   tenderActivaction: `rmc/tender-activation`,
 
-  gettingOnboardingData: (funnel_id: number | string) => `rmc/onboarding/funnel/${funnel_id}`,
-
   //---------------------- Otp verification  ------------------------------//
 
-  otpVerification: () => `/rmc/otp-verification`,
+  otpVerification: () => `/otp-verification`,
 
   resendCode: () => `/rmc/tender-onboarding/resend-code`,
 

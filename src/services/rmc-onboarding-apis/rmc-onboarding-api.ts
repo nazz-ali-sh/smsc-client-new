@@ -7,8 +7,19 @@ export interface RmcOnboardingStep1Payload {
   phone_no: string
   password: string
   password_confirmation: string
+  company_website?: string
+  company_landline_number?: string
 }
 
+export interface registrationPayload {
+  name: string
+  email: string
+  phone_no: string
+  password: string
+  password_confirmation: string
+  company_website?: string
+  company_landline_number?: string
+}
 export interface RmcOnboardingResponse {
   success: boolean
   message: string
@@ -16,7 +27,7 @@ export interface RmcOnboardingResponse {
   tender_id?: number
 }
 
-export const submitRmcOnboardingStep1 = async (data: RmcOnboardingStep1Payload): Promise<RmcOnboardingResponse> => {
+export const submitRmcOnboardingStep1 = async (data: registrationPayload): Promise<RmcOnboardingResponse> => {
   try {
     const url = apiEndpoints.rmcOnboarding()
     const response = await axiosClient.post(url, data)

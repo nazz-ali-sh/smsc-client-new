@@ -3,39 +3,75 @@ import { NextResponse } from 'next/server'
 
 const protectedRoutes = [
   '/dashboard',
-  '/rmc-onboarding-postcode',
-  '/rmc-onboarding-address',
-  '/rmc-onboarding-details',
-  '/rmc-onboarding-budget',
-  '/rmc-onboarding-leaseholder',
-  '/rmc-onboarding-buildings',
-  '/rmc-onboarding-blocks',
-  '/rmc-onboarding-spaces',
-  '/rmc-onboarding-priorities',
-  '/rmc-onboarding-open',
-  '/tender-information-update',
+  '/postcode',
+  '/address',
+  '/details',
+  '/budget',
+  '/leaseholder',
+  '/buildings',
+  '/blocks',
+  '/spaces',
+  '/priorities',
+  '/open',
   '/tender-information',
   '/shortlist-agent',
-  '/rmc-calendar',
+  '/calendar',
+  '/site-visits',
+  '/video-calls',
   '/chats',
   '/final-selection',
-  '/archive'
+  '/archive',
+  '/set-availability',
+  '/account',
+  '/evaluation-matrix',
+  '/insurance',
+  '/pma-calendar',
+  '/branch-management',
+  '/user-management',
+  '/account-detail',
+  '/tender-result',
+  '/locationcode',
+  'bussiness-profile',
+  '/google-reviews',
+  '/otp-verification',
+  '/pinlocation',
+  '/reviews-form',
+  '/tenders-notification',
+  '/trustpilot-form',
+  '/trustpilot-reviews',
+  '/verify-otp'
 ]
 
 const publicRoutes = ['/', '/login', '/forgot-password', '/reset-password']
 
 const onboardingPublicRoutes = [
-  '/rmc-onboarding',
-  '/rmc-onboarding-director',
-  '/rmc-onboarding-verification',
-  '/rmc-onboarding-otp',
-  'rmc-onboarding-resident',
-  '/rmc-onboarding-rtm',
-  '/rmc-onboarding-questions',
-  '/rmc-onboarding-second',
-  '/rmc-onboarding-third',
-  '/rmc-onboarding-four',
-  '/rmc-onboarding-five'
+  '/onboarding',
+  '/director',
+  '/verification',
+  '/otp',
+  '/resident',
+  '/rtm',
+  '/questions',
+  '/second',
+  '/third',
+  '/four',
+  '/five',
+  '/otp-verification',
+  '/verify-otp',
+  '/google-reviews',
+  '/trustpilot-reviews',
+  '/reviews-form',
+  '/company',
+  '/company-details',
+  '/business-profile',
+  '/tenders-notification',
+  '/email-notification',
+  '/management',
+  '/trustpilot-form',
+  '/location',
+  '/location-form',
+  '/locationcode',
+  '/pinlocation'
 ]
 
 export default async function middleware(req: NextRequest) {
@@ -45,11 +81,15 @@ export default async function middleware(req: NextRequest) {
   const isPublicRoute = publicRoutes?.includes(path)
   const isOnboardingRoute = onboardingPublicRoutes?.some(route => path?.startsWith(route))
 
-  const token = req.cookies.get('rmc-token')?.value
+  const rmcToken = req.cookies.get('rmc-token')?.value
+  const pmaToken = req.cookies.get('pma-token')?.value
+  const token = rmcToken || pmaToken
   const isAuthenticated = !!token && token.length > 10
 
   console.log('🔍 Middleware check:', {
     path,
+    rmcToken: rmcToken ? `${rmcToken.substring(0, 10)}...` : 'none',
+    pmaToken: pmaToken ? `${pmaToken.substring(0, 10)}...` : 'none',
     token: token ? `${token.substring(0, 10)}...` : 'none',
     isAuthenticated,
     isProtectedRoute,
@@ -59,8 +99,13 @@ export default async function middleware(req: NextRequest) {
 
   // Only redirect to dashboard if user tries to access initial onboarding routes
   // Allow them to continue if they're already in the onboarding flow
-  if (isAuthenticated && (path === '/rmc-onboarding' || path === '/rmc-onboarding-director')) {
+  if (isAuthenticated && (path === '/onboarding' || path === '/director')) {
     return NextResponse.redirect(new URL('/dashboard', req.url))
+  }
+
+  // Allow onboarding routes to be accessed without authentication
+  if (isOnboardingRoute) {
+    return NextResponse.next()
   }
 
   if (isProtectedRoute && !isAuthenticated) {

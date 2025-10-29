@@ -13,7 +13,7 @@ const MyAccountView: React.FC = () => {
   const { data: accountData } = useMyAccount()
 
   const handleEditProfile = () => {
-    router.push('/my-accounts-update')
+    router.push('/account-detail')
   }
 
   const user = accountData?.user

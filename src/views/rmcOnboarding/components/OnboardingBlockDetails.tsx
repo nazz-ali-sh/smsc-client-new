@@ -84,7 +84,7 @@ const OnboardingBlockDetails = () => {
     onSuccess: () => {
       invalidateCache()
       setOpen(false)
-      router.push('/rmc-onboarding-budget')
+      router.push('/budget')
     },
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || 'Failed to submit block details. Please try again.'
@@ -95,7 +95,7 @@ const OnboardingBlockDetails = () => {
   })
 
   const handleNavigate = () => {
-    router.push('/rmc-onboarding-budget')
+    router.push('/budget')
   }
 
   const handleModalOpen = () => {
@@ -176,7 +176,7 @@ const OnboardingBlockDetails = () => {
   ]
 
   const handleBackStep = () => {
-    router.push('/rmc-onboarding-address')
+    router.push('/address')
   }
 
   const handleIconHover = (fieldName: keyof typeof tooltipContent, event: React.MouseEvent<HTMLElement>) => {

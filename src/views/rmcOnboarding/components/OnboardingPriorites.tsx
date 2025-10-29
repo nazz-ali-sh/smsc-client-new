@@ -122,7 +122,7 @@ const OnboardingPriorities: React.FC = () => {
     mutationFn: submitRmcPriorities,
     onSuccess: () => {
       invalidateCache()
-      router.push('/rmc-onboarding-open')
+      router.push('/open')
     },
     onError: (error: any) => {
       toast.error(error?.response?.data?.message || 'Failed to submit priorities. Please try again.')
@@ -263,7 +263,7 @@ const OnboardingPriorities: React.FC = () => {
   }
 
   const handleBack = () => {
-    router.push('/rmc-onboarding-spaces')
+    router.push('/spaces')
   }
 
   return (
