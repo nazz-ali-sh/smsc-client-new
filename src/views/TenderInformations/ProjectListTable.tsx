@@ -259,7 +259,7 @@ const KitchenSink = () => {
         enableSorting: false,
         enableColumnFilter: false
       }),
-     
+
       columnHelper.accessor('tradingYears', {
         cell: info => info.getValue() || 'N/A',
         header: 'Trading Years',
@@ -493,7 +493,7 @@ const KitchenSink = () => {
             open={drawerOpen}
             onClose={() => {
               setDrawerOpen(false)
-              setIsViewingResponse(false) 
+              setIsViewingResponse(false)
             }}
             drawerData={responceData?.data}
             successModalOpen={successModalOpen}

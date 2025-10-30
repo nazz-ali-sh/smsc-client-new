@@ -111,7 +111,6 @@ const Calendar = (props: CalenderProps) => {
       handleAddEventSidebarToggle()
     },
 
-   
     direction: theme.direction
   }
 

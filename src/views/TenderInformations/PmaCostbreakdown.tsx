@@ -11,7 +11,6 @@ interface pmaCostBreakDown {
 }
 
 const PmaCostbreakdown: React.FC<pmaCostBreakDown> = ({ pmaCostBreakDown }) => {
-
   return (
     <>
       <Typography className='text-[#262B43E5] pt-[10px] font-bold text-[18px]'>Cost breakdown</Typography>

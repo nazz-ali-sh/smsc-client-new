@@ -43,7 +43,9 @@ export const rmcRetender = async (payload: { tender_id: number; days: number; mi
   try {
     const url = apiEndpoints.rmcRetender()
     const response = await axiosClient.post(url, payload)
-    return response.data
+
+    
+return response.data
   } catch (error) {
     console.error('RMC Retender API error:', error)
     throw error
