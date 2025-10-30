@@ -11,9 +11,15 @@ import type { ServiceChargeBudgetSectionProps } from '../types'
 interface ExtendedServiceChargeBudgetSectionProps extends ServiceChargeBudgetSectionProps {
   itemsPerRow?: number
   sx?: object
+  title?: string
 }
 
-const ServiceChargeBudgetSection = ({ budgetData, itemsPerRow = 5, sx }: ExtendedServiceChargeBudgetSectionProps) => {
+const ServiceChargeBudgetSection = ({
+  budgetData,
+  itemsPerRow = 5,
+  sx,
+  title = 'Service Charge Budget'
+}: ExtendedServiceChargeBudgetSectionProps) => {
   const hasAllRequiredFields = () => {
     if (!budgetData) return false
 
@@ -109,7 +115,7 @@ const ServiceChargeBudgetSection = ({ budgetData, itemsPerRow = 5, sx }: Extende
               }
         }
       >
-        Service Charge Budget
+        {title}
       </Typography>
 
       <Box sx={{ marginBottom: 4, marginTop: '24px' }}>

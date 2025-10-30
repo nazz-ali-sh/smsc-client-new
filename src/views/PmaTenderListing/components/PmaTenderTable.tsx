@@ -2,6 +2,8 @@
 
 import React, { useMemo, useState } from 'react'
 
+import { useRouter } from 'next/navigation'
+
 import { MenuItem, Select, FormControl, InputLabel } from '@mui/material'
 import { createColumnHelper } from '@tanstack/react-table'
 
@@ -10,21 +12,26 @@ import { usePmaTenderListing } from '@/hooks/usePmaTenderListing'
 import { getTenderDetails, tenderFilterMenuItems } from '@/constants'
 import type { PmaTenderType } from '../types'
 import PmaTenderDrawer from './PmaTenderDrawer'
+import AppointedModal from './AppointedModal'
+import { actionIconStyles } from '@/constants/styles'
 
 const columnHelper = createColumnHelper<PmaTenderType>()
 
 const PmaTenderTable = () => {
+  const router = useRouter()
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 })
   const [value, setValue] = React.useState('went_live')
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [selectedTenderId, setSelectedTenderId] = useState<number | null>(null)
+  const [startDateModalOpen, setStartDateModalOpen] = useState(false)
+  const [selectedWonTenderId, setSelectedWonTenderId] = useState<number | null>(null)
 
   const { tendersListData } = usePmaTenderListing({ filter: value })
 
   const pmaTendersData: PmaTenderType[] = tendersListData?.data?.tenders || []
 
-  const columns = useMemo(
-    () => [
+  const columns = useMemo(() => {
+    const baseColumns: any[] = [
       columnHelper.accessor('sr_no', {
         header: 'SR #',
         cell: info => info.getValue(),
@@ -105,40 +112,54 @@ const PmaTenderTable = () => {
         cell: info => info.getValue() || '-',
         size: 130,
         enableSorting: true
-      }),
-      columnHelper.display({
-        id: 'action',
-        header: 'ACTION',
-        cell: ({ row }) => {
-          const tender_id = row?.original?.tender_id
-
-          console.log(row, 'row')
-          const isLiveTender = value === 'went_live'
-
-          const handleViewClick = () => {
-            if (isLiveTender) {
-              setSelectedTenderId(tender_id)
-              setDrawerOpen(true)
-            }
-          }
-
-          return (
-            <div className='flex gap-2'>
-              <span
-                className={`size-[33px] rounded-[5px] bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center ${isLiveTender ? 'cursor-pointer hover:bg-[#D0F3FC]' : 'cursor-not-allowed opacity-50'}`}
-                onClick={handleViewClick}
-              >
-                <i className='ri-eye-line' />
-              </span>
-            </div>
-          )
-        },
-        size: 100,
-        enableSorting: false
       })
-    ],
-    [value]
-  )
+    ]
+
+    if (value !== 'expired') {
+      baseColumns.push(
+        columnHelper.display({
+          id: 'action',
+          header: 'ACTION',
+          cell: ({ row }) => {
+            const tender_id = row?.original?.tender_id
+            const isLiveTender = value === 'went_live'
+            const isAwardedTender = value === 'date_registered'
+
+            const handleViewClick = () => {
+              if (isLiveTender) {
+                setSelectedTenderId(tender_id)
+                setDrawerOpen(true)
+              } else {
+                router.push(`/pma-tender-detail/${tender_id}`)
+              }
+            }
+
+            const handleStartDateClick = () => {
+              setSelectedWonTenderId(tender_id)
+              setStartDateModalOpen(true)
+            }
+
+            return (
+              <div className='flex gap-2'>
+                <span className={actionIconStyles} onClick={handleViewClick}>
+                  <i className='ri-eye-line' />
+                </span>
+                {isAwardedTender && (
+                  <span className={actionIconStyles} onClick={handleStartDateClick}>
+                    <i className='ri-movie-line' />
+                  </span>
+                )}
+              </div>
+            )
+          },
+          size: 100,
+          enableSorting: false
+        })
+      )
+    }
+
+    return baseColumns
+  }, [value, router])
 
   const filterButton = (
     <FormControl className='w-[320px]'>
@@ -228,6 +249,11 @@ const PmaTenderTable = () => {
     setSelectedTenderId(null)
   }
 
+  const handleCloseStartDateModal = () => {
+    setStartDateModalOpen(false)
+    setSelectedWonTenderId(null)
+  }
+
   return (
     <>
       <CommonTable
@@ -243,6 +269,8 @@ const PmaTenderTable = () => {
       />
 
       <PmaTenderDrawer open={drawerOpen} onClose={handleCloseDrawer} tenderId={selectedTenderId} />
+
+      <AppointedModal open={startDateModalOpen} onClose={handleCloseStartDateModal} tenderId={selectedWonTenderId} />
     </>
   )
 }

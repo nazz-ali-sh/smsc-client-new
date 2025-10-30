@@ -24,7 +24,7 @@ const OnboardingLeaseholderType = () => {
   const [selected, setSelected] = useState<string | null>(null)
   const [value, setValue] = useState<string | null>(null)
 
-  const rmcData = useSelector((state: RootState) => state?.rmcOnboarding?.rmcData)
+  const rmcData = useSelector((state: RootState) => state.rmcOnboarding.rmcData)
   const { data: onboardingData, invalidateCache } = useRmcOnboardingData()
 
   useEffect(() => {

@@ -2,12 +2,16 @@
 
 import React from 'react'
 
+import { useRouter } from 'next/navigation'
+
 import { Drawer, Box, Typography, Divider, Button } from '@mui/material'
 
 import PainPoints from '@/views/TenderInformations/PainPoints'
 import PrioritiesSection from '@/views/TenderInformationUpdated/components/PrioritiesSection'
 import BlockDetailsInfoSection from '@/views/TenderInformationUpdated/components/BlockDetailsInfoSection'
 import { usePmaTenderDetail } from '@/hooks/usePmaTenderDetail'
+import { titleClass } from '@/constants/styles'
+import ServiceChargeBudgetSection from '@/views/TenderInformationUpdated/components/ServiceChargeBudgetSection'
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right'
 
@@ -17,103 +21,40 @@ interface PmaTenderDrawerProps {
   tenderId: number | null
 }
 
-const dummyPriorities = [
-  {
-    id: 1,
-    name: 'Saving Money',
-    description: 'Want to reduce costs and get good value for money without cutting quality.'
-  },
-  {
-    id: 2,
-    name: 'Clearer Communication',
-    description: 'Looking for regular updates and easier ways to stay in touch.'
-  },
-  {
-    id: 3,
-    name: 'Better Problem-Solving',
-    description: 'Expect quicker responses and effective fixes when issues arise.'
-  },
-  {
-    id: 4,
-    name: 'Being Involved',
-    description: 'Want to feel more included and listened to in decisions about the block.'
-  },
-  {
-    id: 5,
-    name: 'Higher Standards',
-    description: 'Expect a consistently high level of service and attention to detail.'
-  },
-  {
-    id: 6,
-    name: 'Clearer Financial Reporting',
-    description: 'Want transparency in financial matters and better understanding of costs.'
-  },
-  {
-    id: 7,
-    name: 'Being Involved',
-    description: 'Want to feel more included and listened to in decisions about the block.'
-  }
-]
-
-const dummyPainPoints = [
-  {
-    question_id: 1,
-    question: 'What would you like to see done differently by a new managing agent?',
-    answer:
-      'Better communication and faster response times to maintenance issues. More transparency in financial reporting and regular updates on property matters.'
-  },
-  {
-    question_id: 2,
-    question:
-      'Are there any systems, tools, or financial reporting features that would improve how you track & manage?',
-    answer:
-      'An online portal for real-time financial tracking, automated reporting systems, and a mobile app for quick updates and communication would be highly beneficial.'
-  },
-  {
-    question_id: 3,
-    question: 'What service challenges have you experienced with your current managing agent?',
-    answer:
-      'Slow response to urgent matters, lack of proactive maintenance, and inconsistent communication about important property issues.'
-  }
-]
-
 const PmaTenderDrawer = ({ open, onClose, tenderId }: PmaTenderDrawerProps) => {
   const anchor: Anchor = 'right'
+  const router = useRouter()
 
   const { tenderDetailData } = usePmaTenderDetail({ tenderId })
 
-  const transformedBlockData: any = tenderDetailData?.data?.property_details && {
-    region: tenderDetailData?.data?.property_details?.city || 'N/A',
-    total_units: tenderDetailData?.data?.property_details?.total_units,
-    number_of_blocks: tenderDetailData?.data?.property_details?.number_of_blocks,
-    year_built: tenderDetailData?.data?.property_details?.year_built,
-    block_condition: tenderDetailData?.data?.property_details?.block_condition,
-    outdoor_space: tenderDetailData?.data?.property_details?.outdoor_space,
-    leasehold_type: tenderDetailData?.data?.property_details?.leasehold_type,
-    building_height: tenderDetailData?.data?.property_details?.building_height || null,
-    address: tenderDetailData?.data?.property_details?.address,
-    postcode: tenderDetailData?.data?.property_details?.postcode
+  const handleApply = () => {
+    if (tenderId) {
+      router.push(`/pma-tender-listing-response/${tenderId}`)
+    }
   }
 
-  const handleApply = () => {
-    console.log('Apply to tender')
+  const transformedBudgetData = tenderDetailData?.data?.rmc_service_charge_budget && {
+    managing_fee: String(tenderDetailData?.data?.rmc_service_charge_budget?.managing_fee || 0),
+    accounting_fee: String(tenderDetailData?.data?.rmc_service_charge_budget?.accounting_fee || 0),
+    cosec_fee: String(tenderDetailData?.data?.rmc_service_charge_budget?.cosec_fee || 0),
+    out_of_hours_fee: String(tenderDetailData?.data?.rmc_service_charge_budget?.out_of_hours_fee || 0),
+    emergency_fee: String(tenderDetailData?.data?.rmc_service_charge_budget?.emergency_fee || 0),
+    fire_door_fee: String(tenderDetailData?.data?.rmc_service_charge_budget?.fire_door_fee || 0),
+    anti_money_fee: String(tenderDetailData?.data?.rmc_service_charge_budget?.anti_money_fee || 0)
   }
 
   const drawerContent = (
-    <Box sx={{ width: 830, p: 8 }} role='presentation'>
-      <section className='flex items-start justify-between mt-[34px]'>
+    <Box sx={{ width: 830, p: 8 }}>
+      <section className='flex items-start justify-between mt-3'>
         <div className='flex items-center space-x-[14px]'>
           <div>
             <div className='flex items-center gap-2 mb-2'>
-              <span className='px-3 py-1 bg-[#E8F9FE] text-[#35C0ED] rounded-full text-xs font-semibold'>
+              <span className='px-6 py-3 text-[#E8F9FE] bg-[#35C0ED] rounded-full text-sm font-semibold'>
                 Live Tender
               </span>
             </div>
-            <Typography variant='h3' className='font-bold text-[#262B43E5]'>
-              RMC1XXXX
-            </Typography>
-            <Typography variant='h6' className='text-[#696969] mt-1'>
-              Tender ID - 123
+            <Typography variant='h3' className='font-bold text-[#1F4E8D] text-3xl pt-5'>
+              {tenderDetailData?.data?.rmc_data?.rmc_number}
             </Typography>
           </div>
         </div>
@@ -124,16 +65,37 @@ const PmaTenderDrawer = ({ open, onClose, tenderId }: PmaTenderDrawerProps) => {
         </div>
       </section>
       <Divider sx={{ mt: 4 }} />
-      <BlockDetailsInfoSection blockData={transformedBlockData} />
-      <PrioritiesSection priorities={dummyPriorities} cardsPerRow={3} />
+      <BlockDetailsInfoSection
+        blockData={tenderDetailData?.data?.tender_onboarding}
+        cardsPerRow={3}
+        showTitle={false}
+      />
+      <Divider sx={{ mt: 6 }} />
+      <Box sx={{ marginTop: 4 }}>
+        <ServiceChargeBudgetSection
+          budgetData={transformedBudgetData}
+          itemsPerRow={3}
+          sx={titleClass}
+          title='RMC Service Charge Budget'
+        />
+      </Box>
+      <Divider sx={{ mt: 6 }} />
+
+      <PrioritiesSection
+        priorities={tenderDetailData?.data?.rmc_priorities ?? []}
+        cardsPerRow={3}
+        titleSx={titleClass}
+      />
+      <Divider sx={{ mt: 10 }} />
+
       <section className='mt-[38px]'>
-        <PainPoints painPoints={dummyPainPoints} />
+        <PainPoints painPoints={tenderDetailData?.data?.pain_points ?? []} titleSx={titleClass} />
       </section>
       <section className='flex items-center justify-end py-[12px] space-x-[24px] mt-6'>
         <div>
-          <Button variant='contained' className='!bg-[#35C0ED] w-[280px]' onClick={handleApply}>
-            <i className='ri-send-plane-line bg-white size-[18px] pr-[5px]'></i>
-            <span className='pl-[5px]'>Apply to Tender</span>
+          <Button variant='contained' className='!bg-[#35C0ED] w-[170px] h-10' onClick={handleApply}>
+            <i className='ri-eye-line bg-white size-[18px] pr-[5px]'></i>
+            <span className='pl-[5px]'>Apply</span>
           </Button>
         </div>
       </section>

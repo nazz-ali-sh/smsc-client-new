@@ -35,6 +35,16 @@ export const budgetFields = [
   { name: 'anti_money_fee', label: 'Anti Money Laundering Fee' }
 ] as const
 
+export const quoteFeeFields = [
+  { label: 'Management Fee (ex VAT)', name: 'managementFee' as const },
+  { label: 'Accounting Fee (ex VAT)', name: 'accountingFee' as const },
+  { label: 'CoSec Fee (ex VAT)', name: 'coSecFee' as const },
+  { label: 'Out of House Fee (ex VAT)', name: 'outOfHouseFee' as const },
+  { label: 'Emergency Lighting Tasks (ex VAT)', name: 'emergencyLightingTasks' as const },
+  { label: 'Fire Door Inspections (ex VAT)', name: 'fireDoorInspections' as const },
+  { label: 'AML Money Laundering Checks (ex VAT)', name: 'amlMoneyLaunderingChecks' as const }
+]
+
 export const blockOptions = [
   { label: '1', value: '1' },
   { label: '2', value: '2' },

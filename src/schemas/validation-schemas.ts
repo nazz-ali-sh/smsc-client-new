@@ -554,3 +554,18 @@ export const pmaOnboardingSchema = pipe(
     ['confirmPassword']
   )
 )
+
+export const quoteFormSchema = object({
+  managementFee: pipe(string(), nonEmpty('Management Fee is required')),
+  accountingFee: pipe(string(), nonEmpty('Accounting Fee is required')),
+  coSecFee: pipe(string(), nonEmpty('CoSec Fee is required')),
+  outOfHouseFee: pipe(string(), nonEmpty('Out of House Fee is required')),
+  emergencyLightingTasks: pipe(string(), nonEmpty('Emergency Lighting Tasks fee is required')),
+  fireDoorInspections: pipe(string(), nonEmpty('Fire Door Inspections fee is required')),
+  amlMoneyLaunderingChecks: pipe(string(), nonEmpty('AML Money Laundering Checks fee is required'))
+})
+
+export const startDateSchema = object({
+  startDate: pipe(string(), nonEmpty('Start date is required')),
+  notes: pipe(string(), nonEmpty('Notes are required'))
+})

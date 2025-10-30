@@ -14,10 +14,23 @@ import {
 
 import type { BlockDetailsSectionProps } from '../types'
 
-const BlockDetailsInfoSection = ({ blockData }: BlockDetailsSectionProps) => {
+interface ExtendedBlockDetailsSectionProps extends BlockDetailsSectionProps {
+  cardsPerRow?: number
+  isVerticalList?: boolean
+  showTitle?: boolean
+}
+
+const BlockDetailsInfoSection = ({
+  blockData,
+  cardsPerRow = 5,
+  isVerticalList = false,
+  showTitle = true
+}: ExtendedBlockDetailsSectionProps) => {
   if (!blockData) {
     return null
   }
+
+  const gridSize = 12 / cardsPerRow
 
   const blockItems = [
     {
@@ -62,21 +75,70 @@ const BlockDetailsInfoSection = ({ blockData }: BlockDetailsSectionProps) => {
     }
   ]
 
+  if (isVerticalList) {
+    return (
+      <Box sx={{ marginBottom: 4 }}>
+        {showTitle && (
+          <Box sx={{ marginBottom: 4 }}>
+            <Typography sx={{ fontWeight: 700, fontSize: '24px', color: 'customColors.darkGray1' }}>
+              Block Details
+            </Typography>
+          </Box>
+        )}
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          {blockItems?.map((item, index) => (
+            <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 2, paddingY: '8px' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 40,
+                  height: 40,
+                  backgroundColor: 'customColors.ligthBlue1',
+                  borderRadius: '8px',
+                  flexShrink: 0
+                }}
+              >
+                <i className={item?.icon} style={{ fontSize: '1.5rem', color: '#1976D2' }} />
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <Typography color='text.secondary' sx={{ fontSize: '12px' }}>
+                  {item?.label}
+                </Typography>
+                <Typography
+                  variant='body2'
+                  sx={{
+                    fontWeight: 400,
+                    fontSize: '20px',
+                    color: 'customColors.darkGray1',
+                    wordBreak: 'break-word'
+                  }}
+                >
+                  {item?.value}
+                </Typography>
+              </Box>
+            </Box>
+          ))}
+        </Box>
+      </Box>
+    )
+  }
+
   return (
     <Box sx={{ marginBottom: 4 }}>
-      <Box sx={{ marginBottom: 4, paddingTop: '24px' }}>
-        <Typography sx={{ fontWeight: 700, fontSize: '24px', color: 'customColors.darkGray1' }}>
-          Block Details
-        </Typography>
-      </Box>
+      {showTitle && (
+        <Box sx={{ marginBottom: 4, paddingTop: '24px' }}>
+          <Typography sx={{ fontWeight: 700, fontSize: '24px', color: 'customColors.darkGray1' }}>
+            Block Details
+          </Typography>
+        </Box>
+      )}
       <Box sx={{ marginBottom: 4, marginTop: '24px' }}>
         <Grid container spacing={3} rowSpacing={6}>
           {blockItems?.map((item, index) => {
-            const isBuildingHeight = item.label === 'Building Height'
-            const gridSize = isBuildingHeight ? { xs: 12, sm: 8, md: 3.5 } : { xs: 12, sm: 6, md: 2.4 }
-
             return (
-              <Grid item {...gridSize} key={index}>
+              <Grid item xs={12} sm={6} md={gridSize} key={index}>
                 <Box sx={{ display: 'flex', alignItems: 'start', gap: 2 }}>
                   <Box
                     sx={{

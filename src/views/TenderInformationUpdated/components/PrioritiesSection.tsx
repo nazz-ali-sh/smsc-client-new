@@ -7,32 +7,45 @@ import type { PrioritiesSectionProps } from '../types'
 
 interface ExtendedPrioritiesSectionProps extends PrioritiesSectionProps {
   cardsPerRow?: number
+  sx?: object
+  showTitle?: boolean
+  titleSx?: object
 }
 
-const PrioritiesSection: React.FC<ExtendedPrioritiesSectionProps> = ({ priorities, cardsPerRow = 4 }) => {
+const PrioritiesSection: React.FC<ExtendedPrioritiesSectionProps> = ({
+  priorities,
+  cardsPerRow = 4,
+  sx,
+  showTitle = true,
+  titleSx
+}) => {
   const gridSize = 12 / cardsPerRow
+
   return (
-    <Box sx={{ marginBottom: 4 }}>
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 1,
-          marginBottom: 3,
-          marginTop: '34px'
-        }}
-      >
-        <Typography
-          color='#1F4E8D'
+    <Box sx={{ marginBottom: 4, ...sx }}>
+      {showTitle && (
+        <Box
           sx={{
-            fontWeight: 700,
-            fontSize: '24px',
-            color: 'customColors.darkGray1'
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            marginBottom: 3,
+            marginTop: '34px'
           }}
         >
-          Priorities
-        </Typography>
-      </Box>
+          <Typography
+            color='#1F4E8D'
+            sx={{
+              fontWeight: 700,
+              fontSize: '24px',
+              color: 'customColors.darkGray1',
+              ...titleSx
+            }}
+          >
+            Priorities
+          </Typography>
+        </Box>
+      )}
       <Grid container spacing={4} sx={{ marginTop: '24px' }}>
         {priorities?.map((priority, index) => (
           <Grid item xs={12} sm={6} md={gridSize} key={priority?.id}>

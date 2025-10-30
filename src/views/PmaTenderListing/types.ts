@@ -26,3 +26,57 @@ export interface PmaStatsType {
   shortlisted_for_tender: number
   tender_won: number
 }
+
+export type QuoteFormData = {
+  managementFee: string
+  accountingFee: string
+  coSecFee: string
+  outOfHouseFee: string
+  emergencyLightingTasks: string
+  fireDoorInspections: string
+  amlMoneyLaunderingChecks: string
+}
+
+export interface QuoteFormSectionProps {
+  tenderId?: number
+}
+
+export interface RmcDetailsCardProps {
+  rmcName?: string
+  blockData?: any
+}
+
+export interface TenderId {
+  tenderId: number
+}
+
+export interface PmaTemplateType {
+  id: number
+  user_id: number
+  name: string
+  message: string
+  created_at: string
+  updated_at: string
+}
+
+export interface PmaTemplatesResponse {
+  success: boolean
+  message: string
+  data: {
+    templates: PmaTemplateType[]
+    stats: {
+      total_templates: number
+    }
+  }
+}
+
+export type AppointedFormData = {
+  startDate: string
+  notes: string
+}
+
+export interface AppointedModalProps {
+  open: boolean
+  onClose: () => void
+  tenderId: number | null
+}

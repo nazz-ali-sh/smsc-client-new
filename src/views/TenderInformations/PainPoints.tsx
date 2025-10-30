@@ -12,12 +12,22 @@ interface PainPoint {
 
 interface PainPointsSectionProps {
   painPoints: PainPoint[]
+  titleSx?: object
 }
 
-const PainPoints: React.FC<PainPointsSectionProps> = ({ painPoints }) => {
+const PainPoints: React.FC<PainPointsSectionProps> = ({ painPoints, titleSx }) => {
   return (
     <>
-      <Typography className='text-[#262B43E5] font-bold  text-[18px]'>RMC Pain points</Typography>
+      <Typography
+        sx={{
+          color: '#262B43E5',
+          fontWeight: 700,
+          fontSize: '18px',
+          ...titleSx
+        }}
+      >
+        RMC Pain points
+      </Typography>
 
       <Box sx={{ marginBottom: 15, marginTop: '34px' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, marginTop: '18px' }}>
