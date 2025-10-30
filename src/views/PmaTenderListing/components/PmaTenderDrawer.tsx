@@ -29,7 +29,7 @@ const PmaTenderDrawer = ({ open, onClose, tenderId }: PmaTenderDrawerProps) => {
 
   const handleApply = () => {
     if (tenderId) {
-      router.push(`/pma-tender-listing-response/${tenderId}`)
+      router.push(`/tender-response/${tenderId}`)
     }
   }
 

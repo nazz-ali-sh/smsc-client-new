@@ -44,7 +44,6 @@ const JoinMeetingModal = ({
   title,
   siteVisitData
 }: DataModalProps) => {
-  console.log(siteVisitData)
 
   return (
     <Dialog
@@ -98,12 +97,12 @@ const JoinMeetingModal = ({
       <DialogActions>
         {siteVisitData?.location && (
           <CustomButton onClick={cancelSiteVisitCancel} variant='contained'>
-            Cancel Invite
+            Cancel Visit
           </CustomButton>
         )}
         {siteVisitData?.location && (
           <CustomButton onClick={reschedualeSiteInvite} variant='contained'>
-            Reschedule Invite
+            Reschedule Visit
           </CustomButton>
         )}
        

@@ -43,7 +43,6 @@ const Calendar = (props: CalenderProps) => {
     setCalendarApi,
     calendarsColor,
 
-    // dispatch,
     handleAddEventSidebarToggle,
     handleLeftSidebarToggle
   } = props
@@ -88,9 +87,6 @@ const Calendar = (props: CalenderProps) => {
     eventClick({ event: clickedEvent, jsEvent }: any) {
       jsEvent.preventDefault()
 
-      // dispatch(selectedEvent(clickedEvent))
-      // handleAddEventSidebarToggle()
-
       if (clickedEvent.url) {
         window.open(clickedEvent.url, '_blank')
       }
@@ -112,20 +108,10 @@ const Calendar = (props: CalenderProps) => {
       ev.end = info.date
       ev.allDay = true
 
-      // dispatch(selectedEvent(ev))
       handleAddEventSidebarToggle()
     },
 
-    // eventDrop({ event: droppedEvent }: any) {
-    //   dispatch(updateEvent(droppedEvent))
-    //   dispatch(filterEvents())
-    // },
-
-    // eventResize({ event: resizedEvent }: any) {
-    //   dispatch(updateEvent(resizedEvent))
-    //   dispatch(filterEvents())
-    // },
-
+   
     direction: theme.direction
   }
 

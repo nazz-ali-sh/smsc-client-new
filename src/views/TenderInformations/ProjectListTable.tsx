@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 
-import { Card, TablePagination, Checkbox, Rating, Stack, Typography } from '@mui/material'
+import { Card, TablePagination, Checkbox, Typography } from '@mui/material'
 import classnames from 'classnames'
 import {
   useReactTable,
@@ -73,13 +73,13 @@ const KitchenSink = () => {
   const [shortlistedResponce, setshortlistedResponce] = useState('')
   const [bestPracticesModalOpen, setBestPracticesModalOpen] = useState(false)
   const [tenderResponsesModalOpen, setTenderResponsesModalOpen] = useState(false)
+  const [isViewingResponse, setIsViewingResponse] = useState(false)
 
   const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   const { invalidateCache } = useDashboardData()
 
   const [selectedResponse, setSelectedResponse] = useState<ApiResponseItem | null>(null)
-  
 
   const { data: responceData, isLoading: isTableLoading } = useQuery<TenderResponse, Error>({
     queryKey: ['tendeResponce', tender_id],
@@ -104,8 +104,6 @@ const KitchenSink = () => {
   })
 
   const fianlExpireDate = calculateTimeLeft(shortlistedResponce)
-
-  console.log(fianlExpireDate)
 
   const handleCloseAndNavigate = () => {
     setShortListedSuccessModalOpen(false)
@@ -147,7 +145,7 @@ const KitchenSink = () => {
         submittedDate: item?.response_details?.submitted_at
           ? new Date(item?.response_details?.submitted_at)?.toLocaleDateString('en-GB')
           : 'N/A',
-        quotation: item?.quotation?.total_quote_inc_vat?.toLocaleString('en-US', {
+        quotation: item?.quotation?.total_management_fees?.toLocaleString('en-US', {
           style: 'currency',
           currency: 'GBP'
         }),
@@ -261,25 +259,7 @@ const KitchenSink = () => {
         enableSorting: false,
         enableColumnFilter: false
       }),
-      columnHelper.accessor('googleReview', {
-        cell: ({ row }) => {
-          const ratingValue = row.getValue('googleReview')
-
-          return (
-            <Stack spacing={1}>
-              {typeof ratingValue === 'number' && ratingValue !== null && ratingValue > 0 ? (
-                <Rating name={`rating-${row.id}`} value={ratingValue} precision={0.5} readOnly size='small' />
-              ) : (
-                <span className='text-gray-500'>No rating</span>
-              )}
-            </Stack>
-          )
-        },
-        header: 'Google Review',
-        enableSorting: false,
-        enableColumnFilter: false,
-        size: 150
-      }),
+     
       columnHelper.accessor('tradingYears', {
         cell: info => info.getValue() || 'N/A',
         header: 'Trading Years',
@@ -292,16 +272,18 @@ const KitchenSink = () => {
           <div className='min-w-[180px] max-w-[190px]'>
             <CustomButton
               variant='contained'
+              disabled={isTableLoading || !responceData?.data?.responses}
               onClick={() => {
+                if (!responceData?.data?.responses?.length) return
+
+                setIsViewingResponse(true) // Disable confirm button
                 setDrawerOpen(true)
                 setSelectedAgentId([row.original.pma_id])
                 SetAllSelectedPma([row.original.pma_id])
 
-                const responseObj = responceData?.data?.responses.find(
-                  (item: { pma_user_id: number }) => item.pma_user_id === row.original.pma_id
+                const responseObj = responceData.data.responses.find(
+                  (item: { pma_user_id: number | string }) => Number(item.pma_user_id) === Number(row.original.pma_id)
                 )
-
-                console.log(responseObj)
 
                 setSelectedResponse(responseObj || null)
               }}
@@ -316,7 +298,7 @@ const KitchenSink = () => {
         size: 150
       })
     ],
-    []
+    [responceData, isTableLoading]
   )
 
   const table = useReactTable({
@@ -343,8 +325,8 @@ const KitchenSink = () => {
   })
 
   const handleConfirmSelected = () => {
-    const selectedRows = table.getSelectedRowModel().rows
-    const pma_user_ids = selectedRows.map(row => row.original.pma_id)
+    const selectedRows = table?.getSelectedRowModel().rows
+    const pma_user_ids = selectedRows?.map(row => row?.original?.pma_id)
 
     const allSelectedIds = [...new Set([...pma_user_ids, ...selectedAgentId])]
 
@@ -355,25 +337,25 @@ const KitchenSink = () => {
     }
 
     if (tender_id) {
-      shortlistMutation.mutate({ tender_id: Number(tender_id), pma_user_ids: allSelectedIds })
+      shortlistMutation?.mutate({ tender_id: Number(tender_id), pma_user_ids: allSelectedIds })
     }
   }
 
   useEffect(() => {
-    if (table.getState().columnFilters[0]?.id === 'fullName') {
-      if (table.getState().sorting[0]?.id !== 'fullName') {
-        table.setSorting([{ id: 'fullName', desc: false }])
+    if (table?.getState().columnFilters[0]?.id === 'fullName') {
+      if (table?.getState().sorting[0]?.id !== 'fullName') {
+        table?.setSorting([{ id: 'fullName', desc: false }])
       }
     }
   }, [table])
 
   const openModal = () => {
-    const selectedRows = table.getSelectedRowModel().rows
-    const allSelectedIds = [...new Set([...selectedRows.map(row => row.original.pma_id), ...selectedAgentId])]
+    const selectedRows = table?.getSelectedRowModel().rows
+    const allSelectedIds = [...new Set([...selectedRows?.map(row => row.original.pma_id), ...selectedAgentId])]
 
     SetAllSelectedPma(allSelectedIds)
 
-    if (allSelectedIds.length === 0) {
+    if (allSelectedIds?.length === 0) {
       toast.warning('Please select at least one agent to shortlist')
 
       return
@@ -509,7 +491,10 @@ const KitchenSink = () => {
 
           <AnchorTemporaryDrawer
             open={drawerOpen}
-            onClose={() => setDrawerOpen(false)}
+            onClose={() => {
+              setDrawerOpen(false)
+              setIsViewingResponse(false) 
+            }}
             drawerData={responceData?.data}
             successModalOpen={successModalOpen}
             setSuccessModalOpen={setSuccessModalOpen}
@@ -533,7 +518,7 @@ const KitchenSink = () => {
             <CustomButton
               variant='contained'
               onClick={openModal}
-              disabled={table.getSelectedRowModel().rows.length === 0 && selectedAgentId.length === 0}
+              disabled={isViewingResponse || table?.getSelectedRowModel().rows?.length === 0}
             >
               Confirm Selection
             </CustomButton>
@@ -557,7 +542,7 @@ const KitchenSink = () => {
             onClose={handleCloseAndNavigate}
             pmaSelectedID={allselectedpma}
             fianlExpireDate={fianlExpireDate}
-             navigateOnClose={true}  
+            navigateOnClose={true}
           />
 
           <CommonModal

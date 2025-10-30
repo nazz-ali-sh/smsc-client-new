@@ -139,7 +139,7 @@ export default function Pages() {
           {finalShortListedResponce ? (
             <DetailedReview finalShortListedResponce={finalShortListedResponce} />
           ) : (
-            'Data Not Found'
+           <div className='text-center mt-[50px]'> Data Not Found</div>
           )}
         </section>
       )}

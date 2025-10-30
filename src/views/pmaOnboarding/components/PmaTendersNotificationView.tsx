@@ -93,7 +93,7 @@ const PmaTendersNotificationView = () => {
   const handleModalClose = () => {
     setShowConfirmationModal(false)
 
-    // router.push('/management')
+    router.push('/dashboard')
   }
 
   const handleBack = () => {

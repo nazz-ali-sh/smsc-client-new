@@ -11,6 +11,8 @@ import { FloatingTree } from '@floating-ui/react'
 
 import { routesWithNavbarContent, pmaRoutes, rmcRoutes } from '@/constants'
 import CustomTooltip from '@/common/CustomTooltip'
+import { getUserType } from '@/utils/tokenSync'
+import { isPmaPortalAndUser } from '@/utils/portalHelper'
 import type { MenuProps as VerticalMenuProps } from '../vertical-menu/Menu'
 import type {
   ChildrenType,
@@ -21,6 +23,7 @@ import type {
 } from '../../types'
 import { horizontalSubMenuToggleDuration } from '../../defaultConfigs'
 import HorizontalMenuPopOver from './HorizontalMenuPopOver'
+import { pmaMenuData, rmcMenuData } from '@/constants/headerOptions'
 
 export type HorizontalMenuContextProps = {
   triggerPopout?: 'hover' | 'click'
@@ -70,7 +73,6 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
   const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
   const hasTenderId = tender_id && tender_id !== null && tender_id !== undefined
 
-  // --- Popover state ---
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const open = Boolean(anchorEl)
 
@@ -82,58 +84,10 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
     setAnchorEl(null)
   }
 
-  const [menuData] = useState([
-    {
-      image: <i className='ri-home-smile-line'></i>,
-      menuItem: 'Dashboard',
-      href: '/dashboard',
-      alwaysEnabled: true
-    },
-    {
-      image: <i className='ri-mail-open-line'></i>,
-      menuItem: 'Tender Information',
-      href: '/tender-information',
-      alwaysEnabled: false
-    },
-    {
-      image: <i className='ri-database-line'></i>,
-      menuItem: 'Tender Results',
-      href: '/tender-result',
-      alwaysEnabled: false
-    },
-    {
-      image: <i className='ri-pantone-line'></i>,
-      menuItem: 'Shortlisted Agents',
-      href: '/shortlist-agent',
-      alwaysEnabled: false
-    },
-    {
-      image: <i className='ri-file-list-2-line'></i>,
-      menuItem: 'Invites',
+  const userType = getUserType()
+  const isPmaUser = isPmaPortalAndUser(userType)
 
-      // href: '/calendar',
-      alwaysEnabled: false,
-      isInvite: true
-    },
-    {
-      image: <i className='ri-pages-line'></i>,
-      menuItem: 'Chats',
-      href: '/chats',
-      alwaysEnabled: false
-    },
-    {
-      image: <i className='ri-bar-chart-2-line'></i>,
-      menuItem: 'Final Selection',
-      href: '/final-selection',
-      alwaysEnabled: false
-    },
-    {
-      image: <i className='ri-bar-chart-2-line'></i>,
-      menuItem: 'Insurance',
-      href: '/insurance',
-      alwaysEnabled: true
-    }
-  ])
+  const menuData = isPmaUser ? pmaMenuData : rmcMenuData
 
   const pathname = usePathname()
 
@@ -176,11 +130,12 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
           } min-w-[1300px] w-full`}
         >
           {menuData.map((items, index) => {
-            const isDisabled = !items.alwaysEnabled && !hasTenderId
+            const isDisabled = isPmaUser ? false : !items.alwaysEnabled && !hasTenderId
 
-            const isActive =
-              pathname === items.href ||
-              (items.isInvite && ['/site-visits', '/video-calls', '/calendar'].some(p => pathname.startsWith(p)))
+            const isActive = isPmaUser
+              ? pathname === items.href || (items.isInvite && pathname === '/calendar')
+              : pathname === items.href ||
+                (items.isInvite && ['/site-visits', '/video-calls', '/calendar'].some(p => pathname.startsWith(p)))
 
             if (items.isInvite) {
               return (
@@ -203,7 +158,6 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
               )
             }
 
-            // ✅ Normal menu items
             const menuItem = (
               <Link
                 key={index}
@@ -213,7 +167,7 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
                 }}
                 className={`flex items-center ${isActive ? 'bg-[#35C0ED] text-white' : ''} ${
                   isDisabled ? 'cursor-default pointer-events-none' : 'cursor-pointer'
-                } justify-center py-2 rounded-lg min-w-[140px]`}
+                } justify-center py-2 rounded-lg ${isPmaUser ? 'min-w-[185px]' : 'min-w-[140px]'}`}
               >
                 <section className='flex gap-x-[8px] px-3'>
                   <div className='size-[22px]' style={{ color: 'inherit' }}>
@@ -224,7 +178,7 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
               </Link>
             )
 
-            return isDisabled ? (
+            return isDisabled && !isPmaUser ? (
               <CustomTooltip
                 key={index}
                 text='Finish Onboarding to access these tabs'

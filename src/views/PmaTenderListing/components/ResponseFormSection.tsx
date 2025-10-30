@@ -64,7 +64,7 @@ const ResponseFormSection = ({ tenderId }: TenderId) => {
     if (tenderId) {
       localStorage.setItem('template_response', responseText)
       setIsEditing(false)
-      router.push(`/pma-tender-listing-quote/${tenderId}`)
+      router.push(`/tender-quote/${tenderId}`)
     }
   }
 

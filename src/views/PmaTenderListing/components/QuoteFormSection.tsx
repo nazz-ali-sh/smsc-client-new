@@ -107,7 +107,7 @@ const QuoteFormSection = ({ tenderId }: QuoteFormSectionProps) => {
 
     if (!savedResponse?.trim()) {
       toast.error('Please enter a response message first')
-      router.push(`/pma-tender-listing-response/${tenderId}`)
+      router.push(`/tender-response/${tenderId}`)
 
       return
     }
@@ -131,7 +131,7 @@ const QuoteFormSection = ({ tenderId }: QuoteFormSectionProps) => {
 
   const handleEdit = () => {
     if (tenderId) {
-      router.push(`/pma-tender-listing-response/${tenderId}`)
+      router.push(`/tender-response/${tenderId}`)
     }
   }
 
@@ -168,7 +168,12 @@ const QuoteFormSection = ({ tenderId }: QuoteFormSectionProps) => {
       </Box>
 
       <Box sx={{ marginTop: '32px' }}>
-        <ServiceChargeBudgetSection budgetData={displayBudgetData} itemsPerRow={3} sx={titleClass} title='PMA Cost Breakdown' />
+        <ServiceChargeBudgetSection
+          budgetData={displayBudgetData}
+          itemsPerRow={3}
+          sx={titleClass}
+          title='PMA Cost Breakdown'
+        />
       </Box>
 
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 3, marginTop: 6 }}>

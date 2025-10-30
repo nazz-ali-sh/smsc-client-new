@@ -6,8 +6,12 @@ import { useDispatch } from 'react-redux'
 import { setTenderInformation } from '@/redux-store/slices/tenderInformationSlice'
 
 import { getMeWithOnboarding } from '@/services/rmc-onboarding-apis/rmc-onboarding-api'
+import { isRmcPortalAndUser } from '@/utils/portalHelper'
+import { getUserType } from '@/utils/tokenSync'
 
 export const useRmcOnboardingData = () => {
+  const userType = getUserType()
+  const isRmcPortal = isRmcPortalAndUser(userType)
   const queryClient = useQueryClient()
   const dispatch = useDispatch()
 
@@ -17,7 +21,8 @@ export const useRmcOnboardingData = () => {
     retry: 2,
     staleTime: 0,
     refetchOnMount: true,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    enabled: !!isRmcPortal
   })
 
   useEffect(() => {

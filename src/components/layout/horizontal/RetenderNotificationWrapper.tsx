@@ -25,11 +25,11 @@ const RetenderNotificationWrapper = () => {
     return null
   }
 
-  const tenderResponseCount = dashboardData?.tender_response_count
+  const tenderResponseCount = dashboardData?.data?.tender_response_count
   const isResponseCountValid = tenderResponseCount >= 1 && tenderResponseCount <= 6
 
   const today = new Date()
-  const tenderEndDate = new Date(dashboardData?.tender_end_date?.date)
+  const tenderEndDate = new Date(dashboardData?.data?.tender_end_date?.date)
   const isPastTenderEndDate = today > tenderEndDate
 
   if (!isResponseCountValid || !isPastTenderEndDate) {

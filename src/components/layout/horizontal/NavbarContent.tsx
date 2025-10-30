@@ -14,9 +14,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useDispatch } from 'react-redux'
 
 import type { Locale } from '@configs/i18n'
-import type { NotificationsType } from '@components/layout/shared/NotificationsDropdown'
 
-// // Component Imports
 import NavToggle from './NavToggle'
 import NavSearch from '@components/layout/shared/search'
 import NotificationsDropdown from '@components/layout/shared/NotificationsDropdown'
@@ -32,53 +30,9 @@ import { setRmcTenderId } from '@/redux-store/slices/rmcOnboardingSlice'
 
 import appLogo from '../../../../public/images/customImages/appLogo.png'
 import { routesWithNavbarContent, pmaRoutes, rmcRoutes } from '@/constants'
-
-const notifications: NotificationsType[] = [
-  {
-    avatarImage: '/images/avatars/2.png',
-    title: 'Congratulations Flora 🎉',
-    subtitle: 'Won the monthly bestseller gold badge',
-    time: '1h ago',
-    read: false
-  },
-  {
-    title: 'Cecilia Becker',
-    subtitle: 'Accepted your connection',
-    time: '12h ago',
-    read: false
-  },
-  {
-    avatarImage: '/images/avatars/3.png',
-    title: 'Bernard Woods',
-    subtitle: 'You have new message from Bernard Woods',
-    time: 'May 18, 8:26 AM',
-    read: true
-  },
-  {
-    avatarIcon: 'ri-bar-chart-line',
-    avatarColor: 'info',
-    title: 'Monthly report generated',
-    subtitle: 'July month financial report is generated',
-    time: 'Apr 24, 10:30 AM',
-    read: true
-  },
-  {
-    avatarText: 'MG',
-    avatarColor: 'success',
-    title: 'Application has been approved 🚀',
-    subtitle: 'Your Meta Gadgets project application has been approved.',
-    time: 'Feb 17, 12:17 PM',
-    read: true
-  },
-  {
-    avatarIcon: 'ri-mail-line',
-    avatarColor: 'error',
-    title: 'New message from Harry',
-    subtitle: 'You have new message from Harry',
-    time: 'Jan 6, 1:48 PM',
-    read: true
-  }
-]
+import { isPmaPortalAndUser } from '@/utils/portalHelper'
+import { getUserType } from '@/utils/tokenSync'
+import { notifications } from '@/constants/headerOptions'
 
 interface Tender {
   id: number
@@ -99,6 +53,9 @@ const NavbarContent = () => {
   const { lang: locale } = useParams()
   const pathname = usePathname()
   const dispatch = useDispatch()
+
+  const userType = getUserType()
+  const isPmaUser = isPmaPortalAndUser(userType)
 
   const shouldHideElements = routesWithNavbarContent.some(route => pathname.includes(route))
 
@@ -131,6 +88,8 @@ const NavbarContent = () => {
       setTendersWithInitials(updatedTenders)
 
       const firstTender = updatedTenders[0]
+
+      console.log(firstTender, 'firstTender')
 
       if (firstTender) {
         setRmctenderId(firstTender.id.toString())
@@ -185,7 +144,7 @@ const NavbarContent = () => {
       </div>
 
       <div className='flex items-center' style={isOnboardingRoute ? { marginRight: '200px' } : {}}>
-        {!shouldHideElements && (
+        {!shouldHideElements && !isPmaUser && (
           <div className='w-[200px]'>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth size='small'>
@@ -258,7 +217,7 @@ const NavbarContent = () => {
           </div>
         )}
         {!shouldHideElements && <NavSearch />}
-        {!shouldHideElements && <NotificationsDropdown notifications={notifications} />}
+        {!shouldHideElements && !isPmaUser && <NotificationsDropdown notifications={notifications} />}
         <UserDropdown selectedTenderInitial={selectedTenderInitial} />
       </div>
     </div>

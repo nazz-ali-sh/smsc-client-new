@@ -19,6 +19,7 @@ import { loginSchema } from '@/schemas/validation-schemas'
 import { loginUser } from '@/services/auth-apis/auth-api'
 import { storeToken } from '@/utils/tokenSync'
 import { setTenderInformation } from '@/redux-store/slices/tenderInformationSlice'
+import { isPmaPortal } from '@/utils/portalHelper'
 
 type LoginFormData = InferOutput<typeof loginSchema>
 
@@ -41,7 +42,7 @@ const LoginPage = () => {
     mutationFn: loginUser,
     onSuccess: data => {
       if (data) {
-        storeToken(data?.data.token)
+        storeToken(data?.data.token, data?.data?.user?.user_type)
 
         if (data?.data?.onboarding) {
           dispatch(setTenderInformation(data?.data?.onboarding))
@@ -74,10 +75,11 @@ const LoginPage = () => {
   }
 
   const handleOnboarding = () => {
-    router.push('/onboarding')
+    router.push(isPmaPortal() ? '/company' : '/onboarding')
   }
 
   const commonStyles = { background: 'white', borderRadius: '6px' }
+  const signupText = isPmaPortal() ? 'New PMA User? Start here' : 'New RMC Director? Start here'
 
   return (
     <AuthLayout>
@@ -132,7 +134,7 @@ const LoginPage = () => {
           </Button>
         </div>
         <p onClick={handleOnboarding} className='font-medium mt-4 text-[#0B2952] text-center cursor-pointer'>
-          New RMC Director? Start here
+          {signupText}
         </p>
       </form>
     </AuthLayout>

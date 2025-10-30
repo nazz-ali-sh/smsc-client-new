@@ -81,7 +81,6 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
   })
 
   const handlecontactAgent = (selected_pma_id: number, pmaCompanyName: string) => {
-    console.log(selected_pma_id)
     setPmaCompanyName(pmaCompanyName)
     setshortlisted_pmaselectedID(selected_pma_id)
 
@@ -111,6 +110,8 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
     ?.map((item: { pma_user?: { id?: number } }) => item?.pma_user?.id)
     ?.filter((id: number | undefined): id is number => typeof id === 'number')
 
+  const appointmnetStatus = finalShortListedResponce?.data?.tender_stage
+
   return (
     <>
       <div className='pb-[70px]'>
@@ -131,6 +132,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                   <div className='mt-[27px] text-[12px] text-buttonPrimary font-bold text-center flex items-center justify-center '>
                     <div className='flex items-center'>
                       <CustomButton
+                        disabled={appointmnetStatus === 'appointment'}
                         onClick={() => handkeAppointAgnet(company?.pma_user?.id, company?.company_details?.name)}
                       >
                         <Image src={whiteperson} alt='person' className='mr-[10px]' />
@@ -294,38 +296,59 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
               </div>
 
               <section className='flex flex-col space-y-4'>
-                <CustomTooltip text='Invite to Video Call ' position='left' align='center'>
-                  <Image
-                    src={videoCalls}
-                    alt='videocalls'
-                    className='cursor-pointer'
-                    onClick={() => handleVideoCallClick(company)}
-                  />
-                </CustomTooltip>
-                <CustomTooltip text='Invite to Site Visit' position='left' align='center'>
-                  <Image
-                    src={visitLocation}
-                    alt='location'
-                    className='cursor-pointer'
-                    onClick={() => handleSiteVisitclick(company)}
-                  />
-                </CustomTooltip>
-                <CustomTooltip text='Request a Call Back' position='left' align='center'>
-                  <Image
-                    src={phoneCalls}
-                    alt='phoneCalls'
-                    className='cursor-pointer'
-                    onClick={() => handlecontactAgent(company?.pma_user?.id, company?.company_details?.name)}
-                  />
-                </CustomTooltip>
-                <CustomTooltip text='Chat' position='left' align='center'>
-                  <div
-                    onClick={() => router.push(`/chats`)}
-                    className='bg-[#cbf2fe] px-2 py-[10px] flex justify-center items-center rounded-md'
-                  >
+                {appointmnetStatus === 'appointment' ? (
+                  <Image src={videoCalls} alt='videocalls'/>
+                ) : (
+                  <CustomTooltip text='Invite to Video Call' position='left' align='center'>
+                    <Image
+                      src={videoCalls}
+                      alt='videocalls'
+                      className='cursor-pointer'
+                      onClick={() => handleVideoCallClick(company)}
+                    />
+                  </CustomTooltip>
+                )}
+
+                {appointmnetStatus === 'appointment' ? (
+                  <Image src={visitLocation} alt='location'/>
+                ) : (
+                  <CustomTooltip text='Invite to Site Visit' position='left' align='center'>
+                    <Image
+                      src={visitLocation}
+                      alt='location'
+                      className='cursor-pointer'
+                      onClick={() => handleSiteVisitclick(company)}
+                    />
+                  </CustomTooltip>
+                )}
+
+                {appointmnetStatus === 'appointment' ? (
+                  <Image src={phoneCalls} alt='phoneCalls' />
+                ) : (
+                  <CustomTooltip text='Request a Call Back' position='left' align='center'>
+                    <Image
+                      src={phoneCalls}
+                      alt='phoneCalls'
+                      className='cursor-pointer'
+                      onClick={() => handlecontactAgent(company?.pma_user?.id, company?.company_details?.name)}
+                    />
+                  </CustomTooltip>
+                )}
+
+                {appointmnetStatus === 'appointment' ? (
+                  <div className='bg-[#cbf2fe] px-2 py-[10px] flex justify-center items-center rounded-md'>
                     <i className='ri-chat-4-line text-[#26C6F9]'></i>
                   </div>
-                </CustomTooltip>
+                ) : (
+                  <CustomTooltip text='Chat' position='left' align='center'>
+                    <div
+                      onClick={() => router.push(`/chats`)}
+                      className='bg-[#cbf2fe] px-2 py-[10px] flex justify-center items-center rounded-md cursor-pointer'
+                    >
+                      <i className='ri-chat-4-line text-[#26C6F9]'></i>
+                    </div>
+                  </CustomTooltip>
+                )}
               </section>
             </section>
           ))}

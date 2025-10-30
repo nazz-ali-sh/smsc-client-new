@@ -10,7 +10,7 @@ import HorizontalLayout from '@layouts/HorizontalLayout'
 import Providers from '@components/Providers'
 import ScrollToTop from '@core/components/scroll-to-top'
 import RetenderNotificationWrapper from '@/components/layout/horizontal/RetenderNotificationWrapper'
-import ProfileCompletionNotificationWrapper from '@/components/layout/horizontal/ProfileCompletionNotificationWrapper'
+import ConditionalProfileWrapper from '@/components/layout/horizontal/ConditionalProfileWrapper'
 
 import { getSystemMode } from '@core/utils/serverHelpers'
 import Header from '@/components/layout/horizontal/Header'
@@ -29,7 +29,7 @@ const Layout = async ({ children, params }: ChildrenType & { params: { lang: Loc
         systemMode={systemMode}
         horizontalLayout={
           <HorizontalLayout header={<Header dictionary={dictionary} />} footer={<HorizontalFooter />}>
-            <ProfileCompletionNotificationWrapper />
+            <ConditionalProfileWrapper />
             <RetenderNotificationWrapper />
             {children}
           </HorizontalLayout>

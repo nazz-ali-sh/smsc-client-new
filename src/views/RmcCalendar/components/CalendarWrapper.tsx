@@ -89,7 +89,6 @@ const CalendarWrapper = () => {
   const [addEventSidebarOpen, setAddEventSidebarOpen] = useState<boolean>(false)
   const [eventsData, setEventsData] = useState<CalendarEvent[]>([])
 
-  console.log(eventsData)
 
   const dispatch = useDispatch()
   const mdAbove = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'))
@@ -136,7 +135,6 @@ const CalendarWrapper = () => {
         rmcCalendarData?.data?.video_call_invites?.map(invite => {
           const date = invite.scheduled_date.split('T')[0]
 
-          console.log(invite)
 
           return {
             invite_Id: invite.id,

@@ -130,7 +130,7 @@ const PmaTenderTable = () => {
                 setSelectedTenderId(tender_id)
                 setDrawerOpen(true)
               } else {
-                router.push(`/pma-tender-detail/${tender_id}`)
+                router.push(`/tender-detail/${tender_id}`)
               }
             }
 

@@ -130,9 +130,9 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ open, onClose, in
                 Alternatively, feel free to leave us a review on Google or Facebook.
               </Typography>
 
-              <Box display='flex' justifyContent='flex-end' gap={3} marginTop='20px'>
+              <Box display='flex' justifyContent='flex-end' gap={3} marginTop='20px' marginBottom='10px'>
                 <CustomButton variant='contained'>
-                  <i className='ri-google-fill bg-white'></i>
+                  <i className='ri-google-fill bg-white mr-[4px]'></i>
                   Leave Feedback On Google
                 </CustomButton>
 

@@ -64,15 +64,11 @@ const rmcOnboardingSlice = createSlice({
 
     setOtpVerificationData: (
       state,
-      action: PayloadAction<{ token: string; tender_onboarding_id: number; verified: boolean }>
+      action: PayloadAction<{ token?: string; tender_onboarding_id: number; verified: boolean }>
     ) => {
       if (state.rmcData) {
-        state.rmcData.token = action.payload.token
         state.rmcData.tender_onboarding_id = action.payload.tender_onboarding_id
         state.rmcData.verified = action.payload.verified
-
-        // Sync token with cookie for middleware
-        setTokenCookie(action.payload.token)
       }
     },
     setSelectedAddress: (state, action: PayloadAction<any>) => {

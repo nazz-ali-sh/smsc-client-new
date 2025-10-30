@@ -1,8 +1,12 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { getPmaOnboardingData } from '@/services/pma-onboarding-apis/pma-onboarding-api'
+import { getUserType } from '@/utils/tokenSync'
+import { isPmaPortalAndUser } from '@/utils/portalHelper'
 
 export const usePmaOnboardingData = () => {
+  const userType = getUserType()
+  const isPmaPortal = isPmaPortalAndUser(userType)
   const queryClient = useQueryClient()
 
   const query = useQuery({
@@ -11,7 +15,8 @@ export const usePmaOnboardingData = () => {
     retry: 2,
     staleTime: 0,
     refetchOnMount: true,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    enabled: !!isPmaPortal
   })
 
   const invalidateCache = () => {

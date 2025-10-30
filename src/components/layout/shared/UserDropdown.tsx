@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { useSettings } from '@core/hooks/useSettings'
 
-import { clearTokenCookie } from '@/utils/tokenSync'
+import { clearAllTokens } from '@/utils/tokenSync'
 import { clearRmcData } from '@/redux-store/slices/rmcOnboardingSlice'
 import { routesWithNavbarContent, rmcRoutes, pmaRoutes } from '@/constants'
 
@@ -68,8 +68,9 @@ const UserDropdown = ({ selectedTenderInitial }: { selectedTenderInitial?: strin
 
   const handleSignOut = () => {
     router.push('/login')
-    clearTokenCookie()
+    clearAllTokens()
     dispatch(clearRmcData())
+    localStorage.clear()
 
     if (typeof window !== 'undefined') {
       localStorage.removeItem('rmc-onboarding-postcode')

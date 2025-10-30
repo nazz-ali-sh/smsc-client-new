@@ -38,7 +38,6 @@ interface MapAddressData {
 }
 
 const OnboardingAddresScreen = ({ portal }: OnboardingPortalProps) => {
-  console.log(portal, 'portal')
   const router = useRouter()
   const dispatch = useDispatch()
   const [selectedAddressId, setSelectedAddressId] = useState('')

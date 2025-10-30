@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { clearAllTokenCookies } from '@/utils/tokenSync'
+import { clearAllTokens } from '@/utils/tokenSync'
 
 const TENDER_ID = '63168138167'
 
@@ -60,9 +60,9 @@ axiosClient.interceptors.response.use(
   response => response,
   error => {
     if (error.response?.status === 401) {
-      console.log('🚪 401 Unauthorized - Logging out user')
+      console.log('🚪 401 Unauthorized - Clearing all tokens and redirecting to login')
 
-      clearAllTokenCookies()
+      clearAllTokens()
 
       if (typeof window !== 'undefined') {
         localStorage.removeItem('persist:root')

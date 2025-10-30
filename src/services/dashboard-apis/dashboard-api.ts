@@ -80,18 +80,13 @@ export interface DashboardDataResponse {
       total_stages: number
       completed_stages: number
       remaining_stages: number
-      stages: Array<{
-        stage: string
-        display_name: string
-        stage_number: number
-        is_completed: boolean
-        is_current: boolean
-        completed_at: string
-      }>
+      stages: any
     }
     schedule_calls: any
     shortlisted_pma: any
     days_since_last_shorlisted: number
+    days_since_last_site_visit: number
+    days_since_last_video_call: number
   }
 }
 

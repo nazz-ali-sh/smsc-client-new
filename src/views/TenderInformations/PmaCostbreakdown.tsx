@@ -11,10 +11,11 @@ interface pmaCostBreakDown {
 }
 
 const PmaCostbreakdown: React.FC<pmaCostBreakDown> = ({ pmaCostBreakDown }) => {
+
   return (
     <>
-      <Typography className='text-[#262B43E5] pt-[34px] font-bold text-[18px]'>Cost breakdown</Typography>
-      <section className='flex flex-wrap pt-[28px]'>
+      <Typography className='text-[#262B43E5] pt-[10px] font-bold text-[18px]'>Cost breakdown</Typography>
+      <section className='flex flex-wrap pt-[16px]'>
         {pmaCostBreakDown?.map((feeItem: any, feeIndex: any) => (
           <Grid item xs={12} sm={6} md={4} key={feeIndex} className='w-[240px]'>
             <>

@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 
 import Image from 'next/image'
 
-import { Button, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 
 import { useSelector } from 'react-redux'
 
@@ -15,13 +15,13 @@ import demePfd from '../../../public/images/dashboardImages/demePdfImage.png'
 
 import { downloadBlindTenderPdf } from '@/services/tender_result-apis/tender-result-api'
 import { downloadFinalSeectionPDf } from '@/services/final_result_and_archeive_apis/final_results_apis'
+import CustomButton from '@/common/CustomButton'
+import { useDashboardData } from '@/hooks/useDashboardData'
 
-interface DashboardResponseProps {
-  dashboardResponce?: any
-}
-
-const CurrentActivity: React.FC<DashboardResponseProps> = ({ dashboardResponce }) => {
+const CurrentActivity = () => {
   const router = useRouter()
+
+  const { data: dashboardResponce } = useDashboardData()
 
   const stages = dashboardResponce?.data?.tender_stage_progress?.current_stage?.stage
 
@@ -77,10 +77,10 @@ const CurrentActivity: React.FC<DashboardResponseProps> = ({ dashboardResponce }
       <div className='bg-white p-4 md:p-8 shadow-xl  rounded-lg '>
         <div className=''>
           <section className='flex justify-between items-start w-[100%] '>
-            <Typography variant='h3' className='w-[50%]' sx={headingStyle}>
+            <Typography className='w-[50%] text-[20px] font-semibold' sx={headingStyle}>
               Current Activity
             </Typography>
-            <Typography variant='h3' className='w-[50%] pl-[40px] ' sx={headingStyle}>
+            <Typography className='w-[50%] pl-[40px] text-[20px] font-semibold' sx={headingStyle}>
               Download Reports
             </Typography>
           </section>
@@ -102,13 +102,13 @@ const CurrentActivity: React.FC<DashboardResponseProps> = ({ dashboardResponce }
                     </div>
                   </div>
                   <section className='flex justify-end items-end mt-5 mb-2 mr-2'>
-                    <Button
+                    <CustomButton
+                      disabled={dashboardResponce?.data?.schedule_calls === 0 || !!tender_id}
                       onClick={() => router.push('/video-calls')}
                       variant='contained'
-                      className='bg-buttonPrimary w-[110px] text-[11px] whitespace-nowrap'
                     >
                       View List <i className='ri-arrow-right-line bg-white ml-1 size-[12px]'></i>
-                    </Button>
+                    </CustomButton>
                   </section>
                 </div>
                 <div className='bg-white rounded-lg shadow-sm border border-gray-200 p-5 w-[259px] h-[145px]'>
@@ -126,13 +126,13 @@ const CurrentActivity: React.FC<DashboardResponseProps> = ({ dashboardResponce }
                     </div>
                   </div>
                   <section className='flex justify-end items-end mt-5 mb-2 mr-2'>
-                    <Button
+                    <CustomButton
+                      disabled={dashboardResponce?.data?.shortlisted_pma === 0 || !tender_id}
                       onClick={() => router.push('/shortlist-agent')}
                       variant='contained'
-                      className='bg-buttonPrimary w-[110px] text-[11px] whitespace-nowrap'
                     >
                       View List <i className='ri-arrow-right-line bg-white ml-1 size-[12px]'></i>
-                    </Button>
+                    </CustomButton>
                   </section>
                 </div>
               </div>

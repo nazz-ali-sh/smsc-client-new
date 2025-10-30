@@ -49,7 +49,7 @@ function CustomStepIcon(props: StepIconProps & { stage: Stage }) {
 export default function HorizontalLinearStepper() {
   const { data: dashboardData } = useDashboardData()
 
-  const stagesObject = dashboardData?.tender_stage_progress?.stages
+  const stagesObject = dashboardData?.data?.tender_stage_progress?.stages
   const stages = stagesObject ? Object.values(stagesObject).sort((a, b) => a.stage_number - b.stage_number) : []
   const activeStep = stages?.findIndex(stage => stage?.is_current) ?? -1
 

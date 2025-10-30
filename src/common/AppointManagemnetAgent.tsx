@@ -77,8 +77,6 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
   const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
   const reschedual_pma_user_id = (InviteCompletedCalls ?? [])[0]?.pma_user_ids || '0'
 
-  console.log(companyNames)
-
   const queryClient = useQueryClient()
 
   const { invalidateCache } = useDashboardData()
@@ -115,6 +113,7 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
 
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || ''
+
       toast.error(errorMessage)
       setpmaValue('')
       onClose()
@@ -250,6 +249,15 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
                             <Checkbox
                               checked={feedbacks[pma.pma_user.id]?.noFeedback || false}
                               onChange={e => handleCheckboxChange(pma.pma_user.id, e.target.checked)}
+                              sx={{
+                                color: '#35C0ED', 
+                                '&.Mui-checked': {
+                                  color: '#35C0ED' 
+                                },
+                                '&.MuiCheckbox-indeterminate': {
+                                  color: '#35C0ED' 
+                                }
+                              }}
                             />
                           }
                           label='I would prefer not to leave any feedback'

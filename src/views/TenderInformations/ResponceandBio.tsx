@@ -14,11 +14,11 @@ const ResponceandBio: React.FC<responceAndBoiProps> = ({ boi, responce }) => {
         <section>
           <Typography className='text-[#262B43E5] font-bold mt-[34px] text-[18px]'>Bio</Typography>
           {boi ? (
-            <Typography variant='h5' className='text-[#AEAEAE] mt-[10px] text-[14px]'>
+            <Typography variant='h5' className='text-[#AEAEAE] mt-[18px] text-[14px]'>
               {boi}
             </Typography>
           ) : (
-            <Typography variant='h5' className='text-[#AEAEAE] mt-[10px] text-[14px] text-center'>
+            <Typography variant='h5' className='text-[#AEAEAE] mt-[20px] text-[14px] text-center'>
               No Data
             </Typography>
           )}

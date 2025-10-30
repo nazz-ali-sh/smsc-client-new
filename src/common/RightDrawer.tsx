@@ -8,6 +8,9 @@ import Image from 'next/image'
 import { Divider, Typography, Drawer, Box, Button } from '@mui/material'
 
 import avatar3 from '../../public/images/dashboardImages/Avartar3.png'
+import dollarSign from '../../public/images/TenderResults/dollarSign.svg'
+import properties from '../../public/images/TenderResults/properties.svg'
+import calander from '../../public/images/TenderResults/calander.svg'
 
 import PainPoints from '@/views/TenderInformations/PainPoints'
 import PmaCostbreakdown from '@/views/TenderInformations/PmaCostbreakdown'
@@ -36,24 +39,25 @@ export default function AnchorTemporaryDrawer({
 }: AnchorTemporaryDrawerProps) {
   const anchor: Anchor = 'right'
 
+
   const cardsData = [
     {
       id: 0,
 
       state: DrawerStats?.company_metrics?.total_units_managed | 0,
-      icons: <i className='ri-customer-service-2-line'></i>,
+      icons: properties,
       descrption: 'No. of Units Managed'
     },
     {
       id: 1,
-      icons: <i className='ri-phone-line'></i>,
-      state: DrawerStats?.company_metrics?.avg_units_per_manager | 0,
+      icons: dollarSign,
+      state: DrawerStats?.quotation?.total_management_fees | 0,
       descrption: 'Quotation'
     },
 
     {
       id: 2,
-      icons: <i className='ri-map-pin-2-line'></i>,
+      icons: calander ,
       state: DrawerStats?.company_metrics?.trading_years | 0,
       descrption: 'Trading Years'
     }
@@ -104,9 +108,9 @@ export default function AnchorTemporaryDrawer({
               color: '#262B43E5',
               paddingTop: '8px'
             }}
-          />
+          />  
 
-          <PmaCostbreakdown pmaCostBreakDown={response?.management_fees} />
+          <PmaCostbreakdown pmaCostBreakDown={response?.managment_fees} />
 
           <ResponceandBio boi={response?.company_bio?.bio} responce={response?.response_details?.message} />
         </React.Fragment>

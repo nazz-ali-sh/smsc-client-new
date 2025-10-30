@@ -1,5 +1,7 @@
 import type { Key } from 'react'
 
+import Image from 'next/image'
+
 import { Card, CardContent, Typography } from '@mui/material'
 
 interface cardsData {
@@ -7,7 +9,6 @@ interface cardsData {
 }
 
 const DrawerWidget: React.FC<cardsData> = ({ cardsData }) => {
-  console.log(cardsData)
 
   return (
     <>
@@ -18,10 +19,10 @@ const DrawerWidget: React.FC<cardsData> = ({ cardsData }) => {
               <CardContent sx={{ paddingX: '10px', paddingTop: '13px' }} className='flex items-center gap-x-[16px]'>
                 <div
                   className={`flex items-center gap-4 ${
-                    index === 0 ? 'bg-sky' : index === 1 ? 'bg-[#e3f9d4]' : index === 2 ? 'bg-purple1' : ''
+                    index === 0 ? 'bg-[#E3F9D4]' : index === 1 ? 'bg-[#CBEFFB]' : index === 2 ? 'bg-[#666CFF3D]' : ''
                   } size-[40px] justify-center rounded-lg`}
                 >
-                  {items?.icons}
+                  <Image src={items?.icons} alt = ''/>
                 </div>
                 <div className='flex flex-col'>
                   <Typography variant='body1' color='text.primary'>

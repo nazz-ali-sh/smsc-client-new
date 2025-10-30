@@ -175,6 +175,7 @@ export const data: DataTypes[] = [
 export default data
 
 export type Quotation = {
+  total_management_fees: any
   total_quote_inc_vat: number
   per_unit_equivalent_inc_vat: number | null
   vat_option: string
@@ -249,20 +250,20 @@ export type TenderResponse = {
 }
 
 export type DataType = {
-  id: number // Mapped from response_id
+  id: number 
   pma_id: number
-  avatar: string // This might need a default or be based on company_name
-  fullName: string // Mapped from company_name
-  tradingYears: number | string // Mapped from company_metrics.trading_years
-  city: string // Not directly in API, could extract from location.address or remove if not needed
-  start_date: string // Not directly in API, remove if not needed
-  location: number | string // Mapped from location.address
-  NoOfUnits: number | string // Mapped from quotation.per_unit_equivalent_inc_vat or total_units_managed
-  googleReview: number | string // Mapped from reviews.google.rating
-  experience: string // Not directly in API, remove or derive
-  status: number // Not directly in API, remove or derive
-  submittedDate: number | string // Mapped from response_details.submitted_at
-  quotation: number | string // Mapped from quotation.total_quote_inc_vat
-  Actions: number | string // Keep as is for your action column
-  Questionaire: string // Keep as is for your button text
+  avatar: string 
+  fullName: string
+  tradingYears: number | string 
+  city: string 
+  start_date: string 
+  location: number | string 
+  NoOfUnits: number | string 
+  googleReview: number | string 
+  experience: string 
+  status: number 
+  submittedDate: number | string
+  quotation: number | string 
+  Actions: number | string 
+  Questionaire: string 
 }

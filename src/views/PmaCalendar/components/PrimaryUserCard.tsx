@@ -52,12 +52,7 @@ const PrimaryUserCard = ({
         </Box>
       </Box>
       <FormControlLabel
-        control={
-          <Switch
-            checked={subUserVisibility}
-            onChange={e => onSubUserVisibilityChange?.(e.target.checked)}
-          />
-        }
+        control={<Switch checked={subUserVisibility} onChange={e => onSubUserVisibilityChange?.(e.target.checked)} />}
         label='Sub User Visibility'
       />
     </Card>

@@ -51,6 +51,8 @@ const Calendar = (props: CalenderProps) => {
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
   const [joinSiteVisitmetting, setJoinSiteVisitMetting] = useState(false)
 
+  console.log(selectedPillsData)
+
   interface PillsData {
     pma_username: PillsData | undefined
     invite_Id: any
@@ -232,9 +234,6 @@ const Calendar = (props: CalenderProps) => {
         invite_Id: clickedEvent._def.extendedProps.invite_Id
       }
 
-      console.log(selectedEventData)
-
-      console.log(selectedEventData?.extendedProps)
       setselectedPillsData(selectedEventData?.extendedProps)
 
       if (
@@ -314,8 +313,8 @@ const Calendar = (props: CalenderProps) => {
 
       <CancelVideoCallsAndSiteVisist
         open={confirmOpen}
-        title={`${selectedPillsData?.status == 'pending' ? `Pending ${selectedPillsData?.calendartype == 'VideoCall' ? 'Call' : 'Site Visit'} Cancelled !` : selectedPillsData?.status == 'rescheduled' ? 'Rescheduled Request Cancel ' : 'Rescheduled Request Cancel'}`}
-        description={`You have successfully cancelled your scheduled ${selectedPillsData?.calendartype == 'VideoCall' ? 'call' : 'site visit'}  with ${selectedPillsData && selectedPillsData?.pma_username} . Please provide a brief reason for the cancellation in the box below. This explanation will be sent to the Managing Agent.`}
+        title={`${selectedPillsData?.status == 'pending' ? `Pending ${selectedPillsData?.calendartype == 'VideoCall' ? 'Call' : 'Site Visit'} Cancelled !` : selectedPillsData?.status == 'rescheduled' ? 'Rescheduled Request Cancel ' : `Upcoming ${selectedPillsData?.calendartype == 'VideoCall' ? 'Video Call' : 'Site Visit'}  Cancel`}`}
+        description={`You have successfully cancelled your ${selectedPillsData?.status == 'accepted' ? 'upcoming' : 'pending'}  ${selectedPillsData?.calendartype == 'VideoCall' ? 'call' : 'site visit'}  with ${selectedPillsData && selectedPillsData?.pma_username} . Please provide a brief reason for the cancellation in the box below. This explanation will be sent to the Managing Agent.`}
         onClose={() => setConfirmOpen(false)}
         calanderCancelData={selectedPillsData}
         onConfirm={() => {}}
@@ -330,7 +329,7 @@ const Calendar = (props: CalenderProps) => {
       />
 
       <PendingModal
-        title={` ${selectedPillsData?.status == 'rescheduled' ? ' Rescheduled Meeting' : selectedPillsData?.status == 'pending' ? 'Pending Meeting' : ''} `}
+        title={` ${selectedPillsData?.status == 'rescheduled' ? ' Rescheduled Meeting' : selectedPillsData?.status == 'pending' ? 'Pending Video Call Details' : ''} `}
         open={pendingsModalOpen}
         onClose={() => setPendingsModalOpen(false)}
         onReject={handleReject}
@@ -355,7 +354,7 @@ const Calendar = (props: CalenderProps) => {
 
       <JoinMeetingModal
         open={joinSiteVisitmetting}
-        title={` ${selectedPillsData?.calendartype == 'SiteVisit' ? ' Site Visit Details' : selectedPillsData?.calendartype == 'VideoCall' ? 'Join Metting' : ''} `}
+        title={` ${selectedPillsData?.calendartype == 'SiteVisit' ? 'Upcoming Site Visit Details' : selectedPillsData?.calendartype == 'VideoCall' ? 'Upcoming Video Call Details' : ''} `}
         onClose={() => setJoinSiteVisitMetting(false)}
         siteVisitData={selectedPillsData}
         siteVisitJoinCall={siteVisitJoinCall}

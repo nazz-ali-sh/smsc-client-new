@@ -26,7 +26,7 @@ export const useDashboardData = () => {
 
   return {
     ...query,
-    data: query?.data?.data,
+    data: query?.data,
     isLoading: query?.isLoading,
     error: query?.error,
     refetch: query?.refetch,

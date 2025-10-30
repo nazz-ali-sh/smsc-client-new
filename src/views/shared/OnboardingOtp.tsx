@@ -17,9 +17,9 @@ import {
   type verificationPayload
 } from '@/services/rmc-onboarding-apis/rmc-onboarding-api'
 import { setOtpVerificationData } from '@/redux-store/slices/rmcOnboardingSlice'
-import { setPmaToken } from '@/redux-store/slices/pmaOnboardingSlice'
 import type { RootState } from '@/redux-store'
 import { PMA_ROUTES, RMC_ROUTES } from '@/constants'
+import { storeToken } from '@/utils/tokenSync'
 
 export default function OnboardingOtp({ portal }: OnboardingPortalProps) {
   const router = useRouter()
@@ -57,13 +57,13 @@ export default function OnboardingOtp({ portal }: OnboardingPortalProps) {
     onSuccess: (response: any) => {
       if (portal === 'pma_portal') {
         if (response?.data?.token) {
-          dispatch(setPmaToken(response?.data?.token))
+          storeToken(response?.data?.token, response?.data?.user_type)
         }
       } else {
         if (response?.data?.token && response?.data?.tender_onboarding_id) {
+          storeToken(response?.data?.token, response?.data?.user_type)
           dispatch(
             setOtpVerificationData({
-              token: response?.data?.token,
               tender_onboarding_id: response?.data?.tender_onboarding_id,
               verified: response?.data?.verified
             })
