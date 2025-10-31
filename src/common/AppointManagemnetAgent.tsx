@@ -250,12 +250,12 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
                               checked={feedbacks[pma.pma_user.id]?.noFeedback || false}
                               onChange={e => handleCheckboxChange(pma.pma_user.id, e.target.checked)}
                               sx={{
-                                color: '#35C0ED',
+                                color: '#35C0ED', 
                                 '&.Mui-checked': {
-                                  color: '#35C0ED'
+                                  color: '#35C0ED' 
                                 },
                                 '&.MuiCheckbox-indeterminate': {
-                                  color: '#35C0ED'
+                                  color: '#35C0ED' 
                                 }
                               }}
                             />

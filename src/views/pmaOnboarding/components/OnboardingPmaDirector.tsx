@@ -58,7 +58,8 @@ export default function OnboardingPmaDirector() {
       setShowConfirmation(true)
     },
     onError: (error: any) => {
-      const errorMessage = error?.response?.data?.message || 'Failed to submit form. Please try again.'
+      console.log(error, 'error')
+      const errorMessage = error?.response?.data?.message || error?.message
 
       toast.error(errorMessage)
       setIsSubmitting(false)

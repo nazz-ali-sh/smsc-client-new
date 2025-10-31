@@ -89,6 +89,7 @@ const CalendarWrapper = () => {
   const [addEventSidebarOpen, setAddEventSidebarOpen] = useState<boolean>(false)
   const [eventsData, setEventsData] = useState<CalendarEvent[]>([])
 
+
   const dispatch = useDispatch()
   const mdAbove = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'))
   const handleLeftSidebarToggle = () => setLeftSidebarOpen(!leftSidebarOpen)
@@ -134,6 +135,7 @@ const CalendarWrapper = () => {
         rmcCalendarData?.data?.video_call_invites?.map(invite => {
           const date = invite.scheduled_date.split('T')[0]
 
+
           return {
             invite_Id: invite.id,
             pma_user_id: invite?.pma_user_id,
@@ -154,6 +156,7 @@ const CalendarWrapper = () => {
             calendartype: 'VideoCall'
           }
         }) ?? []
+
 
       const siteVisitEvents: CalendarEvent[] =
         rmcCalendarData?.data?.site_visit_invites?.map(invite => {
@@ -178,6 +181,7 @@ const CalendarWrapper = () => {
             calendartype: 'SiteVisit'
           }
         }) ?? []
+
 
       return [...videoCallEvents, ...siteVisitEvents]
     }

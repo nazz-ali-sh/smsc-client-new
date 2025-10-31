@@ -44,6 +44,7 @@ const JoinMeetingModal = ({
   title,
   siteVisitData
 }: DataModalProps) => {
+
   return (
     <Dialog
       open={open}
@@ -78,6 +79,7 @@ const JoinMeetingModal = ({
         </Box>
       </DialogTitle>
       <DialogContent>
+     
         <DialogContentText sx={{ marginTop: '5px' }}>
           <strong className='font-bold '>Date & Time: </strong> {siteVisitData?.slot}
         </DialogContentText>
@@ -103,18 +105,18 @@ const JoinMeetingModal = ({
             Reschedule Visit
           </CustomButton>
         )}
-
+       
         {!siteVisitData?.location && (
           <CustomButton onClick={rescheduledCallDate} variant='contained'>
             Reschedule Call
           </CustomButton>
         )}
-        {!siteVisitData?.location && (
+           {!siteVisitData?.location && (
           <CustomButton variant='contained' onClick={cancelVideoCall}>
             Cancel Call
           </CustomButton>
         )}
-        {!siteVisitData?.location && (
+         {!siteVisitData?.location && (
           <CustomButton variant='contained' onClick={siteVisitJoinCall}>
             Join call
           </CustomButton>

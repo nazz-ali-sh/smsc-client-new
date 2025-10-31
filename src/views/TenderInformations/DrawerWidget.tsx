@@ -9,6 +9,7 @@ interface cardsData {
 }
 
 const DrawerWidget: React.FC<cardsData> = ({ cardsData }) => {
+
   return (
     <>
       <div className='flex justify-between items-center mt-[34px]'>
@@ -21,7 +22,7 @@ const DrawerWidget: React.FC<cardsData> = ({ cardsData }) => {
                     index === 0 ? 'bg-[#E3F9D4]' : index === 1 ? 'bg-[#CBEFFB]' : index === 2 ? 'bg-[#666CFF3D]' : ''
                   } size-[40px] justify-center rounded-lg`}
                 >
-                  <Image src={items?.icons} alt='' />
+                  <Image src={items?.icons} alt = ''/>
                 </div>
                 <div className='flex flex-col'>
                   <Typography variant='body1' color='text.primary'>

@@ -39,6 +39,7 @@ export default function AnchorTemporaryDrawer({
 }: AnchorTemporaryDrawerProps) {
   const anchor: Anchor = 'right'
 
+
   const cardsData = [
     {
       id: 0,
@@ -56,7 +57,7 @@ export default function AnchorTemporaryDrawer({
 
     {
       id: 2,
-      icons: calander,
+      icons: calander ,
       state: DrawerStats?.company_metrics?.trading_years | 0,
       descrption: 'Trading Years'
     }
@@ -107,7 +108,7 @@ export default function AnchorTemporaryDrawer({
               color: '#262B43E5',
               paddingTop: '8px'
             }}
-          />
+          />  
 
           <PmaCostbreakdown pmaCostBreakDown={response?.managment_fees} />
 

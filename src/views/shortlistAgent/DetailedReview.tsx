@@ -297,7 +297,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
 
               <section className='flex flex-col space-y-4'>
                 {appointmnetStatus === 'appointment' ? (
-                  <Image src={videoCalls} alt='videocalls' />
+                  <Image src={videoCalls} alt='videocalls'/>
                 ) : (
                   <CustomTooltip text='Invite to Video Call' position='left' align='center'>
                     <Image
@@ -310,7 +310,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                 )}
 
                 {appointmnetStatus === 'appointment' ? (
-                  <Image src={visitLocation} alt='location' />
+                  <Image src={visitLocation} alt='location'/>
                 ) : (
                   <CustomTooltip text='Invite to Site Visit' position='left' align='center'>
                     <Image
