@@ -50,8 +50,12 @@ export default function HorizontalLinearStepper() {
   const { data: dashboardData } = useDashboardData()
 
   const stagesObject = dashboardData?.data?.tender_stage_progress?.stages
-  const stages = stagesObject ? Object.values(stagesObject).sort((a, b) => a.stage_number - b.stage_number) : []
-  const activeStep = stages?.findIndex(stage => stage?.is_current) ?? -1
+
+  const stages = stagesObject
+    ? Object.values(stagesObject).sort((a: any, b: any) => a.stage_number - b.stage_number)
+    : []
+
+  const activeStep = stages?.findIndex((stage: any) => stage?.is_current) ?? -1
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -80,7 +84,7 @@ export default function HorizontalLinearStepper() {
           }
         }}
       >
-        {stages?.map((stage, index) => {
+        {stages?.map((stage: any, index) => {
           const stepProps: { completed?: boolean } = {}
 
           if (stage.is_completed) {
