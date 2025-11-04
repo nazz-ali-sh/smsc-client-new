@@ -139,7 +139,15 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
 
             if (items.isInvite) {
               return (
-                <div key={index} onMouseEnter={handlePopoverOpen} onMouseLeave={handlePopoverClose}>
+                <div
+                  key={index}
+                  onMouseEnter={e => {
+                    if (!isDisabled) handlePopoverOpen(e)
+                  }}
+                  onMouseLeave={() => {
+                    if (!isDisabled) handlePopoverClose()
+                  }}
+                >
                   <div
                     className={`flex items-center justify-center py-2 rounded-lg min-w-[140px] ${
                       isActive ? 'bg-[#35C0ED] text-white' : ''
@@ -153,7 +161,9 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
                     </section>
                   </div>
 
-                  <HorizontalMenuPopOver open={open} anchorEl={anchorEl} handlePopoverClose={handlePopoverClose} />
+                  {!isDisabled && (
+                    <HorizontalMenuPopOver open={open} anchorEl={anchorEl} handlePopoverClose={handlePopoverClose} />
+                  )}
                 </div>
               )
             }
@@ -182,8 +192,8 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
               <CustomTooltip
                 key={index}
                 text='Finish Onboarding to access these tabs'
-                align='left'
-                position='left'
+                position='top'
+                align='center'
                 cursor='default'
               >
                 {menuItem}

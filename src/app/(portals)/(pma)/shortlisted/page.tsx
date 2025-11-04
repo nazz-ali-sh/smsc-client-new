@@ -1,11 +1,9 @@
 import React from 'react'
 
+import PmaTenderListing from '@/views/PmaTenderListing/PmaTenderListing'
+
 const page = () => {
-  return (
-    <div>
-      <p>Shortlisted page </p>
-    </div>
-  )
+  return <PmaTenderListing />
 }
 
 export default page

@@ -1,83 +1,15 @@
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
-const protectedRoutes = [
-  '/dashboard',
-  '/postcode',
-  '/address',
-  '/details',
-  '/budget',
-  '/leaseholder',
-  '/buildings',
-  '/blocks',
-  '/spaces',
-  '/priorities',
-  '/open',
-  '/tender-information',
-  '/shortlist-agent',
-  '/calendar',
-  '/site-visits',
-  '/video-calls',
-  '/chats',
-  '/final-selection',
-  '/archive',
-  '/set-availability',
-  '/account',
-  '/evaluation-matrix',
-  '/insurance',
-  '/branch-management',
-  '/user-management',
-  '/account-detail',
-  '/tender-result',
-  '/locationcode',
-  'bussiness-profile',
-  '/google-reviews',
-  '/otp-verification',
-  '/pinlocation',
-  '/reviews-form',
-  '/tenders-notification',
-  '/trustpilot-form',
-  '/trustpilot-reviews',
-  '/invoices',
-  '/appointed',
-  '/tender-detail',
-  '/tender-quote',
-  '/shortlisted',
-  '/tender-response',
-  '/tenders'
-]
-
-const publicRoutes = ['/', '/login', '/forgot-password', '/reset-password']
-
-const onboardingPublicRoutes = [
-  '/onboarding',
-  '/director',
-  '/verification',
-  '/otp',
-  '/resident',
-  '/rtm',
-  '/questions',
-  '/second',
-  '/third',
-  '/four',
-  '/five',
-  '/otp-verification',
-  '/verify-otp',
-  '/google-reviews',
-  '/trustpilot-reviews',
-  '/reviews-form',
-  '/company',
-  '/company-details',
-  '/business-profile',
-  '/tenders-notification',
-  '/email-notification',
-  '/management',
-  '/trustpilot-form',
-  '/location',
-  '/location-form',
-  '/locationcode',
-  '/pinlocation'
-]
+import {
+  onboardingPublicRoutes,
+  PMA_PORTAL,
+  PMA_USER,
+  protectedRoutes,
+  publicRoutes,
+  RMC_PORTAL,
+  RMC_USER
+} from './constants'
 
 export default async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname
@@ -94,14 +26,14 @@ export default async function middleware(req: NextRequest) {
   let isValidAuth = false
   let token = null
 
-  if (portalType === 'PMA' && userType === 'pma_user' && pmaToken) {
+  if (portalType === PMA_PORTAL && userType === PMA_USER && pmaToken) {
     isValidAuth = true
     token = pmaToken
-  } else if (portalType === 'RMC' && userType === 'rmc_user' && rmcToken) {
+  } else if (portalType === RMC_PORTAL && userType === RMC_USER && rmcToken) {
     isValidAuth = true
     token = rmcToken
-  } else if (!portalType || portalType === 'RMC') {
-    if (userType === 'rmc_user' && rmcToken) {
+  } else if (!portalType || portalType === RMC_PORTAL) {
+    if (userType === RMC_USER && rmcToken) {
       isValidAuth = true
       token = rmcToken
     } else if (rmcToken && !userType) {

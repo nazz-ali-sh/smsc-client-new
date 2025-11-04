@@ -32,38 +32,32 @@ const PmaTenderTable = () => {
 
   const columns = useMemo(() => {
     const baseColumns: any[] = [
-      columnHelper.accessor('sr_no', {
-        header: 'SR #',
-        cell: info => info.getValue(),
-        size: 80,
-        enableSorting: true
-      }),
       columnHelper.accessor('tender_name', {
-        header: 'TENDER ID',
+        header: 'Tender Id',
         cell: info => info.getValue(),
         size: 150,
         enableSorting: true
       }),
       columnHelper.accessor('region', {
-        header: 'REGION',
+        header: 'Reigon',
         cell: info => info.getValue(),
         size: 120,
         enableSorting: true
       }),
       columnHelper.accessor('unit_count', {
-        header: 'UNIT COUNT',
+        header: 'Unit Count',
         cell: info => info.getValue(),
         size: 120,
         enableSorting: true
       }),
       columnHelper.accessor('blocks_count', {
-        header: 'BLOCKS COUNT',
+        header: 'Blocks Count',
         cell: info => info.getValue(),
         size: 130,
         enableSorting: true
       }),
       columnHelper.accessor('block_condition', {
-        header: 'BLOCK CONDITION',
+        header: 'Block Condition',
         cell: info => {
           const condition = info.getValue()
 
@@ -72,8 +66,14 @@ const PmaTenderTable = () => {
         size: 150,
         enableSorting: true
       }),
+      columnHelper.accessor('outdoor_space', {
+        header: 'Outdoor Space',
+        cell: info => info.getValue(),
+        size: 130,
+        enableSorting: true
+      }),
       columnHelper.accessor('year_built', {
-        header: 'YEAR BUILT',
+        header: 'Year Built',
         cell: info => {
           const year = info.getValue()
 
@@ -91,7 +91,7 @@ const PmaTenderTable = () => {
         enableSorting: true
       }),
       columnHelper.accessor('property_type', {
-        header: 'PROPERTY TYPE',
+        header: 'Property Type',
         cell: info => {
           const type = info.getValue()
           const displayValue = type ? type.replace(/_/g, ' ') : '-'
@@ -102,13 +102,7 @@ const PmaTenderTable = () => {
         enableSorting: true
       }),
       columnHelper.accessor('end_date', {
-        header: 'UPLOADED ON',
-        cell: info => info.getValue() || '-',
-        size: 130,
-        enableSorting: true
-      }),
-      columnHelper.accessor('end_date', {
-        header: 'SUBMIT ON',
+        header: 'End Date',
         cell: info => info.getValue() || '-',
         size: 130,
         enableSorting: true

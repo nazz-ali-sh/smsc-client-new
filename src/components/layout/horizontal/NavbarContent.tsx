@@ -26,7 +26,7 @@ import { horizontalLayoutClasses } from '@layouts/utils/layoutClasses'
 import { getLocalizedUrl } from '@/utils/i18n'
 
 import { gettingRmcTenderId } from '@/services/dashboard-apis/dashboard-api'
-import { setRmcTenderId } from '@/redux-store/slices/rmcOnboardingSlice'
+import { setRmcTenderId, setRmcTenderName } from '@/redux-store/slices/rmcOnboardingSlice'
 
 import appLogo from '../../../../public/images/customImages/appLogo.png'
 import { routesWithNavbarContent, pmaRoutes, rmcRoutes } from '@/constants'
@@ -73,6 +73,7 @@ const NavbarContent = () => {
     retry: 2
   })
 
+
   useEffect(() => {
     if (rmcTenderIDData?.data?.tenders?.length) {
       const updatedTenders = rmcTenderIDData.data.tenders.map(tender => ({
@@ -89,7 +90,7 @@ const NavbarContent = () => {
 
       const firstTender = updatedTenders[0]
 
-      console.log(firstTender, 'firstTender')
+      dispatch(setRmcTenderName(firstTender?.name))
 
       if (firstTender) {
         setRmctenderId(firstTender.id.toString())

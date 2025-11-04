@@ -51,7 +51,6 @@ const Calendar = (props: CalenderProps) => {
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
   const [joinSiteVisitmetting, setJoinSiteVisitMetting] = useState(false)
 
-  console.log(selectedPillsData)
 
   interface PillsData {
     pma_username: PillsData | undefined
@@ -272,7 +271,6 @@ const Calendar = (props: CalenderProps) => {
 
   return (
     <>
-      {/* Inline style to increase slot box height */}
       <style>
         {`
           .fc .fc-timegrid-slot {
@@ -302,13 +300,15 @@ const Calendar = (props: CalenderProps) => {
 
       <RejectModal
         open={siteVisitRejectedModal}
-        setConfirmOpen={siteVisitRejectedModal}
+        setConfirmOpen={setsiteVisitRejectedModal} // ✅ fixed
         title='Reschedule Request Rejected!'
-        description={`You have rejected the reschedule request from ${selectedPillsData && selectedPillsData?.pma_username}. The meeting will not be updated.Please provide a reason for the rejection in the box below. This explanation will be sent to the managing agent.`}
+        description={`You have rejected the reschedule request from ${
+          selectedPillsData && selectedPillsData?.pma_username
+        }. The meeting will not be updated. Please provide a reason for the rejection in the box below. This explanation will be sent to the managing agent.`}
         onClose={() => setsiteVisitRejectedModal(false)}
-        onConfirm={function (): void {}}
+        onConfirm={() => {}}
         calanderSiteVisitReject={selectedPillsData}
-        types={`${selectedPillsData?.calendartype == 'SiteVisit' ? 'siteVisitRejectCalander' : 'fromVideoCalander'} `}
+        types={`${selectedPillsData?.calendartype == 'SiteVisit' ? 'siteVisitRejectCalander' : 'fromVideoCalander'}`}
       />
 
       <CancelVideoCallsAndSiteVisist

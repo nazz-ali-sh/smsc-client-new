@@ -23,11 +23,12 @@ type RetenderFormData = {
 interface RetenderModalProps {
   isOpen: boolean
   handleClose: () => void
-  tenderId?: string
+  tenderId?: any
 }
 
-const RetenderModal: React.FC<RetenderModalProps> = ({ isOpen, handleClose, tenderId = 'TND-xxxx' }) => {
+const RetenderModal: React.FC<RetenderModalProps> = ({ isOpen, handleClose, tenderId}) => {
   const numericTenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId) as number | null
+
   const {
     control,
     handleSubmit,
@@ -45,12 +46,14 @@ const RetenderModal: React.FC<RetenderModalProps> = ({ isOpen, handleClose, tend
     mutationFn: (payload: { tender_id: number; days: number; miles: number }) => rmcRetender(payload),
     onSuccess: (res: any) => {
       const message = res?.message || 'Retender submitted successfully'
+
       toast.success(message)
       handleClose()
       reset()
     },
     onError: (error: any) => {
       const message = error?.response?.data?.message || 'Failed to submit retender. Please try again.'
+
       toast.error(message)
     }
   })
@@ -58,6 +61,7 @@ const RetenderModal: React.FC<RetenderModalProps> = ({ isOpen, handleClose, tend
   const onSubmit = async (data: RetenderFormData) => {
     if (!numericTenderId) {
       toast.error('Tender ID not found')
+
       return
     }
 

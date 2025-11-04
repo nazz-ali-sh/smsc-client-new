@@ -5,23 +5,66 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 import { toast } from 'react-toastify'
+import { useMutation } from '@tanstack/react-query'
 
 import { Box, Typography, TextField, MenuItem, Select, FormControl, InputLabel } from '@mui/material'
 
 import CustomButton from '@/common/CustomButton'
 import { iconClass } from '@/constants/styles'
 import { usePmaTemplates } from '@/hooks/usePmaTemplates'
-import type { TenderId, PmaTemplateType } from '../types'
+import { saveTemplate, updateTemplate } from '@/services/pma-tender-listing-apis/pma-templates-api'
+import AddTemplateModal from './AddTemplateModal'
+import type { TenderId, PmaTemplateType, SaveTemplatePayload } from '../types'
 
 const ResponseFormSection = ({ tenderId }: TenderId) => {
   const router = useRouter()
-  const { pmaTemplatesData, isPmaTemplatesLoading } = usePmaTemplates()
+  const { pmaTemplatesData, isPmaTemplatesLoading, invalidatePmaTemplatesCache } = usePmaTemplates()
   const [selectedTemplate, setSelectedTemplate] = useState('')
   const [responseText, setResponseText] = useState('')
-  const [isEditing, setIsEditing] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isTextareaDisabled, setIsTextareaDisabled] = useState(false)
+  const [isEditMode, setIsEditMode] = useState(false)
   const maxCharacters = 3500
 
   const templates = pmaTemplatesData?.data?.templates || []
+
+  const saveTemplateMutation = useMutation({
+    mutationFn: saveTemplate,
+    onSuccess: (response: any) => {
+      toast.success(response?.message)
+      setIsModalOpen(false)
+      setIsEditMode(false)
+      invalidatePmaTemplatesCache()
+      const newTemplateId = response?.data?.id
+      const newTemplateMessage = response?.data?.message
+
+      if (newTemplateId) {
+        setSelectedTemplate(String(newTemplateId))
+        setResponseText(newTemplateMessage || '')
+        setIsTextareaDisabled(true)
+      }
+    },
+    onError: (error: any) => {
+      const errorMessage = error?.response?.data?.message || 'Failed to save template. Please try again.'
+
+      toast.error(errorMessage)
+    }
+  })
+
+  const updateTemplateMutation = useMutation({
+    mutationFn: ({ id, payload }: { id: number; payload: SaveTemplatePayload }) => updateTemplate(id, payload),
+    onSuccess: (response: any) => {
+      toast.success(response?.message)
+      setIsEditMode(false)
+      setIsTextareaDisabled(true)
+      invalidatePmaTemplatesCache()
+    },
+    onError: (error: any) => {
+      const errorMessage = error?.response?.data?.message || 'Failed to update template. Please try again.'
+
+      toast.error(errorMessage)
+    }
+  })
 
   const handleTemplateSelect = (templateId: string) => {
     setSelectedTemplate(templateId)
@@ -29,32 +72,59 @@ const ResponseFormSection = ({ tenderId }: TenderId) => {
 
     if (selectedTemplateData) {
       setResponseText(selectedTemplateData.message)
-      setIsEditing(false)
+      setIsTextareaDisabled(true)
     }
   }
 
   const handleEditTemplate = () => {
-    setIsEditing(true)
+    setIsTextareaDisabled(false)
+    setIsEditMode(true)
   }
 
-  const handleSaveTemplate = () => {
+  const handleCancelEdit = () => {
+    setIsTextareaDisabled(true)
+    setIsEditMode(false)
+  }
+
+  const handleSaveEdit = () => {
     if (!responseText.trim()) {
       toast.error('Please enter a response message before saving')
 
       return
     }
 
-    localStorage.setItem('template_response', responseText)
-    setIsEditing(false)
-  }
+    const selectedTemplateData = templates.find((template: PmaTemplateType) => String(template.id) === selectedTemplate)
 
-  const handleNext = () => {
-    if (isEditing) {
-      toast.error('Please save your response as template before proceeding to the next')
+    if (!selectedTemplateData) {
+      toast.error('Template not found')
 
       return
     }
 
+    const payload = {
+      name: selectedTemplateData.name,
+      message: responseText
+    }
+
+    updateTemplateMutation.mutate({
+      id: selectedTemplateData.id,
+      payload
+    })
+  }
+
+  const handleSaveTemplate = () => {
+    setIsModalOpen(true)
+  }
+
+  const handleTemplateSave = (data: SaveTemplatePayload) => {
+    saveTemplateMutation.mutate(data)
+  }
+
+  const handleModalClose = () => {
+    setIsModalOpen(false)
+  }
+
+  const handleNext = () => {
     if (!responseText.trim()) {
       toast.error('Please enter a response message before proceeding')
 
@@ -63,7 +133,6 @@ const ResponseFormSection = ({ tenderId }: TenderId) => {
 
     if (tenderId) {
       localStorage.setItem('template_response', responseText)
-      setIsEditing(false)
       router.push(`/tender-quote/${tenderId}`)
     }
   }
@@ -162,7 +231,7 @@ const ResponseFormSection = ({ tenderId }: TenderId) => {
             fullWidth
             placeholder='Type Here'
             value={responseText}
-            disabled={!isEditing}
+            disabled={isTextareaDisabled}
             onChange={e => {
               if (e.target.value.length <= maxCharacters) {
                 setResponseText(e.target.value)
@@ -192,10 +261,24 @@ const ResponseFormSection = ({ tenderId }: TenderId) => {
                 <i className='ri-save-line' />
                 <span>Save As New Template</span>
               </Box>
-              <Box sx={iconClass} onClick={handleEditTemplate}>
-                <i className='ri-edit-line' />
-                <span>Edit Template</span>
-              </Box>
+              {selectedTemplate && !isEditMode && (
+                <Box sx={iconClass} onClick={handleEditTemplate}>
+                  <i className='ri-edit-line' />
+                  <span>Edit Template</span>
+                </Box>
+              )}
+              {isEditMode && (
+                <>
+                  <Box sx={iconClass} onClick={handleCancelEdit}>
+                    <i className='ri-close-line' />
+                    <span>Cancel</span>
+                  </Box>
+                  <Box sx={iconClass} onClick={handleSaveEdit}>
+                    <i className='ri-check-line' />
+                    <span>Save</span>
+                  </Box>
+                </>
+              )}
             </Box>
 
             <Typography sx={{ color: '#9CA3AF', fontSize: '14px' }}>
@@ -209,6 +292,15 @@ const ResponseFormSection = ({ tenderId }: TenderId) => {
           </Box>
         </Box>
       </Box>
+
+      <AddTemplateModal
+        isOpen={isModalOpen}
+        handleClose={handleModalClose}
+        onSave={handleTemplateSave}
+        isLoading={saveTemplateMutation.isPending}
+        initialMessage={responseText}
+        responseMessage={responseText}
+      />
     </Box>
   )
 }

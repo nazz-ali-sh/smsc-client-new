@@ -1,21 +1,23 @@
+import { PMA_PORTAL, PMA_USER, RMC_PORTAL, RMC_USER } from '@/constants'
+
 export const isPmaPortal = (): boolean => {
-  return process.env.NEXT_PUBLIC_SMSC_PORTAL === 'PMA'
+  return process.env.NEXT_PUBLIC_SMSC_PORTAL === PMA_PORTAL
 }
 
 export const isRmcPortal = (): boolean => {
-  return process.env.NEXT_PUBLIC_SMSC_PORTAL === 'RMC'
+  return process.env.NEXT_PUBLIC_SMSC_PORTAL === RMC_PORTAL
 }
 
 export const getPortalType = (): string => {
-  return process.env.NEXT_PUBLIC_SMSC_PORTAL || 'RMC'
+  return process.env.NEXT_PUBLIC_SMSC_PORTAL || RMC_PORTAL
 }
 
 export const isPmaUser = (userType: string | null): boolean => {
-  return userType === 'pma_user'
+  return userType === PMA_USER
 }
 
 export const isRmcUser = (userType: string | null): boolean => {
-  return userType === 'rmc_user'
+  return userType === RMC_USER
 }
 
 export const isPmaPortalAndUser = (userType: string | null): boolean => {

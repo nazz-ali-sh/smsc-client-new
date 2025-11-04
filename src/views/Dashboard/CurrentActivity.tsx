@@ -103,7 +103,7 @@ const CurrentActivity = () => {
                   </div>
                   <section className='flex justify-end items-end mt-5 mb-2 mr-2'>
                     <CustomButton
-                      disabled={dashboardResponce?.data?.schedule_calls === 0 || !!tender_id}
+                      disabled={dashboardResponce?.data?.schedule_calls === 0 || !tender_id}
                       onClick={() => router.push('/video-calls')}
                       variant='contained'
                     >
@@ -169,7 +169,6 @@ const CurrentActivity = () => {
                     </section>
                   </section>
 
-                  {/* Second PDF */}
                   <section className='relative flex flex-col justify-between items-center w-[100%]'>
                     <Image src={demePfd} alt='pdf download' />
                     <section className='w-[100%]'>

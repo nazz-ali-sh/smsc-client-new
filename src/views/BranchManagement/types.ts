@@ -14,6 +14,17 @@ export interface BranchType {
   tenderRecipient?: string
 }
 
+export type BranchFormData = {
+  branch_name: string
+  address: string
+  postcode: string
+  lat: string
+  lng: string
+  contact_name: string
+  contact_email: string
+  contact_phone: string
+}
+
 export type UserType = {
   id: number
   name: string

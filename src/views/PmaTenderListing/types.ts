@@ -80,3 +80,25 @@ export interface AppointedModalProps {
   onClose: () => void
   tenderId: number | null
 }
+
+export interface SaveTemplatePayload {
+  name: string
+  message: string
+}
+
+export interface AddTemplateModalProps {
+  isOpen: boolean
+  handleClose: () => void
+  onSave: (data: SaveTemplatePayload) => void
+  isLoading?: boolean
+  initialMessage?: string
+  responseMessage?: string
+}
+
+export interface TemplateFormModalProps {
+  isOpen: boolean
+  handleClose: () => void
+  onSave: (data: SaveTemplatePayload) => void
+  isLoading?: boolean
+  mode?: 'add' | 'edit'
+}

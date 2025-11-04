@@ -569,3 +569,24 @@ export const startDateSchema = object({
   startDate: pipe(string(), nonEmpty('Start date is required')),
   notes: pipe(string(), nonEmpty('Notes are required'))
 })
+
+export const templateSchema = object({
+  name: pipe(
+    string(),
+    nonEmpty('Template name is required'),
+    minLength(3, 'Template name must be at least 3 characters')
+  )
+})
+
+export const templateFormSchema = object({
+  name: pipe(
+    string(),
+    nonEmpty('Template name is required'),
+    minLength(3, 'Template name must be at least 3 characters')
+  ),
+  message: pipe(
+    string(),
+    nonEmpty('Description is required'),
+    minLength(10, 'Description must be at least 10 characters')
+  )
+})

@@ -130,7 +130,6 @@ const SidebarLeft = (props: SidebarLeftProps) => {
 
         <Divider className='is-full' />
 
-        {/* Date Picker */}
         <div className='flex justify-center is-full p-4'>
           <AppReactDatepicker>
             <ReactDatepicker
@@ -182,13 +181,11 @@ const SidebarLeft = (props: SidebarLeftProps) => {
 
         <Divider className='is-full' />
 
-        {/* Filters */}
         <div className='flex flex-col p-5 is-full'>
           <Typography variant='h5' className='mbe-4'>
             Event Filters
           </Typography>
 
-          {/* check box rendet here */}
           <>
             <FormControlLabel
               label='Site Visit'
@@ -225,10 +222,9 @@ const SidebarLeft = (props: SidebarLeftProps) => {
 
         <Divider className='is-full' />
 
-        {/* Meeting Requests */}
         <div className='flex flex-col p-5 is-full'>
           <Typography variant='h5' className='mbe-4'>
-            Events Notification
+            Events Management
           </Typography>
           <div className='flex items-center justify-between mbe-3'>
             <Typography variant='body2'>Site Visits</Typography>
@@ -237,7 +233,7 @@ const SidebarLeft = (props: SidebarLeftProps) => {
             </CustomButton>
           </div>
           <div className='flex items-center justify-between'>
-            <Typography variant='body2'>Online Calls</Typography>
+            <Typography variant='body2'> Video Calls</Typography>
             <CustomButton variant='outlined' size='small' onClick={() => router.push(`invites/video-calls`)}>
               View
             </CustomButton>
@@ -245,7 +241,6 @@ const SidebarLeft = (props: SidebarLeftProps) => {
         </div>
       </Drawer>
 
-      {/* Modals */}
       <VideosCallsModal
         open={onlineCallsModalOpen}
         onClose={() => setOnlineCallsModalOpen(false)}

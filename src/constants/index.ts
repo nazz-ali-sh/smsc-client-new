@@ -507,3 +507,87 @@ export const tenderFilterMenuItems = [
 export const getTenderDetails = (value: string) => {
   return tenderTypeDetails[value as keyof typeof tenderTypeDetails] || tenderTypeDetails.went_live
 }
+
+export const PMA_USER = 'pma_user'
+export const RMC_USER = 'rmc_user'
+
+export const PMA_PORTAL = 'PMA'
+export const RMC_PORTAL = 'RMC'
+
+export const protectedRoutes = [
+  '/dashboard',
+  '/postcode',
+  '/address',
+  '/details',
+  '/budget',
+  '/leaseholder',
+  '/buildings',
+  '/blocks',
+  '/spaces',
+  '/priorities',
+  '/open',
+  '/tender-information',
+  '/shortlist-agent',
+  '/calendar',
+  '/site-visits',
+  '/video-calls',
+  '/chats',
+  '/final-selection',
+  '/archive',
+  '/set-availability',
+  '/account',
+  '/evaluation-matrix',
+  '/insurance',
+  '/branch-management',
+  '/user-management',
+  '/account-detail',
+  '/tender-result',
+  '/locationcode',
+  'bussiness-profile',
+  '/google-reviews',
+  '/otp-verification',
+  '/pinlocation',
+  '/reviews-form',
+  '/tenders-notification',
+  '/trustpilot-form',
+  '/trustpilot-reviews',
+  '/invoices',
+  '/appointed',
+  '/tender-detail',
+  '/tender-quote',
+  '/shortlisted',
+  '/tender-response',
+  '/tenders'
+]
+
+export const publicRoutes = ['/', '/login', '/forgot-password', '/reset-password']
+
+export const onboardingPublicRoutes = [
+  '/onboarding',
+  '/director',
+  '/verification',
+  '/otp',
+  '/resident',
+  '/rtm',
+  '/questions',
+  '/second',
+  '/third',
+  '/four',
+  '/five',
+  '/otp-verification',
+  '/verify-otp',
+  '/google-reviews',
+  '/trustpilot-reviews',
+  '/reviews-form',
+  '/company',
+  '/company-details',
+  '/business-profile',
+  '/tenders-notification',
+  '/email-notification',
+  '/management',
+  '/trustpilot-form',
+  '/location',
+  '/location-form',
+  '/locationcode',
+  '/pinlocation'
+]

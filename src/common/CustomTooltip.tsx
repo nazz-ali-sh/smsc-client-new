@@ -23,7 +23,14 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
   width
 }) => {
   const [isVisible, setIsVisible] = useState(false)
-  const [coords, setCoords] = useState<{ top: number; left: number }>({ top: 0, left: 0 })
+
+  const [coords, setCoords] = useState<{ top: number; left: number; width: number; height: number }>({
+    top: 0,
+    left: 0,
+    width: 0,
+    height: 0
+  })
+
   const wrapperRef = useRef<HTMLDivElement | null>(null)
 
   useLayoutEffect(() => {
@@ -32,29 +39,56 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
 
       setCoords({
         top: rect.top + window.scrollY,
-        left: rect.left + window.scrollX
+        left: rect.left + window.scrollX,
+        width: rect.width,
+        height: rect.height
       })
     }
   }, [isVisible])
 
   const getTooltipPosition = () => {
+    const offset = 8
+    const base = { position: 'absolute' as const }
+
     switch (position) {
-      case 'top':
-        if (align === 'left') return { bottom: '100%', left: 0, marginBottom: '8px' }
-        if (align === 'right') return { bottom: '100%', right: 0, marginBottom: '8px' }
+      case 'top': {
+        const top = coords.top - offset
 
-        return { bottom: '100%', left: '50%', transform: 'translateX(-50%)', marginBottom: '8px' }
-      case 'bottom':
-        if (align === 'left') return { top: '100%', left: 0, marginTop: '8px' }
-        if (align === 'right') return { top: '100%', right: 0, marginTop: '8px' }
+        if (align === 'left') return { ...base, top, left: coords.left }
+        if (align === 'right')
+          return { ...base, top, left: coords.left + coords.width - (width ? Number(width) / 2 : 0) }
 
-        return { top: '100%', left: '50%', transform: 'translateX(-50%)', marginTop: '8px' }
+        // center align
+        return { ...base, top, left: coords.left + coords.width / 2, transform: 'translate(-50%, -100%)' }
+      }
+
+      case 'bottom': {
+        const top = coords.top + coords.height + offset
+
+        if (align === 'left') return { ...base, top, left: coords.left }
+        if (align === 'right')
+          return { ...base, top, left: coords.left + coords.width - (width ? Number(width) / 2 : 0) }
+
+        // center align
+        return { ...base, top, left: coords.left + coords.width / 2, transform: 'translateX(-50%)' }
+      }
+
       case 'left':
-        return { right: '100%', top: '50%', transform: 'translateY(-0%)', marginRight: '8px' }
+        return {
+          ...base,
+          top: coords.top + coords.height / 2,
+          left: coords.left - offset,
+          transform: 'translate(-100%, -50%)'
+        }
       case 'right':
-        return { left: '100%', top: '50%', transform: 'translateY(-50%)', marginLeft: '8px' }
+        return {
+          ...base,
+          top: coords.top + coords.height / 2,
+          left: coords.left + coords.width + offset,
+          transform: 'translateY(-50%)'
+        }
       default:
-        return {}
+        return base
     }
   }
 
@@ -62,7 +96,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
     switch (position) {
       case 'top':
         return {
-          top: '100%',
+          bottom: '-4px',
           left: '50%',
           transform: 'translateX(-50%)',
           borderTop: '4px solid #0B2952',
@@ -71,7 +105,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
         }
       case 'bottom':
         return {
-          bottom: '100%',
+          top: '-4px',
           left: '50%',
           transform: 'translateX(-50%)',
           borderBottom: '4px solid #0B2952',
@@ -80,7 +114,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
         }
       case 'left':
         return {
-          left: '100%',
+          right: '-4px',
           top: '50%',
           transform: 'translateY(-50%)',
           borderLeft: '4px solid #0B2952',
@@ -89,7 +123,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
         }
       case 'right':
         return {
-          right: '100%',
+          left: '-4px',
           top: '50%',
           transform: 'translateY(-50%)',
           borderRight: '4px solid #0B2952',
@@ -105,7 +139,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
     <>
       <Box
         ref={wrapperRef}
-        sx={{ position: 'relative', display: 'inline-block', cursor }}
+        sx={{ display: 'inline-block', cursor, position: 'relative' }}
         onMouseEnter={() => setIsVisible(true)}
         onMouseLeave={() => setIsVisible(false)}
         className={className}
@@ -115,18 +149,9 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
 
       {isVisible &&
         createPortal(
-          <Box
-            sx={{
-              position: 'absolute',
-              top: coords.top,
-              left: coords.left,
-              zIndex: 9999,
-              pointerEvents: 'none'
-            }}
-          >
+          <Box sx={{ zIndex: 9999, pointerEvents: 'none', ...getTooltipPosition() }}>
             <Box
               sx={{
-                position: 'absolute',
                 backgroundColor: '#0B2952',
                 color: 'white',
                 padding: '8px 12px',
@@ -134,11 +159,12 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
                 fontSize: '12px',
                 fontWeight: 400,
                 width: width || 'auto',
-                minWidth: width ? '0' : 'max-content',
                 maxWidth: width || '300px',
                 whiteSpace: 'normal',
-                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                ...getTooltipPosition()
+                textAlign: 'center',
+                boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                position: 'relative',
+                display: 'inline-block'
               }}
             >
               <Typography
@@ -146,7 +172,8 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
                   color: 'white',
                   fontSize: '12px',
                   lineHeight: '16px',
-                  wordBreak: 'break-word'
+                  wordBreak: 'break-word',
+                  display: 'block'
                 }}
               >
                 {text}

@@ -578,7 +578,8 @@ const OnboardingAddresScreen = ({ portal }: OnboardingPortalProps) => {
                   PaperProps: {
                     style: {
                       maxHeight: 300,
-                      overflow: 'scroll'
+                       overflowY: 'auto',
+                       overflowX: 'hidden'
                     }
                   },
                   anchorOrigin: {

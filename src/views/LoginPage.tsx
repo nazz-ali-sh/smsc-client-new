@@ -130,7 +130,7 @@ const LoginPage = () => {
               }
             }}
           >
-            {isSubmitting || isLoading ? 'Logging in...' : 'Login'}
+            {isSubmitting || isLoading ? <div className='text-white'>Logging in...</div> : 'Login'}
           </Button>
         </div>
         <p onClick={handleOnboarding} className='font-medium mt-4 text-[#0B2952] text-center cursor-pointer'>

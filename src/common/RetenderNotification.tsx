@@ -4,6 +4,8 @@ import React, { useState } from 'react'
 
 import CustomButton from './CustomButton'
 import RetenderModal from './RetenderModal'
+import { useSelector } from 'react-redux'
+import type { RootState } from '@/redux-store'
 
 interface RetenderNotificationProps {
   title: string
@@ -21,10 +23,11 @@ const RetenderNotification: React.FC<RetenderNotificationProps> = ({
   buttonText,
   buttonAction,
   showModal = false,
-  tenderId = 'TND-xxxx',
   icon = '📢'
 }) => {
   const [isRetenderModalOpen, setIsRetenderModalOpen] = useState(false)
+  const tenderName = useSelector((state: RootState) => state.rmcOnboarding.tenderName)
+  
 
   const handleButtonClick = () => {
     if (buttonAction) {
@@ -66,7 +69,7 @@ const RetenderNotification: React.FC<RetenderNotificationProps> = ({
       </div>
 
       {showModal && isRetenderModalOpen && (
-        <RetenderModal isOpen={isRetenderModalOpen} handleClose={handleCloseModal} tenderId={tenderId} />
+        <RetenderModal isOpen={isRetenderModalOpen} handleClose={handleCloseModal} tenderId={tenderName} />
       )}
     </>
   )

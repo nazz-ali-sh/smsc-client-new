@@ -30,6 +30,7 @@ interface RmcOnboardingState {
   selectedAddress: any | null
   manualAddressData: AddressData
   tenderId: number | null
+  tenderName: string | null
 }
 
 const initialState: RmcOnboardingState = {
@@ -43,7 +44,8 @@ const initialState: RmcOnboardingState = {
     region: '',
     county: ''
   },
-  tenderId: null
+  tenderId: null,
+  tenderName: null
 }
 
 const rmcOnboardingSlice = createSlice({
@@ -102,6 +104,9 @@ const rmcOnboardingSlice = createSlice({
         state.rmcData.tender_id = action.payload
       }
     },
+    setRmcTenderName: (state, action: PayloadAction<string>) => {
+      state.tenderName = action.payload
+    },
     setRmcTenderId: (state, action: PayloadAction<number>) => {
       state.tenderId = action.payload
     },
@@ -117,8 +122,6 @@ const rmcOnboardingSlice = createSlice({
         region: '',
         county: ''
       }
-
-      // Clear token cookie for middleware
       clearTokenCookie()
     }
   }
@@ -133,6 +136,7 @@ export const {
   clearAddressData,
   setTenderId,
   setRmcTenderId,
+  setRmcTenderName,
   clearRmcData
 } = rmcOnboardingSlice.actions
 

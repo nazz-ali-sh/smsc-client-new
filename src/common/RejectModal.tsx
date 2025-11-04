@@ -55,19 +55,23 @@ const DeleteModal = ({
   const [textValue, setTextValue] = useState('')
   const [error, setError] = useState('')
 
+  console.log(calanderSiteVisitReject)
+  console.log(VideoCallInviteId)
+
   const rmctender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
   const queryClient = useQueryClient()
 
+  // video call rejected
   const rechedualRmcAgain = useMutation({
     mutationFn: ({
-      VideoCallInviteId,
+      RejectedInviteId,
       rmctender_id,
       message
     }: {
-      VideoCallInviteId: number
+      RejectedInviteId: number
       rmctender_id: number
       message: string
-    }) => reSchedualRejectInvite(VideoCallInviteId, rmctender_id, message),
+    }) => reSchedualRejectInvite(RejectedInviteId, rmctender_id, message),
     onSuccess: (data: any) => {
       toast.success(data?.message || 'Invite rejected successfully!')
       queryClient.invalidateQueries({
@@ -145,6 +149,7 @@ const DeleteModal = ({
   })
 
   const handleConfirm = () => {
+    debugger
     const trimmedValue = textValue.trim()
 
     if (!trimmedValue) {
@@ -153,23 +158,24 @@ const DeleteModal = ({
       return
     }
 
-    if (types === 'SiteVisits' || types === 'reject' || types === 'siteVisitRejectCalander') {
-      const invite_Id = SideVisitsSchedualInviteId || calanderSiteVisitReject?.invite_Id
+    const invite_Id = SideVisitsSchedualInviteId || calanderSiteVisitReject?.invite_Id
+    const RejectedInviteId = VideoCallInviteId || calanderSiteVisitReject?.invite_Id
 
+    if (types == 'SiteVisits' || types === 'reject' || types == 'siteVisitRejectCalander') {
       sideVisitRejected.mutate({
         invite_Id,
         rmctender_id,
         message: trimmedValue
       })
-    } else if (types === 'cancel') {
+    } else if (types == 'cancel') {
       sideVisitCancel.mutate({
         SideVisitsSchedualInviteId,
         rmctender_id,
         message: trimmedValue
       })
-    } else if (types === 'fromVideoCalander' || types === 'fromVideoCallRejected') {
+    } else if (types == 'fromVideoCalander' || types == 'fromVideoCallRejected') {
       rechedualRmcAgain.mutate({
-        VideoCallInviteId,
+        RejectedInviteId,
         rmctender_id,
         message: trimmedValue
       })
@@ -180,7 +186,7 @@ const DeleteModal = ({
     <Dialog
       open={open}
       onClose={onClose}
-    PaperProps={{
+      PaperProps={{
         sx: {
           borderRadius: 2,
           minHeight: '300px',

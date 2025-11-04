@@ -58,7 +58,6 @@ export default function OnboardingPmaDirector() {
       setShowConfirmation(true)
     },
     onError: (error: any) => {
-      console.log(error, 'error')
       const errorMessage = error?.response?.data?.message || error?.message
 
       toast.error(errorMessage)
