@@ -69,6 +69,10 @@ const QuoteFormSection = ({ tenderId }: QuoteFormSectionProps) => {
       reset()
       setSubmittedFeeData(null)
       setIsSubmitting(false)
+
+      router.push('/tenders')
+      localStorage.removeItem('submitted_tender_data')
+      localStorage.removeItem('template_response')
     },
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || 'Failed to submit response. Please try again.'
@@ -92,8 +96,6 @@ const QuoteFormSection = ({ tenderId }: QuoteFormSectionProps) => {
     localStorage.setItem('submitted_tender_data', JSON.stringify(feeData))
     setSubmittedFeeData(feeData)
     setBudgetDataFromStorage(feeData)
-
-    toast.success('Fee data saved successfully')
   }
 
   const handleNext = () => {
