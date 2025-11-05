@@ -227,11 +227,6 @@ const OnboardingBlockDetails = () => {
               {existingBlockData?.address} {existingBlockData?.address_line2}, {existingBlockData?.county}
             </Typography>
           </div>
-          <div className='flex justify-end'>
-            <CustomButton onClick={handleBackStep} endIcon={<i className='ri-arrow-right-line'></i>}>
-              Edit
-            </CustomButton>
-          </div>
 
           <form onSubmit={handleSubmit(handleFormSubmit)}>
             <div className='mt-10 grid xs:grid-cols-1 md:grid-cols-3 gap-4'>
@@ -271,15 +266,23 @@ const OnboardingBlockDetails = () => {
               />
             </div>
 
-            <div className='pb-9 mt-16 flex justify-end'>
-              <CustomButton
-                type='submit'
-                isLoading={isSubmitting || mutation.isPending}
-                disabled={isSubmitting || mutation.isPending}
-                endIcon={<i className='ri-arrow-right-line'></i>}
-              >
-                {isSubmitting || mutation.isPending ? 'Submitting...' : 'Next'}
-              </CustomButton>
+            <div className='flex justify-between'>
+              <div className='pb-9 mt-16 flex justify-start'>
+                <CustomButton onClick={handleBackStep} startIcon={<i className='ri-arrow-left-line'></i>}>
+                  Edit Address
+                </CustomButton>
+              </div>
+
+              <div className='pb-9 mt-16 flex justify-end'>
+                <CustomButton
+                  type='submit'
+                  isLoading={isSubmitting || mutation.isPending}
+                  disabled={isSubmitting || mutation.isPending}
+                  endIcon={<i className='ri-arrow-right-line'></i>}
+                >
+                  {isSubmitting || mutation.isPending ? 'Submitting...' : 'Next'}
+                </CustomButton>
+              </div>
             </div>
           </form>
         </div>

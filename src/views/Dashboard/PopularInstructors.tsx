@@ -102,7 +102,6 @@ const TenderCards = () => {
   return (
     <>
       <Grid container spacing={8}>
-
         <Grid item xs={12} sm={6} md={4}>
           <Card elevation={0} sx={{ borderRadius: 1, height: '370px' }} className=' relative'>
             <div className='bg-[#c4edfa] mx-[22px] p-2 rounded-full flex items-center justify-center mt-[24px] size-[44px]'>
@@ -142,7 +141,7 @@ const TenderCards = () => {
                   fontWeight: 300
                 }}
               >
-               View information of your tender
+                View information of your tender
               </Typography>
             )}
 
@@ -181,7 +180,7 @@ const TenderCards = () => {
                     paddingTop: '2px'
                   }}
                 >
-                  Tender Type: {getLeaseholderTypeLabel(stages?.went_live?.details?.tender_type)}
+                  Block Name: {getLeaseholderTypeLabel(stages?.went_live?.details?.tender_type)}
                 </Typography>
                 <Typography
                   sx={{
@@ -246,9 +245,12 @@ const TenderCards = () => {
           </Card>
         </Grid>
 
-
-        <Grid item xs={12} sm={6} md={4} >
-          <Card elevation={0} sx={{ borderRadius: 1, height: '370PX', boxShadow: stages?.result_received?.is_completed ? "" : 'none', }} className=' relative'>
+        <Grid item xs={12} sm={6} md={4}>
+          <Card
+            elevation={0}
+            sx={{ borderRadius: 1, height: '370PX', boxShadow: stages?.result_received?.is_completed ? '' : 'none' }}
+            className=' relative'
+          >
             <div className='bg-[#c4edfa] mx-[22px]  p-2 rounded-full flex items-center justify-center mt-[24px] size-[44px]'>
               <i
                 className={`ri-database-line size-[24px] ${stages?.result_received?.is_completed ? 'text-[#26C6F9]' : 'text-white'} `}
@@ -258,7 +260,11 @@ const TenderCards = () => {
             <Typography
               sx={{
                 fontSize: '30px',
-                color: stages?.result_received?.is_completed  ? 'customColors.darkGray1' : !tenderId ? '#919191E5' : '#919191E5',
+                color: stages?.result_received?.is_completed
+                  ? 'customColors.darkGray1'
+                  : !tenderId
+                    ? '#919191E5'
+                    : '#919191E5',
                 paddingTop: '8px',
                 paddingX: '22px',
                 fontWeight: 500
@@ -403,7 +409,11 @@ const TenderCards = () => {
 
         {/* shortlsited */}
         <Grid item xs={12} sm={6} md={4}>
-          <Card elevation={0} sx={{ borderRadius: 1, height: '370PX', boxShadow: stages?.shortlisted?.is_completed  ? "" : 'none',  }} className=' relative'>
+          <Card
+            elevation={0}
+            sx={{ borderRadius: 1, height: '370PX', boxShadow: stages?.shortlisted?.is_completed ? '' : 'none' }}
+            className=' relative'
+          >
             <div className='bg-[#c4edfa] mx-[22px] p-2 rounded-full flex items-center justify-center mt-[24px] size-[44px]'>
               <i
                 className={`ri-list-check-2 size-[24px] ${stages?.shortlisted?.is_completed ? 'text-[#26C6F9]' : 'text-white'} `}
@@ -412,7 +422,11 @@ const TenderCards = () => {
             <Typography
               sx={{
                 fontSize: '30px',
-                color: stages?.shortlisted?.is_completed ? 'customColors.darkGray1' : tenderId ? '#919191E5' : '#919191E5',
+                color: stages?.shortlisted?.is_completed
+                  ? 'customColors.darkGray1'
+                  : tenderId
+                    ? '#919191E5'
+                    : '#919191E5',
                 paddingTop: '8px',
                 paddingX: '22px',
                 fontWeight: 500
@@ -466,7 +480,7 @@ const TenderCards = () => {
             ) : !shortlistedCurrentStage && sinceLastshortlisted === 0 ? (
               <Typography
                 sx={{
-                  color: stages?.shortlisted?.is_completed ? 'customColors.textGray' : '#919191E5' ,
+                  color: stages?.shortlisted?.is_completed ? 'customColors.textGray' : '#919191E5',
                   fontSize: '13px',
                   fontWeight: 400,
                   paddingX: '22px',
@@ -555,14 +569,18 @@ const TenderCards = () => {
         {/*  Vidoe call*/}
 
         <Grid item xs={12} sm={6} md={4}>
-          <Card elevation={0} sx={{ borderRadius: 1, height: '370PX' ,  boxShadow: stages?.video_call?.is_current  ? "" : 'none',  }} className=' relative'>
+          <Card
+            elevation={0}
+            sx={{ borderRadius: 1, height: '370PX', boxShadow: stages?.video_call?.is_current ? '' : 'none' }}
+            className=' relative'
+          >
             <div className='bg-[#c4edfa] mx-[22px] p-2 rounded-full flex items-center justify-center mt-[24px] size-[44px]'>
               <Image src={stages?.video_call?.is_current ? phone : phonewhite} alt='phone-image' />
             </div>
             <Typography
               sx={{
                 fontSize: '30px',
-                color: stages?.video_call?.is_current  ? 'customColors.darkGray1' :  tenderId ? '#919191E5' : '#919191E5',
+                color: stages?.video_call?.is_current ? 'customColors.darkGray1' : tenderId ? '#919191E5' : '#919191E5',
                 paddingTop: '8px',
                 paddingX: '22px',
                 fontWeight: 500
@@ -673,13 +691,14 @@ const TenderCards = () => {
                     marginTop: '14px'
                   }}
                 >
-                  { stages?.video_call?.details?.completed?.date && <>
-                   Last Completed Call : {formatDates(stages?.video_call?.details?.completed?.date) || ''}{' '}
-                  {stages?.video_call?.details?.completed?.slot && (
-                    <>({stages?.video_call?.details?.completed?.slot})</>
+                  {stages?.video_call?.details?.completed?.date && (
+                    <>
+                      Last Completed Call : {formatDates(stages?.video_call?.details?.completed?.date) || ''}{' '}
+                      {stages?.video_call?.details?.completed?.slot && (
+                        <>({stages?.video_call?.details?.completed?.slot})</>
+                      )}
+                    </>
                   )}
-                  </> }
-                 
                 </Typography>
               </CardContent>
             ) : !CallCurrentStage && Number(sinceLastVideoCall) >= 1 ? (
@@ -722,45 +741,48 @@ const TenderCards = () => {
                   ></i>
                 </Box>
               </CustomTooltip>
-                {!stages?.appointment?.is_completed ?   <CustomTooltip text='Schedule New Video Call' position='left' align='left'>
-                <Box
-                  onClick={!stages?.shortlisted?.is_current ? undefined : () => setOnlineCallsModalOpen(true)}
-                  sx={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '6px',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: 'customColors.cyan3',
-                    marginX: '6px'
-                  }}
+              {!stages?.appointment?.is_completed ? (
+                <CustomTooltip text='Schedule New Video Call' position='left' align='left'>
+                  <Box
+                    onClick={!stages?.shortlisted?.is_current ? undefined : () => setOnlineCallsModalOpen(true)}
+                    sx={{
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '6px',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      backgroundColor: 'customColors.cyan3',
+                      marginX: '6px'
+                    }}
+                  >
+                    <i
+                      className={`ri-group-fill w-[14px] h-[14px] ${stages?.video_call?.is_current ? ' text-[#26C6F9]' : 'text-white'}`}
+                    ></i>
+                  </Box>
+                </CustomTooltip>
+              ) : (
+                <CustomTooltip
+                  text={`You've appointed your agent. No further actions can be taken on this tender`}
+                  position='left'
+                  align='left'
                 >
-                  <i
-                    className={`ri-group-fill w-[14px] h-[14px] ${stages?.video_call?.is_current ? ' text-[#26C6F9]' : 'text-white'}`}
-                  ></i>
-                </Box>
-              </CustomTooltip> :  
-              
-              <CustomTooltip text={`You've appointed your agent. No further actions can be taken on this tender`} position='left' align='left'>
-                <Box
-                  sx={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '6px',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: 'customColors.cyan3',
-                    marginX: '6px'
-                  }}
-                >
-                  <i
-                    className={`ri-group-fill w-[14px] h-[14px] text-white`}
-                  ></i>
-                </Box>
-              </CustomTooltip>  } 
-            
+                  <Box
+                    sx={{
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '6px',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      backgroundColor: 'customColors.cyan3',
+                      marginX: '6px'
+                    }}
+                  >
+                    <i className={`ri-group-fill w-[14px] h-[14px] text-white`}></i>
+                  </Box>
+                </CustomTooltip>
+              )}
             </Box>
           </Card>
         </Grid>
@@ -768,7 +790,11 @@ const TenderCards = () => {
         {/* site visst  */}
 
         <Grid item xs={12} sm={6} md={4}>
-          <Card elevation={0} sx={{ borderRadius: 1, height: '370PX' , boxShadow: stages?.site_visit?.is_current  ? "" : 'none',  }} className=' relative '>
+          <Card
+            elevation={0}
+            sx={{ borderRadius: 1, height: '370PX', boxShadow: stages?.site_visit?.is_current ? '' : 'none' }}
+            className=' relative '
+          >
             <div className='bg-[#c4edfa] mx-[22px] p-2 rounded-full flex items-center justify-center mt-[24px] size-[44px]'>
               <i
                 className={`ri-user-location-line ${stages?.site_visit?.is_current ? 'text-[#26C6F9]' : 'text-white'}   `}
@@ -777,7 +803,7 @@ const TenderCards = () => {
             <Typography
               sx={{
                 fontSize: '30px',
-                color: stages?.site_visit?.is_current  ? 'customColors.darkGray1' : tenderId ? '#919191E5' :  '#919191E5',
+                color: stages?.site_visit?.is_current ? 'customColors.darkGray1' : tenderId ? '#919191E5' : '#919191E5',
                 paddingTop: '8px',
                 paddingX: '22px',
                 fontWeight: 500
@@ -855,7 +881,7 @@ const TenderCards = () => {
             ) : !siteVistCurrentStage && sinceLastSiteVisit === 0 ? (
               <Typography
                 sx={{
-                  color: stages?.site_visit?.is_current ? 'customColors.textGray' :  '#919191E5',
+                  color: stages?.site_visit?.is_current ? 'customColors.textGray' : '#919191E5',
                   fontSize: '13px',
                   fontWeight: 400,
                   marginTop: '14px',
@@ -888,13 +914,14 @@ const TenderCards = () => {
                     paddingX: '1px'
                   }}
                 >
-                  {stages?.site_visit?.details?.completed?.date  && <>
-                    Last Completed Visit : {stages?.site_visit?.details?.completed?.date || ''}{' '}
-                  {stages?.site_visit?.details?.completed?.slot && (
-                    <>({stages?.site_visit?.details?.completed?.slot})</>
+                  {stages?.site_visit?.details?.completed?.date && (
+                    <>
+                      Last Completed Visit : {stages?.site_visit?.details?.completed?.date || ''}{' '}
+                      {stages?.site_visit?.details?.completed?.slot && (
+                        <>({stages?.site_visit?.details?.completed?.slot})</>
+                      )}
+                    </>
                   )}
-                  </> }
-                
                 </Typography>
               </CardContent>
             ) : !siteVistCurrentStage && Number(sinceLastSiteVisit) >= 1 ? (
@@ -937,49 +964,58 @@ const TenderCards = () => {
                 </Box>
               </CustomTooltip>
 
-               {!stages?.appointment?.is_completed ?  <CustomTooltip text='Schedule New Site Visits' position='left' align='left'>
-                <Box
-                  onClick={!stages?.site_visit?.is_current ? undefined : () => setSiteVisitsModalOpen(true)}
-                  sx={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '6px',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: 'customColors.cyan3',
-                    marginX: '6px'
-                  }}
+              {!stages?.appointment?.is_completed ? (
+                <CustomTooltip text='Schedule New Site Visits' position='left' align='left'>
+                  <Box
+                    onClick={!stages?.site_visit?.is_current ? undefined : () => setSiteVisitsModalOpen(true)}
+                    sx={{
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '6px',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      backgroundColor: 'customColors.cyan3',
+                      marginX: '6px'
+                    }}
+                  >
+                    <i
+                      className={`ri-group-fill w-[14px] h-[14px] text-[#26C6F9] ${stages?.site_visit?.is_current ? 'text-[#26C6F9]' : 'text-white'}  `}
+                    ></i>
+                  </Box>
+                </CustomTooltip>
+              ) : (
+                <CustomTooltip
+                  text={`You've appointed your agent. No further actions can be taken on this tender`}
+                  position='left'
+                  align='left'
                 >
-                  <i
-                    className={`ri-group-fill w-[14px] h-[14px] text-[#26C6F9] ${stages?.site_visit?.is_current ? 'text-[#26C6F9]' : 'text-white'}  `}
-                  ></i>
-                </Box>
-              </CustomTooltip> :  <CustomTooltip text={`You've appointed your agent. No further actions can be taken on this tender`} position='left' align='left'>
-                <Box
-                  sx={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '6px',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: 'customColors.cyan3',
-                    marginX: '6px'
-                  }}
-                >
-                  <i
-                    className={`ri-group-fill w-[14px] h-[14px] text-[#26C6F9] 'text-white`}
-                  ></i>
-                </Box>
-              </CustomTooltip> }
-             
+                  <Box
+                    sx={{
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '6px',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      backgroundColor: 'customColors.cyan3',
+                      marginX: '6px'
+                    }}
+                  >
+                    <i className={`ri-group-fill w-[14px] h-[14px] text-[#26C6F9] 'text-white`}></i>
+                  </Box>
+                </CustomTooltip>
+              )}
             </Box>
           </Card>
         </Grid>
 
         <Grid item xs={12} sm={6} md={4}>
-          <Card elevation={0} sx={{ borderRadius: 1, height: '370PX' , boxShadow: stages?.appointment?.is_current ? "" : 'none',  }} className=' relative'>
+          <Card
+            elevation={0}
+            sx={{ borderRadius: 1, height: '370PX', boxShadow: stages?.appointment?.is_current ? '' : 'none' }}
+            className=' relative'
+          >
             <div className='bg-[#c4edfa] mx-[22px] p-2 rounded-full flex items-center justify-center mt-[24px] size-[44px]'>
               <Image src={stages?.appointment?.is_current ? roundStar : star} alt='appointment-image' />
             </div>
@@ -987,7 +1023,11 @@ const TenderCards = () => {
             <Typography
               sx={{
                 fontSize: '30px',
-                color: stages?.appointment?.is_current  ? 'customColors.darkGray1' : tenderId ? '#919191E5' : '#919191E5',
+                color: stages?.appointment?.is_current
+                  ? 'customColors.darkGray1'
+                  : tenderId
+                    ? '#919191E5'
+                    : '#919191E5',
                 paddingTop: '8px',
                 paddingX: '22px',
                 fontWeight: 500
@@ -1042,7 +1082,7 @@ const TenderCards = () => {
               ) : !stages?.appointment?.is_completed ? (
                 <Typography
                   sx={{
-                    color: stages?.appointment?.is_current ? 'customColors.textGray'  : '#919191E5' ,
+                    color: stages?.appointment?.is_current ? 'customColors.textGray' : '#919191E5',
                     fontSize: '13px',
                     fontWeight: 400,
                     lineHeight: '22px'
@@ -1065,7 +1105,6 @@ const TenderCards = () => {
                 </Typography>
               )}
             </CardContent>
-
 
             <Box
               sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px' }}

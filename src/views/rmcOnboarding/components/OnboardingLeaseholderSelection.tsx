@@ -45,7 +45,7 @@ const OnboardingLeaseholderSelection = () => {
                 sx={{ color: 'customColors.gray10', fontSize: '15px', fontWeight: 500, paddingTop: '14px' }}
                 className='text-center'
               >
-                Director
+                I am a Director of an RMC
               </Typography>
             </div>
 
@@ -59,7 +59,7 @@ const OnboardingLeaseholderSelection = () => {
                 </div>
               </div>
               <Typography sx={{ color: 'customColors.gray10', fontSize: '15px', fontWeight: 500, padding: 0 }}>
-                Non Director Of RMC - Resident
+                I am not a Director of an RMC
               </Typography>
             </div>
           </div>

@@ -6,13 +6,10 @@ import { TenderCards } from '@/views/Dashboard/PopularInstructors'
 import WeeklyReport from '@/common/WeeklyReport'
 import HorizontalLinearStepper from '@/common/HorizontalLinearStepper'
 import { withPortalCheck } from '@/components/hoc/withPortalCheck'
+import PmaDashboard from '@/views/PmaDashboard'
 
-const PmaDashboard = () => {
-  return (
-    <div className='flex items-center justify-center '>
-      <h1 className='text-4xl font-bold text-gray-800'>PMA Dashboard Coming Soon</h1>
-    </div>
-  )
+const PmaDashboardWrapper = () => {
+  return <PmaDashboard />
 }
 
 const RmcDashboard = () => {
@@ -39,7 +36,7 @@ const RmcDashboard = () => {
   )
 }
 
-const DashboardContent = withPortalCheck(PmaDashboard, RmcDashboard)
+const DashboardContent = withPortalCheck(PmaDashboardWrapper, RmcDashboard)
 
 export default function Page() {
   return <DashboardContent />

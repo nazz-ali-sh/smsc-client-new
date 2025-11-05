@@ -79,11 +79,13 @@ const ShortListAgent = ({
           borderBottom: '2px solid #efefef'
         }}
       >
-        An Agent is Shortlisted!
+        Your Shortlist Request Has Been Sent
       </DialogTitle>
       <DialogContent>
         <DialogContentText sx={{ marginTop: '15px' }}>
-          Your contact details will be hidden for 3 working days to allow you to initiate video calls.
+          You now have full access to this agent’s details so you can review their company and services. Your contact
+          details will remain hidden for 3 working days, giving you time to initiate video calls, site visits, or
+          in-portal messages before the agent can contact you directly.
         </DialogContentText>
       </DialogContent>
       <section className='px-[20px] text-[#1F4E8D] text-[18px] leading-[33px]'>
@@ -102,12 +104,7 @@ const ShortListAgent = ({
           Close
         </CustomButton>
 
-        <CustomButton
-      
-          variant='contained'
-          onClick={() => mutation.mutate()}
-          disabled={disabledChecks === true}
-        >
+        <CustomButton variant='contained' onClick={() => mutation.mutate()} disabled={disabledChecks === true}>
           {mutation.isPending ? 'Extending...' : 'Extend by 3 days'}
         </CustomButton>
       </DialogActions>

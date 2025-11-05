@@ -156,7 +156,8 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
   const { data: allshortlsitedPmaData } = useQuery<ShortlistedPmaResponse, Error>({
     queryKey: ['shortlisted', tender_id],
     queryFn: () => shortlistedPmas(tender_id),
-    enabled: types === 'fromDashboard' || componentTypes == 'fromCalender'
+    enabled: types === 'fromDashboard' || componentTypes == 'fromCalender',
+    retry : 2
   })
 
   const {

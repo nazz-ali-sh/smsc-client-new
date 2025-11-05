@@ -1,4 +1,17 @@
-import { object, string, pipe, nonEmpty, email, minLength, check, forward, optional, boolean } from 'valibot'
+import {
+  object,
+  string,
+  pipe,
+  nonEmpty,
+  email,
+  minLength,
+  check,
+  forward,
+  maxLength,
+  regex,
+  optional,
+  boolean
+} from 'valibot'
 
 const validateUKPhoneNumber = (value: string): boolean => {
   if (!/^\+?\d+$/.test(value)) {
@@ -383,7 +396,20 @@ export const retenderSchema = object({
 
 export const profileSchema = pipe(
   object({
-    name: pipe(string(), nonEmpty('Name is required'), minLength(2, 'Name must be at least 2 characters')),
+    first_name: pipe(
+      string(),
+      nonEmpty('First Name is required'),
+      minLength(2, 'First Name must be at least 2 characters'),
+      maxLength(20, 'First Name cannot exceed 20 characters'),
+      regex(/^[A-Za-z\s]+$/, 'First Name must contain only letters')
+    ),
+    last_name: pipe(
+      string(),
+      nonEmpty('Last Name is required'),
+      minLength(2, 'Last Name must be at least 2 characters'),
+      maxLength(20, 'Last Name cannot exceed 20 characters'),
+      regex(/^[A-Za-z\s]+$/, 'Last Name must contain only letters')
+    ),
     email: pipe(string(), nonEmpty('Email is required'), email('Please enter a valid email address')),
     mobile_number: pipe(
       string(),
@@ -588,5 +614,48 @@ export const templateFormSchema = object({
     string(),
     nonEmpty('Description is required'),
     minLength(10, 'Description must be at least 10 characters')
+  )
+})
+
+export const editProfileSchema = object({
+  contactName: pipe(string(), nonEmpty('Contact name is required')),
+  email: pipe(string(), nonEmpty('Email is required'), email('Please enter a valid email address')),
+  website: pipe(
+    string(),
+    nonEmpty('Website is required'),
+    check(validateWebsiteURL, 'Please enter a valid website URL')
+  ),
+  mobile: pipe(
+    string(),
+    nonEmpty('Mobile number is required'),
+    check(validateUKPhoneNumber, 'Please enter a valid UK mobile number')
+  ),
+  landline: pipe(
+    string(),
+    nonEmpty('Landline is required'),
+    check(validateUKLandlineNumber, 'Please enter a valid UK landline')
+  ),
+  address: pipe(string(), nonEmpty('Address is required')),
+  minimumManagementFee: pipe(string(), nonEmpty('Minimum management fee is required')),
+  maximumManagementFee: pipe(string(), nonEmpty('Maximum management fee is required')),
+  preferredContact: pipe(string(), nonEmpty('Preferred contact is required')),
+  secondaryContactName: pipe(string(), nonEmpty('Secondary contact name is required')),
+  secondaryPhoneNumber: pipe(
+    string(),
+    nonEmpty('Secondary phone number is required'),
+    check(validateUKPhoneNumber, 'Please enter a valid UK phone number')
+  ),
+  secondaryEmail: pipe(string(), nonEmpty('Secondary email is required'), email('Please enter a valid email address')),
+  secondaryMobileLandline: pipe(
+    string(),
+    nonEmpty('Mobile/Landline is required'),
+    check(validateUKPhoneNumber, 'Please enter a valid UK phone number')
+  ),
+  googleReviews: pipe(string(), nonEmpty('Google reviews is required')),
+  trustpilotReviews: pipe(string(), nonEmpty('Trustpilot reviews is required')),
+  companyBio: pipe(
+    string(),
+    nonEmpty('Company bio is required'),
+    minLength(50, 'Company bio must be at least 50 characters')
   )
 })

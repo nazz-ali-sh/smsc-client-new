@@ -57,6 +57,16 @@ export default function HorizontalLinearStepper() {
 
   const activeStep = stages?.findIndex((stage: any) => stage?.is_current) ?? -1
 
+  const stageDisplayNames: Record<string, string> = {
+    date_registered: 'Date Registered',
+    went_live: 'Went Live',
+    result_received: 'Replies Received',
+    shortlisted: 'Shortlisted',
+    video_call: 'Video Calls',
+    site_visit: 'Site Visits',
+    appointment: 'Appointed'
+  }
+
   return (
     <Box sx={{ width: '100%' }}>
       <Stepper
@@ -109,7 +119,7 @@ export default function HorizontalLinearStepper() {
                       color: '#262B43E5'
                     }}
                   >
-                    {stage?.display_name}
+                    {stageDisplayNames[stage.stage] || stage.display_name}
                   </div>
                   <div
                     style={{

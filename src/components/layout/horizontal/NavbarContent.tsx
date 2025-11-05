@@ -33,6 +33,7 @@ import { routesWithNavbarContent, pmaRoutes, rmcRoutes } from '@/constants'
 import { isPmaPortalAndUser } from '@/utils/portalHelper'
 import { getUserType } from '@/utils/tokenSync'
 import { notifications } from '@/constants/headerOptions'
+import { useMyAccount } from '@/hooks/useMyAccount'
 
 interface Tender {
   id: number
@@ -57,6 +58,10 @@ const NavbarContent = () => {
   const userType = getUserType()
   const isPmaUser = isPmaPortalAndUser(userType)
 
+  const { data: accountData } = useMyAccount()
+
+  const user = accountData?.user?.name
+
   const shouldHideElements = routesWithNavbarContent.some(route => pathname.includes(route))
 
   const isOnboardingRoute =
@@ -64,8 +69,6 @@ const NavbarContent = () => {
     rmcRoutes.some(route => pathname === route || pathname.startsWith(route))
 
   const [rmctenderId, setRmctenderId] = useState<string>('')
-  const [tendersWithInitials, setTendersWithInitials] = useState<any[]>([])
-  const [selectedTenderInitial, setSelectedTenderInitial] = useState<string>('')
 
   const { data: rmcTenderIDData, isLoading } = useQuery<TenderIdResponse, Error>({
     queryKey: ['rmcTenderIds'],
@@ -73,28 +76,14 @@ const NavbarContent = () => {
     retry: 2
   })
 
-
   useEffect(() => {
     if (rmcTenderIDData?.data?.tenders?.length) {
-      const updatedTenders = rmcTenderIDData.data.tenders.map(tender => ({
-        ...tender,
-        initials: tender.name
-          ?.split(/[-\s]/)
-          .map(word => word.charAt(0))
-          .join('')
-          .slice(0, 2)
-          .toUpperCase()
-      }))
-
-      setTendersWithInitials(updatedTenders)
-
-      const firstTender = updatedTenders[0]
+      const firstTender = rmcTenderIDData.data.tenders[0]
 
       dispatch(setRmcTenderName(firstTender?.name))
 
       if (firstTender) {
         setRmctenderId(firstTender.id.toString())
-        setSelectedTenderInitial(firstTender.initials)
         dispatch(setRmcTenderId(firstTender.id))
       }
     }
@@ -104,15 +93,20 @@ const NavbarContent = () => {
     const selectedTenderId = event.target.value as string
 
     setRmctenderId(selectedTenderId)
-
-    const selectedTender = tendersWithInitials.find(t => t.id === Number(selectedTenderId))
-
-    if (selectedTender) {
-      setSelectedTenderInitial(selectedTender.initials)
-    }
-
     dispatch(setRmcTenderId(Number(selectedTenderId)))
   }
+
+  const getUserInitials = (name: string | undefined): string => {
+    if (!name) return ''
+
+    const parts = name.trim().split(/\s+/)
+    const firstName = parts[0] || ''
+    const lastName = parts.length > 1 ? parts[parts.length - 1] : ''
+
+    return (firstName.charAt(0) + lastName.charAt(0)).toUpperCase()
+  }
+
+  const userInitials = getUserInitials(user)
 
   return (
     <div
@@ -219,7 +213,7 @@ const NavbarContent = () => {
         )}
         {!shouldHideElements && <NavSearch />}
         {!shouldHideElements && !isPmaUser && <NotificationsDropdown notifications={notifications} />}
-        <UserDropdown selectedTenderInitial={selectedTenderInitial} />
+        <UserDropdown selectedTenderInitial={userInitials} />
       </div>
     </div>
   )

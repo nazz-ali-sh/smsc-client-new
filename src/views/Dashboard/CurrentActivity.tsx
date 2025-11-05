@@ -11,7 +11,8 @@ import { useSelector } from 'react-redux'
 import { useMutation } from '@tanstack/react-query'
 
 import line from '../../../public/images/customImages/line.svg'
-import demePfd from '../../../public/images/dashboardImages/demePdfImage.png'
+import front from '../../../public/images/dashboardImages/Front.png'
+import front_1 from '../../../public/images/dashboardImages/Front-1.png'
 
 import { downloadBlindTenderPdf } from '@/services/tender_result-apis/tender-result-api'
 import { downloadFinalSeectionPDf } from '@/services/final_result_and_archeive_apis/final_results_apis'
@@ -76,16 +77,11 @@ const CurrentActivity = () => {
     <>
       <div className='bg-white p-4 md:p-8 shadow-xl  rounded-lg '>
         <div className=''>
-          <section className='flex justify-between items-start w-[100%] '>
-            <Typography className='w-[50%] text-[20px] font-semibold' sx={headingStyle}>
-              Current Activity
-            </Typography>
-            <Typography className='w-[50%] pl-[40px] text-[20px] font-semibold' sx={headingStyle}>
-              Download Reports
-            </Typography>
-          </section>
           <div className='flex items-start justify-between pt-3'>
             <div className=' w-[50%]'>
+              <Typography className='w-[50%] text-[20px] font-semibold' sx={headingStyle}>
+                Current Activity
+              </Typography>
               <div className='flex gap-x-[70px] items-center mt-[30px] '>
                 <div className='bg-white rounded-lg shadow-sm border border-gray-200 px-[20px] py-[20px] w-[259px] h-[145px]'>
                   <div className='flex items-center justify-between mb-4'>
@@ -139,53 +135,55 @@ const CurrentActivity = () => {
             </div>
 
             <section className='w-[50%]'>
-              <div className='flex '>
-                <div>
+              <div className='flex items-start gap-8'>
+                <div className='flex items-start pt-8'>
                   <Image src={line} alt='horizontal line' height={260} />
                 </div>
 
-                <div className='w-[100%] relative space-y-8 flex items-end justify-between'>
-                  <section className='relative flex flex-col justify-between items-center w-[100%]'>
-                    <Image src={demePfd} alt='pdf download' />
+                <div className='w-[100%] relative flex items-start justify-between gap-y-8 pl-16'>
+                  <section className='relative flex flex-col justify-between items-start w-[100%]  '>
+                    <p className='text-[20px] font-semibold mb-2'>Blind Report</p>
+                    <Image src={front} alt='pdf download' className='w-[170px] max-h-[230px] shadow-md' />
                     <section className='w-[100%]'>
                       <Typography
                         variant='body1'
-                        align='center'
-                        className={`mt-2 text-[#696969] ${'cursor-pointer hover:underline hover:underline-offset-4'}`}
+                        align='left'
+                        className={`mt-4 text-[#696969] ${'cursor-pointer hover:underline hover:underline-offset-4'}`}
                         onClick={() => {
                           downloadMutation.mutate(tender_id)
                         }}
                       >
-                        {isClickable ? ' Download Blind Tender Report ' : ''}
+                        {isClickable ? ' Download Blind Tender Report' : ''}
                       </Typography>
 
                       <Typography
                         variant='body1'
-                        align='center'
-                        className='mt-2 cursor-pointer text-[#696969] hover:underline hover:underline-offset-4 '
+                        align='left'
+                        className='mt-4 cursor-pointer text-[#696969] hover:underline hover:underline-offset-4 '
                       >
-                        {isClickable ? '' : 'Unlock After Receiving PMA Responses'}
+                        {isClickable ? '' : 'Unlocks After Tender Closes'}
                       </Typography>
                     </section>
                   </section>
 
-                  <section className='relative flex flex-col justify-between items-center w-[100%]'>
-                    <Image src={demePfd} alt='pdf download' />
+                  <section className='relative flex flex-col justify-between items-start w-[100%]'>
+                    <p className='text-[20px] font-semibold mb-2'>Final Report</p>
+                    <Image src={front_1} alt='pdf download' className='w-[170px] max-h-[230px] shadow-md' />
                     <section className='w-[100%]'>
                       <Typography
                         variant='body1'
-                        align='center'
-                        className='mt-2 cursor-pointer text-[#696969] hover:underline hover:underline-offset-4'
+                        align='left'
+                        className='mt-4 cursor-pointer text-[#696969] hover:underline hover:underline-offset-4'
                         onClick={() => downloadFinalSelectionMutation.mutate(tender_id)}
                       >
                         {stages == 'appointment' ? 'Download Full Journey Report' : ''}
                       </Typography>
                       <Typography
                         variant='body1'
-                        align='center'
-                        className='mt-2 cursor-pointer text-[#696969] hover:underline hover:underline-offset-4'
+                        align='left'
+                        className='mt-4 cursor-pointer text-[#696969] hover:underline hover:underline-offset-4 '
                       >
-                        {stages == 'appointment' ? '' : ' Unlock After Successful Selection of Agent'}
+                        {stages == 'appointment' ? '' : ' Unlocks After Appointing Your New Managing Agent'}
                       </Typography>
                     </section>
                   </section>

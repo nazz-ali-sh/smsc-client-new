@@ -12,7 +12,6 @@ export const useShortlistedPmas = () => {
   const queryClient = useQueryClient()
   const rmcTenderId = useSelector((state: RootState) => state?.rmcOnboarding?.tenderId)
 
-  console.log(rmcTenderId, 'rmcTenderId')
 
   const query = useQuery<ShortlistedPmas, Error>({
     queryKey: ['shortlist', rmcTenderId],

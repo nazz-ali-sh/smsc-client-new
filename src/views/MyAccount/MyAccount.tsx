@@ -28,11 +28,13 @@ const MyAccount: React.FC = () => {
   const { data: accountData, invalidateCache } = useMyAccount()
   const user = accountData?.user
   const notificationPreferences = accountData?.notification_preferences
+  console.log(dragActive)
 
   const { control, handleSubmit, setValue, watch, reset } = useForm<ProfileFormData>({
     resolver: valibotResolver(profileSchema),
     defaultValues: {
-      name: user?.name || '',
+      first_name: user?.name?.split(' ')[0] || '',
+      last_name: user?.name?.split(' ').slice(1).join(' ') || '',
       email: user?.email || '',
       mobile_number: user?.mobile_number || '',
       notify_email: notificationPreferences?.notify_email ?? true,
@@ -44,7 +46,8 @@ const MyAccount: React.FC = () => {
   useEffect(() => {
     if (user && notificationPreferences) {
       reset({
-        name: user.name || '',
+        first_name: user?.name?.split(' ')[0] || '',
+        last_name: user?.name?.split(' ')?.slice(1)?.join(' ') || '',
         email: user.email || '',
         mobile_number: user.mobile_number || '',
         notify_email: notificationPreferences.notify_email ?? true,
@@ -89,6 +92,7 @@ const MyAccount: React.FC = () => {
     onSuccess: response => {
       toast.success(response.message || 'Profile updated successfully!')
       invalidateCache()
+      router.push('/account')
     },
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || error?.message || 'Failed to update profile'
@@ -99,8 +103,10 @@ const MyAccount: React.FC = () => {
 
   const onSubmit = async (data: ProfileFormData) => {
     try {
+      const fullName = `${data.first_name} ${data.last_name}`.trim()
+
       const payload: MyAccountPayload = {
-        name: data.name,
+        name: fullName,
         email: data.email,
         mobile_number: data.mobile_number,
         logo: selectedFile || undefined,
@@ -148,9 +154,9 @@ const MyAccount: React.FC = () => {
   }
 
   const preferencesList = [
-    { label: 'Get notification through Email', field: 'notify_email', value: notifyEmail },
-    { label: 'Get notification through Message', field: 'notify_message', value: notifyMessage },
-    { label: 'Get notification in Portal', field: 'notify_portal', value: notifyPortal }
+    { label: 'Receive Notifications by Email', field: 'notify_email', value: notifyEmail },
+    { label: 'Receive Notifications by SMS', field: 'notify_message', value: notifyMessage },
+    { label: 'Receive Notifications in the SMSC Portal', field: 'notify_portal', value: notifyPortal }
   ]
 
   return (
@@ -158,13 +164,16 @@ const MyAccount: React.FC = () => {
       <div className='w-full rounded-xl shadow-md p-8 '>
         <div className='mb-8'>
           <h1 className='text-2xl font-semibold text-gray-800 mb-2'>Edit Profile</h1>
-          <p className='text-sm text-gray-500'>Sub Text</p>
+          <p className='text-sm text-gray-500'>
+            Update your personal details and choose how you’d like to receive notifications from Save My Service Charge.
+          </p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className='mb-8'>
             <div className='grid grid-cols-1 sm:grid-cols-2 gap-6'>
-              <FormInput name='name' control={control} label='Full Name' placeholder='Full Name' />
+              <FormInput name='first_name' control={control} label='First Name' placeholder='First Name' />
+              <FormInput name='last_name' control={control} label='Last Name' placeholder='Last Name' />
               <FormInput name='email' control={control} label='Email' placeholder='Email' type='email' />
               <FormInput name='mobile_number' control={control} label='Mobile Number' placeholder='Mobile Number' />
             </div>
@@ -196,14 +205,17 @@ const MyAccount: React.FC = () => {
           </div>
 
           <div className='mb-8'>
+            <h2 className='text-lg font-semibold text-gray-800 mb-4'>Upload Profile Picture</h2>
+            <p className='text-sm text-gray-500 mb-2'>
+              Upload your profile picture here which will be shown on your profile.
+            </p>
             <div
               onDragEnter={handleDrag}
               onDragLeave={handleDrag}
               onDragOver={handleDrag}
               onDrop={handleDrop}
               onClick={() => document.getElementById('file-upload')?.click()}
-              className={`border-2 border-dashed rounded-lg p-10 text-center cursor-pointer transition-colors ${
-                dragActive ? 'bg-[#A8E8FD66]' : 'bg-[#F8FAFC]'
+              className={`border-2 border-dashed rounded-lg p-10 text-center cursor-pointer transition-colors bg-[#A8E8FD66]
               }`}
             >
               <div className='flex flex-col items-center gap-3'>
@@ -226,6 +238,7 @@ const MyAccount: React.FC = () => {
                 className='hidden'
               />
             </div>
+            <p className='text-red-500 text-xs mt-2 italic'>Logo Format : JPG,PNG Suggested Size: 600x600px</p>
             {fileError && <p className='text-red-500 text-xs mt-2'>{fileError}</p>}
           </div>
 

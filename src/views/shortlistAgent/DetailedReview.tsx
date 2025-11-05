@@ -136,7 +136,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                         onClick={() => handkeAppointAgnet(company?.pma_user?.id, company?.company_details?.name)}
                       >
                         <Image src={whiteperson} alt='person' className='mr-[10px]' />
-                        Appoint the agent
+                        Appoint This Agent
                       </CustomButton>
                     </div>
                   </div>
@@ -288,7 +288,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                         align='center'
                         className='mt-2 cursor-pointer text-[#26C6F9] hover:underline hover:underline-offset-4 flex items-center'
                       >
-                        Download
+                        Download Brochure
                       </Typography>
                     </section>
                   </section>
@@ -297,7 +297,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
 
               <section className='flex flex-col space-y-4'>
                 {appointmnetStatus === 'appointment' ? (
-                  <Image src={videoCalls} alt='videocalls'/>
+                  <Image src={videoCalls} alt='videocalls' />
                 ) : (
                   <CustomTooltip text='Invite to Video Call' position='left' align='center'>
                     <Image
@@ -310,7 +310,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                 )}
 
                 {appointmnetStatus === 'appointment' ? (
-                  <Image src={visitLocation} alt='location'/>
+                  <Image src={visitLocation} alt='location' />
                 ) : (
                   <CustomTooltip text='Invite to Site Visit' position='left' align='center'>
                     <Image

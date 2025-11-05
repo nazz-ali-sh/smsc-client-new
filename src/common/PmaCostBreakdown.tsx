@@ -61,7 +61,7 @@ const PmaCostBreakdown = ({
       <Box sx={{ mb: 4 }}>
         <Box className='flex items-center justify-between '>
           <Typography sx={{ fontWeight: 700, fontSize: '24px', color: 'customColors.darkGray1' }}>
-            PMA Cost Breakdown
+           Fixed Cost Quote from Managing Agent
           </Typography>
 
           <FormControl className='w-[320px]'>

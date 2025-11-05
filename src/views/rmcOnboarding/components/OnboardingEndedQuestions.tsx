@@ -143,11 +143,17 @@ const OnboardingEndedQuestions = () => {
     <>
       <div className='flex flex-col items-center pt-10 pb-32'>
         <h1 className='text-[48px] font-bold text-[#262B43E5] '>RMC Onboarding</h1>
-        <div className='bg-white p-8 pt-10 w-full  mt-8 '>
-          <Typography variant='h6' sx={{ fontSize: '24px', fontWeight: 500, color: '#333' }} className='mb-10'>
-            Open- Ended Questions
+        <div className='bg-white p-8 pt-10 w-full mt-8'>
+          <Typography variant='h6' sx={{ fontSize: '24px', fontWeight: 500, color: '#333' }} className='mb-5'>
+            Help Managing Agents Understand Your Needs
           </Typography>
-
+          <Typography className='text-sm text-gray-500 mb-10'>
+            These questions are designed to help agents understand how your block could be better managed. Keep your
+            answers constructive, it’s more helpful to explain what you’d like done differently than to criticise your
+            current agent. Blocks that give clear, thoughtful responses are far more likely to attract interest from
+            managing agents. When agents see that you care about how your block is run, they’re more likely to
+            prioritise your tender and provide detailed replies.
+          </Typography>
           {questions &&
             questions?.map(question => {
               const questionId = question?.id?.toString()

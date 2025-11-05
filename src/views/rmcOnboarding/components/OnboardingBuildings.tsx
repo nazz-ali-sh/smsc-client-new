@@ -102,7 +102,7 @@ const OnboardingBuildings = () => {
                 </div>
                 <Typography
                   variant='body1'
-                  sx={{ color: 'customColors.gray10', fontSize: '16px', fontWeight: 500 }}
+                  sx={{ color: 'customColors.gray10', fontSize: '16px', fontWeight: 500, whiteSpace: 'pre-line' }}
                   className='text-center leading-snug min-h-[40px] flex items-end'
                 >
                   {title}

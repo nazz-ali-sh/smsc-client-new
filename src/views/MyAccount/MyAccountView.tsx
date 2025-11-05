@@ -21,15 +21,15 @@ const MyAccountView: React.FC = () => {
 
   const notificationOptions = [
     {
-      label: 'Get notification through Email',
+      label: 'Receive Notifications by Email',
       key: 'notify_email' as const
     },
     {
-      label: 'Get notification through Message',
+      label: 'Receive Notifications by SMS',
       key: 'notify_message' as const
     },
     {
-      label: 'Get notification in Portal',
+      label: 'Receive Notifications in the SMSC Portal',
       key: 'notify_portal' as const
     }
   ]

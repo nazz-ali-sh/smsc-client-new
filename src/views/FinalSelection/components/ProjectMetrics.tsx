@@ -111,7 +111,7 @@ const ProjectMetrics: React.FC<FinalSelectionResponse> = ({ finalSelection }) =>
       <CardContent sx={{ flexGrow: 1, pt: 0 }}>
         <Box sx={{ mb: 4 }}>
           <Typography sx={{ fontWeight: 700, fontSize: '24px', color: 'customColors.darkGray1' }}>
-            PMA Cost Breakdown
+            Fixed Cost Quote from Managing Agent
           </Typography>
           <section className='flex flex-wrap pt-[28px]'>
             {finalSelection?.data?.management_fees?.map((feeItem: any, feeIndex: any) => (

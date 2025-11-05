@@ -8,18 +8,15 @@ import { Box } from '@mui/material'
 import CustomAvatar from '@core/components/mui/Avatar'
 
 import tendersend from '../../public/images/dashboardImages/tenderSend.svg'
-import tenderResponce from '../../public/images/dashboardImages/tenderResponce.svg'
+import tenderResponce from '../../public/images/dashboardImages/thumbsUp.svg'
 import tenderExpire from '../../public/images/dashboardImages/tenderExpire.svg'
-import { usePmaStats } from '@/hooks/usePmaStats'
 
 interface TenderStatsProps {
   text?: string
+  statsData?: any
 }
 
-const TenderStats = ({ text }: TenderStatsProps) => {
-  const { pmaStatsData } = usePmaStats()
-  const statsData = pmaStatsData?.data
-
+const TenderStats = ({ text, statsData }: TenderStatsProps) => {
   return (
     <div className='w-full shadow-lg px-[25px] py-[32px] rounded-xl bg-white'>
       <div className='flex items-center gap-1 mbe-2'>

@@ -80,6 +80,7 @@ const LoginPage = () => {
 
   const commonStyles = { background: 'white', borderRadius: '6px' }
   const signupText = isPmaPortal() ? 'New PMA User? Start here' : 'New RMC Director? Start here'
+  console.log(signupText)
 
   return (
     <AuthLayout>
@@ -134,7 +135,7 @@ const LoginPage = () => {
           </Button>
         </div>
         <p onClick={handleOnboarding} className='font-medium mt-4 text-[#0B2952] text-center cursor-pointer'>
-          {signupText}
+          Don’t have an account? Sign up here.
         </p>
       </form>
     </AuthLayout>

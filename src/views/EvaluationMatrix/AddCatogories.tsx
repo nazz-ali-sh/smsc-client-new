@@ -4,6 +4,8 @@ import React, { useState } from 'react'
 
 import Image from 'next/image'
 
+import { useRouter } from 'next/navigation'
+
 import { Typography, Box } from '@mui/material'
 
 import AddAndEditCatagoryModal from '@/common/AddAndEditCatagoryModal'
@@ -29,6 +31,7 @@ interface CategoryData {
 }
 
 const AddCategories: React.FC<CategoriesProps> = ({ metrixCategories, handleBackbutton }) => {
+  const router = useRouter()
   const [isCategory, setIsCategory] = useState(false)
   const [isCategoryDelete, setIsCategoryDelete] = useState(false)
   const [type, setType] = useState('')
@@ -70,15 +73,19 @@ const AddCategories: React.FC<CategoriesProps> = ({ metrixCategories, handleBack
   return (
     <>
       <div>
-        <Box sx={{ marginTop: 18 }}>
+        <CustomButton className='mt-2' onClick={() => router.push('/shortlist-agent')}>
+          Back to Shortlist Agents
+        </CustomButton>
+        <Box sx={{ marginTop: 10 }}>
           <div className='flex items-center justify-between'>
             <Typography sx={{ color: '#262B43E5', fontWeight: 600, fontSize: '18px' }}>Evaluation Matrix</Typography>
           </div>
           <Typography sx={{ marginTop: '16px', color: '#262B43E5', fontWeight: 400, fontSize: '16px' }}>
-            Use this matrix to score each shortlisted managing agent on a scale of 1 to 10 during your video calls and
-            site visits. You can print a copy to take handwritten notes, then return to your portal to enter final
-            scores. Your saved weightings will be applied automatically, and the results will be shown in your Final
-            Report. Note: once saved, your matrix cannot be changed
+            Use this matrix to score each shortlisted managing agent from 1 (poor) to 10 (excellent) based on your video
+            calls or site visits. Each criterion has a weighting (from 0.5 to 1.5) that automatically adjusts the
+            importance of your scores — higher weightings increase the overall impact of that criterion. You can print a
+            blank copy to gather feedback from other residents, then enter your final agreed scores here. Once saved,
+            your results are locked and will appear in your Final Report.
           </Typography>
 
           <Typography
@@ -99,8 +106,21 @@ const AddCategories: React.FC<CategoriesProps> = ({ metrixCategories, handleBack
           </Typography>
         </Box>
         <div className='flex flex-col items-center mt-5'>
-          <div className='bg-white p-8 pt-10 w-full max-w-8xl mt-6'>
+          <div className='bg-white p-8 pt-10 w-full max-w-8xl mb-6'>
             <Box sx={{ overflowX: 'auto' }}>
+              <div className='flex justify-end items-end gap-x-[20px]'>
+                <div className='flex justify-end mb-8'>
+                  <CustomButton onClick={handleBackbutton} variant='outlined'>
+                    Back
+                  </CustomButton>
+                </div>
+
+                <div className='flex justify-end mb-8'>
+                  <CustomButton onClick={() => handleEdit('add')} variant='contained'>
+                    Add Category
+                  </CustomButton>
+                </div>
+              </div>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
                   <tr>

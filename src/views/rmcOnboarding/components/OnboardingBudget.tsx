@@ -23,11 +23,13 @@ import {
   type RmcOnboardingBudgetPayload
 } from '@/services/rmc-onboarding-apis/rmc-onboarding-api'
 import { budgetFields, budgetText } from '@/constants'
+import CommonModal from '@/common/CommonModal'
 
 const OnboardingBudget = () => {
   const router = useRouter()
   const [showModal, setShowModal] = useState(false)
   const [showSkipModal, setShowSkipModal] = useState(false)
+  const [shareYourBlockModalOpen, setShareYourBlockModalOpen] = useState(false)
   const [budgetData, setBudgetData] = useState<BudgetFormData | null>(null)
 
   const rmcData = useSelector((state: any) => state?.rmcOnboarding?.rmcData)
@@ -180,12 +182,19 @@ const OnboardingBudget = () => {
         <Typography
           variant='h6'
           sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1' }}
-          className='mb-6'
+          className='mb-6 flex'
         >
-          Add Your Service Charge Budget (Optional)
+          Share Your Block’s Fixed Costs (Optional)
+          <i
+            className='ri-information-line cursor-pointer text-black transition-colors m-1'
+            onClick={() => setShareYourBlockModalOpen(true)}
+          ></i>
         </Typography>
 
-        <Typography sx={{ fontSize: '18px', fontWeight: 400, color: 'customColors.textGray' }} className='mb-6'>
+        <Typography
+          sx={{ fontSize: '18px', fontWeight: 400, color: 'customColors.textGray', whiteSpace: 'pre-line' }}
+          className='mb-6'
+        >
           {budgetText}
         </Typography>
         <form onSubmit={handleSubmit(handleFormSubmit)}>
@@ -258,6 +267,33 @@ const OnboardingBudget = () => {
         onBackToEdit={handleSkipBackToEdit}
         isLoading={mutation.isPending}
       />
+
+      <CommonModal
+        isOpen={shareYourBlockModalOpen}
+        handleClose={() => setShareYourBlockModalOpen(false)}
+        header='Why We Only Compare Fixed Costs'
+        maxWidth='md'
+      >
+        <div className='space-y-4'>
+          <Typography variant='body2' className='text-[#696969] text-xs mt-3 leading-[22px]'>
+            Save My Service Charge compares fixed cost elements of your service charge budget — the standard fees every
+            block pays, such as management, accounting, and company secretarial fees.
+          </Typography>
+
+          <div>
+            <Typography variant='body2' className='text-[#696969] mb-3 leading-[22px]'>
+              These are the most reliable figures for comparing value between managing agents. Variable costs (for
+              example, cleaning, gardening, and energy) usually transfer across to your new managing agent and can be
+              reviewed or re-tendered later if you wish to reduce them.
+            </Typography>
+          </div>
+          <div className='mt-6'>
+            <Typography variant='body2' className='text-[#696969] leading-[22px] text-xs '>
+              By sharing your fixed costs now, you’ll enable a clearer and fairer comparison during the tender process.
+            </Typography>
+          </div>
+        </div>
+      </CommonModal>
     </div>
   )
 }

@@ -73,6 +73,7 @@ const KitchenSink = () => {
   const [shortlistedResponce, setshortlistedResponce] = useState('')
   const [bestPracticesModalOpen, setBestPracticesModalOpen] = useState(false)
   const [tenderResponsesModalOpen, setTenderResponsesModalOpen] = useState(false)
+  const [shortlistWarningModal, setShortlistWarningModal] = useState(false)
   const [isViewingResponse, setIsViewingResponse] = useState(false)
 
   const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
@@ -80,12 +81,21 @@ const KitchenSink = () => {
   const { invalidateCache } = useDashboardData()
 
   const [selectedResponse, setSelectedResponse] = useState<ApiResponseItem | null>(null)
+  const [quoteModelOpen, setQuoteModalOpen] = useState(false)
 
   const { data: responceData, isLoading: isTableLoading } = useQuery<TenderResponse, Error>({
     queryKey: ['tendeResponce', tender_id],
     queryFn: () => tenderResponce(Number(tender_id)),
     enabled: !!tender_id
   })
+
+  const tenderStatus = responceData?.data?.tender_status
+
+  useEffect(() => {
+    if (tenderStatus === 'active') {
+      setShortlistWarningModal(true)
+    }
+  }, [tenderStatus])
 
   const shortlistMutation = useMutation({
     mutationFn: ({ tender_id, pma_user_ids }: { tender_id: number; pma_user_ids: number[] }) =>
@@ -102,6 +112,8 @@ const KitchenSink = () => {
       console.error('Error shortlisting agents:', error)
     }
   })
+
+
 
   const fianlExpireDate = calculateTimeLeft(shortlistedResponce)
 
@@ -144,16 +156,16 @@ const KitchenSink = () => {
         fullName: item?.company_name,
         submittedDate: item?.response_details?.submitted_at
           ? new Date(item?.response_details?.submitted_at)?.toLocaleDateString('en-GB')
-          : 'N/A',
+          : '0',
         quotation: item?.quotation?.total_management_fees?.toLocaleString('en-US', {
           style: 'currency',
           currency: 'GBP'
         }),
-        location: item?.location?.address || 'N/A',
-        NoOfUnits: item?.company_metrics?.total_units_managed ?? item?.quotation?.per_unit_equivalent_inc_vat ?? 'N/A',
+        location: item?.location?.county || '0',
+        NoOfUnits: item?.company_metrics?.total_units_managed ?? item?.quotation?.per_unit_equivalent_inc_vat ?? '0',
         googleReview: item?.reviews?.google?.rating || 0,
-        tradingYears: item?.company_metrics?.trading_years ?? 'N/A',
-        Questionaire: 'View agent Response & Quote'
+        tradingYears: item?.company_metrics?.trading_years ?? '0',
+        Questionaire: 'View Agents Response & Quote'
       }))
 
       setTableData(mappedData)
@@ -172,12 +184,8 @@ const KitchenSink = () => {
               onChange={table.getToggleAllRowsSelectedHandler()}
               sx={{
                 color: '#26C6F9',
-                '&.Mui-checked': {
-                  color: '#26C6F9'
-                },
-                '&.MuiCheckbox-indeterminate': {
-                  color: '#26C6F9'
-                }
+                '&.Mui-checked': { color: '#26C6F9' },
+                '&.MuiCheckbox-indeterminate': { color: '#26C6F9' }
               }}
             />
           </div>
@@ -188,15 +196,23 @@ const KitchenSink = () => {
               checked={row.getIsSelected()}
               disabled={!row.getCanSelect()}
               indeterminate={row.getIsSomeSelected()}
-              onChange={row.getToggleSelectedHandler()}
+              onChange={e => {
+                if (tenderStatus === 'active') {
+                  e.preventDefault()
+
+                  setShortlistWarningModal(true)
+
+                  return
+                }
+
+                const isChecked = e.target.checked
+
+                row.toggleSelected(isChecked)
+              }}
               sx={{
                 color: '#26C6F9',
-                '&.Mui-checked': {
-                  color: '#26C6F9'
-                },
-                '&.MuiCheckbox-indeterminate': {
-                  color: '#26C6F9'
-                }
+                '&.Mui-checked': { color: '#26C6F9' },
+                '&.MuiCheckbox-indeterminate': { color: '#26C6F9' }
               }}
             />
           </div>
@@ -240,7 +256,15 @@ const KitchenSink = () => {
       }),
       columnHelper.accessor('quotation', {
         cell: info => info.getValue() || 'N/A',
-        header: 'Quotation',
+        header: () => (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+            Quote
+            <i
+              className='ri-information-line cursor-pointer text-[18px] text-black transition-colors'
+              onClick={() => setQuoteModalOpen(true)}
+            ></i>
+          </div>
+        ),
         size: 100,
         enableSorting: false,
         enableColumnFilter: false
@@ -254,29 +278,29 @@ const KitchenSink = () => {
       }),
       columnHelper.accessor('NoOfUnits', {
         cell: info => info.getValue() || 'N/A',
-        header: 'No. of Units',
+        header: 'Total Units Managed',
         size: 80,
         enableSorting: false,
         enableColumnFilter: false
       }),
-     
+
       columnHelper.accessor('tradingYears', {
         cell: info => info.getValue() || 'N/A',
-        header: 'Trading Years',
+        header: 'Years Trading',
         size: 100,
         enableSorting: false,
         enableColumnFilter: false
       }),
       columnHelper.accessor('Questionaire', {
         cell: ({ row }) => (
-          <div className='min-w-[180px] max-w-[190px]'>
+          <div className='w-full h-full max-w-[190px] flex justify-center items-center'>
             <CustomButton
               variant='contained'
               disabled={isTableLoading || !responceData?.data?.responses}
               onClick={() => {
                 if (!responceData?.data?.responses?.length) return
 
-                setIsViewingResponse(true) // Disable confirm button
+                setIsViewingResponse(true)
                 setDrawerOpen(true)
                 setSelectedAgentId([row.original.pma_id])
                 SetAllSelectedPma([row.original.pma_id])
@@ -292,7 +316,7 @@ const KitchenSink = () => {
             </CustomButton>
           </div>
         ),
-        header: 'Questionnaire',
+        header: '',
         enableSorting: false,
         enableColumnFilter: false,
         size: 150
@@ -377,12 +401,13 @@ const KitchenSink = () => {
               onClick={() => setBestPracticesModalOpen(true)}
             ></i>
           </div>
-          <section className='flex justify-between items-center px-[20px] pb-[42px]'>
-            <section className=' flex items-center space-x-4'>
-              <div className='size-[150px]'>
+          <section className='flex justify-between items-start px-[20px] pb-[42px]'>
+            <section className='flex items-start space-x-4'>
+              <div className='mt-[8px] size-[150px]'>
                 <Image src={pdfFrame} alt='image' />
               </div>
-              <div className='w-[500px]'>
+
+              <div className='w-[800px] mt-[15px]'>
                 <Typography variant='h3' className='flex items-center font-bold gap-2'>
                   Tender Responses
                   <i
@@ -390,29 +415,49 @@ const KitchenSink = () => {
                     onClick={() => setTenderResponsesModalOpen(true)}
                   ></i>
                 </Typography>
-                <Typography sx={{ color: '#262B43E5' }}>
-                  When you're ready to shortlist agents, simply select the ones you’d like to shortlist and click
-                  ‘Confirm Selected Agents’ at the bottom of the page. You can return to this page and shortlist
-                  additional agents at any time
+
+                <Typography sx={{ color: '#262B43E5', textAlign: 'justify', mb: 1.5 }}>
+                  When you’re ready, select the agents you’d like to shortlist and click ‘Confirm Selected Agents’ at
+                  the bottom of the page. You can return and shortlist additional agents at any time.
+                </Typography>
+
+                <Typography sx={{ color: '#262B43E5', textAlign: 'justify', mb: 1.5 }}>
+                  Once shortlisted, you’ll gain access to each managing agent’s full details, including their name and
+                  contact information.
+                </Typography>
+
+                <Typography sx={{ color: '#262B43E5', textAlign: 'justify', mb: 1.5 }}>
+                  Save My Service Charge’s blind tender process is designed for RMC directors. It lets you assess agent
+                  responses objectively, without marketing influence, demonstrating due diligence and transparency in
+                  your role.
+                </Typography>
+
+                <Typography sx={{ color: '#262B43E5', textAlign: 'justify', mb: 1.5 }}>
+                  This process proves you’ve compared agents fairly, made an informed decision, and represented your
+                  residents honestly and thoroughly. Once the tender is complete, you can download a full report
+                  detailing your tender journey - which can also be shared with other residents as clear evidence of the
+                  process and decision made.
                 </Typography>
               </div>
             </section>
-            <section className='flex flex-col py-[12px]'>
+
+            <section className='flex flex-col py-[12px] mt-[15px]'>
               <div className='pb-[12px]'>
                 <CustomButton
                   sx={{ width: '100%' }}
                   onClick={() => downloadMutation.mutate({ id: tender_id, open: true })}
                 >
-                  View Results Online
+                  View Tender Report Online
                 </CustomButton>
               </div>
               <div>
-                <CustomButton onClick={() => downloadMutation.mutate({ id: tender_id })}>
-                  Download Tender Response
+                <CustomButton sx={{ width: '100%' }} onClick={() => downloadMutation.mutate({ id: tender_id })}>
+                  Download Tender Report
                 </CustomButton>
               </div>
             </section>
           </section>
+
           <div className='overflow-x-auto pt-[50px]'>
             <table className={styles.table} style={{ width: '100%' }}>
               <thead>
@@ -493,7 +538,7 @@ const KitchenSink = () => {
             open={drawerOpen}
             onClose={() => {
               setDrawerOpen(false)
-              setIsViewingResponse(false) 
+              setIsViewingResponse(false)
             }}
             drawerData={responceData?.data}
             successModalOpen={successModalOpen}
@@ -518,7 +563,9 @@ const KitchenSink = () => {
             <CustomButton
               variant='contained'
               onClick={openModal}
-              disabled={isViewingResponse || table?.getSelectedRowModel().rows?.length === 0}
+              disabled={
+                isViewingResponse || table?.getSelectedRowModel().rows?.length === 0 || tenderStatus !== 'active'
+              }
             >
               Confirm Selection
             </CustomButton>
@@ -527,8 +574,10 @@ const KitchenSink = () => {
           <SuccessModal
             open={successModalOpen}
             onClose={() => setSuccessModalOpen(false)}
-            message='Please confirm that you agree to share your contact information with the selected managing agent. They will receive your details and you will receive full information for direct communication'
-            title='Confirm your selection'
+            message='By confirming, you agree to share your contact details with the managing agents you’ve shortlisted.
+            You’ll receive their details straight away so you can review them, but your own contact information won’t be shared for 3 days, unless you reach out first. This gives you time to compare agents without receiving immediate sales calls.
+            You can return at any time to shortlist more agents if you wish.'
+            title='Confirm Your Selection'
             confirmButtonText='Confirm Selection'
             onClick={handleConfirmSelected}
             onConfirm={() => {
@@ -544,6 +593,28 @@ const KitchenSink = () => {
             fianlExpireDate={fianlExpireDate}
             navigateOnClose={true}
           />
+
+          <CommonModal
+            isOpen={shortlistWarningModal}
+            handleClose={() => setShortlistWarningModal(false)}
+            header='You Can’t Shortlist Just Yet'
+            headerSx={{ color: '#1F4E8D', fontSize: '26px', fontWeight: 600 }}
+            isBorder
+            maxWidth='sm'
+          >
+            <div className='space-y-4'>
+              <Typography className='text-[#696969] text-sm mt-6'>
+                Your tender is still open, so shortlisting isn’t available at the moment.
+              </Typography>
+              <div>
+                <Typography className='text-[#696969] mb-3 text-sm'>
+                  You can view and compare managing agent responses now, but shortlisting will only be possible once the
+                  tender has closed. When it opens, you’ll gain access to each agent’s name and contact details, and
+                  you’ll be able to message them directly through the platform.
+                </Typography>
+              </div>
+            </div>
+          </CommonModal>
 
           <CommonModal
             isOpen={bestPracticesModalOpen}
@@ -648,6 +719,46 @@ const KitchenSink = () => {
                   We recommend selecting at least two agents for your shortlist. After reviewing the report and making
                   your selection, you'll receive the agents' contact details, and they'll receive your details to begin
                   the vetting process. You can add more managing agents to your shortlist at any time.
+                </Typography>
+              </div>
+            </div>
+          </CommonModal>
+
+          <CommonModal
+            isOpen={quoteModelOpen}
+            handleClose={() => setQuoteModalOpen(false)}
+            header='Be Sure to Compare Quotes Carefully'
+            maxWidth='md'
+          >
+            <div className='space-y-4'>
+              <Typography variant='body1' className='text-[#696969] text-xs mt-3 leading-[22px]'>
+                Save My Service Charge only compares quotes for the fixed costs in your service charge budget.
+              </Typography>
+
+              <div>
+                <Typography variant='body2' className='text-[#696969] mb-3 leading-[22px]'>
+                  <span style={{ fontWeight: 600 }}>Variable contracts</span> - such as cleaning, gardening, energy, or
+                  general repair funds - can be transferred to your new managing agent and will usually remain the same
+                  unless you ask the new agent to:
+                </Typography>
+
+                <Typography variant='body2' className='text-[#696969] mb-3 leading-[22px]'>
+                  re-tender those contracts, or a summary showing each agent's location, company size, and proposed
+                  overall management fee for a high-level comparison.
+                </Typography>
+
+                <Typography variant='body2' className='text-[#696969] mb-3 leading-[22px]'>
+                  review your existing contractor service level agreements (for example, the number of visits, time
+                  spent on site, or scope of work) to help reduce costs.
+                </Typography>
+              </div>
+
+              <div className='mt-6'>
+                <Typography variant='body1' className='text-[#696969] leading-[22px] text-xs'>
+                  <span style={{ fontWeight: 600 }}>The fixed costs</span> we compare are standard across all service
+                  charge budgets and offer the clearest way to assess value when selecting your new managing agent. For
+                  more guidance, please read the FAQ in your portal or download our factsheet on comparing managing
+                  agent quotes at savemyservicecharge.co.uk.
                 </Typography>
               </div>
             </div>

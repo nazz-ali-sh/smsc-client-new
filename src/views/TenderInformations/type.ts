@@ -187,6 +187,7 @@ export type Quotation = {
 }
 
 export type Location = {
+  county: string
   address: string
   postcode: string | null
   coordinates: {

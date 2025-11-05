@@ -7,16 +7,19 @@ import { useTheme } from '@mui/material/styles'
 
 import TenderStats from '@/common/TenderStats'
 import PrimaryUserCard from '@/views/PmaCalendar/components/PrimaryUserCard'
-import PmaTenderTable from './components/PmaTenderTable'
-import { usePmaStats } from '@/hooks/usePmaStats'
+import TenderStatusCards from './components/TenderStatusCards'
+import CongratulationsSlider from './components/CongratulationsSlider'
+import PendingIncomeSection from './components/PendingIncomeSection'
+import BranchManagementSection from './components/BranchManagementSection'
+import type { PmaStatsType } from '@/views/PmaTenderListing/types'
 
-const PmaTenderListing = () => {
+interface PmaDashboardViewProps {
+  statsData?: PmaStatsType
+}
+
+const PmaDashboardView = ({ statsData }: PmaDashboardViewProps) => {
   const theme = useTheme()
   const belowMdScreen = useMediaQuery(theme.breakpoints.down('md'))
-
-  const { pmaStatsData } = usePmaStats()
-
-  const statsData = pmaStatsData?.data
 
   return (
     <Box>
@@ -35,11 +38,15 @@ const PmaTenderListing = () => {
         </div>
       </div>
 
-      <Box className='mt-6'>
-        <PmaTenderTable />
-      </Box>
+      <TenderStatusCards />
+
+      <CongratulationsSlider />
+
+      <PendingIncomeSection />
+
+      <BranchManagementSection />
     </Box>
   )
 }
 
-export default PmaTenderListing
+export default PmaDashboardView

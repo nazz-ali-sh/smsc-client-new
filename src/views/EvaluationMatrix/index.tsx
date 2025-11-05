@@ -1,6 +1,8 @@
 'use client'
 import React, { useEffect, useState, useCallback, useMemo } from 'react'
 
+import { useRouter } from 'next/navigation'
+
 import { Box, Typography, TextField, Button } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
@@ -16,6 +18,7 @@ import { gettingmetrixDetails } from '@/services/evaluation_matrix/evaluation_ma
 import AddCatogories from './AddCatogories'
 
 const EvaluationMatrix = () => {
+  const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const [evaluationData, setEvaluationData] = useState<any[]>([])
 
@@ -269,16 +272,20 @@ const EvaluationMatrix = () => {
         <AddCatogories metrixCategories={metrixCategories} handleBackbutton={updateCatagoryState} />
       ) : (
         <>
-          <Box sx={{ marginTop: 18 }}>
+          <CustomButton className='mt-2' onClick={() => router.push('/shortlist-agent')}>
+            Back to Shortlist Agents
+          </CustomButton>
+          <Box sx={{ marginTop: 10 }}>
             <div className='flex items-center justify-between'>
-              <Typography sx={{ color: '#262B43E5', fontWeight: 600, fontSize: '18px' }}>Evaluation Matrix</Typography>
+              <Typography sx={{ color: '#262B43E5', fontWeight: 700, fontSize: '24px' }}>Evaluation Matrix</Typography>
             </div>
 
             <Typography sx={{ marginTop: '16px', color: '#262B43E5', fontWeight: 400, fontSize: '16px' }}>
-              Use this matrix to score each shortlisted managing agent on a scale of 1 to 10 during your video calls and
-              site visits . You can print a copy to take handwritten notes, then return to your portal to enter final
-              scores. Your saved weightings will be applied automatically, and the results will be shown in your Final
-              Report.
+              Use this matrix to score each shortlisted managing agent from 1 (poor) to 10 (excellent) based on your
+              video calls or site visits. Each criterion has a weighting (from 0.5 to 1.5) that automatically adjusts
+              the importance of your scores — higher weightings increase the overall impact of that criterion. You can
+              print a blank copy to gather feedback from other residents, then enter your final agreed scores here. Once
+              saved, your results are locked and will appear in your Final Report.
             </Typography>
 
             <Typography sx={{ marginTop: '16px', color: '#262B43E5', fontWeight: 400, fontSize: '16px' }}>
@@ -289,21 +296,45 @@ const EvaluationMatrix = () => {
               sx={{
                 marginTop: '16px',
                 color: '#262B43E5',
-                fontWeight: 600,
-                fontSize: '18px',
+                fontWeight: 700,
+                fontSize: '24px',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px'
               }}
+              className='flex'
             >
               How to use Evaluation Matrix
               <span onClick={handleModalOpen}>
-                <i className='ri-error-warning-line text-lg pt-1 cursor-pointer'></i>
+                <i className='ri-error-warning-line pt-1 cursor-pointer text-[24px] mt-2'></i>
               </span>
             </Typography>
           </Box>
           <div className='flex flex-col items-center mt-5'>
             <div className='bg-white p-8 pt-10 w-full max-w-8xl mt-6'>
+              <div className='flex justify-end items-end gap-x-[20px]'>
+                <div className='flex justify-end mb-8'>
+                  <CustomButton onClick={() => setIsOpenCatagory(true)} variant='contained'>
+                    Update Criteria
+                  </CustomButton>
+                </div>
+
+                {!isScored ? (
+                  <div className='mb-8 flex justify-end gap-x-4'>
+                    <CustomButton onClick={() => handleSaveEvaluation()} disabled={isSaving || isSaved}>
+                      {isSaving ? 'Saving...' : 'Save Changes'}
+                    </CustomButton>
+                    <CustomButton onClick={() => setisScored(true)}>Cancel</CustomButton>
+                  </div>
+                ) : (
+                  <div className='flex justify-end mb-8'>
+                    <Button onClick={() => handleEdit('edit')} variant='contained' className='bg-buttonPrimary gap-x-3'>
+                      Edit Matrix
+                    </Button>
+                  </div>
+                )}
+              </div>
+
               {pmaColumns.length === 0 && (
                 <Box
                   sx={{
@@ -328,24 +359,72 @@ const EvaluationMatrix = () => {
                           padding: '24px',
                           textAlign: 'left',
                           backgroundColor: '#f8f9fa',
-                          fontWeight: 'normal',
-                          fontSize: '12px',
+                          fontWeight: '400',
+                          fontSize: '13px',
                           color: '#262B43'
                         }}
                       >
-                        CATEGORY
+                        CRITERIA
+                        <div  onClick={() => setIsOpenCatagory(true)} className='mt-[10px]'>
+                          <a
+                            href='#'
+                            style={{
+                              color: '#1E88E5',
+                              textDecoration: 'underline',
+                              cursor: 'pointer'
+                            
+                            }}
+                          >
+                            Edit
+                          </a>
+                          {' / '}
+                          <a
+                            href='#'
+                            style={{
+                              color: '#1E88E5',
+                              textDecoration: 'underline',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            Add Criteria
+                          </a>
+                        </div>
                       </th>
                       <th
                         style={{
                           padding: '24px',
                           textAlign: 'center',
                           backgroundColor: '#f8f9fa',
-                          fontWeight: 'normal',
-                          fontSize: '14px',
+                          fontWeight: '400',
+                          fontSize: '13px',
                           color: '#262B43'
                         }}
                       >
                         Weighting
+                         <div onClick={() => handleEdit('edit')} className='mt-[10px]'>
+                          <a
+                            href='#'
+                            style={{
+                              color: '#1E88E5',
+                              textDecoration: 'underline',
+                              cursor: 'pointer'
+                            
+                            }}
+                          >
+                            Edit
+                          </a>
+                          {' / '}
+                          <a
+                            href='#'
+                            style={{
+                              color: '#1E88E5',
+                              textDecoration: 'underline',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            Add Weighting
+                          </a>
+                        </div>
                       </th>
                       {pmaColumns.length > 0 ? (
                         pmaColumns.map((pma: string, index: number) => (
@@ -355,12 +434,36 @@ const EvaluationMatrix = () => {
                               padding: '24px',
                               textAlign: 'center',
                               backgroundColor: '#f8f9fa',
-                              fontWeight: 'normal',
-                              fontSize: '12px',
+                              fontWeight: '400',
+                              fontSize: '13px',
                               color: '#262B43'
                             }}
                           >
                             {pma}
+                                 <div onClick={() => handleEdit('edit')} className='mt-[10px]'>
+                          <a
+                            href='#'
+                            style={{
+                              color: '#1E88E5',
+                              textDecoration: 'underline',
+                              cursor: 'pointer'
+                            
+                            }}
+                          >
+                            Edit
+                          </a>
+                          {' / '}
+                          <a
+                            href='#'
+                            style={{
+                              color: '#1E88E5',
+                              textDecoration: 'underline',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            Add Scores
+                          </a>
+                        </div>
                           </th>
                         ))
                       ) : (
@@ -499,9 +602,7 @@ const EvaluationMatrix = () => {
                           borderBottom: '1px solid #e0e0e0'
                         }}
                       >
-                        <Typography variant='body2' sx={{ color: '#333', fontWeight: 'bold' }}>
-                          {totals?.weight?.toFixed(1)}
-                        </Typography>
+                        
                       </td>
                       {pmaColumns.length > 0 ? (
                         pmaColumns.map((pma: string, index: number) => (
@@ -540,20 +641,21 @@ const EvaluationMatrix = () => {
               <div className='flex justify-end items-end gap-x-[20px]'>
                 <div className='flex justify-end mt-8'>
                   <CustomButton onClick={() => setIsOpenCatagory(true)} variant='contained'>
-                    Update Category
+                    Update Criteria
                   </CustomButton>
                 </div>
 
                 {!isScored ? (
-                  <div className='mt-8 flex justify-end'>
+                  <div className='mt-8 flex justify-end gap-x-4'>
                     <CustomButton onClick={() => handleSaveEvaluation()} disabled={isSaving || isSaved}>
-                      {isSaving ? 'Saving...' : 'Save Evaluation'}
+                      {isSaving ? 'Saving...' : 'Save Changes'}
                     </CustomButton>
+                    <CustomButton onClick={() => setisScored(true)}>Cancel</CustomButton>
                   </div>
                 ) : (
                   <div className='flex justify-end mt-8'>
                     <Button onClick={() => handleEdit('edit')} variant='contained' className='bg-buttonPrimary gap-x-3'>
-                      Edit
+                      Edit Matrix
                     </Button>
                   </div>
                 )}
