@@ -487,7 +487,7 @@ const TenderCards = () => {
                   marginTop: '14px'
                 }}
               >
-                Shortlist your preferred agents from the Results tab to unlock this section.
+                Once the tender period has officially ended, you will be able to shortlist agents.
               </Typography>
             ) : shortlistedCurrentStage && sinceLastshortlisted === 0 ? (
               <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
@@ -1162,7 +1162,7 @@ const TenderCards = () => {
                         alignItems: 'center',
                         backgroundColor: 'customColors.cyan3',
                         marginX: '6px',
-                        cursor: stages?.shortlisted?.is_completed ? 'not-allowed' : 'pointer',
+                        cursor: stages?.shortlisted?.is_completed ? 'not-allowed' : 'pointer'
                       }}
                     >
                       <Image src={personWhiteIcon} alt='personTodo' className={`w-[14px] h-[14px]  `} />

@@ -77,13 +77,13 @@ const CurrentActivity = () => {
     <>
       <div className='bg-white p-4 md:p-8 shadow-xl  rounded-lg '>
         <div className=''>
-          <div className='flex items-start justify-between pt-3'>
-            <div className=' w-[50%]'>
+          <div className='flex flex-col lg:flex-row  items-start justify-between pt-3'>
+            <div className='w-[100%] lg:w-[50%]'>
               <Typography className='w-[50%] text-[20px] font-semibold' sx={headingStyle}>
                 Current Activity
               </Typography>
-              <div className='flex gap-x-[70px] items-center mt-[30px] '>
-                <div className='bg-white rounded-lg shadow-sm border border-gray-200 px-[20px] py-[20px] w-[259px] h-[145px]'>
+              <div className='flex flex-col space-y-5 md:space-y-0 md:flex-row gap-x-[70px] items-center mt-[30px] '>
+                <div className='bg-white rounded-lg shadow-sm border border-gray-200 px-[20px] py-[20px] w-full h-[145px]'>
                   <div className='flex items-center justify-between mb-4'>
                     <div className='flex items-center space-x-4'>
                       <div className=' bg-sky p-2 flex items-center rounded-lg'>
@@ -107,7 +107,7 @@ const CurrentActivity = () => {
                     </CustomButton>
                   </section>
                 </div>
-                <div className='bg-white rounded-lg shadow-sm border border-gray-200 p-5 w-[259px] h-[145px]'>
+                <div className='bg-white rounded-lg shadow-sm border border-gray-200 p-5 w-full h-[145px]'>
                   <div className='flex items-center justify-between mb-4'>
                     <div className='flex items-center justify-center space-x-4'>
                       <div className='bg-[#E6E7FF] p-2 flex items-center rounded-lg'>
@@ -134,9 +134,9 @@ const CurrentActivity = () => {
               </div>
             </div>
 
-            <section className='w-[50%]'>
-              <div className='flex items-start gap-8'>
-                <div className='flex items-start pt-8'>
+            <section className='w-[100%] lg:w-[50%] mt-10 lg:mt-0'>
+              <div className='flex items-start  gap-8'>
+                <div className=' pt-8  '>
                   <Image src={line} alt='horizontal line' height={260} />
                 </div>
 
@@ -148,7 +148,7 @@ const CurrentActivity = () => {
                       <Typography
                         variant='body1'
                         align='left'
-                        className={`mt-4 text-[#696969] ${'cursor-pointer hover:underline hover:underline-offset-4'}`}
+                        className={`mt-4 text-[#696969] cursor-pointer hover:underline hover:underline-offset-4`}
                         onClick={() => {
                           downloadMutation.mutate(tender_id)
                         }}

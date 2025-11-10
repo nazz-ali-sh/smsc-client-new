@@ -10,13 +10,7 @@ const nextConfig = {
   basePath: process.env.BASEPATH,
 
   experimental: {
-    optimizePackageImports: [
-      '@mui/material',
-      '@mui/icons-material',
-      '@emotion/react',
-      '@emotion/styled',
-      'react-icons'
-    ]
+    optimizePackageImports: ['@mui/material', '@mui/icons-material', '@emotion/react', '@emotion/styled', 'react-icons']
   },
 
   webpack: (config, { dev, isServer }) => {
@@ -56,12 +50,7 @@ const nextConfig = {
   },
 
   images: {
-    domains: [
-      'fonts.gstatic.com',
-      'fonts.googleapis.com',
-      '127.0.0.1',
-      'localhost'
-    ],
+    domains: ['fonts.gstatic.com', 'fonts.googleapis.com', '127.0.0.1', 'localhost', 'encrypted-tbn0.gstatic.com'],
     remotePatterns: [
       {
         protocol: 'https',

@@ -25,14 +25,15 @@ export default function OnboardingForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [userData, setUserData] = useState<{ firstName: string; lastName: string; email: string } | null>(null)
-
+  const savedFormData = typeof window !== 'undefined' ? JSON.parse(sessionStorage.getItem('directorFormData') || '{}') : {};
+  
   const { control, handleSubmit } = useForm<registrationFormData>({
     resolver: valibotResolver(directorOfRMCSchema),
     defaultValues: {
-      fullName: '',
-      lastName: '',
-      email: '',
-      phoneNumber: '',
+      fullName: savedFormData.fullName || '',
+      lastName: savedFormData.lastName || '',
+      email: savedFormData.email || '',
+      phoneNumber: savedFormData.phoneNumber || '',
       password: '',
       confirmPassword: ''
     },
@@ -77,6 +78,16 @@ export default function OnboardingForm() {
       lastName: data.lastName,
       email: data.email
     })
+
+     sessionStorage.setItem(
+    'directorFormData',
+    JSON.stringify({
+      fullName: data.fullName,
+      lastName: data.lastName,
+      email: data.email,
+      phoneNumber: data.phoneNumber
+    })
+  );
 
     const payload: registrationPayload = {
       name: `${data?.fullName} ${data?.lastName}`.trim(),

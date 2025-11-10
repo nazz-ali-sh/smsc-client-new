@@ -30,6 +30,7 @@ import { rmcsendContactpma } from '@/services/tender_result-apis/tender-result-a
 import CustomButton from '@/common/CustomButton'
 import CustomTooltip from '@/common/CustomTooltip'
 import { calculateTimeLeft } from '@/utils/dateFormater'
+import { formatWebsiteUrl } from '@/utils/urlHelpers'
 
 const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce: any }) => {
   const router = useRouter()
@@ -117,82 +118,118 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
       <div className='pb-[70px]'>
         <section className=' mt-8 '>
           {finalShortListedResponce?.data?.shortlisted_pmas?.map((company: any, index: number) => (
-            <section key={index} className='flex justify-between items-center mt-8 shadow-md  rounded-xl px-6 py-4'>
-              <div className='flex items-start gap-6 cursor-pointer'>
-                <div className='flex flex-col'>
+            <section
+              key={index}
+              className='flex flex-col lg:flex-row justify-between items-center mt-8 shadow-md rounded-xl px-4 sm:px-6 py-4 gap-8'
+            >
+              <div className='flex flex-col sm:flex-row lg:flex-row justify-between items-start w-full gap-6'>
+                <div className='flex flex-col items-center sm:items-start w-full sm:w-auto'>
                   <Image
                     onClick={() => router.push(`/shortlist-agent/${company?.pma_user?.id}`)}
                     src={companyImage}
                     alt={`${company.title} logo`}
                     width={180}
                     height={212}
-                    className='rounded-xl'
+                    className='rounded-xl cursor-pointer'
                   />
 
-                  <div className='mt-[27px] text-[12px] text-buttonPrimary font-bold text-center flex items-center justify-center '>
-                    <div className='flex items-center'>
-                      <CustomButton
-                        disabled={appointmnetStatus === 'appointment'}
-                        onClick={() => handkeAppointAgnet(company?.pma_user?.id, company?.company_details?.name)}
-                      >
-                        <Image src={whiteperson} alt='person' className='mr-[10px]' />
-                        Appoint This Agent
-                      </CustomButton>
-                    </div>
+                  <div className='mt-4 text-[12px] text-buttonPrimary font-bold text-center flex justify-center'>
+                    <CustomButton
+                      disabled={appointmnetStatus === 'appointment'}
+                      onClick={() => handkeAppointAgnet(company?.pma_user?.id, company?.company_details?.name)}
+                    >
+                      <Image src={whiteperson} alt='person' className='mr-[10px]' />
+                      Appoint This Agent
+                    </CustomButton>
                   </div>
                 </div>
 
-                <div>
+                <div className='flex-1 text-center sm:text-left'>
                   <Typography variant='h3' className='text-[#1F4E8D] text-[34px] font-bold pb-1'>
                     €{company?.fee_amount}
                   </Typography>
+
                   <div
-                    className={`text-[22px] font-bold leading-[32px] ${shortlistexpiryDate?.minutes == '0' ? 'mt-[14px]' : ''}`}
+                    className={`text-[22px] font-bold leading-[32px] ${
+                      shortlistexpiryDate?.minutes == '0' ? 'mt-[14px]' : ''
+                    }`}
                   >
                     {company?.company_details?.name}
                   </div>
+
                   <div
-                    className={`text-[17px] font-normal leading-[32px] text-[#1F4E8D]  ${shortlistexpiryDate?.minutes == '0' ? 'mt-[21px]' : 'mt-[5px]'} `}
+                    className={`text-[17px] font-normal leading-[32px] text-[#1F4E8D] ${
+                      shortlistexpiryDate?.minutes == '0' ? 'mt-[21px]' : 'mt-[5px]'
+                    }`}
                   >
-                    {company?.company_details?.website || 'No webite'}
+                    {company?.company_details?.website ? (
+                      <a
+                        href={formatWebsiteUrl(company.company_details?.website)}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='text-[#1F4E8D] no-underline hover:text-[#1F4E8D]'
+                      >
+                        {company.company_details.website}
+                      </a>
+                    ) : (
+                      'No website'
+                    )}
                   </div>
 
-                  <section className={`pb-4  ${shortlistexpiryDate?.minutes == '0' ? 'mt-[26px]' : 'mt-4'} `}>
-                    <div className='flex space-x-4'>
+                  <section className={`pb-4 ${shortlistexpiryDate?.minutes == '0' ? 'mt-[26px]' : 'mt-4'}`}>
+                    <div className='flex flex-wrap justify-center sm:justify-start gap-2'>
                       <div
-                        className={`flex items-center space-x-2 px-[15px] py-0 rounded-full ${company?.video_call_booked ? 'bg-[#f1f1f1]' : 'bg-[#26C6F929]'} font-semibold `}
+                        className={`flex items-center space-x-2 px-[15px] py-0 rounded-full ${
+                          company?.video_call_booked ? 'bg-[#f1f1f1]' : 'bg-[#26C6F929]'
+                        } font-semibold`}
                       >
                         <span
-                          className={`w-2 h-2  ${!company?.video_call_booked ? 'bg-[#26C6F9]' : 'bg-[#bbbbbb]'} rounded-full pt-1`}
+                          className={`w-2 h-2 ${
+                            !company?.video_call_booked ? 'bg-[#26C6F9]' : 'bg-[#bbbbbb]'
+                          } rounded-full pt-1`}
                         ></span>
                         <span
-                          className={` ${!company?.video_call_booked ? 'text-[#26C6F9]' : 'text-[#bbbbbb]'} font-medium text-xs `}
+                          className={`${
+                            !company?.video_call_booked ? 'text-[#26C6F9]' : 'text-[#bbbbbb]'
+                          } font-medium text-xs`}
                         >
-                          {!company?.video_call_booked ? 'Not Contacted' : 'Not Contacted'}
+                          Not Contacted
                         </span>
                       </div>
 
                       <div
-                        className={`flex items-center space-x-2 px-[15px] py-0 rounded-full ${company?.video_call_booked ? 'bg-[#DDF6FE]' : 'bg-[#6969691A] '}   font-semibold `}
+                        className={`flex items-center space-x-2 px-[15px] py-0 rounded-full ${
+                          company?.video_call_booked ? 'bg-[#DDF6FE]' : 'bg-[#6969691A]'
+                        } font-semibold`}
                       >
                         <span
-                          className={`w-2 h-2 ${company?.video_call_booked ? 'bg-[#26C6F9]' : 'bg-[#bbbbbb] '}  rounded-full pt-1`}
+                          className={`w-2 h-2 ${
+                            company?.video_call_booked ? 'bg-[#26C6F9]' : 'bg-[#bbbbbb]'
+                          } rounded-full pt-1`}
                         ></span>
                         <span
-                          className={` ${company?.video_call_booked ? 'text-[#26C6F9]' : 'text-[#69696966]'} font-medium text-xs py-1 `}
+                          className={`${
+                            company?.video_call_booked ? 'text-[#26C6F9]' : 'text-[#69696966]'
+                          } font-medium text-xs py-1`}
                         >
                           Call Booked
                         </span>
                       </div>
 
                       <div
-                        className={`flex items-center space-x-2 px-[15px] py-0 rounded-full ${company?.site_visit_booked ? 'bg-[#DDF6FE]' : 'bg-[#6969691A] '} font-semibold `}
+                        className={`flex items-center space-x-2 px-[15px] py-0 rounded-full ${
+                          company?.site_visit_booked ? 'bg-[#DDF6FE]' : 'bg-[#6969691A]'
+                        } font-semibold`}
                       >
                         <span
-                          className={`w-2 h-2 ${company?.site_visit_booked ? 'bg-[#26C6F9]' : 'bg-[#bbbbbb]'}  rounded-full pt-1`}
+                          className={`w-2 h-2 ${
+                            company?.site_visit_booked ? 'bg-[#26C6F9]' : 'bg-[#bbbbbb]'
+                          } rounded-full pt-1`}
                         ></span>
                         <span
-                          className={` ${company?.site_visit_booked ? 'text-[#26C6F9]' : 'text-[#69696966]'} font-medium text-xs `}
+                          className={`${
+                            company?.site_visit_booked ? 'text-[#26C6F9]' : 'text-[#69696966]'
+                          } font-medium text-xs`}
                         >
                           Visit Arranged
                         </span>
@@ -204,7 +241,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                     ''
                   ) : (
                     <>
-                      <div className='flex gap-2 items-center cursor-default'>
+                      <div className='flex flex-col sm:flex-row gap-2 items-center justify-center sm:justify-start cursor-default'>
                         <Typography variant='h3' className='text-[#1F4E8D] text-[21px] font-bold py-1'>
                           {shortlistexpiryDate?.days !== '0' && <span>{shortlistexpiryDate?.days} days </span>}
                           {shortlistexpiryDate?.hours !== '0' && <span>{shortlistexpiryDate?.hours} hours </span>}
@@ -222,7 +259,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                         </CustomTooltip>
                       </div>
 
-                      <div className='mt-[20px]'>
+                      <div className='mt-[20px] flex justify-center sm:justify-start'>
                         <CustomButton
                           disabled={extendedCheck === true}
                           onClick={() => handleExtendByThree(company?.pma_user?.id)}
@@ -234,35 +271,29 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                     </>
                   )}
                 </div>
+              </div>
+
+              <div className='hidden lg:flex justify-between items-start w-full'>
                 <div className='pl-10 pt-[50px]'>
                   <Typography variant='h4'>Contact Details</Typography>
 
                   <div className='flex items-center gap-x-[30px] mt-[20px]'>
-                    <div>
-                      <Image src={person} alt='person' />
-                    </div>
+                    <Image src={person} alt='person' />
                     <Typography variant='body2'>{company?.pma_user?.full_name}</Typography>
                   </div>
 
                   <div className='flex items-center gap-x-[30px] mt-[20px]'>
-                    <span>
-                      <i className='ri-mail-line size-[14px]'></i>
-                    </span>
+                    <i className='ri-mail-line size-[14px]'></i>
                     <Typography variant='body2'>{company?.pma_user?.email}</Typography>
                   </div>
 
                   <div className='flex items-center gap-x-[30px] mt-[20px]'>
-                    <span>
-                      <Image src={phone} alt='phone' className='size-[14px]' />
-                    </span>
+                    <Image src={phone} alt='phone' className='size-[14px]' />
                     <Typography variant='body2'>{company?.pma_user?.mobile_number}</Typography>
                   </div>
 
                   <div className='flex items-center gap-x-[30px] mt-[20px]'>
-                    <span>
-                      <i className='ri-map-pin-line size-[14px]'></i>
-                    </span>
-
+                    <i className='ri-map-pin-line size-[14px]'></i>
                     <Typography
                       variant='body2'
                       className='max-w-[210px] truncate cursor-pointer'
@@ -275,87 +306,193 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                     </Typography>
                   </div>
                 </div>
-              </div>
 
-              <div className='flex items-start'>
-                <section className='relative flex flex-col justify-between items-center w-[100%]'>
-                  <section className='relative flex flex-col justify-between items-center w-[100%]'>
-                    <div className='relative w-[118px] h-[140px]'>
-                      <Image src={ActiveBrochers} alt='pdf download' className='w-[118px] h-[140px]' />
-                      <div className='w-[50px] max-h-[50px] bg-red-800 absolute top-0 left-[5px] '>dd </div>
-                    </div>
-
-                    <section className='w-[100%] flex justify-center space-x-2.5 '>
-                      <i className='ri-download-2-fill text-[#26C6F9] mt-[2px]'></i>
-                      <Typography
-                        variant='body1'
-                        align='center'
-                        className='mt-2 cursor-pointer text-[#26C6F9] hover:underline hover:underline-offset-4 flex items-center'
-                      >
-                        Download Brochure
-                      </Typography>
-                    </section>
-                  </section>
-                </section>
-              </div>
-
-              <section className='flex flex-col space-y-4'>
-                {appointmnetStatus === 'appointment' ? (
-                  <Image src={videoCalls} alt='videocalls' />
-                ) : (
-                  <CustomTooltip text='Invite to Video Call' position='left' align='center'>
-                    <Image
-                      src={videoCalls}
-                      alt='videocalls'
-                      className='cursor-pointer'
-                      onClick={() => handleVideoCallClick(company)}
-                    />
-                  </CustomTooltip>
-                )}
-
-                {appointmnetStatus === 'appointment' ? (
-                  <Image src={visitLocation} alt='location' />
-                ) : (
-                  <CustomTooltip text='Invite to Site Visit' position='left' align='center'>
-                    <Image
-                      src={visitLocation}
-                      alt='location'
-                      className='cursor-pointer'
-                      onClick={() => handleSiteVisitclick(company)}
-                    />
-                  </CustomTooltip>
-                )}
-
-                {appointmnetStatus === 'appointment' ? (
-                  <Image src={phoneCalls} alt='phoneCalls' />
-                ) : (
-                  <CustomTooltip text='Request a Call Back' position='left' align='center'>
-                    <Image
-                      src={phoneCalls}
-                      alt='phoneCalls'
-                      className='cursor-pointer'
-                      onClick={() => handlecontactAgent(company?.pma_user?.id, company?.company_details?.name)}
-                    />
-                  </CustomTooltip>
-                )}
-
-                {appointmnetStatus === 'appointment' ? (
-                  <div className='bg-[#cbf2fe] px-2 py-[10px] flex justify-center items-center rounded-md'>
-                    <i className='ri-chat-4-line text-[#26C6F9]'></i>
+                <div className='flex flex-col justify-between items-center'>
+                  <div className='relative w-[130px] h-[180px]'>
+                    <Image src={ActiveBrochers} alt='pdf download' className='w-[130px] h-[180px]' />
                   </div>
-                ) : (
-                  <CustomTooltip text='Chat' position='left' align='center'>
-                    <div
-                      onClick={() => router.push(`/chats`)}
-                      className='bg-[#cbf2fe] px-2 py-[10px] flex justify-center items-center rounded-md cursor-pointer'
+
+                  <div className='w-full flex justify-center space-x-2.5 mt-2'>
+                    <i className='ri-download-2-fill text-[#26C6F9] mt-[2px]'></i>
+                    <Typography
+                      variant='body1'
+                      align='center'
+                      className='cursor-pointer text-[#26C6F9] hover:underline hover:underline-offset-4 flex items-center'
                     >
-                      <i className='ri-chat-4-line text-[#26C6F9]'></i>
+                      Download Brochure
+                    </Typography>
+                  </div>
+                </div>
+
+                <div className='flex flex-col space-y-4'>
+                  {appointmnetStatus === 'appointment' ? (
+                    <Image src={videoCalls} alt='videocalls' />
+                  ) : (
+                    <CustomTooltip text='Invite to Video Call' position='left' align='center'>
+                      <Image
+                        src={videoCalls}
+                        alt='videocalls'
+                        className='cursor-pointer'
+                        onClick={() => handleVideoCallClick(company)}
+                      />
+                    </CustomTooltip>
+                  )}
+
+                  {appointmnetStatus === 'appointment' ? (
+                    <Image src={visitLocation} alt='location' />
+                  ) : (
+                    <CustomTooltip text='Invite to Site Visit' position='left' align='center'>
+                      <Image
+                        src={visitLocation}
+                        alt='location'
+                        className='cursor-pointer'
+                        onClick={() => handleSiteVisitclick(company)}
+                      />
+                    </CustomTooltip>
+                  )}
+
+                  {appointmnetStatus === 'appointment' ? (
+                    <Image src={phoneCalls} alt='phoneCalls' />
+                  ) : (
+                    <CustomTooltip text='Request a Call Back' position='left' align='center'>
+                      <Image
+                        src={phoneCalls}
+                        alt='phoneCalls'
+                        className='cursor-pointer'
+                        onClick={() => handlecontactAgent(company?.pma_user?.id, company?.company_details?.name)}
+                      />
+                    </CustomTooltip>
+                  )}
+
+                  {appointmnetStatus === 'appointment' ? (
+                    <div className='bg-[#cbf2fe] px-2 py-[10px] flex justify-center items-center rounded-md'>
+                      <i className='ri-chat-4-line text-[#26C6F9] shrink-0'></i>
                     </div>
-                  </CustomTooltip>
-                )}
-              </section>
+                  ) : (
+                    <CustomTooltip text='Chat' position='left' align='center'>
+                      <div
+                        onClick={() => router.push(`/chats`)}
+                        className='bg-[#cbf2fe] px-2 py-[10px] flex justify-center items-center rounded-md cursor-pointer'
+                      >
+                        <i className='ri-chat-4-line text-[#26C6F9]'></i>
+                      </div>
+                    </CustomTooltip>
+                  )}
+                </div>
+              </div>
+
+              <div className='flex flex-col md:flex-row items-center justify-center text-center lg:hidden w-full gap-8 md:ml-[150px]'>
+                <div className='flex-1 flex flex-col items-center text-center'>
+                  <Typography variant='h4' className='mb-4'>
+                    Contact Details
+                  </Typography>
+
+                  <div className='flex flex-col gap-4 w-full items-center'>
+                    <div className='flex items-center gap-x-3 justify-center'>
+                      <Image src={person} alt='person' width={20} height={20} />
+                      <Typography variant='body2'>{company?.pma_user?.full_name}</Typography>
+                    </div>
+
+                    <div className='flex items-center gap-x-3 justify-center'>
+                      <i className='ri-mail-line text-[20px]'></i>
+                      <Typography variant='body2'>{company?.pma_user?.email}</Typography>
+                    </div>
+
+                    <div className='flex items-center gap-x-3 justify-center'>
+                      <Image src={phone} alt='phone' width={20} height={20} />
+                      <Typography variant='body2'>{company?.pma_user?.mobile_number}</Typography>
+                    </div>
+
+                    <div className='flex items-center gap-x-3 justify-center'>
+                      <i className='ri-map-pin-line text-[20px]'></i>
+                      <Typography
+                        variant='body2'
+                        className='truncate cursor-pointer'
+                        title={company?.pma_user?.address || 'No Address Found'}
+                      >
+                        {company?.pma_user?.address
+                          ? company.pma_user.address.split(' ').slice(0, 5).join(' ') +
+                            (company.pma_user.address.split(' ').length > 5 ? '...' : '')
+                          : 'No Address Found'}
+                      </Typography>
+                    </div>
+                  </div>
+                </div>
+
+                <div className='flex-1 flex flex-col items-center justify-center md:ml-[170px]'>
+                  <div className='relative w-[130px] h-[180px]'>
+                    <Image src={ActiveBrochers} alt='pdf download' className='w-[130px] h-[180px]' />
+                  </div>
+                  <div className='w-full flex justify-center space-x-2.5 mt-2'>
+                    <i className='ri-download-2-fill text-[#26C6F9] mt-[2px]'></i>
+                    <Typography
+                      variant='body1'
+                      align='center'
+                      className='cursor-pointer text-[#26C6F9] hover:underline hover:underline-offset-4 flex items-center'
+                    >
+                      Download Brochure
+                    </Typography>
+                  </div>
+                </div>
+
+                <div className='flex flex-row md:flex-col items-center justify-center gap-4 w-full'>
+                  {appointmnetStatus === 'appointment' ? (
+                    <Image src={videoCalls} alt='videocalls' />
+                  ) : (
+                    <CustomTooltip text='Invite to Video Call' position='top' align='center'>
+                      <Image
+                        src={videoCalls}
+                        alt='videocalls'
+                        className='cursor-pointer'
+                        onClick={() => handleVideoCallClick(company)}
+                      />
+                    </CustomTooltip>
+                  )}
+
+                  {appointmnetStatus === 'appointment' ? (
+                    <Image src={visitLocation} alt='location' />
+                  ) : (
+                    <CustomTooltip text='Invite to Site Visit' position='top' align='center'>
+                      <Image
+                        src={visitLocation}
+                        alt='location'
+                        className='cursor-pointer'
+                        onClick={() => handleSiteVisitclick(company)}
+                      />
+                    </CustomTooltip>
+                  )}
+
+                  {appointmnetStatus === 'appointment' ? (
+                    <Image src={phoneCalls} alt='phoneCalls' />
+                  ) : (
+                    <CustomTooltip text='Request a Call Back' position='top' align='center'>
+                      <Image
+                        src={phoneCalls}
+                        alt='phoneCalls'
+                        className='cursor-pointer'
+                        onClick={() => handlecontactAgent(company?.pma_user?.id, company?.company_details?.name)}
+                      />
+                    </CustomTooltip>
+                  )}
+                  {appointmnetStatus === 'appointment' ? (
+                    <div className='bg-[#cbf2fe] px-2 py-[10px] flex justify-center items-center rounded-md w-[48px] h-[48px]'>
+                      <i className='ri-chat-4-line text-[#26C6F9] text-[20px] shrink-0'></i>
+                    </div>
+                  ) : (
+                    <CustomTooltip text='Chat' position='top' align='center'>
+                      <div
+                        onClick={() => router.push(`/chats`)}
+                        className='bg-[#cbf2fe] px-2 py-[10px] flex justify-center items-center rounded-md cursor-pointer'
+                      >
+                        <i className='ri-chat-4-line text-[#26C6F9] text-[20px] shrink-0'></i>
+                      </div>
+                    </CustomTooltip>
+                  )}
+                </div>
+              </div>
             </section>
           ))}
+
           <VideosCallsModal
             open={onlineCallsModalOpen}
             onClose={() => setOnlineCallsModalOpen(false)}

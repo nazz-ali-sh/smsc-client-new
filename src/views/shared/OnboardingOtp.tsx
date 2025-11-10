@@ -34,6 +34,9 @@ export default function OnboardingOtp({ portal }: OnboardingPortalProps) {
   const userId = rmcData?.user_id
   const pmaUserId = useSelector((state: RootState) => state.pmaOnboarding.pmaUserId)
 
+  const savedFormData =
+    typeof window !== 'undefined' ? JSON.parse(sessionStorage.getItem('directorFormData') || '{}') : {}
+
   useEffect(() => {
     let timer: NodeJS.Timeout
 
@@ -237,10 +240,10 @@ export default function OnboardingOtp({ portal }: OnboardingPortalProps) {
           </Typography>{' '}
           <div className=' mb-6 mt-20'>
             <Typography variant='body1' color='textSecondary' className='mb-2'>
-              Verify Your Identity
+              Verify Your Identity, <strong>{savedFormData.fullName}</strong>
             </Typography>
             <Typography variant='body2' color='textSecondary'>
-              Enter 6-digit verification code we've sent you
+              Enter 6-digit verification code we've sent you on <strong>{savedFormData.email}</strong>
             </Typography>
           </div>
           <div className='flex justify-center gap-1 mb-6'>

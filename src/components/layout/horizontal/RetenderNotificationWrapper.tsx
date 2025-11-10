@@ -32,6 +32,12 @@ const RetenderNotificationWrapper = () => {
   const tenderEndDate = new Date(dashboardData?.data?.tender_end_date?.date)
   const isPastTenderEndDate = today > tenderEndDate
 
+  const isAppointmentCompleted = dashboardData?.data?.tender_stage_progress?.stages?.appointment?.is_completed
+
+  if (isAppointmentCompleted) {
+    return null
+  }
+
   if (!isResponseCountValid || !isPastTenderEndDate) {
     return null
   }
@@ -41,7 +47,7 @@ const RetenderNotificationWrapper = () => {
       title='Not getting enough replies?'
       description="We've noticed this tender has received fewer than 3 responses. To increase your chances of success, you can re-tender Your Block."
       buttonText='Re-Tender'
-      showModal={true}
+      showModal={!isAppointmentCompleted}
       tenderId='TND-xxxx'
       icon='📢'
     />

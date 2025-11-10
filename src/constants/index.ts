@@ -321,12 +321,12 @@ export const steps = [
     secondDescription: '(e.g. a score of 8 with a 1.5 weighting counts as 12).'
   },
   {
-    title: 'Scoring Each Managing Agent',
+    title: 'Score Each Managing Agent',
     description:
       'During your video calls, site visits, or follow-up discussions, give each agent a score from 1 (poor) to 10 (excellent) for every criterion.'
   },
   {
-    title: 'Collating Multiple Resident Views (If applicable)',
+    title: 'Collate Resident Feedback (If Applicable)',
     description:
       'If multiple residents are attending the meetings, we recommend printing a blank matrix and asking each person to complete it individually.',
     newDescription:
@@ -591,3 +591,6 @@ export const onboardingPublicRoutes = [
   '/locationcode',
   '/pinlocation'
 ]
+
+export const placeholderImage =
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIf4R5qPKHPNMyAqV-FjS_OTBB8pfUV29Phg&s'

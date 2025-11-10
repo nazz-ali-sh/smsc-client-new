@@ -1,23 +1,24 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 
 import CustomButton from '@/common/CustomButton'
 import { useMyAccount } from '@/hooks/useMyAccount'
+import { placeholderImage } from '@/constants'
 
 const MyAccountView: React.FC = () => {
   const router = useRouter()
   const { data: accountData } = useMyAccount()
+  const user = accountData?.user
+  const notificationPreferences = accountData?.notification_preferences
+  const [imgSrc, setImgSrc] = useState(user?.logo_url || placeholderImage)
 
   const handleEditProfile = () => {
     router.push('/account-detail')
   }
-
-  const user = accountData?.user
-  const notificationPreferences = accountData?.notification_preferences
 
   const notificationOptions = [
     {
@@ -47,11 +48,12 @@ const MyAccountView: React.FC = () => {
           <div className='w-20 h-20 bg-[#1F2937] rounded-lg flex items-center justify-center mr-4 overflow-hidden'>
             {user?.logo_url ? (
               <Image
-                src={user.logo_url}
+                src={imgSrc}
                 alt='User Logo'
                 width={60}
                 height={60}
                 className='w-full h-full object-cover'
+                onError={() => setImgSrc(placeholderImage)}
               />
             ) : (
               <p className='text-white text-[20px] font-bold'>{user?.name?.charAt(0)?.toUpperCase() || 'S'}</p>

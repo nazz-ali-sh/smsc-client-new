@@ -170,6 +170,8 @@ const KitchenSink = () => {
     }
   }, [responceData])
 
+  const tableStyles = 'flex space-x-3 items-center justify-center gap-2 '
+
   const columns = useMemo<ColumnDef<DataType, any>[]>(
     () => [
       {
@@ -222,7 +224,7 @@ const KitchenSink = () => {
 
       columnHelper.accessor('fullName', {
         cell: ({ row }) => (
-          <div className='flex space-x-3'>
+          <div className={tableStyles}>
             <div className='flex items-center gap-2'>
               <div className='flex justify-center items-center bg-red-200 rounded-full p-1.5'>
                 {row.original.avatar.length > 2 ? (
@@ -243,7 +245,7 @@ const KitchenSink = () => {
             </div>
             <div className='pt-1'>
               <p className='truncate'>{row.getValue('fullName') || 'N/A'}</p>
-              <p className='text-sm text-gray-600 min-w-[150px]'>{row.original.submittedDate || 'N/A'}</p>
+              <p className='text-sm text-gray-600 min-w-[150px]'>Replied On: {row.original.submittedDate || 'N/A'}</p>
             </div>
           </div>
         ),
@@ -255,7 +257,7 @@ const KitchenSink = () => {
       columnHelper.accessor('quotation', {
         cell: info => info.getValue() || 'N/A',
         header: () => (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+          <div className={tableStyles}>
             Quote
             <i
               className='ri-information-line cursor-pointer text-[18px] text-black transition-colors'
@@ -565,17 +567,17 @@ const KitchenSink = () => {
                 isViewingResponse || table?.getSelectedRowModel().rows?.length === 0 || tenderStatus !== 'active'
               }
             >
-              Confirm Selection
+              Shortlist Selected Agents
             </CustomButton>
           </section>
 
           <SuccessModal
             open={successModalOpen}
             onClose={() => setSuccessModalOpen(false)}
-            message='By confirming, you agree to share your contact details with the managing agents you’ve shortlisted.
-            You’ll receive their details straight away so you can review them, but your own contact information won’t be shared for 3 days, unless you reach out first. This gives you time to compare agents without receiving immediate sales calls.
+            message={`By confirming, you agree to share your contact details with the managing agents you’ve shortlisted.\n\n
+            You’ll receive their details straight away so you can review them, but your own contact information won’t be shared for 3 days, unless you reach out first. This gives you time to compare agents without receiving immediate sales calls.\n\n
             You can return at any time to shortlist more agents if you wish.'
-            title='Confirm Your Selection'
+            title='Confirm Your Selection`}
             confirmButtonText='Confirm Selection'
             onClick={handleConfirmSelected}
             onConfirm={() => {
@@ -754,8 +756,12 @@ const KitchenSink = () => {
               <div className='mt-6'>
                 <Typography variant='body1' className='text-[#696969] leading-[22px] text-xs'>
                   <span style={{ fontWeight: 600 }}>The fixed costs</span> we compare are standard across all service
-                  charge budgets and offer the clearest way to assess value when selecting your new managing agent. For
-                  more guidance, please read the FAQ in your portal or download our factsheet on comparing managing
+                  charge budgets and offer the clearest way to assess value when selecting your new managing agent.
+                </Typography>
+              </div>
+              <div className='mt-6'>
+                <Typography variant='body1' className='text-[#696969] leading-[22px] text-xs'>
+                  For more guidance, please read the FAQ in your portal or download our factsheet on comparing managing
                   agent quotes at savemyservicecharge.co.uk.
                 </Typography>
               </div>
