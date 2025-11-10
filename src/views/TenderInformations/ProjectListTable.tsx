@@ -93,7 +93,7 @@ const KitchenSink = () => {
 
   useEffect(() => {
     if (tenderStatus === 'active') {
-      setShortlistWarningModal(true)
+      setShortlistWarningModal(false)
     }
   }, [tenderStatus])
 
@@ -112,8 +112,6 @@ const KitchenSink = () => {
       console.error('Error shortlisting agents:', error)
     }
   })
-
-
 
   const fianlExpireDate = calculateTimeLeft(shortlistedResponce)
 

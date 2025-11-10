@@ -221,7 +221,7 @@ const OnboardingEndedQuestions = () => {
           headerSx={{ color: '#1F4E8D', fontSize: '26px', fontWeight: 600 }}
           isBorder
         >
-          <p className='text-[#696969] text-base font-normal'>
+          <p className='text-[#696969] text-base font-normal mt-4'>
             Thanks! Your tender is now under review. You will be notified when it goes live and when the results are in.
             Tenders typically run for 5 days. Quotes will start arriving soon."
           </p>

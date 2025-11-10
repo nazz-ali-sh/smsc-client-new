@@ -300,7 +300,7 @@ const TenderCards = () => {
                   fontWeight: 300
                 }}
               >
-                Your tender was sent to {stages?.result_received?.details?.pma_count} PMAs. You have received
+                Your tender was sent to {stages?.result_received?.details?.pma_count} PMAs. You have received{' '}
                 {stages?.result_received?.details?.total_response_count} responses
               </Typography>
             )}
@@ -543,9 +543,17 @@ const TenderCards = () => {
                 </Box>
               </CustomTooltip>
 
-              <CustomTooltip text='Shortlist Agents' position='left' align='left'>
+              <CustomTooltip
+                text={
+                  stages?.shortlisted?.is_completed
+                    ? "You've appointed your agent. No further actions can be taken on this tender."
+                    : 'Shortlist Agents'
+                }
+                position='left'
+                align='left'
+              >
                 <Box
-                  onClick={!stages?.shortlisted?.is_completed ? undefined : () => router.push('/tender-result')}
+                  onClick={stages?.shortlisted?.is_completed ? undefined : () => router.push('/tender-result')}
                   sx={{
                     width: '36px',
                     height: '36px',
@@ -553,13 +561,23 @@ const TenderCards = () => {
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    backgroundColor: 'customColors.cyan3',
-                    marginX: '6px'
+                    backgroundColor: stages?.shortlisted?.is_completed ? '#26C6F93D' : 'customColors.cyan3',
+                    marginX: '6px',
+                    cursor: stages?.shortlisted?.is_completed ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.3s ease'
                   }}
                 >
-                  <i
-                    className={`ri-group-fill w-[14px] h-[14px] ${stages?.shortlisted?.is_completed ? ' text-[#26C6F9]' : 'text-white'} `}
-                  ></i>
+                  <Image
+                    src={
+                      stages?.shortlisted?.is_completed
+                        ? personWhiteIcon
+                        : stages?.shortlisted?.is_current
+                          ? personTodo
+                          : personWhiteIcon
+                    }
+                    alt='shortlist icon'
+                    className='w-[14px] h-[14px]'
+                  />
                 </Box>
               </CustomTooltip>
             </Box>
@@ -741,48 +759,47 @@ const TenderCards = () => {
                   ></i>
                 </Box>
               </CustomTooltip>
-              {!stages?.appointment?.is_completed ? (
-                <CustomTooltip text='Schedule New Video Call' position='left' align='left'>
-                  <Box
-                    onClick={!stages?.shortlisted?.is_current ? undefined : () => setOnlineCallsModalOpen(true)}
-                    sx={{
-                      width: '36px',
-                      height: '36px',
-                      borderRadius: '6px',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      backgroundColor: 'customColors.cyan3',
-                      marginX: '6px'
-                    }}
-                  >
-                    <i
-                      className={`ri-group-fill w-[14px] h-[14px] ${stages?.video_call?.is_current ? ' text-[#26C6F9]' : 'text-white'}`}
-                    ></i>
-                  </Box>
-                </CustomTooltip>
-              ) : (
-                <CustomTooltip
-                  text={`You've appointed your agent. No further actions can be taken on this tender`}
-                  position='left'
-                  align='left'
+              <CustomTooltip
+                text={
+                  stages?.appointment?.is_completed
+                    ? "You've appointed your agent. No further actions can be taken on this tender."
+                    : 'Schedule New Video Call'
+                }
+                position='left'
+                align='left'
+              >
+                <Box
+                  onClick={
+                    stages?.appointment?.is_completed || !stages?.shortlisted?.is_current
+                      ? undefined
+                      : () => setOnlineCallsModalOpen(true)
+                  }
+                  sx={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '6px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: stages?.appointment?.is_completed ? '#26C6F93D' : 'customColors.cyan3',
+                    marginX: '6px',
+                    cursor: stages?.shortlisted?.is_completed ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.3s ease'
+                  }}
                 >
-                  <Box
-                    sx={{
-                      width: '36px',
-                      height: '36px',
-                      borderRadius: '6px',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      backgroundColor: 'customColors.cyan3',
-                      marginX: '6px'
-                    }}
-                  >
-                    <i className={`ri-group-fill w-[14px] h-[14px] text-white`}></i>
-                  </Box>
-                </CustomTooltip>
-              )}
+                  <Image
+                    src={
+                      stages?.appointment?.is_completed
+                        ? personWhiteIcon
+                        : stages?.video_call?.is_current
+                          ? personTodo
+                          : personWhiteIcon
+                    }
+                    alt='video call icon'
+                    className='w-[14px] h-[14px]'
+                  />
+                </Box>
+              </CustomTooltip>
             </Box>
           </Card>
         </Grid>
@@ -964,48 +981,46 @@ const TenderCards = () => {
                 </Box>
               </CustomTooltip>
 
-              {!stages?.appointment?.is_completed ? (
-                <CustomTooltip text='Schedule New Site Visits' position='left' align='left'>
-                  <Box
-                    onClick={!stages?.site_visit?.is_current ? undefined : () => setSiteVisitsModalOpen(true)}
-                    sx={{
-                      width: '36px',
-                      height: '36px',
-                      borderRadius: '6px',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      backgroundColor: 'customColors.cyan3',
-                      marginX: '6px'
-                    }}
-                  >
-                    <i
-                      className={`ri-group-fill w-[14px] h-[14px] text-[#26C6F9] ${stages?.site_visit?.is_current ? 'text-[#26C6F9]' : 'text-white'}  `}
-                    ></i>
-                  </Box>
-                </CustomTooltip>
-              ) : (
-                <CustomTooltip
-                  text={`You've appointed your agent. No further actions can be taken on this tender`}
-                  position='left'
-                  align='left'
+              <CustomTooltip
+                text={
+                  stages?.appointment?.is_completed
+                    ? "You've appointed your agent. No further actions can be taken on this tender."
+                    : 'Schedule New Site Visits'
+                }
+                position='left'
+                align='left'
+              >
+                <Box
+                  onClick={
+                    stages?.appointment?.is_completed || !stages?.site_visit?.is_current
+                      ? undefined
+                      : () => setSiteVisitsModalOpen(true)
+                  }
+                  sx={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '6px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: stages?.appointment?.is_completed ? '#26C6F93D' : 'customColors.cyan3',
+                    marginX: '6px',
+                    cursor: stages?.shortlisted?.is_completed ? 'not-allowed' : 'pointer'
+                  }}
                 >
-                  <Box
-                    sx={{
-                      width: '36px',
-                      height: '36px',
-                      borderRadius: '6px',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      backgroundColor: 'customColors.cyan3',
-                      marginX: '6px'
-                    }}
-                  >
-                    <i className={`ri-group-fill w-[14px] h-[14px] text-[#26C6F9] 'text-white`}></i>
-                  </Box>
-                </CustomTooltip>
-              )}
+                  <Image
+                    src={
+                      stages?.appointment?.is_completed
+                        ? personWhiteIcon
+                        : stages?.site_visit?.is_current
+                          ? personTodo
+                          : personWhiteIcon
+                    }
+                    alt='person icon'
+                    className='w-[14px] h-[14px]'
+                  />
+                </Box>
+              </CustomTooltip>
             </Box>
           </Card>
         </Grid>
@@ -1132,20 +1147,27 @@ const TenderCards = () => {
 
               {stages?.appointment?.details?.appointed_pma_name ? (
                 <>
-                  <Box
-                    sx={{
-                      width: '36px',
-                      height: '36px',
-                      borderRadius: '6px',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      backgroundColor: 'customColors.cyan3',
-                      marginX: '6px'
-                    }}
+                  <CustomTooltip
+                    text={`You've appointed your agent. No further actions can be taken on this tender.`}
+                    position='left'
+                    align='left'
                   >
-                    <Image src={personWhiteIcon} alt='personTodo' className={`w-[14px] h-[14px]  `} />
-                  </Box>{' '}
+                    <Box
+                      sx={{
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '6px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: 'customColors.cyan3',
+                        marginX: '6px',
+                        cursor: stages?.shortlisted?.is_completed ? 'not-allowed' : 'pointer',
+                      }}
+                    >
+                      <Image src={personWhiteIcon} alt='personTodo' className={`w-[14px] h-[14px]  `} />
+                    </Box>{' '}
+                  </CustomTooltip>
                 </>
               ) : (
                 <CustomTooltip text='Appoint The Agent ' position='left' align='left'>
@@ -1257,14 +1279,19 @@ const TenderCards = () => {
                     PaperProps: {
                       sx: {
                         '& .MuiMenuItem-root': {
-                          color: '#35C0ED',
-                          backgroundColor: '#26C6F93D',
-                          '&.Mui-selected': {
-                            backgroundColor: '#26C6F93D !important',
-                            color: '#35C0ED !important'
-                          },
+                          color: '#000',
+                          backgroundColor: 'transparent !important',
                           '&:hover': {
-                            backgroundColor: '#26C6F93D !important'
+                            backgroundColor: '#35C0ED !important',
+                            color: '#ffffffff'
+                          },
+                          '&.Mui-selected': {
+                            backgroundColor: 'transparent !important',
+                            color: '#000 !important',
+                            '&:hover': {
+                              backgroundColor: '#35C0ED !important',
+                              color: '#ffffffff !important'
+                            }
                           }
                         }
                       }

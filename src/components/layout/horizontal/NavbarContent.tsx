@@ -63,6 +63,7 @@ const NavbarContent = () => {
   const user = accountData?.user?.name
 
   const shouldHideElements = routesWithNavbarContent.some(route => pathname.includes(route))
+                
 
   const isOnboardingRoute =
     pmaRoutes.some(route => pathname === route || pathname.startsWith(route)) ||

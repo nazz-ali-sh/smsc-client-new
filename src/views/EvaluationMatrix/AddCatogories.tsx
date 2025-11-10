@@ -83,7 +83,7 @@ const AddCategories: React.FC<CategoriesProps> = ({ metrixCategories, handleBack
           <Typography sx={{ marginTop: '16px', color: '#262B43E5', fontWeight: 400, fontSize: '16px' }}>
             Use this matrix to score each shortlisted managing agent from 1 (poor) to 10 (excellent) based on your video
             calls or site visits. Each criterion has a weighting (from 0.5 to 1.5) that automatically adjusts the
-            importance of your scores — higher weightings increase the overall impact of that criterion. You can print a
+            importance of your scores — higher weightings increase the overall impact of that criterion.<br></br> You can print a
             blank copy to gather feedback from other residents, then enter your final agreed scores here. Once saved,
             your results are locked and will appear in your Final Report.
           </Typography>

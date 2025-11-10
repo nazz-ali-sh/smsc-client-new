@@ -280,7 +280,7 @@ const OnboardingPriorities: React.FC = () => {
           <div className='bg-white p-10 w-full '>
             <div className='grid grid-cols-2 gap-8'>
               <div>
-                <h2 className='text-lg font-semibold text-[#262B43] mb-4'>Set Your Blocks Priorities</h2>
+                <h2 className='text-[24px] font-semibold text-[#262B43] mb-4'>Set Your Blocks Priorities</h2>
                 <p className='text-sm text-[#696969] mb-6'>
                   Help your new managing agent understand what matters most to your residents. Drag the priorities into
                   the boxes on the right, starting with the most important and working down to the least important.

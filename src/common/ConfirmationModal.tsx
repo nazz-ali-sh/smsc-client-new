@@ -10,9 +10,10 @@ interface ConfirmationModalProps {
   type: string
   inviteData: any[]
   selectcomapny?: any
+  selectedPmaName?: any
 }
 
-const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ open, onClose, inviteData, type, selectcomapny }) => {
+const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ open, onClose, inviteData, type, selectcomapny, selectedPmaName }) => {
   const theme = useTheme()
 
   return (
@@ -49,13 +50,6 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ open, onClose, in
         <Box sx={{ paddingY: '12px' }}>
           <Divider />
         </Box>
-
-        <Typography
-          variant='body2'
-          sx={{ mb: 1.5, color: 'customColors.textGray', lineHeight: 1.4, fontSize: '0.875rem', pt: '5px' }}
-        >
-          {`Your request for a ${type === 'videoCall' ? 'video call' : 'site visit'}  has been successfully submitted to the following agent:`}
-        </Typography>
       </DialogTitle>
 
       <DialogContent sx={{ px: 3, py: 2 }}>
@@ -115,7 +109,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ open, onClose, in
             <Box>
               <>
                 <Typography variant='body2' sx={{ fontSize: '0.875rem', marginBottom: '10px' }}>
-                  <span className='font-bold'>{selectcomapny && selectcomapny}</span> Have Been Notified & Will Be In
+                  <span className='font-bold'>{selectcomapny || selectcomapny || selectedPmaName}</span> Have Been Notified & Will Be In
                   Touch With You Very Shortly.
                 </Typography>
               </>

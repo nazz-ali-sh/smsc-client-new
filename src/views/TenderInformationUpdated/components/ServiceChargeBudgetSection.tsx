@@ -70,7 +70,6 @@ const ServiceChargeBudgetSection = ({
     { label: 'Emergency Lighting Fee', value: budgetData?.emergency_fee, icon: '/svgs/emergencyFee.svg' },
     { label: 'Fire Door Inspection', value: budgetData?.fire_door_fee, icon: '/svgs/doorInspection.svg' },
     { label: 'AML Checks', value: budgetData?.anti_money_fee, icon: '/svgs/amlChecks.svg' },
-    { label: 'Total', value: total, icon: '/svgs/total.svg' }
   ]
 
   const showNoCostsForAll = allValuesNullOrZero()

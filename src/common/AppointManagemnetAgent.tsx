@@ -233,12 +233,15 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
                           fullWidth
                           type='text'
                           label='Feedback'
-                          placeholder='write you feedback'
+                          placeholder='write your feedback'
                           value={feedbacks[pma.pma_user.id]?.feedback || ''}
                           onChange={e => handleFeedbackChange(pma.pma_user.id, e.target.value)}
                           sx={{
                             '& .MuiInputBase-root': {
                               backgroundColor: 'white'
+                            },
+                            '& label.Mui-focused': {
+                              color: '#35C0ED' // ✅ label color when focused
                             }
                           }}
                         />
@@ -250,12 +253,12 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
                               checked={feedbacks[pma.pma_user.id]?.noFeedback || false}
                               onChange={e => handleCheckboxChange(pma.pma_user.id, e.target.checked)}
                               sx={{
-                                color: '#35C0ED', 
+                                color: '#35C0ED',
                                 '&.Mui-checked': {
-                                  color: '#35C0ED' 
+                                  color: '#35C0ED'
                                 },
                                 '&.MuiCheckbox-indeterminate': {
-                                  color: '#35C0ED' 
+                                  color: '#35C0ED'
                                 }
                               }}
                             />
@@ -287,14 +290,15 @@ const AppointManagemnetModal: React.FC<SiteVisitsModalProps> = ({
           Appoint Managing Agent
         </CustomButton>
       </DialogActions>
-
-      <ConfirmationModal
-        type={type}
-        open={confirmationModalOpen}
-        onClose={handleClose}
-        inviteData={[]}
-        selectcomapny={companyNames}
-      />
+        <ConfirmationModal
+          type={type}
+          open={confirmationModalOpen}
+          onClose={handleClose}
+          inviteData={[]}
+          selectcomapny={companyNames}
+          selectedPmaName={selectedPmaName}
+        />
+      
     </Dialog>
   )
 }

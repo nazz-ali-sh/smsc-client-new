@@ -89,7 +89,8 @@ const SidebarLeft = (props: SidebarLeftProps) => {
         sx={{
           zIndex: 3,
           '& .MuiDrawer-paper': {
-            zIndex: mdAbove ? 2 : 'drawer'
+            zIndex: mdAbove ? 2 : 'drawer',
+            overflowX: 'hidden'
           },
           '& .MuiBackdrop-root': {
             borderRadius: 1,
@@ -228,13 +229,13 @@ const SidebarLeft = (props: SidebarLeftProps) => {
           </Typography>
           <div className='flex items-center justify-between mbe-3'>
             <Typography variant='body2'>Site Visits</Typography>
-            <CustomButton variant='outlined' size='small' onClick={() => router.push(`invites/site-visits`)}>
+            <CustomButton variant='outlined' size='small' onClick={() => router.push(`site-visits`)}>
               View
             </CustomButton>
           </div>
           <div className='flex items-center justify-between'>
             <Typography variant='body2'> Video Calls</Typography>
-            <CustomButton variant='outlined' size='small' onClick={() => router.push(`invites/video-calls`)}>
+            <CustomButton variant='outlined' size='small' onClick={() => router.push(`video-calls`)}>
               View
             </CustomButton>
           </div>

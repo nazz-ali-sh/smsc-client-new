@@ -1,6 +1,6 @@
 'use Clinet'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 
 import Image from 'next/image'
 
@@ -16,12 +16,20 @@ interface pmaCostBreakDown {
 const PmaCostbreakdown: React.FC<pmaCostBreakDown> = ({ pmaCostBreakDown }) => {
   const [openPmatooltip, setOpenPmaTooltip] = useState(false)
 
+  const totalAmount = useMemo(() => {
+  const total = pmaCostBreakDown.reduce(
+    (sum: any, item: any) => sum + (parseFloat(item?.fee_amount) || 0),
+    0
+  )
+  return total
+}, [pmaCostBreakDown])
+
   return (
     <>
       <Box sx={{ display: 'flex' }}>
         <Box>
           <Typography className='text-[#262B43E5]  font-bold text-[18px]'>
-            Fixed Cost Quote from Managing Agent
+            Fixed Cost Quote from Managing Agent: £{totalAmount}
           </Typography>
         </Box>
 

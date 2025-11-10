@@ -21,7 +21,7 @@ import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
 import companyImage from '../../../../public/images/customImages/company.png'
-import demePfd from '../../../../public/images/dashboardImages/demePdfImage.png'
+import front_1 from '../../../../public/images/dashboardImages/Front-1.png'
 import type { RootState } from '@/redux-store'
 
 import { downloadFinalSeectionPDf } from '@/services/final_result_and_archeive_apis/final_results_apis'
@@ -125,7 +125,7 @@ const ManagingAgentDetails: React.FC<FinalSelectionResponse> = ({ finalSelection
         <section className='flex flex-col items-center gap-4 pt-4'>
           <div style={{ minHeight: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <section className='relative flex flex-col justify-between items-center w-[100%]'>
-              <Image src={demePfd} alt='pdf download' />
+              <Image src={front_1} alt='pdf download' className='w-[170px] max-h-[230px]' />
             </section>
           </div>
           <CustomButton onClick={handlePdfClick} disabled={downloadMutation.isPending} variant='contained'>

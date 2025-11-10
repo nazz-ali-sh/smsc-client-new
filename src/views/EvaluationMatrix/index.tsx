@@ -272,7 +272,7 @@ const EvaluationMatrix = () => {
         <AddCatogories metrixCategories={metrixCategories} handleBackbutton={updateCatagoryState} />
       ) : (
         <>
-          <CustomButton className='mt-2' onClick={() => router.push('/shortlist-agent')}>
+          <CustomButton className='mt-2' variant='outlined' onClick={() => router.push('/shortlist-agent')}>
             Back to Shortlist Agents
           </CustomButton>
           <Box sx={{ marginTop: 10 }}>
@@ -283,13 +283,9 @@ const EvaluationMatrix = () => {
             <Typography sx={{ marginTop: '16px', color: '#262B43E5', fontWeight: 400, fontSize: '16px' }}>
               Use this matrix to score each shortlisted managing agent from 1 (poor) to 10 (excellent) based on your
               video calls or site visits. Each criterion has a weighting (from 0.5 to 1.5) that automatically adjusts
-              the importance of your scores — higher weightings increase the overall impact of that criterion. You can
+              the importance of your scores — higher weightings increase the overall impact of that criterion.<br></br><br></br> You can
               print a blank copy to gather feedback from other residents, then enter your final agreed scores here. Once
               saved, your results are locked and will appear in your Final Report.
-            </Typography>
-
-            <Typography sx={{ marginTop: '16px', color: '#262B43E5', fontWeight: 400, fontSize: '16px' }}>
-              Note: once saved, your matrix cannot be changed.
             </Typography>
 
             <Typography
@@ -324,7 +320,7 @@ const EvaluationMatrix = () => {
                     <CustomButton onClick={() => handleSaveEvaluation()} disabled={isSaving || isSaved}>
                       {isSaving ? 'Saving...' : 'Save Changes'}
                     </CustomButton>
-                    <CustomButton onClick={() => setisScored(true)}>Cancel</CustomButton>
+                    <CustomButton variant='outlined' onClick={() => setisScored(true)}>Cancel</CustomButton>
                   </div>
                 ) : (
                   <div className='flex justify-end mb-8'>
@@ -650,7 +646,7 @@ const EvaluationMatrix = () => {
                     <CustomButton onClick={() => handleSaveEvaluation()} disabled={isSaving || isSaved}>
                       {isSaving ? 'Saving...' : 'Save Changes'}
                     </CustomButton>
-                    <CustomButton onClick={() => setisScored(true)}>Cancel</CustomButton>
+                    <CustomButton variant='outlined' onClick={() => setisScored(true)}>Cancel</CustomButton>
                   </div>
                 ) : (
                   <div className='flex justify-end mt-8'>

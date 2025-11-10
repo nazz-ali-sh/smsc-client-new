@@ -268,7 +268,7 @@ const OnboardingBlockDetails = () => {
 
             <div className='flex justify-between'>
               <div className='pb-9 mt-16 flex justify-start'>
-                <CustomButton onClick={handleBackStep} startIcon={<i className='ri-arrow-left-line'></i>}>
+                <CustomButton onClick={handleBackStep} variant='outlined' startIcon={<i className='ri-arrow-left-line'></i>}>
                   Edit Address
                 </CustomButton>
               </div>

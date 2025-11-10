@@ -27,21 +27,27 @@ const ProjectMetrics: React.FC<FinalSelectionResponse> = ({ finalSelection }) =>
   }> = [
     {
       title: 'No. of Units Managed',
-      value: `${finalSelection?.data?.company_details?.avg_units_per_manager} Properties`,
+      value: finalSelection?.data?.company_details?.avg_units_per_manager
+        ? `${finalSelection.data.company_details.avg_units_per_manager} Properties`
+        : '0 Properties',
       icon: <Image src={successVisit} alt='success Visit' />,
       backgroundColor: '#E3F9D4',
       iconColor: '#4CAF50'
     },
     {
       title: 'Quotation',
-      value: `$ ${finalSelection?.data?.company_details?.avg_units_per_manager} `,
+      value: finalSelection?.data?.company_details?.avg_units_per_manager
+        ? `$ ${finalSelection.data.company_details.avg_units_per_manager}`
+        : '$ 0',
       icon: 'ri-money-dollar-circle-line',
       backgroundColor: '#CBEFFB',
       iconColor: '#5BCCF0'
     },
     {
-      title: 'Trading Years',
-      value: `${finalSelection?.data?.company_details?.trading_years} Years`,
+      title: 'Years Trading',
+      value: finalSelection?.data?.company_details?.trading_years
+        ? `${finalSelection.data.company_details.trading_years} Years`
+        : '0 Years',
       icon: 'ri-calendar-check-fill',
       backgroundColor: '#666CFF3D',
       iconColor: '#666CFF'
@@ -91,7 +97,7 @@ const ProjectMetrics: React.FC<FinalSelectionResponse> = ({ finalSelection }) =>
                             {metric.title}
                           </Typography>
                           <Typography variant='h5' sx={{ fontWeight: 400, fontSize: '15px', color: '#262B43B2' }}>
-                            {metric.value}
+                            {metric.value ?? 0}
                           </Typography>
                         </Box>
                       </Box>

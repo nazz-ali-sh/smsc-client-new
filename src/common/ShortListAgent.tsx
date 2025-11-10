@@ -83,16 +83,16 @@ const ShortListAgent = ({
       </DialogTitle>
       <DialogContent>
         <DialogContentText sx={{ marginTop: '15px' }}>
-          You now have full access to this agent’s details so you can review their company and services. Your contact
+          You now have full access to this agent’s details so you can review their company and services. <br></br><br></br>Your contact
           details will remain hidden for 3 working days, giving you time to initiate video calls, site visits, or
-          in-portal messages before the agent can contact you directly.
+          in-portal messages before the agent can contact you directly.<br></br>
         </DialogContentText>
       </DialogContent>
       <section className='px-[20px] text-[#1F4E8D] text-[18px] leading-[33px]'>
         <p style={{ fontWeight: 'bold' }}>
           {fianlExpireDate ? (
             <span>
-              {fianlExpireDate.days} days {fianlExpireDate.hours} hour {fianlExpireDate.minutes} minutes
+             Countdown: <span style={{fontStyle: 'italic'}}>{fianlExpireDate.days} days {fianlExpireDate.hours} hour {fianlExpireDate.minutes} minutes</span> remaining
             </span>
           ) : (
             ''

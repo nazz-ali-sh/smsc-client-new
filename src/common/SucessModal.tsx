@@ -74,7 +74,7 @@ const SuccessModal = ({
       </DialogTitle>
 
       <DialogContent>
-        <DialogContentText sx={{ color: '#696969', fontSize: '16px', marginTop: '8px' }}>{message}</DialogContentText>
+        <DialogContentText sx={{ color: '#696969', fontSize: '16px', marginTop: '8px', whiteSpace: 'pre-line'}}>{message}</DialogContentText>
       </DialogContent>
       <DialogActions className='flex justify-between items-center'>
         {cancelButton && (

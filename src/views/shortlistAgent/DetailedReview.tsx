@@ -19,6 +19,7 @@ import videoCalls from '../../../public/images/tenderShortlisted/videoCall.svg'
 import visitLocation from '../../../public/images/tenderShortlisted/visitLocation.svg'
 import person from '../../../public/images/tenderShortlisted/person.svg'
 import whiteperson from '../../../public/images/dashboardImages/appintagentIcon.svg'
+import ActiveBrochers from '../../../public/images/TenderResults/activeBrochers.png'
 
 import VideosCallsModal from '@/common/VideosCallsModal'
 import SiteVisitsModal from '@/common/SiteVisitsModal'
@@ -26,7 +27,6 @@ import AppointManagemnetModal from '@/common/AppointManagemnetAgent'
 import ShortListAgent from '../../common/ShortListAgent'
 import ContactModal from '@/common/ContactModal'
 import { rmcsendContactpma } from '@/services/tender_result-apis/tender-result-api'
-import demePfd from '../../../public/images/dashboardImages/demePdfImage.png'
 import CustomButton from '@/common/CustomButton'
 import CustomTooltip from '@/common/CustomTooltip'
 import { calculateTimeLeft } from '@/utils/dateFormater'
@@ -280,7 +280,11 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
               <div className='flex items-start'>
                 <section className='relative flex flex-col justify-between items-center w-[100%]'>
                   <section className='relative flex flex-col justify-between items-center w-[100%]'>
-                    <Image src={demePfd} alt='pdf download' />
+                    <div className='relative w-[118px] h-[140px]'>
+                      <Image src={ActiveBrochers} alt='pdf download' className='w-[118px] h-[140px]' />
+                      <div className='w-[50px] max-h-[50px] bg-red-800 absolute top-0 left-[5px] '>dd </div>
+                    </div>
+
                     <section className='w-[100%] flex justify-center space-x-2.5 '>
                       <i className='ri-download-2-fill text-[#26C6F9] mt-[2px]'></i>
                       <Typography

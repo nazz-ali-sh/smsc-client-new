@@ -58,7 +58,7 @@ export default function AnchorTemporaryDrawer({
       id: 2,
       icons: calander,
       state: DrawerStats?.company_metrics?.trading_years | 0,
-      descrption: 'Trading Years'
+      descrption: 'Years Trading'
     }
   ]
 

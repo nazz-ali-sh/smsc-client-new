@@ -55,13 +55,13 @@ const AgentInviteStats = () => {
 
   return (
     <>
-      <div className='flex justify-between items-center'>
+      <div className='flex flex-wrap justify-between gap-4'>
         {cardsData.map((items, index) => (
-          <div className='w-[22%]' key={index}>
+          <div className='w-full sm:w-[48%] md:w-[45%] lg:w-[22%] transition-all' key={index}>
             <Card color={'primary'}>
-              <CardContent className='flex items-center gap-x-[16px]'>
+              <CardContent className='flex items-center gap-4'>
                 <div
-                  className={`flex items-center gap-4 ${
+                  className={`flex items-center justify-center rounded-lg size-[40px] ${  
                     index === 0
                       ? 'bg-[#CBEFFB]'
                       : index === 1

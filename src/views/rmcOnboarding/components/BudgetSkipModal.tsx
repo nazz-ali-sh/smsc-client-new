@@ -14,7 +14,7 @@ const BudgetSkipModal = ({ isOpen, onClose, onSkipAnyway, onBackToEdit, isLoadin
       header='Are You Sure You Want to Skip This Step?'
       maxWidth='md'
       fullWidth
-      headerSx={{ color: '#1F4E8D', fontSize: '26px', fontWeight: 600 }}
+      headerSx={{ color: '#1F4E8D', fontSize: '26px', fontWeight: 600, marginLeft: '35px' }}
       isBorder
     >
       <div className='p-6'>
