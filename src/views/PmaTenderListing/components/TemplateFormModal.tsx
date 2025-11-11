@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 
 import { useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
@@ -13,7 +13,10 @@ import type { SaveTemplatePayload, TemplateFormModalProps } from '../types'
 import { templateFormSchema } from '@/schemas/validation-schemas'
 
 const TemplateFormModal: React.FC<TemplateFormModalProps> = ({ isOpen, handleClose, onSave, isLoading = false }) => {
-  const { control, handleSubmit, reset } = useForm<SaveTemplatePayload>({
+  const [messageLength, setMessageLength] = useState(0)
+  const maxCharacters = 3500
+
+  const { control, handleSubmit, reset, watch } = useForm<SaveTemplatePayload>({
     resolver: valibotResolver(templateFormSchema),
     defaultValues: {
       name: '',
@@ -21,6 +24,12 @@ const TemplateFormModal: React.FC<TemplateFormModalProps> = ({ isOpen, handleClo
     },
     mode: 'onChange'
   })
+
+  const watchedMessage = watch('message')
+
+  React.useEffect(() => {
+    setMessageLength(watchedMessage?.length || 0)
+  }, [watchedMessage])
 
   React.useEffect(() => {
     if (!isOpen) {
@@ -75,6 +84,11 @@ const TemplateFormModal: React.FC<TemplateFormModalProps> = ({ isOpen, handleClo
             rows={8}
             disabled={isLoading}
           />
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: 1 }}>
+            <Typography sx={{ color: '#9CA3AF', fontSize: '12px' }}>
+              {messageLength}/{maxCharacters} Characters
+            </Typography>
+          </Box>
         </Box>
 
         <Typography

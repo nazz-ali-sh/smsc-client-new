@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 
+import { useRouter } from 'next/navigation'
+
 import { Box, Card, Tab, Tabs, Typography } from '@mui/material'
 
 import CommonTable from '@/common/CommonTable'
@@ -56,8 +58,18 @@ const dummyTableData: TableData[] = [
 const BranchManagementSection = () => {
   const [activeTab, setActiveTab] = useState(0)
 
+  const router = useRouter()
+
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue)
+  }
+
+  const handleNavigate = () => {
+    if (activeTab === 0) {
+      router.push('/branch-management')
+    } else {
+      router.push('/user-management')
+    }
   }
 
   const tableColumns = [
@@ -145,7 +157,7 @@ const BranchManagementSection = () => {
             paddingBottom: 0
           }}
         >
-          <CustomButton>+ Add Branch</CustomButton>
+          <CustomButton onClick={handleNavigate}> {activeTab === 0 ? 'Add Branch' : 'Add User'} </CustomButton>
         </Box>
         <Box sx={{ paddingX: 3, paddingTop: 2 }}>
           <Tabs

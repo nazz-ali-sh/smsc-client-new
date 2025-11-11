@@ -8,6 +8,8 @@ interface TenderStatusCardData {
   today_count?: number | string
   total_count?: number | string
   description?: string
+  due_payment?: string | number
+  overdue_payment?: string | number
 }
 
 const dummyTenderData = {
@@ -65,7 +67,9 @@ const dummyTenderData = {
     icon: 'ri-money-pound-box-line',
     today_count: '+5 Today',
     total_count: 1,
-    description: ''
+    description: '',
+    due_payment: 1,
+    overdue_payment: 3
   }
 }
 
@@ -112,6 +116,59 @@ const TenderStatusCards = () => {
                 >
                   {card.description}
                 </Typography>
+                {key === 'not_appointed' && (
+                  <>
+                    <div className='flex gap-2 items-center'>
+                      <Typography
+                        sx={{
+                          fontSize: '12px',
+                          color: '#696969',
+                          paddingTop: '15px',
+                          fontWeight: 400,
+                          lineHeight: '36px'
+                        }}
+                      >
+                        Due Payments:
+                      </Typography>
+
+                      <Typography
+                        sx={{
+                          fontSize: '12px',
+                          color: '#696969',
+                          paddingTop: '15px',
+                          fontWeight: 700,
+                          lineHeight: '36px'
+                        }}
+                      >
+                        {card.due_payment}
+                      </Typography>
+                    </div>
+                    <div className='flex gap-2 items-center'>
+                      <Typography
+                        sx={{
+                          fontSize: '12px',
+                          color: '#696969',
+
+                          fontWeight: 400,
+                          lineHeight: '36px'
+                        }}
+                      >
+                        Overdue Payments:
+                      </Typography>
+
+                      <Typography
+                        sx={{
+                          fontSize: '12px',
+                          color: '#696969',
+                          fontWeight: 700,
+                          lineHeight: '36px'
+                        }}
+                      >
+                        {card.overdue_payment}
+                      </Typography>
+                    </div>
+                  </>
+                )}
                 <Box sx={{ minHeight: '80px', paddingBottom: '50px' }}></Box>
 
                 <div className='absolute bottom-4 right-4 left-4 flex items-center justify-between'>
