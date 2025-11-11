@@ -73,6 +73,7 @@ const QuoteFormSection = ({ tenderId }: QuoteFormSectionProps) => {
       router.push('/tenders')
       localStorage.removeItem('submitted_tender_data')
       localStorage.removeItem('template_response')
+      localStorage.removeItem('selected_template')
     },
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || 'Failed to submit response. Please try again.'

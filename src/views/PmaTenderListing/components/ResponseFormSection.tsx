@@ -28,6 +28,23 @@ const ResponseFormSection = ({ tenderId }: TenderId) => {
 
   const templates = pmaTemplatesData?.data?.templates || []
 
+  React.useEffect(() => {
+    const savedResponse = localStorage.getItem('template_response')
+    const savedTemplate = localStorage.getItem('selected_template')
+
+    if (savedResponse) {
+      setResponseText(savedResponse)
+    }
+
+    if (savedTemplate) {
+      setSelectedTemplate(savedTemplate)
+
+      if (savedTemplate !== '') {
+        setIsTextareaDisabled(true)
+      }
+    }
+  }, [])
+
   const saveTemplateMutation = useMutation({
     mutationFn: saveTemplate,
     onSuccess: (response: any) => {
@@ -42,6 +59,8 @@ const ResponseFormSection = ({ tenderId }: TenderId) => {
         setSelectedTemplate(String(newTemplateId))
         setResponseText(newTemplateMessage || '')
         setIsTextareaDisabled(true)
+        localStorage.setItem('selected_template', String(newTemplateId))
+        localStorage.setItem('template_response', newTemplateMessage || '')
       }
     },
     onError: (error: any) => {
@@ -68,22 +87,20 @@ const ResponseFormSection = ({ tenderId }: TenderId) => {
 
   const handleTemplateSelect = (templateId: string) => {
     setSelectedTemplate(templateId)
+    localStorage.setItem('selected_template', templateId)
+
     const selectedTemplateData = templates.find((template: PmaTemplateType) => String(template.id) === templateId)
 
     if (selectedTemplateData) {
       setResponseText(selectedTemplateData.message)
       setIsTextareaDisabled(true)
+      localStorage.setItem('template_response', selectedTemplateData.message)
     }
   }
 
   const handleEditTemplate = () => {
     setIsTextareaDisabled(false)
     setIsEditMode(true)
-  }
-
-  const handleCancelEdit = () => {
-    setIsTextareaDisabled(true)
-    setIsEditMode(false)
   }
 
   const handleSaveEdit = () => {
@@ -110,6 +127,20 @@ const ResponseFormSection = ({ tenderId }: TenderId) => {
       id: selectedTemplateData.id,
       payload
     })
+  }
+
+  const handleCancelEdit = () => {
+    const selectedTemplateData = templates?.find(
+      (template: PmaTemplateType) => String(template?.id) === selectedTemplate
+    )
+
+    if (selectedTemplateData) {
+      setResponseText(selectedTemplateData?.message)
+      localStorage.setItem('template_response', selectedTemplateData?.message)
+    }
+
+    setIsTextareaDisabled(true)
+    setIsEditMode(false)
   }
 
   const handleSaveTemplate = () => {
@@ -235,6 +266,7 @@ const ResponseFormSection = ({ tenderId }: TenderId) => {
             onChange={e => {
               if (e.target.value.length <= maxCharacters) {
                 setResponseText(e.target.value)
+                localStorage.setItem('template_response', e.target.value)
               }
             }}
             sx={{
