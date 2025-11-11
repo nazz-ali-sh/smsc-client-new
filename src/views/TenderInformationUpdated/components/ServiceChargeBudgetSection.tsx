@@ -13,13 +13,15 @@ interface ExtendedServiceChargeBudgetSectionProps extends ServiceChargeBudgetSec
   itemsPerRow?: number
   sx?: object
   title?: string
+  amountSymbol?: string
 }
 
 const ServiceChargeBudgetSection = ({
   budgetData,
   itemsPerRow = 5,
   sx,
-  title
+  title,
+  amountSymbol = '£'
 }: ExtendedServiceChargeBudgetSectionProps) => {
   const [titleModalOpen, setTitleModalOpen] = useState(false)
 
@@ -60,7 +62,7 @@ const ServiceChargeBudgetSection = ({
   }
 
   const total = calculateTotal()
-  const sectionTitle = title || `Your Blocks Fixed Cost Summary: £${total.toFixed(2)}`
+  const sectionTitle = title || `Your Blocks Fixed Cost Summary: ${amountSymbol}${total.toFixed(2)}`
 
   const budgetItems = [
     { label: 'Management Fee', value: budgetData?.managing_fee, icon: '/svgs/managementFee.svg' },
@@ -69,13 +71,13 @@ const ServiceChargeBudgetSection = ({
     { label: 'CoSec Fee', value: budgetData?.cosec_fee, icon: '/svgs/coSec.svg' },
     { label: 'Emergency Lighting Fee', value: budgetData?.emergency_fee, icon: '/svgs/emergencyFee.svg' },
     { label: 'Fire Door Inspection', value: budgetData?.fire_door_fee, icon: '/svgs/doorInspection.svg' },
-    { label: 'AML Checks', value: budgetData?.anti_money_fee, icon: '/svgs/amlChecks.svg' },
+    { label: 'AML Checks', value: budgetData?.anti_money_fee, icon: '/svgs/amlChecks.svg' }
   ]
 
   const showNoCostsForAll = allValuesNullOrZero()
 
   return (
-    <Box sx={{ marginBottom: 4 , marginTop : '20px' }}>
+    <Box sx={{ marginBottom: 4, marginTop: '20px' }}>
       <Typography
         className='flex items-center gap-2'
         sx={
@@ -125,7 +127,7 @@ const ServiceChargeBudgetSection = ({
                     {showNoCostsForAll ? (
                       <p className='text-[12px] font-normal'> No Costs Supplied</p>
                     ) : item?.value && parseFloat(String(item.value)) > 0 ? (
-                      `£${item.value}`
+                      `${amountSymbol}${item.value}`
                     ) : parseFloat(String(item?.value ?? '0')) === 0 ? (
                       '0'
                     ) : (

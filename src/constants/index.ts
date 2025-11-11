@@ -409,6 +409,13 @@ export const links = [
   { href: '/site-visits', label: 'Site Visit' }
 ]
 
+export const myAccountLinks = [
+  { href: '/profile', label: 'My Profile' },
+  { href: '/user-management', label: 'User Management' },
+  { href: '/branch-management', label: 'Branch Management' },
+  { href: '/templates', label: 'Saved Templates' }
+]
+
 export const companyBioPlaceholder =
   'Write a short, engaging introduction about your company’s approach and strengths. Do not include your company name, location, email address, or contact number — this is an anonymous stage of the process. Breaching these rules may result in your account being suspended. Focus on what makes you stand out and how you deliver value to residential blocks. This is the first thing RMCs will read before deciding who to shortlist.'
 

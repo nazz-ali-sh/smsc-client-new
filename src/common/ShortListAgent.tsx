@@ -94,7 +94,7 @@ const ShortListAgent = ({
             <span>
               Countdown:
               <span className='italic'>
-                {fianlExpireDate.days} days, {fianlExpireDate.hours} hours, {fianlExpireDate.minutes} minutes
+                {fianlExpireDate.days} days, {fianlExpireDate.hours} hours, {fianlExpireDate.minutes} minutes{' '}
               </span>
               remaining
             </span>

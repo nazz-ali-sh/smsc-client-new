@@ -241,8 +241,8 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                     ''
                   ) : (
                     <>
-                      <div className='flex flex-col sm:flex-row gap-2 items-center justify-center sm:justify-start cursor-default'>
-                        <Typography variant='h3' className='text-[#1F4E8D] text-[21px] font-bold py-1'>
+                      <div className='flex sm:flex-row gap-2 items-center justify-center sm:justify-start cursor-default'>
+                        <Typography variant='h3' className='text-[#1F4E8D] text-[21px] font-bold py-1 italic'>
                           {shortlistexpiryDate?.days !== '0' && <span>{shortlistexpiryDate?.days} days </span>}
                           {shortlistexpiryDate?.hours !== '0' && <span>{shortlistexpiryDate?.hours} hours </span>}
                           {shortlistexpiryDate?.minutes !== '0' && (
@@ -259,7 +259,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                         </CustomTooltip>
                       </div>
 
-                      <div className='mt-[20px] flex justify-center sm:justify-start'>
+                      <div className='mt-[8px] flex justify-center sm:justify-start'>
                         <CustomButton
                           disabled={extendedCheck === true}
                           onClick={() => handleExtendByThree(company?.pma_user?.id)}
@@ -482,7 +482,7 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                     <CustomTooltip text='Chat' position='top' align='center'>
                       <div
                         onClick={() => router.push(`/chats`)}
-                        className='bg-[#cbf2fe] px-2 py-[10px] flex justify-center items-center rounded-md cursor-pointer'
+                        className='bg-[#cbf2fe] px-2 py-[10px] flex justify-center items-center rounded-md cursor-pointer w-[48px] h-[48px] mb-2'
                       >
                         <i className='ri-chat-4-line text-[#26C6F9] text-[20px] shrink-0'></i>
                       </div>

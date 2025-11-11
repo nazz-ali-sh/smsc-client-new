@@ -683,7 +683,7 @@ const TenderCards = () => {
                   marginTop: '14px'
                 }}
               >
-                You’ll be able to invite agents to site visits once you have shortlisted from your results.
+                You’ll be able to invite agents to video calls once you have shortlisted from your results.
               </Typography>
             ) : CallCurrentStage && sinceLastVideoCall === 0 ? (
               <CardContent sx={{ px: 2, pb: 2, paddingX: '22px' }}>
@@ -783,7 +783,7 @@ const TenderCards = () => {
                     alignItems: 'center',
                     backgroundColor: stages?.appointment?.is_completed ? '#26C6F93D' : 'customColors.cyan3',
                     marginX: '6px',
-                    cursor: stages?.shortlisted?.is_completed ? 'not-allowed' : 'pointer',
+                    cursor: stages?.appointment?.is_completed ? 'not-allowed' : 'pointer',
                     transition: 'all 0.3s ease'
                   }}
                 >
@@ -964,6 +964,7 @@ const TenderCards = () => {
             >
               <CustomTooltip text='View All Site visits' position='left' align='left'>
                 <Box
+                 onClick={!stages?.appointment?.is_current ? undefined : () => router.push('/site-visits')}
                   sx={{
                     width: '36px',
                     height: '36px',
@@ -1005,7 +1006,7 @@ const TenderCards = () => {
                     alignItems: 'center',
                     backgroundColor: stages?.appointment?.is_completed ? '#26C6F93D' : 'customColors.cyan3',
                     marginX: '6px',
-                    cursor: stages?.shortlisted?.is_completed ? 'not-allowed' : 'pointer'
+                    cursor: stages?.appointment?.is_completed ? 'not-allowed' : 'pointer'
                   }}
                 >
                   <Image
@@ -1261,6 +1262,7 @@ const TenderCards = () => {
                   onChange={handleChange}
                   label='Choose Option'
                   sx={{
+                    height: 55,
                     '& .MuiOutlinedInput-notchedOutline': {
                       borderColor: '#696969'
                     },

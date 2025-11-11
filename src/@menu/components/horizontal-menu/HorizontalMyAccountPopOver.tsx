@@ -7,15 +7,15 @@ import { usePathname } from 'next/navigation'
 
 import { Popover, Box } from '@mui/material'
 
-import { links } from '@/constants'
+import { myAccountLinks } from '@/constants'
 
-interface HorizontalMenuPopOverProps {
+interface HorizontalMyAccountPopOverProps {
   open: boolean
   anchorEl: HTMLElement | null
   handlePopoverClose: () => void
 }
 
-const HorizontalMenuPopOver = ({ open, anchorEl, handlePopoverClose }: HorizontalMenuPopOverProps) => {
+const HorizontalMyAccountPopOver = ({ open, anchorEl, handlePopoverClose }: HorizontalMyAccountPopOverProps) => {
   const pathname = usePathname()
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const HorizontalMenuPopOver = ({ open, anchorEl, handlePopoverClose }: Horizonta
 
     const handleMouseMove = (e: MouseEvent) => {
       if (!anchorEl) return
-      const popoverElement = document.getElementById('invite-popover')
+      const popoverElement = document.getElementById('my-account-popover')
 
       if (timeoutId) clearTimeout(timeoutId)
 
@@ -35,7 +35,7 @@ const HorizontalMenuPopOver = ({ open, anchorEl, handlePopoverClose }: Horizonta
 
       timeoutId = setTimeout(() => {
         handlePopoverClose()
-      }, 150) 
+      }, 150)
     }
 
     document.addEventListener('mousemove', handleMouseMove)
@@ -48,7 +48,7 @@ const HorizontalMenuPopOver = ({ open, anchorEl, handlePopoverClose }: Horizonta
 
   return (
     <Popover
-      id='invite-popover'
+      id='my-account-popover'
       open={open}
       anchorEl={anchorEl}
       onClose={handlePopoverClose}
@@ -63,8 +63,8 @@ const HorizontalMenuPopOver = ({ open, anchorEl, handlePopoverClose }: Horizonta
       disableRestoreFocus
       sx={{ marginTop: '5px' }}
     >
-      <Box className='flex flex-col gap-2 min-w-[145px] mt-[4px]'>
-        {links.map(link => (
+      <Box className='flex flex-col gap-2 min-w-[160px] mt-[4px]'>
+        {myAccountLinks.map(link => (
           <Link
             key={link.href}
             href={link.href}
@@ -79,4 +79,4 @@ const HorizontalMenuPopOver = ({ open, anchorEl, handlePopoverClose }: Horizonta
   )
 }
 
-export default HorizontalMenuPopOver
+export default HorizontalMyAccountPopOver

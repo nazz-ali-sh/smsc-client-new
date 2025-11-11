@@ -70,7 +70,7 @@ export default function Pages() {
         <CustomLoader size='large' />
       ) : (
         <section className='shadow-xl p-5 rounded-xl bg-white w-full'>
-          <div className='flex justify-between items-center w-full'>
+          <div className='flex justify-between items-center w-full flex-col lg:flex-row'>
             <div>
               <div className='flex gap-2 items-center'>
                 <Typography variant='h5' className='pl-6 font-bold  text-buttonPrimary'>

@@ -1,6 +1,15 @@
 import type { NotificationsType } from '@/components/layout/shared/NotificationsDropdown'
 
-export const rmcMenuData = [
+export type MenuItem = {
+  image: JSX.Element
+  menuItem: string
+  href?: string
+  alwaysEnabled: boolean
+  isInvite?: boolean
+  isMyAccount?: boolean
+}
+
+export const rmcMenuData: MenuItem[] = [
   {
     image: <i className='ri-home-smile-line'></i>,
     menuItem: 'Dashboard',
@@ -53,7 +62,7 @@ export const rmcMenuData = [
   }
 ]
 
-export const pmaMenuData = [
+export const pmaMenuData: MenuItem[] = [
   {
     image: <i className='ri-home-smile-line'></i>,
     menuItem: 'Dashboard',
@@ -95,6 +104,12 @@ export const pmaMenuData = [
     menuItem: 'Appointed',
     href: '/appointed',
     alwaysEnabled: true
+  },
+  {
+    image: <i className='ri-user-line'></i>,
+    menuItem: 'My Account',
+    alwaysEnabled: true,
+    isMyAccount: true
   }
 ]
 

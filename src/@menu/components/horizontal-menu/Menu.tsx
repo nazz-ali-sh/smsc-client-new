@@ -23,6 +23,7 @@ import type {
 } from '../../types'
 import { horizontalSubMenuToggleDuration } from '../../defaultConfigs'
 import HorizontalMenuPopOver from './HorizontalMenuPopOver'
+import HorizontalMyAccountPopOver from './HorizontalMyAccountPopOver'
 import { pmaMenuData, rmcMenuData } from '@/constants/headerOptions'
 
 export type HorizontalMenuContextProps = {
@@ -73,15 +74,26 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
   const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
   const hasTenderId = tender_id && tender_id !== null && tender_id !== undefined
 
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
-  const open = Boolean(anchorEl)
+  const [inviteAnchorEl, setInviteAnchorEl] = useState<HTMLElement | null>(null)
+  const [myAccountAnchorEl, setMyAccountAnchorEl] = useState<HTMLElement | null>(null)
 
-  const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
+  const inviteOpen = Boolean(inviteAnchorEl)
+  const myAccountOpen = Boolean(myAccountAnchorEl)
+
+  const handleInvitePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setInviteAnchorEl(event.currentTarget)
   }
 
-  const handlePopoverClose = () => {
-    setAnchorEl(null)
+  const handleInvitePopoverClose = () => {
+    setInviteAnchorEl(null)
+  }
+
+  const handleMyAccountPopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setMyAccountAnchorEl(event.currentTarget)
+  }
+
+  const handleMyAccountPopoverClose = () => {
+    setMyAccountAnchorEl(null)
   }
 
   const userType = getUserType()
@@ -126,14 +138,19 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
       <FloatingTree>
         <div
           className={`flex items-center justify-center ${
-            isOnboardingRoute ? 'gap-x-[13px]' : 'gap-x-[20px]'
+            isOnboardingRoute ? 'gap-x-[13px]' : 'gap-x-[0px]'
           } min-w-[1300px] w-full`}
         >
           {menuData.map((items, index) => {
             const isDisabled = isPmaUser ? false : !items.alwaysEnabled && !hasTenderId
 
             const isActive = isPmaUser
-              ? pathname === items.href || (items.isInvite && pathname === '/calendar')
+              ? pathname === items.href ||
+                (items.isInvite && pathname === '/calendar') ||
+                (items.isMyAccount &&
+                  ['/profile', '/user-management', '/branch-management', '/templates'].some(p =>
+                    pathname.startsWith(p)
+                  ))
               : pathname === items.href ||
                 (items.isInvite && ['/site-visits', '/video-calls', '/calendar'].some(p => pathname.startsWith(p)))
 
@@ -142,10 +159,10 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
                 <div
                   key={index}
                   onMouseEnter={e => {
-                    if (!isDisabled) handlePopoverOpen(e)
+                    if (!isDisabled) handleInvitePopoverOpen(e)
                   }}
                   onMouseLeave={() => {
-                    if (!isDisabled) handlePopoverClose()
+                    if (!isDisabled) handleInvitePopoverClose()
                   }}
                 >
                   <div
@@ -162,7 +179,46 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
                   </div>
 
                   {!isDisabled && (
-                    <HorizontalMenuPopOver open={open} anchorEl={anchorEl} handlePopoverClose={handlePopoverClose} />
+                    <HorizontalMenuPopOver
+                      open={inviteOpen}
+                      anchorEl={inviteAnchorEl}
+                      handlePopoverClose={handleInvitePopoverClose}
+                    />
+                  )}
+                </div>
+              )
+            }
+
+            if (items.isMyAccount) {
+              return (
+                <div
+                  key={index}
+                  onMouseEnter={e => {
+                    if (!isDisabled) handleMyAccountPopoverOpen(e)
+                  }}
+                  onMouseLeave={() => {
+                    if (!isDisabled) handleMyAccountPopoverClose()
+                  }}
+                >
+                  <div
+                    className={`flex items-center justify-center py-2 rounded-lg min-w-[100px] ${
+                      isActive ? 'bg-[#35C0ED] text-white' : ''
+                    } ${isDisabled ? 'cursor-default pointer-events-none' : 'cursor-pointer'}`}
+                  >
+                    <section className='flex gap-x-[8px] px-3'>
+                      <div className='size-[22px]' style={{ color: 'inherit' }}>
+                        {items.image}
+                      </div>
+                      <div className='text-[15px]'>{items.menuItem}</div>
+                    </section>
+                  </div>
+
+                  {!isDisabled && (
+                    <HorizontalMyAccountPopOver
+                      open={myAccountOpen}
+                      anchorEl={myAccountAnchorEl}
+                      handlePopoverClose={handleMyAccountPopoverClose}
+                    />
                   )}
                 </div>
               )

@@ -574,10 +574,10 @@ const KitchenSink = () => {
           <SuccessModal
             open={successModalOpen}
             onClose={() => setSuccessModalOpen(false)}
-            message={`By confirming, you agree to share your contact details with the managing agents you’ve shortlisted.\n\n
-            You’ll receive their details straight away so you can review them, but your own contact information won’t be shared for 3 days, unless you reach out first. This gives you time to compare agents without receiving immediate sales calls.\n\n
-            You can return at any time to shortlist more agents if you wish.'
-            title='Confirm Your Selection`}
+            message={`By confirming, you agree to share your contact details with the managing agents you’ve shortlisted.\n
+            You’ll receive their details straight away so you can review them, but your own contact information won’t be shared for 3 days, unless you reach out first. This gives you time to compare agents without receiving immediate sales calls.\n
+            You can return at any time to shortlist more agents if you wish.`}
+            title='Confirm Your Selection'
             confirmButtonText='Confirm Selection'
             onClick={handleConfirmSelected}
             onConfirm={() => {

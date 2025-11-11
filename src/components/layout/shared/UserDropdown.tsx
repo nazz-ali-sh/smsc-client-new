@@ -23,6 +23,7 @@ import { useSettings } from '@core/hooks/useSettings'
 import { clearAllTokens } from '@/utils/tokenSync'
 import { clearRmcData } from '@/redux-store/slices/rmcOnboardingSlice'
 import { routesWithNavbarContent, rmcRoutes, pmaRoutes } from '@/constants'
+import { isPmaPortal } from '@/utils/portalHelper'
 
 const BadgeContentSpan = styled('span')({
   width: 8,
@@ -104,7 +105,7 @@ const UserDropdown = ({ selectedTenderInitial }: { selectedTenderInitial?: strin
         transition
         disablePortal
         modifiers={[{ name: 'offset', options: { offset: [0, 8] } }]}
-        className='z-[10]'
+        className='z-[10] min-w-[140px]'
       >
         {({ TransitionProps, placement }) => (
           <Fade
@@ -119,17 +120,17 @@ const UserDropdown = ({ selectedTenderInitial }: { selectedTenderInitial?: strin
             >
               <ClickAwayListener onClickAway={e => handleDropdownClose(e as MouseEvent | TouchEvent)}>
                 <MenuList>
-                  {!isOnboardingRoute && (
+                  {!isOnboardingRoute && !isPmaPortal() && (
                     <MenuItem className='gap-3 pli-4' onClick={e => handleDropdownClose(e, '/account')}>
                       <Typography color='text.primary'>My Account</Typography>
                     </MenuItem>
                   )}
-                  {!isOnboardingRoute && tenderId && (
+                  {!isOnboardingRoute && tenderId && !isPmaPortal() && (
                     <MenuItem className='gap-3 pli-4' onClick={e => handleDropdownClose(e, '/set-availability')}>
                       <Typography color='text.primary'>Set Availability </Typography>
                     </MenuItem>
                   )}
-                  {!isOnboardingRoute && tenderId && (
+                  {!isOnboardingRoute && (isPmaPortal() || tenderId) && (
                     <MenuItem className='gap-3 pli-4' onClick={hanldeArchive}>
                       <Typography color='text.primary'>Archive</Typography>
                     </MenuItem>

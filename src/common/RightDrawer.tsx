@@ -109,7 +109,7 @@ export default function AnchorTemporaryDrawer({
             }}
           />
 
-          <PmaCostbreakdown pmaCostBreakDown={response?.managment_fees} />
+          <PmaCostbreakdown pmaCostBreakDown={response?.managment_fees} amountSymbol='£' />
 
           <ResponceandBio
             boi={response?.company_bio?.bio}

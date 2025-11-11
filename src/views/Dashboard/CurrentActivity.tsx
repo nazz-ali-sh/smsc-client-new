@@ -135,8 +135,8 @@ const CurrentActivity = () => {
             </div>
 
             <section className='w-[100%] lg:w-[50%] mt-10 lg:mt-0'>
-              <div className='flex items-start  gap-8'>
-                <div className=' pt-8  '>
+              <div className='flex items-start'>
+                <div className='pt-8 pl-14 hidden lg:block'>
                   <Image src={line} alt='horizontal line' height={260} />
                 </div>
 

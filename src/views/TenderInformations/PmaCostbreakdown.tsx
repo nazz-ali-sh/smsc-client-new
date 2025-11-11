@@ -11,25 +11,25 @@ import CommonModal from '@/common/CommonModal'
 
 interface pmaCostBreakDown {
   pmaCostBreakDown?: any
+  amountSymbol?: string
 }
 
-const PmaCostbreakdown: React.FC<pmaCostBreakDown> = ({ pmaCostBreakDown }) => {
+const PmaCostbreakdown: React.FC<pmaCostBreakDown> = ({ pmaCostBreakDown, amountSymbol = '£' }) => {
   const [openPmatooltip, setOpenPmaTooltip] = useState(false)
 
   const totalAmount = useMemo(() => {
-  const total = pmaCostBreakDown.reduce(
-    (sum: any, item: any) => sum + (parseFloat(item?.fee_amount) || 0),
-    0
-  )
-  return total
-}, [pmaCostBreakDown])
+    const total = pmaCostBreakDown.reduce((sum: any, item: any) => sum + (parseFloat(item?.fee_amount) || 0), 0)
+
+    return total
+  }, [pmaCostBreakDown])
 
   return (
     <>
       <Box sx={{ display: 'flex' }}>
         <Box>
           <Typography className='text-[#262B43E5]  font-bold text-[18px]'>
-            Fixed Cost Quote from Managing Agent: £{totalAmount}
+            Fixed Cost Quote from Managing Agent: {amountSymbol}
+            {totalAmount}
           </Typography>
         </Box>
 
@@ -67,7 +67,8 @@ const PmaCostbreakdown: React.FC<pmaCostBreakDown> = ({ pmaCostBreakDown }) => {
                           {feeItem?.management_fee_title}
                         </Typography>
                         <Typography variant='caption' color='#262B43E5' className='text-[20px]'>
-                          €{feeItem?.fee_amount}
+                          {amountSymbol}
+                          {feeItem?.fee_amount}
                         </Typography>
                       </Box>
                     </Box>
