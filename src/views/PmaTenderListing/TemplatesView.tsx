@@ -7,6 +7,7 @@ import { toast } from 'react-toastify'
 import { useMutation } from '@tanstack/react-query'
 
 import CustomButton from '@/common/CustomButton'
+import CommonModal from '@/common/CommonModal'
 import { usePmaTemplates } from '@/hooks/usePmaTemplates'
 import { saveTemplate, updateTemplate, deleteTemplate } from '@/services/pma-tender-listing-apis/pma-templates-api'
 import TemplateFormModal from './components/TemplateFormModal'
@@ -19,6 +20,7 @@ const TemplatesView = () => {
   const [templateDescription, setTemplateDescription] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const maxCharacters = 3500
 
   const templates = pmaTemplatesData?.data?.templates || []
@@ -162,17 +164,26 @@ const TemplatesView = () => {
   }
 
   const handleDeleteTemplate = () => {
+    setIsDeleteModalOpen(true)
+  }
+
+  const handleConfirmDeleteTemplate = () => {
     const selectedTemplateData = templates?.find(
       (template: PmaTemplateType) => String(template?.id) === selectedTemplate
     )
 
     if (!selectedTemplateData) {
       toast.error('Template not found')
-
+      setIsDeleteModalOpen(false)
       return
     }
 
     deleteTemplateMutation.mutate(selectedTemplateData.id)
+    setIsDeleteModalOpen(false)
+  }
+
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false)
   }
 
   const handleTemplateSave = (data: SaveTemplatePayload) => {
@@ -448,6 +459,41 @@ const TemplatesView = () => {
         onSave={handleTemplateSave}
         isLoading={saveTemplateMutation.isPending}
       />
+
+      <CommonModal
+        isOpen={isDeleteModalOpen}
+        handleClose={handleCloseDeleteModal}
+        header="Confirm Deletion"
+        maxWidth="md"
+        headerSx={{ color: '#1F4E8D', fontSize: '26px', fontWeight: 600 }}
+        isBorder
+
+      >
+        <Box sx={{ padding: 2 }}>
+          <Typography sx={{ fontSize: '16px', color: '#374151', marginY: 4 }}>
+            Are you sure you want to delete this templete? This action can't be undone.
+
+          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+            <CustomButton
+              variant='outlined'
+              onClick={handleCloseDeleteModal}
+              disabled={deleteTemplateMutation.isPending}
+              
+            >
+              Cancel
+            </CustomButton>
+            <CustomButton
+              variant='contained'
+              onClick={handleConfirmDeleteTemplate}
+              disabled={deleteTemplateMutation.isPending}
+           
+            >
+              {deleteTemplateMutation.isPending ? 'Deleting...' : 'Delete'}
+            </CustomButton>
+          </Box>
+        </Box>
+      </CommonModal>
     </Box>
   )
 }
