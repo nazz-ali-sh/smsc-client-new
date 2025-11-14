@@ -32,7 +32,7 @@ const RetenderNotificationWrapper = () => {
   const tenderEndDate = new Date(dashboardData?.data?.tender_end_date?.date)
   const isPastTenderEndDate = today > tenderEndDate
 
-  const isAppointmentCompleted = dashboardData?.data?.tender_stage_progress?.stages?.appointment?.is_completed
+  const isAppointmentCompleted = dashboardData?.data?.tender_stage_progress?.stages?.shortlisted?.is_completed
 
   if (isAppointmentCompleted) {
     return null

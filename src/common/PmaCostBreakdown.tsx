@@ -8,6 +8,8 @@ import { Box, CardContent, Typography, Grid, FormControl, InputLabel, MenuItem, 
 
 import { iconMap } from '@/common/data'
 
+const CURRENCY = process.env.NEXT_PUBLIC_CURRENCY
+
 interface PmaUser {
   id?: number
   name?: string
@@ -61,7 +63,7 @@ const PmaCostBreakdown = ({
       <Box sx={{ mb: 4 }}>
         <Box className='flex items-center justify-between '>
           <Typography sx={{ fontWeight: 700, fontSize: '24px', color: 'customColors.darkGray1' }}>
-           Fixed Cost Quote from Managing Agent
+            Fixed Cost Quote from Managing Agent
           </Typography>
 
           <FormControl className='w-[320px]'>
@@ -184,7 +186,8 @@ const PmaCostBreakdown = ({
                             {feeItem?.management_fee_title}
                           </Typography>
                           <Typography variant='caption' color='#262B43E5' className='text-[20px]'>
-                            €{feeItem?.fee_amount}
+                            {CURRENCY}
+                            {feeItem?.fee_amount}
                           </Typography>
                         </Box>
                       </Box>

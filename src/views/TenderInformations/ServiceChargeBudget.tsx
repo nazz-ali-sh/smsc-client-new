@@ -11,6 +11,8 @@ interface servicesBudget {
   servicesbudgets?: any
 }
 
+const CURRENCY = process.env.NEXT_PUBLIC_CURRENCY
+
 const ServiceChargeBudget: React.FC<servicesBudget> = ({ servicesbuget }) => {
   return (
     <>
@@ -44,7 +46,8 @@ const ServiceChargeBudget: React.FC<servicesBudget> = ({ servicesbuget }) => {
                           {feeItem?.management_fee_title}
                         </Typography>
                         <Typography variant='caption' color='#262B43E5' className='text-[20px]'>
-                          €{feeItem?.fee_amount}
+                          {CURRENCY}
+                          {feeItem?.fee_amount}
                         </Typography>
                       </Box>
                     </Box>

@@ -42,6 +42,8 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
   const [shortlisted_pmaselectedID, setshortlisted_pmaselectedID] = useState<number | any>()
   const [pmaCompanyName, setPmaCompanyName] = useState<string | any>('')
 
+  const CURRENCY = process.env.NEXT_PUBLIC_CURRENCY
+
   const [selectedPma, setSelectedPma] = useState<{ id: number; pma_number: string } | null>(null)
 
   const extendedCheck = Array.isArray(finalShortListedResponce?.data?.shortlisted_pmas)
@@ -146,7 +148,8 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
 
                 <div className='flex-1 text-center sm:text-left'>
                   <Typography variant='h3' className='text-[#1F4E8D] text-[34px] font-bold pb-1'>
-                    €{company?.fee_amount}
+                    {CURRENCY}
+                    {company?.fee_amount}
                   </Typography>
 
                   <div
@@ -241,33 +244,37 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                     ''
                   ) : (
                     <>
-                      <div className='flex sm:flex-row gap-2 items-center justify-center sm:justify-start cursor-default'>
-                        <Typography variant='h3' className='text-[#1F4E8D] text-[21px] font-bold py-1 italic'>
-                          {shortlistexpiryDate?.days !== '0' && <span>{shortlistexpiryDate?.days} days </span>}
-                          {shortlistexpiryDate?.hours !== '0' && <span>{shortlistexpiryDate?.hours} hours </span>}
-                          {shortlistexpiryDate?.minutes !== '0' && (
-                            <span> {shortlistexpiryDate?.minutes} minutes </span>
-                          )}
-                        </Typography>
-                        <CustomTooltip
-                          text='During this time period, your contact information will be hidden. This setting is in place to allow you to initiate video calls securely.'
-                          position='right'
-                          align='right'
-                          width='350px'
-                        >
-                          <i className='ri-information-line text-[#1F4E8D] cursor-default'></i>
-                        </CustomTooltip>
-                      </div>
+                      {appointmnetStatus !== 'appointment' && (
+                        <>
+                          <div className='flex sm:flex-row gap-2 items-center justify-center sm:justify-start cursor-default'>
+                            <Typography variant='h3' className='text-[#1F4E8D] text-[21px] font-bold py-1 italic'>
+                              {shortlistexpiryDate?.days !== '0' && <span>{shortlistexpiryDate?.days} days </span>}
+                              {shortlistexpiryDate?.hours !== '0' && <span>{shortlistexpiryDate?.hours} hours </span>}
+                              {shortlistexpiryDate?.minutes !== '0' && (
+                                <span> {shortlistexpiryDate?.minutes} minutes </span>
+                              )}
+                            </Typography>
+                            <CustomTooltip
+                              text='During this time period, your contact information will be hidden. This setting is in place to allow you to initiate video calls securely.'
+                              position='right'
+                              align='right'
+                              width='350px'
+                            >
+                              <i className='ri-information-line text-[#1F4E8D] cursor-default'></i>
+                            </CustomTooltip>
+                          </div>
 
-                      <div className='mt-[8px] flex justify-center sm:justify-start'>
-                        <CustomButton
-                          disabled={extendedCheck === true}
-                          onClick={() => handleExtendByThree(company?.pma_user?.id)}
-                          variant='outlined'
-                        >
-                          Extend by 3 days
-                        </CustomButton>
-                      </div>
+                          <div className='mt-[8px] flex justify-center sm:justify-start'>
+                            <CustomButton
+                              disabled={extendedCheck === true}
+                              onClick={() => handleExtendByThree(company?.pma_user?.id)}
+                              variant='outlined'
+                            >
+                              Extend by 3 days
+                            </CustomButton>
+                          </div>
+                        </>
+                      )}
                     </>
                   )}
                 </div>

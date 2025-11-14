@@ -15,6 +15,8 @@ interface FinalSelectionResponse {
   finalSelection?: any
 }
 
+const CURRENCY = process.env.NEXT_PUBLIC_CURRENCY
+
 const ProjectMetrics: React.FC<FinalSelectionResponse> = ({ finalSelection }) => {
   const { data: tenderDetailData } = useTenderDetail()
 
@@ -37,8 +39,8 @@ const ProjectMetrics: React.FC<FinalSelectionResponse> = ({ finalSelection }) =>
     {
       title: 'Quotation',
       value: finalSelection?.data?.company_details?.avg_units_per_manager
-        ? `$ ${finalSelection.data.company_details.avg_units_per_manager}`
-        : '$ 0',
+        ? `£ ${finalSelection.data.company_details.avg_units_per_manager}`
+        : '£ 0',
       icon: 'ri-money-dollar-circle-line',
       backgroundColor: '#CBEFFB',
       iconColor: '#5BCCF0'
@@ -146,7 +148,8 @@ const ProjectMetrics: React.FC<FinalSelectionResponse> = ({ finalSelection }) =>
                               {feeItem?.management_fee_title}
                             </Typography>
                             <Typography variant='caption' color='#262B43E5' className='text-[20px]'>
-                              €{feeItem?.fee_amount}
+                              {CURRENCY}
+                              {feeItem?.fee_amount}
                             </Typography>
                           </Box>
                         </Box>
