@@ -403,8 +403,8 @@ const KitchenSink = () => {
           </div>
           <section className='flex justify-between items-start px-[20px] pb-[42px]'>
             <section className='flex items-start space-x-4'>
-              <div className='mt-[15px] size-[150px]'>
-                <Image src={pdfFrame} alt='image' className='h-[230px]' />
+              <div className='mt-[8px] size-[150px]'>
+                <Image src={pdfFrame} alt='image' />
               </div>
 
               <div className='w-[800px] mt-[15px]'>

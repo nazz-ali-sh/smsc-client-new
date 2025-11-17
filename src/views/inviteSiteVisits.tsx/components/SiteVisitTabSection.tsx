@@ -88,26 +88,11 @@ const SiteVisitTabSection: React.FC<InviteTabsProps> = ({ value, onChange }) => 
           sx={{
             textTransform: 'none',
             fontWeight: value === index ? 700 : 500,
-            color: '#939393 !important',
-            borderColor: '#35C0ED33 !important',
             '&.Mui-selected': {
-              color: '#939393 !important'
+              color: '#939393'
             },
             '&:hover': {
-              color: '#35C0ED !important',
-              backgroundColor: 'transparent !important',
-              '& span': {
-                color: '#35C0ED !important'
-              },
-              '& div': {
-                color: '#35C0ED !important'
-              }
-            },
-            '& .MuiTouchRipple-root': {
-              color: '#35C0ED !important'
-            },
-            '& .MuiTouchRipple-child': {
-              backgroundColor: '#35C0ED !important'
+              color: 'inherit'
             }
           }}
         />

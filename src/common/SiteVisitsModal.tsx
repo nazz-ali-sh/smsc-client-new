@@ -108,6 +108,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     slotName: ''
   })
 
+
   const CaanderReschedualdate = formatToIdealDate(calanderReschedualData?.schedualDate)
 
   const { invalidateCache } = useDashboardData()
@@ -155,7 +156,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     queryKey: ['shortlisted', tender_id],
     queryFn: () => shortlistedPmas(tender_id),
     enabled: types === 'fromDashboard' || types == 'fromCalender' || types == 'sitevVisitFromCalender',
-    retry: 2
+    retry : 2
   })
 
   const handleSlotSelection = (selectedId: string) => {
@@ -351,11 +352,12 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || error?.message || 'Failed to send invite'
 
-      toast.error(errorMessage)
       setSiteVisitsModalOpen(false)
+      toast.error(errorMessage)
       console.error('Failed to send invite:', error)
     }
   })
+
 
   const handleSendVideoCall = (formData: any) => {
     if (!formData.availableSlots) {
@@ -688,26 +690,18 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                         )
                       })
                     }
-                    slotProps={{
-                      paper: {
-                        sx: {
-                          '& .MuiAutocomplete-option': {
-                            '&:hover, &.Mui-focused': {
-                              backgroundColor: '#35C0ED !important',
-                              color: '#fff !important'
-                            },
-                            '&[aria-selected="true"]': {
-                              backgroundColor: '#35C0ED !important',
-                              color: '#fff !important'
-                            }
-                          }
-                        }
-                      }
-                    }}
                     sx={{
-                      '& .MuiAutocomplete-option[aria-selected="true"]': {
-                        backgroundColor: '#35C0ED !important',
-                        color: 'white !important'
+                      "& .MuiAutocomplete-option[aria-selected='true']": {
+                        backgroundColor: '#35C0ED',
+                        color: 'white'
+                      },
+                      '& .MuiAutocomplete-option.Mui-focused': {
+                        backgroundColor: '#35C0ED',
+                        color: 'white'
+                      },
+                      '& .MuiAutocomplete-option:hover': {
+                        backgroundColor: '#35C0ED33',
+                        color: '#000'
                       }
                     }}
                   />
@@ -786,6 +780,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       ) : (
         <>
           <DialogActions sx={{ px: 3, pb: 8, mt: 5 }}>
+     
             <CustomButton variant='contained' onClick={handleSubmit(handleSendVideoCall)}>
               Send To Selected Agents
             </CustomButton>

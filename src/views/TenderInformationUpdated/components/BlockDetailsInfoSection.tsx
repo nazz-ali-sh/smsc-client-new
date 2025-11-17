@@ -18,15 +18,13 @@ interface ExtendedBlockDetailsSectionProps extends BlockDetailsSectionProps {
   cardsPerRow?: number
   isVerticalList?: boolean
   showTitle?: boolean
-  visibleCardsCount?: number
 }
 
 const BlockDetailsInfoSection = ({
   blockData,
   cardsPerRow = 5,
   isVerticalList = false,
-  showTitle = true,
-  visibleCardsCount
+  showTitle = true
 }: ExtendedBlockDetailsSectionProps) => {
   if (!blockData) {
     return null
@@ -77,8 +75,6 @@ const BlockDetailsInfoSection = ({
     }
   ]
 
-  const visibleItems = blockItems.slice(0, visibleCardsCount || blockItems.length)
-
   if (isVerticalList) {
     return (
       <Box sx={{ marginBottom: 4 }}>
@@ -90,7 +86,7 @@ const BlockDetailsInfoSection = ({
           </Box>
         )}
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-          {visibleItems?.map((item, index) => (
+          {blockItems?.map((item, index) => (
             <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 2, paddingY: '8px' }}>
               <Box
                 sx={{
@@ -140,7 +136,7 @@ const BlockDetailsInfoSection = ({
       )}
       <Box sx={{ marginBottom: 4, marginTop: '24px' }}>
         <Grid container spacing={3} rowSpacing={6}>
-          {visibleItems?.map((item, index) => {
+          {blockItems?.map((item, index) => {
             return (
               <Grid item xs={12} sm={6} md={gridSize} key={index}>
                 <Box sx={{ display: 'flex', alignItems: 'start', gap: 2 }}>

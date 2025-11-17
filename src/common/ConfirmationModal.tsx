@@ -3,7 +3,6 @@ import React from 'react'
 import { Dialog, DialogTitle, DialogContent, Typography, Box, IconButton, useTheme, Divider } from '@mui/material'
 
 import CustomButton from './CustomButton'
-import { formatDates } from '@/utils/dateFormater'
 
 interface ConfirmationModalProps {
   open: boolean
@@ -14,14 +13,7 @@ interface ConfirmationModalProps {
   selectedPmaName?: any
 }
 
-const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
-  open,
-  onClose,
-  inviteData,
-  type,
-  selectcomapny,
-  selectedPmaName
-}) => {
+const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ open, onClose, inviteData, type, selectcomapny, selectedPmaName }) => {
   const theme = useTheme()
 
   return (
@@ -85,14 +77,8 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                       padding: '12px'
                     }}
                   >
-                    <Typography
-                      variant='body2'
-                      sx={{ mb: 0.5, fontWeight: '500', fontSize: '0.875rem', marginTop: '12px' }}
-                    >
-                      Scheduled Date: {formatDates(inviteData?.[0]?.scheduled_date) || 'N/A'}
-                    </Typography>
                     <Typography variant='body2' sx={{ mb: 0.5, fontWeight: '500', fontSize: '0.875rem' }}>
-                      Slot Timing: {inviteData?.[0]?.slot_name || 'N/A'}
+                      Slot Timing: {inviteData?.[0]?.slot_name || inviteData?.[2]?.slot_name || 'N/A'}
                     </Typography>
                   </Box>
                 </Box>
@@ -123,8 +109,8 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             <Box>
               <>
                 <Typography variant='body2' sx={{ fontSize: '0.875rem', marginBottom: '10px' }}>
-                  <span className='font-bold'>{selectcomapny || selectcomapny || selectedPmaName}</span> Have Been
-                  Notified & Will Be In Touch With You Very Shortly.
+                  <span className='font-bold'>{selectcomapny || selectcomapny || selectedPmaName}</span> Have Been Notified & Will Be In
+                  Touch With You Very Shortly.
                 </Typography>
               </>
 
