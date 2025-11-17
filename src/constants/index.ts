@@ -601,3 +601,6 @@ export const onboardingPublicRoutes = [
 
 export const placeholderImage =
   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIf4R5qPKHPNMyAqV-FjS_OTBB8pfUV29Phg&s'
+
+
+export const currencySymbol = '£'

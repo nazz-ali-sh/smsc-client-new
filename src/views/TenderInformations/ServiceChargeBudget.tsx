@@ -6,6 +6,8 @@ import { Typography, Box, Grid } from '@mui/material'
 
 import { iconMap } from '@/common/data'
 
+import { currencySymbol } from '@/constants'
+
 interface servicesBudget {
   servicesbuget?: any
   servicesbudgets?: any
@@ -44,7 +46,8 @@ const ServiceChargeBudget: React.FC<servicesBudget> = ({ servicesbuget }) => {
                           {feeItem?.management_fee_title}
                         </Typography>
                         <Typography variant='caption' color='#262B43E5' className='text-[20px]'>
-                          €{feeItem?.fee_amount}
+                          {currencySymbol}
+                          {feeItem?.fee_amount}
                         </Typography>
                       </Box>
                     </Box>

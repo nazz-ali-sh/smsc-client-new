@@ -24,7 +24,7 @@ export const rmcMenuData: MenuItem[] = [
   },
   {
     image: <i className='ri-database-line'></i>,
-    menuItem: 'Tender Results',
+    menuItem: 'Tender Replies',
     href: '/tender-result',
     alwaysEnabled: false
   },

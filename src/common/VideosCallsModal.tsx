@@ -116,8 +116,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     slotName: ''
   })
 
-
-
   const { invalidateCache } = useDashboardData()
 
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)
@@ -157,7 +155,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     queryKey: ['shortlisted', tender_id],
     queryFn: () => shortlistedPmas(tender_id),
     enabled: types === 'fromDashboard' || componentTypes == 'fromCalender',
-    retry : 2
+    retry: 2
   })
 
   const {
@@ -234,7 +232,6 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       setSlotError('')
     }
   })
-
 
   const handleSendVideoCalls = async (formData: any) => {
     if (!formData.availableSlots) {
@@ -673,7 +670,9 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                     getOptionLabel={(option: any) => option.pma_number || ''}
                     isOptionEqualToValue={(option, value) => String(option.id) === String((value as any)?.id)}
                     value={field.value || []}
-                    onChange={(_, newValue) => field.onChange(newValue)}
+                    onChange={(_, newValue) => {
+                      field.onChange(newValue)
+                    }}
                     renderInput={params => (
                       <TextField
                         {...params}
@@ -712,18 +711,26 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                         )
                       })
                     }
+                    slotProps={{
+                      paper: {
+                        sx: {
+                          '& .MuiAutocomplete-option': {
+                            '&:hover, &.Mui-focused': {
+                              backgroundColor: '#35C0ED !important',
+                              color: '#fff !important'
+                            },
+                            '&[aria-selected="true"]': {
+                              backgroundColor: '#35C0ED33 !important',
+                              color: '#fff !important'
+                            }
+                          }
+                        }
+                      }
+                    }}
                     sx={{
-                      "& .MuiAutocomplete-option[aria-selected='true']": {
-                        backgroundColor: '#35C0ED',
-                        color: 'white'
-                      },
-                      '& .MuiAutocomplete-option.Mui-focused': {
-                        backgroundColor: '#35C0ED',
-                        color: 'white'
-                      },
-                      '& .MuiAutocomplete-option:hover': {
-                        backgroundColor: '#35C0ED33',
-                        color: '#000'
+                      '& .MuiAutocomplete-option[aria-selected="true"]': {
+                        backgroundColor: '#35C0ED !important',
+                        color: 'white !important'
                       }
                     }}
                   />

@@ -1,12 +1,12 @@
 const generateTimeOptions = () => {
   const times = []
-  let currentHour = 9
+  let currentHour = 0
   let currentMinute = 0
 
-  while (currentHour < 21 || (currentHour === 21 && currentMinute === 0)) {
-    const timeString = `${currentHour?.toString()?.padStart(2, '0')}:${currentMinute?.toString()?.padStart(2, '0')}`
-
-    times?.push(timeString)
+  while (currentHour < 24) {
+    const timeString = `${currentHour.toString().padStart(2, '0')}:${currentMinute.toString().padStart(2, '0')}`
+    
+    times.push(timeString)
 
     currentMinute += 45
 

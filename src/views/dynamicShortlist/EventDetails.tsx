@@ -10,6 +10,7 @@ import EditableDataTables from './components/PastActivityTable'
 import useMediaQuery from '@/@menu/hooks/useMediaQuery'
 import successVisit from '../../../public/images/customImages/sucess.svg'
 import tradingYear from '../../../public/images/dashboardImages/tradingYear.svg'
+import { currencySymbol } from '@/constants'
 
 import type { PmaDetailsResponse } from './type'
 
@@ -26,7 +27,6 @@ const EventDetails = ({ userData }: EventDetailsProps) => {
     { label: '1 Star', count: userData?.data?.ratings_and_reviews?.one_star_count }
   ]
 
-
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
@@ -35,18 +35,18 @@ const EventDetails = ({ userData }: EventDetailsProps) => {
       id: 1,
       state: 'Quotation',
       icons: <i className='ri-customer-service-2-line'></i>,
-      description: `$ ${userData?.data?.quotation?.latest_quote}`
+      description: `${currencySymbol} ${userData?.data?.quotation?.latest_quote || '0'}`
     },
     {
       id: 4,
       icons: <Image src={successVisit} alt='success Visit' />,
       state: 'No. of Units Managed',
-      description: `${userData?.data?.company_details?.avg_units_per_manager} Properties`
+      description: `${userData?.data?.company_details?.avg_units_per_manager || '0'} Properties`
     },
     {
       id: 2,
-      icons: <Image src={tradingYear} alt='Trading Years' />,
-      state: 'Trading Years',
+      icons: <Image src={tradingYear} alt='Years Trading' />,
+      state: 'Years Trading',
       description: `${userData?.data?.company_details?.trading_years} Years`
     }
   ]

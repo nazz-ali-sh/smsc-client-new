@@ -2,6 +2,8 @@ import * as React from 'react'
 
 import Image from 'next/image'
 
+import { useRouter } from 'next/navigation'
+
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import Box from '@mui/material/Box'
@@ -14,6 +16,7 @@ import timeLine from '../../../../public/images/customImages/timeLine.svg'
 import map from '../../../../public/images/customImages/map.svg'
 import useMediaQuery from '@/@menu/hooks/useMediaQuery'
 import { setActiveTab } from '@/redux-store/slices/tabSlice'
+import CustomButton from '@/common/CustomButton'
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -50,8 +53,8 @@ function a11yProps(index: number) {
 }
 
 const tabsData = [
-  { label: 'Site-visit', mainLabel: 'site-visits', iconClass: 'ri-hotel-line' },
-  { label: 'Calls', mainLabel: 'calls', iconClass: 'ri-phone-line' },
+  { label: 'site-visits', mainLabel: 'Site Visits', iconClass: 'ri-hotel-line' },
+  { label: 'Calls', mainLabel: 'Calls', iconClass: 'ri-phone-line' },
   { label: 'Chats', mainLabel: 'Chats', iconClass: 'ri-hotel-line' },
   { label: 'Documents', mainLabel: 'Documents', iconClass: 'ri-hotel-line' },
   { label: 'Notes', mainLabel: 'Notes', iconClass: 'ri-hotel-line' }
@@ -68,7 +71,15 @@ const TabsSwitch: React.FC<TabsSwitchProps> = ({ data }) => {
     setValue(newValue)
     const selectedLabel = tabsData[newValue].mainLabel
 
-    dispatch(setActiveTab(selectedLabel))
+    if (selectedLabel == 'Calls') {
+      dispatch(setActiveTab('calls'))
+    } else dispatch(setActiveTab(selectedLabel))
+  }
+
+  const router = useRouter()
+
+  const navigateTo = (route: string) => {
+    router.push(route)
   }
 
   return (
@@ -85,6 +96,7 @@ const TabsSwitch: React.FC<TabsSwitchProps> = ({ data }) => {
               textTransform: 'none',
               fontSize: '0.875rem',
               color: '#666',
+              borderColor: '#35C0ED33 !important',
               flex: 1,
               padding: '8px 16px',
               '&.Mui-selected': {
@@ -143,9 +155,12 @@ const TabsSwitch: React.FC<TabsSwitchProps> = ({ data }) => {
       </Box>
 
       <CustomTabPanel value={value} index={0}>
-        <Typography variant='h4' className='mt-[20px]'>
-          Upcoming Site Visit
-        </Typography>
+        <div className='flex justify-between items-center'>
+          <Typography variant='h4' className='mt-[20px]'>
+            Upcoming Site Visit
+          </Typography>
+          <CustomButton onClick={() => navigateTo('/site-visits')}>View History</CustomButton>
+        </div>
         <Typography variant='body2' className='max-w-[65%] mt-[20px]'>
           Meeting with PMA - {data?.data?.pma_user?.name} on{' '}
           {data?.data?.upcoming_site_visit?.date || 'Monday 25th June 2025'} at{' '}
@@ -162,15 +177,13 @@ const TabsSwitch: React.FC<TabsSwitchProps> = ({ data }) => {
 
           <section className='flex flex-col items-center mb-2'>
             <Image src={timeLine} alt='calendar' />
-            <p className='text-center mt-3'>{data?.data?.upcoming_site_visit?.day || 'Monday'}</p>
-            <p className='text-center'>{data?.data?.upcoming_site_visit?.time || '11:00 AM'}</p>
+            <p className='text-center mt-3 mb-[22px]'>{data?.data?.upcoming_site_visit?.time || '11:00 AM'}</p>
             <div className='h-[10px] bg-[#E1F3D7] w-[200px] rounded-xl mt-7'></div>
           </section>
 
           <section className='flex flex-col items-center mb-2'>
             <Image src={map} alt='timeline' />
-            <p className='text-center mt-3'>{data?.data?.company_details?.address || 'Adress'}</p>
-            <p className='text-center'>{data?.data?.upcoming_site_visit?.time || '11:00 AM'}</p>
+            <p className='text-center mt-3 h-[44px]'>{data?.data?.company_details?.address || 'Adress'}</p>
             <div className='h-[10px] bg-[#5e728d] w-[200px] rounded-xl mt-7'></div>
           </section>
         </div>
@@ -178,9 +191,12 @@ const TabsSwitch: React.FC<TabsSwitchProps> = ({ data }) => {
 
       {/* Calls Tab */}
       <CustomTabPanel value={value} index={1}>
-        <Typography variant='h4' className='mt-[20px]'>
-          Upcoming Calls
-        </Typography>
+        <div className='flex justify-between items-center'>
+          <Typography variant='h4' className='mt-[20px]'>
+            Upcoming Calls
+          </Typography>
+          <CustomButton onClick={() => navigateTo('/video-calls')}>View History</CustomButton>
+        </div>
         <Typography variant='body2' className='max-w-[65%] mt-[20px]'>
           Meeting with PMA - {data?.data?.pma_user?.name} on{' '}
           {data?.data?.upcoming_video_call?.date || 'Monday 25th June 2025'} at

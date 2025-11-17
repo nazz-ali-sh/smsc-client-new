@@ -10,6 +10,7 @@ import { iconMap } from '@/common/data'
 import ServiceChargeBudgetSection from '@/views/TenderInformationUpdated/components/ServiceChargeBudgetSection'
 import { useTenderDetail } from '@/hooks/useTenderDetail'
 import successVisit from '../../../../public/images/customImages/sucess.svg'
+import { currencySymbol } from '@/constants'
 
 interface FinalSelectionResponse {
   finalSelection?: any
@@ -37,8 +38,8 @@ const ProjectMetrics: React.FC<FinalSelectionResponse> = ({ finalSelection }) =>
     {
       title: 'Quotation',
       value: finalSelection?.data?.company_details?.avg_units_per_manager
-        ? `$ ${finalSelection.data.company_details.avg_units_per_manager}`
-        : '$ 0',
+        ? `£ ${finalSelection.data.company_details.avg_units_per_manager}`
+        : '£ 0',
       icon: 'ri-money-dollar-circle-line',
       backgroundColor: '#CBEFFB',
       iconColor: '#5BCCF0'
@@ -146,7 +147,8 @@ const ProjectMetrics: React.FC<FinalSelectionResponse> = ({ finalSelection }) =>
                               {feeItem?.management_fee_title}
                             </Typography>
                             <Typography variant='caption' color='#262B43E5' className='text-[20px]'>
-                              €{feeItem?.fee_amount}
+                              {currencySymbol}
+                              {feeItem?.fee_amount}
                             </Typography>
                           </Box>
                         </Box>

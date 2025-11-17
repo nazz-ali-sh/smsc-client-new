@@ -8,6 +8,7 @@ import { Box, Grid, Typography } from '@mui/material'
 
 import CommonModal from '@/common/CommonModal'
 import type { ServiceChargeBudgetSectionProps } from '../types'
+import { currencySymbol } from '@/constants'
 
 interface ExtendedServiceChargeBudgetSectionProps extends ServiceChargeBudgetSectionProps {
   itemsPerRow?: number
@@ -21,7 +22,7 @@ const ServiceChargeBudgetSection = ({
   itemsPerRow = 5,
   sx,
   title,
-  amountSymbol = '£'
+  amountSymbol = currencySymbol
 }: ExtendedServiceChargeBudgetSectionProps) => {
   const [titleModalOpen, setTitleModalOpen] = useState(false)
 

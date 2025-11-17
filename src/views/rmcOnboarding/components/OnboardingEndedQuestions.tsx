@@ -223,7 +223,7 @@ const OnboardingEndedQuestions = () => {
         >
           <p className='text-[#696969] text-base font-normal mt-4'>
             Thanks! Your tender is now under review. You will be notified when it goes live and when the results are in.
-            Tenders typically run for 5 days. Quotes will start arriving soon."
+            Tenders typically run for 5 days. Quotes will start arriving soon.
           </p>
           <div className='mt-8 flex justify-end'>
             <CustomButton onClick={handleDashbaord} sx={buttonStyles}>

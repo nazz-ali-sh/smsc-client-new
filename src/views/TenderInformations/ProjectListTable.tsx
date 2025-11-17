@@ -159,7 +159,7 @@ const KitchenSink = () => {
           style: 'currency',
           currency: 'GBP'
         }),
-        location: item?.location?.county || '0',
+        location: item?.location?.county || '-',
         NoOfUnits: item?.company_metrics?.total_units_managed ?? item?.quotation?.per_unit_equivalent_inc_vat ?? '0',
         googleReview: item?.reviews?.google?.rating || 0,
         tradingYears: item?.company_metrics?.trading_years ?? '0',
@@ -403,8 +403,8 @@ const KitchenSink = () => {
           </div>
           <section className='flex justify-between items-start px-[20px] pb-[42px]'>
             <section className='flex items-start space-x-4'>
-              <div className='mt-[8px] size-[150px]'>
-                <Image src={pdfFrame} alt='image' />
+              <div className='mt-[15px] size-[150px]'>
+                <Image src={pdfFrame} alt='image' className='h-[230px]' />
               </div>
 
               <div className='w-[800px] mt-[15px]'>

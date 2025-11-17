@@ -31,6 +31,7 @@ import CustomButton from '@/common/CustomButton'
 import CustomTooltip from '@/common/CustomTooltip'
 import { calculateTimeLeft } from '@/utils/dateFormater'
 import { formatWebsiteUrl } from '@/utils/urlHelpers'
+import { currencySymbol } from '@/constants'
 
 const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce: any }) => {
   const router = useRouter()
@@ -134,19 +135,34 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                   />
 
                   <div className='mt-4 text-[12px] text-buttonPrimary font-bold text-center flex justify-center'>
-                    <CustomButton
-                      disabled={appointmnetStatus === 'appointment'}
-                      onClick={() => handkeAppointAgnet(company?.pma_user?.id, company?.company_details?.name)}
-                    >
-                      <Image src={whiteperson} alt='person' className='mr-[10px]' />
-                      Appoint This Agent
-                    </CustomButton>
+                    {appointmnetStatus === 'appointment' ? (
+                      <CustomTooltip
+                        text="You've appointed your agent. No further actions can be taken on this tender."
+                        position='right'
+                        align='left'
+                      >
+                        <div>
+                          <CustomButton disabled>
+                            <Image src={whiteperson} alt='person' className='mr-[10px]' />
+                            Appointed
+                          </CustomButton>
+                        </div>
+                      </CustomTooltip>
+                    ) : (
+                      <CustomButton
+                        onClick={() => handkeAppointAgnet(company?.pma_user?.id, company?.company_details?.name)}
+                      >
+                        <Image src={whiteperson} alt='person' className='mr-[10px]' />
+                        Appoint This Agent
+                      </CustomButton>
+                    )}
                   </div>
                 </div>
 
                 <div className='flex-1 text-center sm:text-left'>
                   <Typography variant='h3' className='text-[#1F4E8D] text-[34px] font-bold pb-1'>
-                    €{company?.fee_amount}
+                    {currencySymbol}
+                    {company?.fee_amount}
                   </Typography>
 
                   <div
@@ -241,33 +257,37 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                     ''
                   ) : (
                     <>
-                      <div className='flex sm:flex-row gap-2 items-center justify-center sm:justify-start cursor-default'>
-                        <Typography variant='h3' className='text-[#1F4E8D] text-[21px] font-bold py-1 italic'>
-                          {shortlistexpiryDate?.days !== '0' && <span>{shortlistexpiryDate?.days} days </span>}
-                          {shortlistexpiryDate?.hours !== '0' && <span>{shortlistexpiryDate?.hours} hours </span>}
-                          {shortlistexpiryDate?.minutes !== '0' && (
-                            <span> {shortlistexpiryDate?.minutes} minutes </span>
-                          )}
-                        </Typography>
-                        <CustomTooltip
-                          text='During this time period, your contact information will be hidden. This setting is in place to allow you to initiate video calls securely.'
-                          position='right'
-                          align='right'
-                          width='350px'
-                        >
-                          <i className='ri-information-line text-[#1F4E8D] cursor-default'></i>
-                        </CustomTooltip>
-                      </div>
+                      {appointmnetStatus !== 'appointment' && (
+                        <>
+                          <div className='flex sm:flex-row gap-2 items-center justify-center sm:justify-start cursor-default'>
+                            <Typography variant='h3' className='text-[#1F4E8D] text-[21px] font-bold py-1 italic'>
+                              {shortlistexpiryDate?.days !== '0' && <span>{shortlistexpiryDate?.days} days </span>}
+                              {shortlistexpiryDate?.hours !== '0' && <span>{shortlistexpiryDate?.hours} hours </span>}
+                              {shortlistexpiryDate?.minutes !== '0' && (
+                                <span> {shortlistexpiryDate?.minutes} minutes </span>
+                              )}
+                            </Typography>
+                            <CustomTooltip
+                              text='During this time period, your contact information will be hidden. This setting is in place to allow you to initiate video calls securely.'
+                              position='right'
+                              align='right'
+                              width='350px'
+                            >
+                              <i className='ri-information-line text-[#1F4E8D] cursor-default'></i>
+                            </CustomTooltip>
+                          </div>
 
-                      <div className='mt-[8px] flex justify-center sm:justify-start'>
-                        <CustomButton
-                          disabled={extendedCheck === true}
-                          onClick={() => handleExtendByThree(company?.pma_user?.id)}
-                          variant='outlined'
-                        >
-                          Extend by 3 days
-                        </CustomButton>
-                      </div>
+                          <div className='mt-[8px] flex justify-center sm:justify-start'>
+                            <CustomButton
+                              disabled={extendedCheck === true}
+                              onClick={() => handleExtendByThree(company?.pma_user?.id)}
+                              variant='outlined'
+                            >
+                              Extend by 3 days
+                            </CustomButton>
+                          </div>
+                        </>
+                      )}
                     </>
                   )}
                 </div>
@@ -310,6 +330,11 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                 <div className='flex flex-col justify-between items-center'>
                   <div className='relative w-[130px] h-[180px]'>
                     <Image src={ActiveBrochers} alt='pdf download' className='w-[130px] h-[180px]' />
+                    <Image
+                      src={companyImage}
+                      alt='overlay'
+                      className='absolute top-3 left-9 w-[60px] h-[60px] object-cover'
+                    />
                   </div>
 
                   <div className='w-full flex justify-center space-x-2.5 mt-2'>
@@ -422,6 +447,11 @@ const DetailedReview = ({ finalShortListedResponce }: { finalShortListedResponce
                 <div className='flex-1 flex flex-col items-center justify-center md:ml-[170px]'>
                   <div className='relative w-[130px] h-[180px]'>
                     <Image src={ActiveBrochers} alt='pdf download' className='w-[130px] h-[180px]' />
+                    <Image
+                      src={companyImage}
+                      alt='overlay'
+                      className='absolute top-3 left-9 w-[60px] h-[60px] object-cover'
+                    />
                   </div>
                   <div className='w-full flex justify-center space-x-2.5 mt-2'>
                     <i className='ri-download-2-fill text-[#26C6F9] mt-[2px]'></i>

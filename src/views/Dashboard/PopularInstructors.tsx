@@ -150,7 +150,7 @@ const TenderCards = () => {
             {!tenderId ? (
               <Typography
                 sx={{
-                  paddingTop: '8px',
+                  marginTop: '8px',
                   color: '#919191E5',
                   paddingX: '22px',
                   fontSize: '12px',
@@ -270,7 +270,7 @@ const TenderCards = () => {
                 fontWeight: 500
               }}
             >
-              Tender Results
+              Tender Replies
             </Typography>
 
             {!tenderId ? (
@@ -283,7 +283,7 @@ const TenderCards = () => {
                   fontWeight: 300
                 }}
               >
-                Tender Results Not Available
+                Tender Replies Not Available
               </Typography>
             ) : (
               <Typography
@@ -310,7 +310,7 @@ const TenderCards = () => {
             {!tenderId ? (
               <Typography
                 sx={{
-                  paddingTop: '8px',
+                  marginTop: '8px',
                   color: '#919191E5',
                   paddingX: '22px',
                   fontSize: '12px',
@@ -340,7 +340,7 @@ const TenderCards = () => {
                     paddingTop: '2px'
                   }}
                 >
-                  Results received on : {formatDates(stages?.result_received?.details?.tender_response_date)}
+                  Replies received on : {formatDates(stages?.result_received?.details?.tender_response_date)}
                 </Typography>
                 <Typography
                   sx={{
@@ -362,7 +362,7 @@ const TenderCards = () => {
                     paddingTop: '2px'
                   }}
                 >
-                  Total results received : {stages?.result_received?.details?.total_response_count} PMAs
+                  Total replies received : {stages?.result_received?.details?.total_response_count} PMAs
                 </Typography>
               </CardContent>
             ) : (
@@ -385,7 +385,7 @@ const TenderCards = () => {
               sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px' }}
               className=' absolute bottom-[18px] right-2'
             >
-              <CustomTooltip text='View Tender Results' position='left' align='left'>
+              <CustomTooltip text='View Tender Replies' position='left' align='left'>
                 <Box
                   sx={{
                     width: '36px',
@@ -445,7 +445,7 @@ const TenderCards = () => {
                   fontWeight: 300
                 }}
               >
-                Tender Results Not Available
+                Tender Replies Not Available
               </Typography>
             ) : (
               <Typography
@@ -484,7 +484,7 @@ const TenderCards = () => {
                   fontSize: '13px',
                   fontWeight: 400,
                   paddingX: '22px',
-                  marginTop: '14px'
+                  marginTop: '24px'
                 }}
               >
                 Once the tender period has officially ended, you will be able to shortlist agents.
@@ -496,8 +496,7 @@ const TenderCards = () => {
                     color: 'customColors.textGray',
                     fontSize: '13px',
                     fontWeight: 400,
-                    paddingX: '8px',
-                    marginTop: '14px'
+                    paddingX: '8px'
                   }}
                 >
                   View Company Information On The Managing Agents You Have Shortlisted
@@ -509,7 +508,7 @@ const TenderCards = () => {
                   color: 'red',
                   fontSize: '13px',
                   fontWeight: 400,
-                  marginTop: '15px',
+                  marginTop: '8px',
                   paddingX: '24px'
                 }}
               >
@@ -563,7 +562,6 @@ const TenderCards = () => {
                     alignItems: 'center',
                     backgroundColor: stages?.shortlisted?.is_completed ? '#26C6F93D' : 'customColors.cyan3',
                     marginX: '6px',
-                    cursor: stages?.shortlisted?.is_completed ? 'not-allowed' : 'pointer',
                     transition: 'all 0.3s ease'
                   }}
                 >
@@ -641,7 +639,7 @@ const TenderCards = () => {
                   fontWeight: 300
                 }}
               >
-                You’ve invited {dashboardResponce?.data?.schedule_calls} agents to video calls.
+                You've scheduled {dashboardResponce?.data?.schedule_calls} Video Calls for this tender.
               </Typography>
             ) : !CallCurrentStage && Number(sinceLastVideoCall) >= 1 ? (
               <Typography
@@ -660,7 +658,25 @@ const TenderCards = () => {
 
             <Divider sx={{ height: '2px', backgroundColor: '#D9D9D9', my: 1, marginTop: '14px' }} />
 
-            {!tenderId ? (
+            {stages?.appointment?.is_completed && stages?.video_call?.details?.invited_count === 0 ? (
+              <Typography
+                sx={{
+                  paddingTop: '8px',
+                  color: '#696969',
+                  paddingX: '24px',
+                  fontSize: '12px',
+                  fontWeight: 300,
+                  marginTop: '24px'
+                }}
+              >
+                The Video Call stage was skipped as {stages?.appointment?.details?.appointed_pma_name || '[PMA Name]'}{' '}
+                was directly appointed to the tender on{' '}
+                {stages?.appointment?.completed_at
+                  ? formatDates(stages?.appointment?.completed_at)
+                  : '[Date of Appointment]'}
+                .
+              </Typography>
+            ) : !tenderId ? (
               <Typography
                 sx={{
                   paddingTop: '8px',
@@ -680,7 +696,7 @@ const TenderCards = () => {
                   fontSize: '13px',
                   fontWeight: 400,
                   paddingX: '22px',
-                  marginTop: '14px'
+                  marginTop: '24px'
                 }}
               >
                 You’ll be able to invite agents to video calls once you have shortlisted from your results.
@@ -693,7 +709,7 @@ const TenderCards = () => {
                     fontSize: '13px',
                     fontWeight: 400,
                     paddingX: '1px',
-                    marginTop: '14px'
+                    marginTop: '8px'
                   }}
                 >
                   Next Scheduled Call : {formatDates(stages?.video_call?.details?.upcoming?.date) || ''}{' '}
@@ -706,7 +722,7 @@ const TenderCards = () => {
                     fontSize: '13px',
                     fontWeight: 400,
                     paddingX: '1px',
-                    marginTop: '14px'
+                    marginTop: '8px'
                   }}
                 >
                   {stages?.video_call?.details?.completed?.date && (
@@ -783,7 +799,6 @@ const TenderCards = () => {
                     alignItems: 'center',
                     backgroundColor: stages?.appointment?.is_completed ? '#26C6F93D' : 'customColors.cyan3',
                     marginX: '6px',
-                    cursor: stages?.appointment?.is_completed ? 'not-allowed' : 'pointer',
                     transition: 'all 0.3s ease'
                   }}
                 >
@@ -863,7 +878,7 @@ const TenderCards = () => {
                   fontWeight: 300
                 }}
               >
-                You’ve invited {dashboardResponce?.data?.schedule_calls} agents to site visit.
+                You've scheduled {dashboardResponce?.data?.schedule_calls} Site Visits for this tender.
               </Typography>
             ) : !siteVistCurrentStage && Number(sinceLastSiteVisit) >= 1 ? (
               <Typography
@@ -882,7 +897,25 @@ const TenderCards = () => {
 
             <Divider sx={{ height: '2px', backgroundColor: '#D9D9D9', my: 1, marginTop: '14px' }} />
 
-            {!tenderId ? (
+            {stages?.appointment?.is_completed && stages?.video_call?.details?.invited_count === 0 ? (
+              <Typography
+                sx={{
+                  paddingTop: '8px',
+                  color: '#696969',
+                  paddingX: '24px',
+                  fontSize: '12px',
+                  fontWeight: 300,
+                  marginTop: '24px'
+                }}
+              >
+                The Site Visit stage was skipped as {stages?.appointment?.details?.appointed_pma_name || '[PMA Name]'}{' '}
+                was directly appointed to the tender on{' '}
+                {stages?.appointment?.completed_at
+                  ? formatDates(stages?.appointment?.completed_at)
+                  : '[Date of Appointment]'}
+                .
+              </Typography>
+            ) : !tenderId ? (
               <Typography
                 sx={{
                   paddingTop: '8px',
@@ -901,7 +934,7 @@ const TenderCards = () => {
                   color: stages?.site_visit?.is_current ? 'customColors.textGray' : '#919191E5',
                   fontSize: '13px',
                   fontWeight: 400,
-                  marginTop: '14px',
+                  marginTop: '24px',
                   paddingX: '24px'
                 }}
               >
@@ -914,7 +947,7 @@ const TenderCards = () => {
                     color: 'customColors.textGray',
                     fontSize: '13px',
                     fontWeight: 400,
-                    marginTop: '14px',
+                    marginTop: '8px',
                     paddingX: '1px'
                   }}
                 >
@@ -927,7 +960,7 @@ const TenderCards = () => {
                     color: 'customColors.textGray',
                     fontSize: '13px',
                     fontWeight: 400,
-                    marginTop: '14px',
+                    marginTop: '8px',
                     paddingX: '1px'
                   }}
                 >
@@ -947,7 +980,7 @@ const TenderCards = () => {
                   color: 'red',
                   fontSize: '13px',
                   fontWeight: 400,
-                  marginTop: '20px',
+                  marginTop: '8px',
                   paddingX: '24px'
                 }}
               >
@@ -964,7 +997,7 @@ const TenderCards = () => {
             >
               <CustomTooltip text='View All Site visits' position='left' align='left'>
                 <Box
-                 onClick={!stages?.appointment?.is_current ? undefined : () => router.push('/site-visits')}
+                  onClick={!stages?.appointment?.is_current ? undefined : () => router.push('/site-visits')}
                   sx={{
                     width: '36px',
                     height: '36px',
@@ -1005,8 +1038,7 @@ const TenderCards = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                     backgroundColor: stages?.appointment?.is_completed ? '#26C6F93D' : 'customColors.cyan3',
-                    marginX: '6px',
-                    cursor: stages?.appointment?.is_completed ? 'not-allowed' : 'pointer'
+                    marginX: '6px'
                   }}
                 >
                   <Image
@@ -1113,7 +1145,7 @@ const TenderCards = () => {
                     color: 'customColors.textGray',
                     fontSize: '13px',
                     fontWeight: 400,
-                    lineHeight: '22px'
+                    lineHeight: '24px'
                   }}
                 >
                   <span className='font-bold'>Congratulations, you’ve appointed a new managing agent.</span> We’ll now
@@ -1162,8 +1194,7 @@ const TenderCards = () => {
                         justifyContent: 'center',
                         alignItems: 'center',
                         backgroundColor: 'customColors.cyan3',
-                        marginX: '6px',
-                        cursor: stages?.shortlisted?.is_completed ? 'not-allowed' : 'pointer'
+                        marginX: '6px'
                       }}
                     >
                       <Image src={personWhiteIcon} alt='personTodo' className={`w-[14px] h-[14px]  `} />

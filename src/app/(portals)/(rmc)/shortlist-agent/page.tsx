@@ -87,7 +87,7 @@ export default function Pages() {
                 </span>
               </div>
 
-              <div className='flex gap-2 items-center'>
+              <div className='flex gap-2 items-center md:ml-12 lg:ml-0 sm:leading-[55px]'>
                 <Typography variant='h2' className='pl-6 font-bold'>
                   Shortlisted Agents
                 </Typography>
@@ -102,7 +102,7 @@ export default function Pages() {
                 </span>
               </div>
             </div>
-            <div>
+            <div className='md:mt-4 md:mb-4 lg:mt-0'>
               <CustomButton
                 onClick={() => router.push('/evaluation-matrix')}
                 variant='contained'
