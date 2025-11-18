@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Box, Typography, TextField, Button } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
+import jsPDF from 'jspdf'
 
 import { useSelector } from 'react-redux'
 
@@ -259,6 +260,137 @@ const EvaluationMatrix = () => {
     }
   }
 
+  const handleDownloadPDF = () => {
+    const doc = new jsPDF()
+
+    const logoImg = new Image()
+
+    logoImg.crossOrigin = 'anonymous'
+    logoImg.src = '/images/customImages/appLogo.png'
+
+    logoImg.onload = () => {
+      const logoWidth = 15
+      const logoHeight = 10
+
+      doc.addImage(logoImg, 'PNG', 20, 15, logoWidth, logoHeight)
+
+      doc.setFontSize(16)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(31, 78, 141)
+      let yPosition = 20
+
+      const pageWidth = doc.internal.pageSize.getWidth()
+      const titleText = 'Evaluation Matrix'
+      const titleWidth = doc.getTextWidth(titleText)
+      const titleX = (pageWidth - titleWidth) / 2
+
+      doc.text(titleText, titleX, yPosition + 10)
+      yPosition += 20
+
+      doc.setFontSize(12)
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(31, 78, 141)
+
+      const firstParagraph = `Use this matrix to score each shortlisted managing agent from 1 (poor) to 10 (excellent) based on your video calls or site visits. Each criterion has a weighting (from 0.5 to 1.5) that automatically adjusts the importance of your scores — higher weightings increase the overall impact of that criterion.`
+      const splitFirstParagraph = doc.splitTextToSize(firstParagraph, 170)
+
+      doc.text(splitFirstParagraph, 20, yPosition)
+      yPosition += splitFirstParagraph.length * 5 + 3
+
+      const secondParagraph = `You can print a blank copy to gather feedback from other residents, then enter your final agreed scores here. Once saved, your results are locked and will appear in your Final Report.`
+      const splitSecondParagraph = doc.splitTextToSize(secondParagraph, 170)
+
+      doc.text(splitSecondParagraph, 20, yPosition)
+      yPosition += splitSecondParagraph.length * 5 + 20
+
+      const headerStartY = yPosition
+
+      doc.setFillColor(212, 239, 247)
+      doc.rect(20, headerStartY - 6, 170, 16, 'F')
+
+      yPosition += 0
+
+      doc.setFontSize(14)
+      doc.setFont('helvetica', 'bold')
+      doc.text('CRITERIA', 20, yPosition + 4) 
+      doc.text('SCORE', 140, yPosition + 4) 
+      yPosition += 10
+
+      doc.setDrawColor(31, 78, 141)
+      doc.setLineWidth(0.2)
+      doc.line(20, yPosition, 190, yPosition)
+      yPosition += 10
+
+      doc.setFontSize(11)
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(31, 78, 141)
+
+      evaluationData.forEach((category: any) => {
+        if (yPosition > 270) {
+          doc.addPage()
+          yPosition = 20
+          // Add background for header row on new page
+          const headerStartY = yPosition
+          doc.setFillColor(212, 239, 247)
+          doc.rect(20, headerStartY - 6, 170, 16, 'F')
+
+          doc.setFontSize(14)
+          doc.setFont('helvetica', 'bold')
+          doc.text('CRITERIA', 20, yPosition + 4)
+          doc.text('SCORE', 140, yPosition + 4)
+          yPosition += 10
+          doc.setDrawColor(31, 78, 141)
+          doc.line(20, yPosition, 190, yPosition)
+          yPosition += 10
+          doc.setFontSize(11)
+          doc.setFont('helvetica', 'normal')
+        }
+
+        doc.setFont('helvetica', 'bold')
+        const categoryName = category.name || ''
+        const categoryNameLines = doc.splitTextToSize(categoryName, 90)
+        const categoryNameYPosition = yPosition
+
+        doc.text(categoryNameLines, 20, yPosition)
+        yPosition += categoryNameLines.length * 4 + 3
+
+        doc.setFont('helvetica', 'normal')
+        const description = category.description || ''
+        const descLines = doc.splitTextToSize(description, 90)
+
+        doc.text(descLines, 20, yPosition)
+        yPosition += descLines.length * 4 + 8
+
+        doc.setDrawColor(31, 78, 141)
+        doc.rect(140, categoryNameYPosition - 1, 20, 8)
+
+        doc.setLineWidth(0.2)
+        doc.line(20, yPosition, 190, yPosition)
+        yPosition += 10
+      })
+
+      doc.save('Evaluation_Matrix.pdf')
+    }
+
+    logoImg.onerror = () => {
+      console.warn('Logo failed to load, generating PDF without logo')
+      doc.setFontSize(16)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(31, 78, 141)
+      let yPosition = 20
+
+      const pageWidth = doc.internal.pageSize.getWidth()
+      const titleText = 'Evaluation Matrix'
+      const titleWidth = doc.getTextWidth(titleText)
+      const titleX = (pageWidth - titleWidth) / 2
+
+      doc.text(titleText, titleX, yPosition)
+      yPosition += 20
+
+      doc.save('Evaluation_Matrix.pdf')
+    }
+  }
+
   const handleModalOpen = () => setIsOpen(true)
   const handleModalClose = () => setIsOpen(false)
 
@@ -283,9 +415,9 @@ const EvaluationMatrix = () => {
             <Typography sx={{ marginTop: '16px', color: '#262B43E5', fontWeight: 400, fontSize: '16px' }}>
               Use this matrix to score each shortlisted managing agent from 1 (poor) to 10 (excellent) based on your
               video calls or site visits. Each criterion has a weighting (from 0.5 to 1.5) that automatically adjusts
-              the importance of your scores — higher weightings increase the overall impact of that criterion.<br></br><br></br> You can
-              print a blank copy to gather feedback from other residents, then enter your final agreed scores here. Once
-              saved, your results are locked and will appear in your Final Report.
+              the importance of your scores — higher weightings increase the overall impact of that criterion.<br></br>
+              <br></br> You can print a blank copy to gather feedback from other residents, then enter your final agreed
+              scores here. Once saved, your results are locked and will appear in your Final Report.
             </Typography>
 
             <Typography
@@ -310,6 +442,9 @@ const EvaluationMatrix = () => {
             <div className='bg-white p-8 pt-10 w-full max-w-8xl mt-6'>
               <div className='flex justify-end items-end gap-x-[20px]'>
                 <div className='flex justify-end mb-8'>
+                  <CustomButton onClick={handleDownloadPDF}>Download Matrix</CustomButton>
+                </div>
+                <div className='flex justify-end mb-8'>
                   <CustomButton onClick={() => setIsOpenCatagory(true)} variant='contained'>
                     Update Criteria
                   </CustomButton>
@@ -320,7 +455,9 @@ const EvaluationMatrix = () => {
                     <CustomButton onClick={() => handleSaveEvaluation()} disabled={isSaving || isSaved}>
                       {isSaving ? 'Saving...' : 'Save Changes'}
                     </CustomButton>
-                    <CustomButton variant='outlined' onClick={() => setisScored(true)}>Cancel</CustomButton>
+                    <CustomButton variant='outlined' onClick={() => setisScored(true)}>
+                      Cancel
+                    </CustomButton>
                   </div>
                 ) : (
                   <div className='flex justify-end mb-8'>
@@ -361,14 +498,13 @@ const EvaluationMatrix = () => {
                         }}
                       >
                         CRITERIA
-                        <div  onClick={() => setIsOpenCatagory(true)} className='mt-[10px]'>
+                        <div onClick={() => setIsOpenCatagory(true)} className='mt-[10px]'>
                           <a
                             href='#'
                             style={{
                               color: '#1E88E5',
                               textDecoration: 'underline',
                               cursor: 'pointer'
-                            
                             }}
                           >
                             Edit
@@ -397,14 +533,13 @@ const EvaluationMatrix = () => {
                         }}
                       >
                         Weighting
-                         <div onClick={() => handleEdit('edit')} className='mt-[10px]'>
+                        <div onClick={() => handleEdit('edit')} className='mt-[10px]'>
                           <a
                             href='#'
                             style={{
                               color: '#1E88E5',
                               textDecoration: 'underline',
                               cursor: 'pointer'
-                            
                             }}
                           >
                             Edit
@@ -436,30 +571,29 @@ const EvaluationMatrix = () => {
                             }}
                           >
                             {pma}
-                                 <div onClick={() => handleEdit('edit')} className='mt-[10px]'>
-                          <a
-                            href='#'
-                            style={{
-                              color: '#1E88E5',
-                              textDecoration: 'underline',
-                              cursor: 'pointer'
-                            
-                            }}
-                          >
-                            Edit
-                          </a>
-                          {' / '}
-                          <a
-                            href='#'
-                            style={{
-                              color: '#1E88E5',
-                              textDecoration: 'underline',
-                              cursor: 'pointer'
-                            }}
-                          >
-                            Add Scores
-                          </a>
-                        </div>
+                            <div onClick={() => handleEdit('edit')} className='mt-[10px]'>
+                              <a
+                                href='#'
+                                style={{
+                                  color: '#1E88E5',
+                                  textDecoration: 'underline',
+                                  cursor: 'pointer'
+                                }}
+                              >
+                                Edit
+                              </a>
+                              {' / '}
+                              <a
+                                href='#'
+                                style={{
+                                  color: '#1E88E5',
+                                  textDecoration: 'underline',
+                                  cursor: 'pointer'
+                                }}
+                              >
+                                Add Scores
+                              </a>
+                            </div>
                           </th>
                         ))
                       ) : (
@@ -597,9 +731,7 @@ const EvaluationMatrix = () => {
                           textAlign: 'center',
                           borderBottom: '1px solid #e0e0e0'
                         }}
-                      >
-                        
-                      </td>
+                      ></td>
                       {pmaColumns.length > 0 ? (
                         pmaColumns.map((pma: string, index: number) => (
                           <td
@@ -646,7 +778,9 @@ const EvaluationMatrix = () => {
                     <CustomButton onClick={() => handleSaveEvaluation()} disabled={isSaving || isSaved}>
                       {isSaving ? 'Saving...' : 'Save Changes'}
                     </CustomButton>
-                    <CustomButton variant='outlined' onClick={() => setisScored(true)}>Cancel</CustomButton>
+                    <CustomButton variant='outlined' onClick={() => setisScored(true)}>
+                      Cancel
+                    </CustomButton>
                   </div>
                 ) : (
                   <div className='flex justify-end mt-8'>
