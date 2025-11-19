@@ -125,6 +125,21 @@ const UserDropdown = ({ selectedTenderInitial }: { selectedTenderInitial?: strin
                       <Typography color='text.primary'>My Account</Typography>
                     </MenuItem>
                   )}
+                  {!isOnboardingRoute && isPmaPortal() && (
+                    <MenuItem className='gap-3 pli-4' onClick={e => handleDropdownClose(e, '/user-management')}>
+                      <Typography color='text.primary'>User Management</Typography>
+                    </MenuItem>
+                  )}
+                  {!isOnboardingRoute && isPmaPortal() && (
+                    <MenuItem className='gap-3 pli-4' onClick={e => handleDropdownClose(e, '/branch-management')}>
+                      <Typography color='text.primary'>Branch Management</Typography>
+                    </MenuItem>
+                  )}
+                  {!isOnboardingRoute && isPmaPortal() && (
+                    <MenuItem className='gap-3 pli-4' onClick={e => handleDropdownClose(e, '/templates')}>
+                      <Typography color='text.primary'>Saved Templates</Typography>
+                    </MenuItem>
+                  )}
                   {!isOnboardingRoute && tenderId && !isPmaPortal() && (
                     <MenuItem className='gap-3 pli-4' onClick={e => handleDropdownClose(e, '/set-availability')}>
                       <Typography color='text.primary'>Set Availability </Typography>

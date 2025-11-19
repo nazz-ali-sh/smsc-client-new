@@ -108,8 +108,8 @@ export const pmaMenuData: MenuItem[] = [
   {
     image: <i className='ri-user-line'></i>,
     menuItem: 'My Account',
-    alwaysEnabled: true,
-    isMyAccount: true
+    href: '/profile',
+    alwaysEnabled: true
   }
 ]
 

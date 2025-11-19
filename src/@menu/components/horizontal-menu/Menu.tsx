@@ -148,7 +148,7 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
               ? pathname === items.href ||
                 (items.isInvite && pathname === '/calendar') ||
                 (items.isMyAccount &&
-                  ['/profile', '/user-management', '/branch-management', '/templates'].some(p =>
+                  ['/profile'].some(p =>
                     pathname.startsWith(p)
                   ))
               : pathname === items.href ||
@@ -233,7 +233,9 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
                 }}
                 className={`flex items-center ${isActive ? 'bg-[#35C0ED] text-white' : ''} ${
                   isDisabled ? 'cursor-default pointer-events-none' : 'cursor-pointer'
-                } justify-center py-2 rounded-lg ${isPmaUser ? 'min-w-[185px]' : 'min-w-[140px]'}`}
+                } justify-center py-2 rounded-lg ${
+                  isPmaUser && items.menuItem === 'My Account' ? 'min-w-[100px]' : isPmaUser ? 'min-w-[185px]' : 'min-w-[140px]'
+                }`}
               >
                 <section className='flex gap-x-[8px] px-3'>
                   <div className='size-[22px]' style={{ color: 'inherit' }}>
