@@ -1,4 +1,5 @@
 'use client'
+import { useState } from 'react'
 
 import Image from 'next/image'
 
@@ -19,6 +20,8 @@ interface EventDetailsProps {
 }
 
 const EventDetails = ({ userData }: EventDetailsProps) => {
+  const [activeTabState, setActiveTabState] = useState('Site Visits')
+
   const starRatings = [
     { label: '5 Star', count: userData?.data?.ratings_and_reviews?.five_star_count },
     { label: '4 Star', count: userData?.data?.ratings_and_reviews?.four_star_count },
@@ -56,7 +59,7 @@ const EventDetails = ({ userData }: EventDetailsProps) => {
       <section className='shadow-lg p-4 rounded-xl'>
         <div className='flex gap-x-4 items-center'>
           {tabs.map((items, index) => (
-            <div className='w-[300px]' key={index}>
+            <div className='w-full' key={index}>
               <Card color={'primary'}>
                 <CardContent className='flex items-center gap-x-[16px]'>
                   <div
@@ -85,8 +88,8 @@ const EventDetails = ({ userData }: EventDetailsProps) => {
             </div>
           ))}
         </div>
-        <section className='shadow-lg p-4 rounded-xl mt-5'>
-          <section className=' flex gap-x-[24px] py-[20px] '>
+        <section className='shadow-lg p-4 rounded-xl mt-5 bg-[#FFFFFF]'>
+          <section className=' flex gap-x-[24px] py-[20px]'>
             <div>
               <div className='w-[70%]'>
                 <Typography variant='h5'> Rating and Reviews</Typography>
@@ -126,7 +129,7 @@ const EventDetails = ({ userData }: EventDetailsProps) => {
                       sx={{
                         height: 8,
                         borderRadius: 4,
-                        backgroundColor: '#FFFFFF',
+                        backgroundColor: '#666CFF14',
                         '& .MuiLinearProgress-bar': {
                           backgroundColor: '#35C0ED'
                         }
@@ -140,10 +143,10 @@ const EventDetails = ({ userData }: EventDetailsProps) => {
         </section>
 
         <div className='mt-[50px]'>
-          <TabsSwitch data={userData} />
+          <TabsSwitch data={userData} activeTabState={activeTabState} setActiveTabState={setActiveTabState} />
         </div>
         <div className='mt-[50px]'>
-          <EditableDataTables />
+          <EditableDataTables activeTabState={activeTabState} />
         </div>
       </section>
     </>

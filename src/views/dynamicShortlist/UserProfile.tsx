@@ -29,8 +29,15 @@ const UserProfile = ({ userData }: any) => {
               <Typography variant='h5' className='font-light text-[15px] leading-[18px] text-[#727585]'>
                 {`${userData?.data?.pma_user?.pma_number}`}
               </Typography>
-              <section>
+              <div className='w-[90%] h-px bg-[#E5E7EB] mb-4' />
+              <section className='mb-10'>
                 {/* Contact Informations */}
+                <div className='flex items-center mb-4'>
+                  <Typography variant='h6' className='font-normal text-[20px] leading-[24px] text-[#262B43A6]'>
+                    Contact Info
+                  </Typography>
+                  <i className='ri-arrow-drop-down-line text-[35px] text-[#262B43A6]' />
+                </div>
                 <Typography variant='body2' className='flex items-start mt-3'>
                   <i className='ri-phone-line mr-[14px]'></i>
                   {userData?.data?.pma_user?.email}
@@ -50,16 +57,16 @@ const UserProfile = ({ userData }: any) => {
           </div>
 
           <section className='flex flex-col items-center gap-4'>
-            <div className='relative w-[130px] h-[180px]'>
-              <Image src={ActiveBrochers} alt='pdf download' className='w-[130px] h-[180px]' />
+            <div className='relative'>
+              <Image src={ActiveBrochers} alt='pdf download' className='w-[160px] h-[220px]' />
               <Image
                 src={companyImage}
                 alt='overlay'
-                className='absolute top-3 left-9 w-[60px] h-[60px] object-cover'
+                className='absolute top-3 left-10 w-[80px] h-[80px] object-cover'
               />
             </div>
             <div className='w-full flex justify-center space-x-2.5 mt-2'>
-              <i className='ri-download-2-fill text-[#26C6F9] mt-[2px]'></i>
+              <i className='ri-download-2-fill text-[#26C6F9] mt-[20px] mb-[20px]'></i>
               <Typography
                 variant='body1'
                 align='center'

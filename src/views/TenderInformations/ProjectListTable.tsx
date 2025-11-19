@@ -181,7 +181,18 @@ const KitchenSink = () => {
             <Checkbox
               checked={table.getIsAllRowsSelected()}
               indeterminate={table.getIsSomeRowsSelected()}
-              onChange={table.getToggleAllRowsSelectedHandler()}
+              onChange={e => {
+                if (tenderStatus === 'active') {
+                  e.preventDefault()
+                  setShortlistWarningModal(true)
+
+                  return
+                }
+                
+                const isChecked = e.target.checked
+
+                table.toggleAllRowsSelected(isChecked)
+              }}
               sx={{
                 color: '#26C6F9',
                 '&.Mui-checked': { color: '#26C6F9' },

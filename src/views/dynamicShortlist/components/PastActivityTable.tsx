@@ -1,10 +1,10 @@
 'use client'
 
-// React Imports
 import { useState } from 'react'
 
-// MUI Imports
 import Image from 'next/image'
+
+import { useRouter } from 'next/navigation'
 
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
@@ -13,16 +13,12 @@ import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '
 
 import { Typography } from '@mui/material'
 
+import CustomButton from '@/common/CustomButton'
+
 import avatar1 from '../../../../public/images/customImages/company.png'
 
-// Third-party Imports
-
-// Type Imports
-
-// Data Imports
 import defaultData from '../data'
 
-// Column Definitions
 const columnHelper = createColumnHelper<any>()
 
 const columns = [
@@ -33,11 +29,7 @@ const columns = [
 
       return (
         <div className='flex items-center space-x-3'>
-          <Image
-            src={avatar1} // fallback avatar
-            alt={fullName}
-            className='w-10 h-10 rounded-full object-cover'
-          />
+          <Image src={avatar1} alt={fullName} className='w-10 h-10 rounded-full object-cover' />
           <div>
             <p className='font-medium text-gray-900'>{fullName}</p>
             <p className='text-sm text-gray-500'>{email}</p>
@@ -69,11 +61,9 @@ const fuzzyFilter = (row: any, columnId: string, filterValue: string) => {
   return String(rowValue).toLowerCase().includes(String(filterValue).toLowerCase())
 }
 
-const EditableDataTables = () => {
-  // States
+const EditableDataTables = ({ activeTabState }: { activeTabState: string }) => {
   const [data] = useState(() => defaultData)
 
-  // Hooks
   const table = useReactTable({
     data,
     columns,
@@ -85,13 +75,28 @@ const EditableDataTables = () => {
 
   const lastHeaderGroup = table.getHeaderGroups()[table.getHeaderGroups().length - 1]
 
+  const router = useRouter()
+
+  const handleNavigate = () => {
+    if (activeTabState.toLowerCase() === 'calls') {
+      router.push('/video-calls')
+    } else if (activeTabState.toLowerCase() === 'site visits') {
+      router.push('/site-visits')
+    } else {
+      return null
+    }
+  }
+
   return (
     <Card sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
       <CardHeader
         title={
-          <Typography variant='h3' className='text-[#262B43E5]' component='div'>
-            Past Activity
-          </Typography>
+          <div className='flex justify-between items-center'>
+            <Typography variant='h3' className='text-[#262B43E5]' component='div'>
+              Past Activity
+            </Typography>
+            <CustomButton onClick={handleNavigate}>View History</CustomButton>
+          </div>
         }
       />
       <div className='overflow-x-auto'>

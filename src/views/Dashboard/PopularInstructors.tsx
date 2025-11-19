@@ -34,7 +34,6 @@ import AppointManagemnetModal from '@/common/AppointManagemnetAgent'
 import CommonModal from '@/common/CommonModal'
 import CustomButton from '@/common/CustomButton'
 import { formatDates, getDaysPassed } from '@/utils/dateFormater'
-import { getLeaseholderTypeLabel } from '@/constants'
 import DashboardSkeletonGrid from '@/components/DashboardSkeletonGrid'
 import { useShortlistedPmas } from '@/hooks/useShortlistedPmasData'
 import { useDashboardData } from '@/hooks/useDashboardData'
@@ -180,7 +179,7 @@ const TenderCards = () => {
                     paddingTop: '2px'
                   }}
                 >
-                  Block Name: {getLeaseholderTypeLabel(stages?.went_live?.details?.tender_type)}
+                  Block Name: {dashboardResponce?.block_name}
                 </Typography>
                 <Typography
                   sx={{
@@ -395,7 +394,8 @@ const TenderCards = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                     backgroundColor: 'customColors.cyan3',
-                    marginX: '6px'
+                    marginX: '6px',
+                    cursor: stages?.result_received?.is_completed ? 'pointer' : 'default'
                   }}
                 >
                   <i
@@ -533,7 +533,8 @@ const TenderCards = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                     backgroundColor: 'customColors.cyan3',
-                    marginX: '6px'
+                    marginX: '6px',
+                    cursor: stages?.result_received?.is_completed ? 'pointer' : 'default'
                   }}
                 >
                   <i
@@ -562,14 +563,15 @@ const TenderCards = () => {
                     alignItems: 'center',
                     backgroundColor: stages?.shortlisted?.is_completed ? '#26C6F93D' : 'customColors.cyan3',
                     marginX: '6px',
-                    transition: 'all 0.3s ease'
+                    transition: 'all 0.3s ease',
+                    cursor: stages?.shortlisted?.is_completed ? 'pointer' : 'default'
                   }}
                 >
                   <Image
                     src={
                       stages?.shortlisted?.is_completed
                         ? personWhiteIcon
-                        : stages?.shortlisted?.is_current
+                        : stages?.shortlisted?.is_completed
                           ? personTodo
                           : personWhiteIcon
                     }
@@ -767,7 +769,8 @@ const TenderCards = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                     backgroundColor: 'customColors.cyan3',
-                    marginX: '6px'
+                    marginX: '6px',
+                    cursor: stages?.shortlisted?.is_current ? 'pointer' : 'default'
                   }}
                 >
                   <i
@@ -799,7 +802,8 @@ const TenderCards = () => {
                     alignItems: 'center',
                     backgroundColor: stages?.appointment?.is_completed ? '#26C6F93D' : 'customColors.cyan3',
                     marginX: '6px',
-                    transition: 'all 0.3s ease'
+                    transition: 'all 0.3s ease',
+                    cursor: stages?.shortlisted?.is_current ? 'pointer' : 'default'
                   }}
                 >
                   <Image
@@ -1006,7 +1010,8 @@ const TenderCards = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                     backgroundColor: 'customColors.cyan3',
-                    marginX: '6px'
+                    marginX: '6px',
+                    cursor: stages?.appointment?.is_current ? 'pointer' : 'default'
                   }}
                 >
                   <i
@@ -1038,7 +1043,8 @@ const TenderCards = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                     backgroundColor: stages?.appointment?.is_completed ? '#26C6F93D' : 'customColors.cyan3',
-                    marginX: '6px'
+                    marginX: '6px',
+                    cursor: stages?.site_visit?.is_current ? 'pointer' : 'default'
                   }}
                 >
                   <Image
@@ -1169,7 +1175,8 @@ const TenderCards = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                     backgroundColor: 'customColors.cyan3',
-                    marginX: '6px'
+                    marginX: '6px',
+                    cursor: stages?.appointment?.is_current ? 'pointer' : 'default'
                   }}
                 >
                   <i
@@ -1219,7 +1226,8 @@ const TenderCards = () => {
                       justifyContent: 'center',
                       alignItems: 'center',
                       backgroundColor: 'customColors.cyan3',
-                      marginX: '6px'
+                      marginX: '6px',
+                      cursor: !stages?.appointment?.is_current ? 'default' : 'pointer'
                     }}
                   >
                     <Image

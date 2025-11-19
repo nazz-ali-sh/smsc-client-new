@@ -23,6 +23,12 @@ export const useAvailability = () => {
     return initialSlots
   })
 
+  const sortSlotsByStartTime = (slots: TimeSlot[]) => {
+    return slots.slice().sort((a, b) => {
+      return (a.startTime || '').localeCompare(b.startTime || '')
+    })
+  }
+
   const {
     data: availabilityData,
     isLoading,
@@ -51,7 +57,7 @@ export const useAvailability = () => {
           endTime: slot?.end_time
         }))
 
-        transformedSlots[dayName] = slots
+        transformedSlots[dayName] = sortSlotsByStartTime(slots)
       }
     })
 
@@ -122,7 +128,7 @@ export const useAvailability = () => {
     const existingSlots = daySlots[day]
 
     if (existingSlots?.length === 0) {
-      return TIME_OPTIONS?.filter(time => time <= '20:15')
+      return TIME_OPTIONS
     }
 
     const usedTimes = new Set()
@@ -145,18 +151,18 @@ export const useAvailability = () => {
       }
     })
 
-    return TIME_OPTIONS?.filter(time => !usedTimes.has(time) && time <= '20:15')
+    return TIME_OPTIONS?.filter(time => !usedTimes.has(time))
   }
 
   const getAvailableEndTimes = (day: string, startTime: string) => {
     if (!startTime) {
-      return TIME_OPTIONS?.filter(time => time <= '21:00')
+      return TIME_OPTIONS
     }
 
     const existingSlots = daySlots[day]
 
     if (existingSlots?.length === 0) {
-      return TIME_OPTIONS?.filter(time => time > startTime && time <= '21:00')
+      return TIME_OPTIONS?.filter(time => time > startTime)
     }
 
     const usedTimes = new Set()
@@ -182,9 +188,9 @@ export const useAvailability = () => {
     const startTimeIndex = TIME_OPTIONS.indexOf(startTime)
     const autoEndTime = startTimeIndex + 1 < TIME_OPTIONS?.length ? TIME_OPTIONS[startTimeIndex + 1] : null
 
-    const filteredTimes = TIME_OPTIONS?.filter(time => time > startTime && !usedTimes?.has(time) && time <= '21:00')
+    const filteredTimes = TIME_OPTIONS?.filter(time => time > startTime && !usedTimes?.has(time))
 
-    if (autoEndTime && !filteredTimes?.includes(autoEndTime) && autoEndTime <= '21:00') {
+    if (autoEndTime && !filteredTimes?.includes(autoEndTime)) {
       filteredTimes.unshift(autoEndTime)
     }
 
@@ -203,7 +209,7 @@ export const useAvailability = () => {
 
       setDaySlots(prev => ({
         ...prev,
-        [day]: [...prev[day], slot]
+        [day]: sortSlotsByStartTime([...prev[day], slot])
       }))
 
       setNewSlots(prev => ({

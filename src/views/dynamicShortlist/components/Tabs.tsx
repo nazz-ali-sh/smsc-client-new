@@ -2,8 +2,6 @@ import * as React from 'react'
 
 import Image from 'next/image'
 
-import { useRouter } from 'next/navigation'
-
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import Box from '@mui/material/Box'
@@ -16,7 +14,6 @@ import timeLine from '../../../../public/images/customImages/timeLine.svg'
 import map from '../../../../public/images/customImages/map.svg'
 import useMediaQuery from '@/@menu/hooks/useMediaQuery'
 import { setActiveTab } from '@/redux-store/slices/tabSlice'
-import CustomButton from '@/common/CustomButton'
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -27,6 +24,8 @@ interface TabPanelProps {
 interface TabsSwitchProps {
   sendDataToParent?: (selectedLabel: string) => void
   data: any
+  activeTabState: string
+  setActiveTabState: React.Dispatch<React.SetStateAction<string>>
 }
 
 function CustomTabPanel(props: TabPanelProps) {
@@ -40,7 +39,7 @@ function CustomTabPanel(props: TabPanelProps) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      {value === index && <Box sx={{ p: 3, textTransform: 'capitalize' }}>{children}</Box>}
     </div>
   )
 }
@@ -54,13 +53,14 @@ function a11yProps(index: number) {
 
 const tabsData = [
   { label: 'site-visits', mainLabel: 'Site Visits', iconClass: 'ri-hotel-line' },
-  { label: 'Calls', mainLabel: 'Calls', iconClass: 'ri-phone-line' },
+  { label: 'Calls', mainLabel: 'calls', iconClass: 'ri-phone-line' },
   { label: 'Chats', mainLabel: 'Chats', iconClass: 'ri-hotel-line' },
   { label: 'Documents', mainLabel: 'Documents', iconClass: 'ri-hotel-line' },
   { label: 'Notes', mainLabel: 'Notes', iconClass: 'ri-hotel-line' }
 ]
 
-const TabsSwitch: React.FC<TabsSwitchProps> = ({ data }) => {
+const TabsSwitch: React.FC<TabsSwitchProps> = ({ data, setActiveTabState }) => {
+
   const [value, setValue] = React.useState(0)
   const dispatch = useDispatch()
 
@@ -71,16 +71,11 @@ const TabsSwitch: React.FC<TabsSwitchProps> = ({ data }) => {
     setValue(newValue)
     const selectedLabel = tabsData[newValue].mainLabel
 
-    if (selectedLabel == 'Calls') {
-      dispatch(setActiveTab('calls'))
-    } else dispatch(setActiveTab(selectedLabel))
+    setActiveTabState(selectedLabel) 
+    dispatch(setActiveTab(selectedLabel))
   }
 
-  const router = useRouter()
-
-  const navigateTo = (route: string) => {
-    router.push(route)
-  }
+  
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -119,6 +114,7 @@ const TabsSwitch: React.FC<TabsSwitchProps> = ({ data }) => {
             <Tab
               key={idx}
               disableRipple
+              disabled={idx === 2 || idx === 3 || idx === 4}
               label={
                 <Box
                   sx={{
@@ -141,7 +137,8 @@ const TabsSwitch: React.FC<TabsSwitchProps> = ({ data }) => {
                     sx={{
                       color: value === idx ? '#35C0ED' : '#666',
                       fontWeight: value === idx ? 600 : 400,
-                      fontSize: '0.875rem'
+                      fontSize: '0.875rem',
+                      textTransform: 'capitalize'
                     }}
                   >
                     {tab.mainLabel}
@@ -155,12 +152,10 @@ const TabsSwitch: React.FC<TabsSwitchProps> = ({ data }) => {
       </Box>
 
       <CustomTabPanel value={value} index={0}>
-        <div className='flex justify-between items-center'>
           <Typography variant='h4' className='mt-[20px]'>
             Upcoming Site Visit
           </Typography>
-          <CustomButton onClick={() => navigateTo('/site-visits')}>View History</CustomButton>
-        </div>
+       
         <Typography variant='body2' className='max-w-[65%] mt-[20px]'>
           Meeting with PMA - {data?.data?.pma_user?.name} on{' '}
           {data?.data?.upcoming_site_visit?.date || 'Monday 25th June 2025'} at{' '}
@@ -191,12 +186,9 @@ const TabsSwitch: React.FC<TabsSwitchProps> = ({ data }) => {
 
       {/* Calls Tab */}
       <CustomTabPanel value={value} index={1}>
-        <div className='flex justify-between items-center'>
           <Typography variant='h4' className='mt-[20px]'>
             Upcoming Calls
           </Typography>
-          <CustomButton onClick={() => navigateTo('/video-calls')}>View History</CustomButton>
-        </div>
         <Typography variant='body2' className='max-w-[65%] mt-[20px]'>
           Meeting with PMA - {data?.data?.pma_user?.name} on{' '}
           {data?.data?.upcoming_video_call?.date || 'Monday 25th June 2025'} at
@@ -213,8 +205,9 @@ const TabsSwitch: React.FC<TabsSwitchProps> = ({ data }) => {
 
           <section className='flex flex-col items-center mb-2'>
             <Image src={timeLine} alt='calendar' />
-            <p className='text-center mt-3'>{data?.data?.upcoming_video_call?.day || 'No Data'}</p>
-            <p className='text-center'>{data?.data?.upcoming_video_call?.time || '11:00 AM'}</p>
+            <div className='h-[55px]'>
+              <p className='text-center mt-3'>{data?.data?.upcoming_video_call?.time || '11:00 AM'}</p>
+            </div>
             <div className='h-[10px] bg-[#5e728d] w-[200px] rounded-xl mt-7'></div>
           </section>
         </div>
