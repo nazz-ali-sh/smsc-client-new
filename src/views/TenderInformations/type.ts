@@ -187,6 +187,7 @@ export type Quotation = {
 }
 
 export type Location = {
+  region: string
   county: string
   address: string
   postcode: string | null
@@ -251,20 +252,20 @@ export type TenderResponse = {
 }
 
 export type DataType = {
-  id: number 
+  id: number
   pma_id: number
-  avatar: string 
+  avatar: string
   fullName: string
-  tradingYears: number | string 
-  city: string 
-  start_date: string 
-  location: number | string 
-  NoOfUnits: number | string 
-  googleReview: number | string 
-  experience: string 
-  status: number 
+  tradingYears: number | string
+  city: string
+  start_date: string
+  location: number | string
+  NoOfUnits: number | string
+  googleReview: number | string
+  experience: string
+  status: number
   submittedDate: number | string
-  quotation: number | string 
-  Actions: number | string 
-  Questionaire: string 
+  quotation: number | string
+  Actions: number | string
+  Questionaire: string
 }

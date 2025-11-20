@@ -188,7 +188,7 @@ const KitchenSink = () => {
 
                   return
                 }
-                
+
                 const isChecked = e.target.checked
 
                 table.toggleAllRowsSelected(isChecked)
