@@ -32,7 +32,8 @@ const persistConfig = {
     'users',
     'rmcOnboarding',
     'rtmNonDirector',
-    'tenderInformation'
+    'tenderInformation',
+    'siteVisitAndCallStats'
   ]
 }
 

@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
 
 import CalendarWrapper from './components/CalendarWrapper'
-import MetricCards from './components/MetricCards'
+import AgentInviteStats from '@/common/AgentInviteStats'
 
 import AppFullCalendar from '@/libs/styles/AppFullCalendar'
 import WeeklyReport from '@/common/WeeklyReport'
@@ -21,8 +21,8 @@ const RmcCalendar = () => {
       <Box className='py-3'>
         <HorizontalLinearStepper />
       </Box>
-      <div className='mt-2'>
-        <MetricCards />
+      <div className='mt-2 mb-6'>
+        <AgentInviteStats cardWidth="w-full sm:w-[48%] lg:w-[24%]"/>
       </div>
 
       <Card className='overflow-visible'>

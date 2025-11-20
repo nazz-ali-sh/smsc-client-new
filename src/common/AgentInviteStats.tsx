@@ -13,7 +13,11 @@ interface shortListedstats {
   data?: any
 }
 
-const AgentInviteStats = () => {
+interface AgentInviteStatsProps {
+  cardWidth?: string 
+}
+
+const AgentInviteStats = ({ cardWidth }: AgentInviteStatsProps) => {
   const tenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
   const { data: rmcShortlistStats } = useQuery<shortListedstats, Error>({
@@ -53,11 +57,13 @@ const AgentInviteStats = () => {
     }
   ]
 
+  const cardWidthClass = cardWidth || 'w-full sm:w-[48%] md:w-[45%] lg:w-[22%]'
+
   return (
     <>
       <div className='flex flex-wrap justify-between gap-4'>
         {cardsData.map((items, index) => (
-          <div className='w-full sm:w-[48%] md:w-[45%] lg:w-[22%] transition-all' key={index}>
+          <div className={`${cardWidthClass} transition-all`} key={index}>
             <Card color={'primary'}>
               <CardContent className='flex items-center gap-4'>
                 <div

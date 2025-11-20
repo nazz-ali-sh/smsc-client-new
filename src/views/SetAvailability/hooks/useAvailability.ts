@@ -89,7 +89,7 @@ export const useAvailability = () => {
       const endTimeIndex = startTimeIndex + 1
 
       if (endTimeIndex < TIME_OPTIONS.length) {
-        const autoEndTime = TIME_OPTIONS[endTimeIndex]
+         const autoEndTime = startTimeIndex + 1 < TIME_OPTIONS.length ? TIME_OPTIONS[startTimeIndex + 1] : '00:00'
 
         setNewSlots(prev => ({
           ...prev,

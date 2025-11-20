@@ -10,7 +10,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import classnames from 'classnames'
 import ReactDatepicker from 'react-datepicker'
 
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 import SiteVisitsModal from '@/common/SiteVisitsModal'
@@ -18,6 +18,7 @@ import VideosCallsModal from '@/common/VideosCallsModal'
 import { setCalendarApiPayload, setCalendarStatus } from '@/redux-store/slices/rmcCalendar'
 import type { SidebarLeftProps } from '@/types/apps/calendarTypes'
 import CustomButton from '@/common/CustomButton'
+import CustomTooltip from '@/common/CustomTooltip'
 
 const SidebarLeft = (props: SidebarLeftProps) => {
   const { mdAbove, leftSidebarOpen, calendarApi, handleLeftSidebarToggle } = props
@@ -30,6 +31,9 @@ const SidebarLeft = (props: SidebarLeftProps) => {
   const [selectedYearMonth, setSelectedYearMonth] = useState<string | null>(null)
   const [selectedFilter, setSelectedFilter] = useState<string>('')
   const dispatch = useDispatch()
+
+  const isAppointmentCompleted = useSelector((state: any) => state?.siteVisitAndCallStats?.isAppointmentCompleted)
+  const isShortlistedCompleted = useSelector((state: any) => state?.siteVisitAndCallStats?.isShortlistedCompleted)
 
   const tenderId = 8
   const status = 'month'
@@ -118,15 +122,49 @@ const SidebarLeft = (props: SidebarLeftProps) => {
         </section>
 
         <div className='is-full px-5 pt-5 pb-1'>
-          <CustomButton fullWidth onClick={() => setOnlineCallsModalOpen(true)}>
-            Schedule Video Call
-          </CustomButton>
+          <CustomTooltip
+            text={
+              isAppointmentCompleted
+                ? `You've appointed your agent. No further actions can be taken on this tender.`
+                : !isShortlistedCompleted
+                  ? `You’ll be able to invite agents to video calls once you have shortlisted from your results.`
+                  : ''
+            }
+            position='top'
+            align='center'
+            className='w-full'
+          >
+            <CustomButton
+              fullWidth
+              disabled={!isShortlistedCompleted || isAppointmentCompleted}
+              onClick={() => setOnlineCallsModalOpen(true)}
+            >
+              Schedule Video Call
+            </CustomButton>
+          </CustomTooltip>
         </div>
 
         <div className='is-full px-5 pb-5 pt-3'>
-          <CustomButton fullWidth onClick={() => setSiteVisitsModalOpen(true)}>
-            Schedule Site Visit
-          </CustomButton>
+          <CustomTooltip
+            text={
+              isAppointmentCompleted
+                ? `You've appointed your agent. No further actions can be taken on this tender.`
+                : !isShortlistedCompleted
+                  ? `You’ll be able to invite agents to site visits once you have shortlisted from your results.`
+                  : ''
+            }
+            position='top'
+            align='center'
+            className='w-full'
+          >
+            <CustomButton
+              fullWidth
+              disabled={!isShortlistedCompleted || isAppointmentCompleted} 
+              onClick={() => setSiteVisitsModalOpen(true)}
+            >
+              Schedule Site Visit
+            </CustomButton>
+          </CustomTooltip>
         </div>
 
         <Divider className='is-full' />

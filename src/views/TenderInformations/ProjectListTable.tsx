@@ -159,7 +159,7 @@ const KitchenSink = () => {
           style: 'currency',
           currency: 'GBP'
         }),
-        location: item?.location?.county || '-',
+        location: item?.location?.region || '-',
         NoOfUnits: item?.company_metrics?.total_units_managed ?? item?.quotation?.per_unit_equivalent_inc_vat ?? '0',
         googleReview: item?.reviews?.google?.rating || 0,
         tradingYears: item?.company_metrics?.trading_years ?? '0',

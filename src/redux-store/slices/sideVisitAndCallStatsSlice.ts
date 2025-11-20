@@ -10,16 +10,28 @@ interface SiteVisitAndCallStats {
   successful_visits: number
 }
 
+interface AppointmentStatus {
+  isCompleted: boolean
+}
+
+interface ShortlistedStatus {
+  isCompleted: boolean
+}
+
 interface SiteVisitAndCallState {
   stats: SiteVisitAndCallStats | null
   loading: boolean
   error: string | null
+  isAppointmentCompleted: boolean
+  isShortlistedCompleted: boolean
 }
 
 const initialState: SiteVisitAndCallState = {
   stats: null,
   loading: false,
-  error: null
+  error: null,
+  isAppointmentCompleted: false,
+  isShortlistedCompleted: false
 }
 
 const siteVisitAndCallStatsSlice = createSlice({
@@ -39,14 +51,32 @@ const siteVisitAndCallStatsSlice = createSlice({
       state.loading = false
       state.error = action.payload
     },
+    setAppointmentStatus(state, action: PayloadAction<AppointmentStatus>) {
+      state.isAppointmentCompleted = action.payload.isCompleted
+    },
+    resetAppointmentStatus(state) {
+      state.isAppointmentCompleted = false
+    },
+    setShortlistedStatus(state, action: PayloadAction<ShortlistedStatus>) {
+      state.isShortlistedCompleted = action.payload.isCompleted
+    },
     clearStats(state) {
       state.stats = null
       state.loading = false
       state.error = null
+      state.isAppointmentCompleted = false
     }
   }
 })
 
-export const { fetchStatsStart, fetchStatsSuccess, fetchStatsFailure, clearStats } = siteVisitAndCallStatsSlice.actions
+export const {
+  fetchStatsStart,
+  fetchStatsSuccess,
+  fetchStatsFailure,
+  setAppointmentStatus,
+  resetAppointmentStatus,
+  clearStats,
+  setShortlistedStatus
+} = siteVisitAndCallStatsSlice.actions
 
 export default siteVisitAndCallStatsSlice.reducer

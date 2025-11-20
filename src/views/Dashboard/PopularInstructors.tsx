@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import Image from 'next/image'
 
@@ -19,7 +19,9 @@ import {
   FormHelperText
 } from '@mui/material'
 
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+
+import { setAppointmentStatus, setShortlistedStatus } from '@/redux-store/slices/sideVisitAndCallStatsSlice'
 
 import phone from '../../../public/images/dashboardImages/phone.svg'
 import phonewhite from '../../../public/images/dashboardImages/phoneWhiteIcon.svg'
@@ -39,6 +41,8 @@ import { useShortlistedPmas } from '@/hooks/useShortlistedPmasData'
 import { useDashboardData } from '@/hooks/useDashboardData'
 
 const TenderCards = () => {
+  const dispatch = useDispatch()
+
   const [onlineCallsModalOpen, setOnlineCallsModalOpen] = useState(false)
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
   const [apointAgentModalOpen, setApointAgentModalOpen] = useState(false)
@@ -74,6 +78,24 @@ const TenderCards = () => {
     id: number
     full_name: string
   }
+
+  useEffect(() => {
+    if (stages?.appointment) {
+      dispatch(
+        setAppointmentStatus({
+          isCompleted: stages.appointment.is_completed
+        })
+      )
+    }
+
+    if (stages?.shortlisted) {
+      dispatch(
+        setShortlistedStatus({
+          isCompleted: stages.shortlisted.is_completed
+        })
+      )
+    }
+  }, [stages?.appointment, stages?.shortlisted, dispatch])
 
   const { data: finalShortListedResponce } = useShortlistedPmas()
 

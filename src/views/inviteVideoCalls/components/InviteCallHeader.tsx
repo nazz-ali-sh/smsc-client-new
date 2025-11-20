@@ -3,9 +3,11 @@
 import React, { useState } from 'react'
 
 import { Box, Typography } from '@mui/material'
+import { useSelector } from 'react-redux'
 
 import VideosCallsModal from '@/common/VideosCallsModal'
 import CustomButton from '@/common/CustomButton'
+import CustomTooltip from '@/common/CustomTooltip'
 import { useShortlistedPmas } from '@/hooks/useShortlistedPmasData'
 
 interface InviteCallHeaderProps {
@@ -16,11 +18,14 @@ interface InviteCallHeaderProps {
 const InviteCallHeader = ({ title = 'Video Calls', actionButton }: InviteCallHeaderProps) => {
   const [onlineCallsModalOpen, setOnlineCallsModalOpen] = useState(false)
 
+  const isAppointmentCompleted = useSelector((state: any) => state?.siteVisitAndCallStats?.isAppointmentCompleted)
+  const isShortlistedCompleted = useSelector((state: any) => state?.siteVisitAndCallStats?.isShortlistedCompleted)
+
   const handleOnlineModal = () => {
     setOnlineCallsModalOpen(true)
   }
 
-  const { data: finalShortListedResponce  } = useShortlistedPmas()
+  const { data: finalShortListedResponce } = useShortlistedPmas()
 
   return (
     <Box className=' p-6'>
@@ -28,9 +33,25 @@ const InviteCallHeader = ({ title = 'Video Calls', actionButton }: InviteCallHea
         <Typography variant='h6' sx={{ color: 'customColors.gray9', fontWeight: 700, fontSize: '28px' }}>
           {title}
         </Typography>
-        <CustomButton onClick={() => handleOnlineModal()} variant='contained'>
-          {actionButton}
-        </CustomButton>
+        <CustomTooltip
+          text={
+            isAppointmentCompleted
+              ? `You've appointed your agent. No further actions can be taken on this tender.`
+              : !isShortlistedCompleted
+                ? `You’ll be able to invite agents to video calls once you have shortlisted from your replies. `
+                : ''
+          }
+          position='top'
+          align='center'
+        >
+          <CustomButton
+            onClick={() => handleOnlineModal()}
+            variant='contained'
+            disabled={!isShortlistedCompleted || isAppointmentCompleted}
+          >
+            {actionButton}
+          </CustomButton>
+        </CustomTooltip>
       </Box>
       <Typography
         sx={{

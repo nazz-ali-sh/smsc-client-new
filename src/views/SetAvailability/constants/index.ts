@@ -16,6 +16,8 @@ const generateTimeOptions = () => {
     }
   }
 
+   times.push('00:00')  
+
   return times
 }
 

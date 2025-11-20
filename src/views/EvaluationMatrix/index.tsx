@@ -17,6 +17,7 @@ import { finalShortListedAgent, getSavedEvaluationData } from '@/services/tender
 import axiosClient from '@/utils/axiosInstance'
 import { gettingmetrixDetails } from '@/services/evaluation_matrix/evaluation_matrix'
 import AddCatogories from './AddCatogories'
+import CustomTooltip from '@/common/CustomTooltip'
 
 const EvaluationMatrix = () => {
   const router = useRouter()
@@ -29,6 +30,8 @@ const EvaluationMatrix = () => {
   const [isOpenCatagory, setIsOpenCatagory] = useState(false)
 
   const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
+
+  const isAppointmentCompleted = useSelector((state: any) => state?.siteVisitAndCallStats?.isAppointmentCompleted)
 
   const { data: shortlistedPMAs } = useQuery({
     queryKey: ['shortlistedPMAs', tender_id],
@@ -312,8 +315,8 @@ const EvaluationMatrix = () => {
 
       doc.setFontSize(14)
       doc.setFont('helvetica', 'bold')
-      doc.text('CRITERIA', 20, yPosition + 4) 
-      doc.text('SCORE', 140, yPosition + 4) 
+      doc.text('CRITERIA', 20, yPosition + 4)
+      doc.text('SCORE', 140, yPosition + 4)
       yPosition += 10
 
       doc.setDrawColor(31, 78, 141)
@@ -442,12 +445,40 @@ const EvaluationMatrix = () => {
             <div className='bg-white p-8 pt-10 w-full max-w-8xl mt-6'>
               <div className='flex justify-end items-end gap-x-[20px]'>
                 <div className='flex justify-end mb-8'>
-                  <CustomButton onClick={handleDownloadPDF}>Download Matrix</CustomButton>
+                  {isAppointmentCompleted === true ? (
+                    <CustomTooltip
+                      text={`You've appointed your agent. No further actions can be taken on this tender.`}
+                      position='top'
+                      align='center'
+                    >
+                      <span className='inline-block'>
+                        <CustomButton onClick={handleDownloadPDF} disabled>
+                          Download Matrix
+                        </CustomButton>
+                      </span>
+                    </CustomTooltip>
+                  ) : (
+                    <CustomButton onClick={handleDownloadPDF}>Download Matrix</CustomButton>
+                  )}
                 </div>
                 <div className='flex justify-end mb-8'>
-                  <CustomButton onClick={() => setIsOpenCatagory(true)} variant='contained'>
-                    Update Criteria
-                  </CustomButton>
+                  {isAppointmentCompleted === true ? (
+                    <CustomTooltip
+                      text={`You've appointed your agent. No further actions can be taken on this tender.`}
+                      position='top'
+                      align='center'
+                    >
+                      <span className='inline-block'>
+                        <CustomButton onClick={() => setIsOpenCatagory(true)} disabled variant='contained'>
+                          Update Criteria
+                        </CustomButton>
+                      </span>
+                    </CustomTooltip>
+                  ) : (
+                    <CustomButton onClick={() => setIsOpenCatagory(true)} variant='contained'>
+                      Update Criteria
+                    </CustomButton>
+                  )}
                 </div>
 
                 {!isScored ? (
@@ -461,9 +492,28 @@ const EvaluationMatrix = () => {
                   </div>
                 ) : (
                   <div className='flex justify-end mb-8'>
-                    <Button onClick={() => handleEdit('edit')} variant='contained' className='bg-buttonPrimary gap-x-3'>
-                      Edit Matrix
-                    </Button>
+                    {isAppointmentCompleted === true ? (
+                      <CustomTooltip
+                        text={`You've appointed your agent. No further actions can be taken on this tender.`}
+                        position='top'
+                        align='center'
+                      >
+                        <span className='inline-block'>
+                          <CustomButton
+                            onClick={() => handleEdit('edit')}
+                            disabled
+                            variant='contained'
+                            className='gap-x-3'
+                          >
+                            Edit Matrix
+                          </CustomButton>
+                        </span>
+                      </CustomTooltip>
+                    ) : (
+                      <CustomButton onClick={() => handleEdit('edit')} variant='contained' className='gap-x-3'>
+                        Edit Matrix
+                      </CustomButton>
+                    )}
                   </div>
                 )}
               </div>

@@ -3,9 +3,11 @@
 import React, { useState } from 'react'
 
 import { Box, Typography } from '@mui/material'
+import { useSelector } from 'react-redux'
 
 import SiteVisitsModal from '@/common/SiteVisitsModal'
 import CustomButton from '@/common/CustomButton'
+import CustomTooltip from '@/common/CustomTooltip'
 import { useShortlistedPmas } from '@/hooks/useShortlistedPmasData'
 
 interface InviteCallHeaderProps {
@@ -17,6 +19,9 @@ interface InviteCallHeaderProps {
 const SiteVisitHeader = ({ title = 'Video Calls', actionButton }: InviteCallHeaderProps) => {
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
 
+  const isAppointmentCompleted = useSelector((state: any) => state?.siteVisitAndCallStats?.isAppointmentCompleted)
+  const isShortlistedCompleted = useSelector((state: any) => state?.siteVisitAndCallStats?.isShortlistedCompleted)
+
   const { data: finalShortListedResponce } = useShortlistedPmas()
 
   return (
@@ -26,13 +31,26 @@ const SiteVisitHeader = ({ title = 'Video Calls', actionButton }: InviteCallHead
           {title}
         </Typography>
 
-        <CustomButton
-          variant='contained'
-          className='flex items-center gap-2'
-          onClick={() => setSiteVisitsModalOpen(true)}
+        <CustomTooltip
+          text={
+            isAppointmentCompleted
+              ? `You've appointed your agent. No further actions can be taken on this tender.`
+              : !isShortlistedCompleted
+                ? `You’ll be able to invite agents to site visits once you have shortlisted from your results.`
+                : ''
+          }
+          position='top'
+          align='center'
         >
-          {actionButton}
-        </CustomButton>
+          <CustomButton
+            variant='contained'
+            className='flex items-center gap-2'
+            onClick={() => setSiteVisitsModalOpen(true)}
+            disabled={!isShortlistedCompleted || isAppointmentCompleted} 
+          >
+            {actionButton}
+          </CustomButton>
+        </CustomTooltip>
       </Box>
       <Typography
         sx={{
