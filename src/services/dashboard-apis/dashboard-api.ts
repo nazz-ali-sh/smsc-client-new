@@ -188,3 +188,15 @@ export const getPmadsahbaordStats = async (): Promise<PmadsahbaordStatsResponse>
     throw error
   }
 }
+
+export const getPmaDashboardData = async (filter?: string) => {
+  try {
+    const url = filter ? `pma/dashboard?filter=${filter}` : 'pma/dashboard'
+    const response = await axiosClient.get(url)
+
+    return response.data
+  } catch (error) {
+    console.error('PMA Dashboard data API error:', error)
+    throw error
+  }
+}

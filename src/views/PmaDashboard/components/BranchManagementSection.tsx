@@ -8,6 +8,35 @@ import { Box, Card, Tab, Tabs, Typography } from '@mui/material'
 
 import CommonTable from '@/common/CommonTable'
 import CustomButton from '@/common/CustomButton'
+import { usePmaDashboardData } from '@/hooks/usePmaDashboardData'
+
+interface ApiBranchData {
+  branch_id: number
+  branch_name: string
+  region: string
+  address: string
+  postcode: string
+  created_at: string
+  status: string
+  assigned_to: string
+  created_by: {
+    id: number
+    name: string
+    email: string
+  }
+}
+
+interface ApiUserData {
+  user_id: number
+  username: string
+  email: string
+  branch: string | null
+  user_type: string
+  status: string
+  created_at: string
+}
+
+type ApiTableData = ApiBranchData | ApiUserData
 
 interface TableData {
   id: number
@@ -17,48 +46,38 @@ interface TableData {
   assignedTo: string
 }
 
-const dummyTableData: TableData[] = [
-  {
-    id: 1,
-    name: 'Amon Curtis',
-    status: 'Active',
-    location: 'SW, London',
-    assignedTo: 'Ken'
-  },
-  {
-    id: 2,
-    name: 'Username 2',
-    status: 'Active',
-    location: 'SW, London',
-    assignedTo: 'Task Holder'
-  },
-  {
-    id: 3,
-    name: 'Username 3',
-    status: 'Active',
-    location: 'SW, London',
-    assignedTo: 'Task Holder'
-  },
-  {
-    id: 4,
-    name: 'Username 4',
-    status: 'Inactive',
-    location: 'SW, London',
-    assignedTo: 'Task Holder'
-  },
-  {
-    id: 5,
-    name: 'Username 5',
-    status: 'Inactive',
-    location: 'SW, London',
-    assignedTo: 'Task Holder'
-  }
-]
-
 const BranchManagementSection = () => {
   const [activeTab, setActiveTab] = useState(0)
 
   const router = useRouter()
+
+  const filter = activeTab === 0 ? 'active_offices' : 'active_users'
+  const { dashboardData, isLoading } = usePmaDashboardData({ filter })
+
+  const tableData: TableData[] =
+    dashboardData?.data?.items?.map((item: ApiTableData) => {
+      if (filter === 'active_offices') {
+        const branchItem = item as ApiBranchData
+
+        return {
+          id: branchItem?.branch_id,
+          name: branchItem?.branch_name,
+          status: branchItem?.status,
+          location: `${branchItem?.region}, ${branchItem?.postcode}`,
+          assignedTo: branchItem?.assigned_to
+        }
+      } else {
+        const userItem = item as ApiUserData
+
+        return {
+          id: userItem?.user_id,
+          name: userItem?.username,
+          status: userItem?.status,
+          location: userItem?.branch || 'No Branch Assigned',
+          assignedTo: userItem?.user_type
+        }
+      }
+    }) || []
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue)
@@ -75,7 +94,7 @@ const BranchManagementSection = () => {
   const tableColumns = [
     {
       accessorKey: 'name',
-      header: activeTab === 0 ? 'BRANCH NAME' : 'USER NAME',
+      header: activeTab === 0 ? 'BRANCH NAME' : 'USERNAME',
       size: 200,
       cell: ({ row }: any) => (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -89,7 +108,7 @@ const BranchManagementSection = () => {
               justifyContent: 'center'
             }}
           >
-            <i className={activeTab === 0 ? 'ri-folder-line text-[#F59E0B]' : 'ri-user-line text-[#3B82F6]'}></i>
+            <i className={activeTab === 0 ? 'ri-building-line text-[#F59E0B]' : 'ri-user-line text-[#3B82F6]'}></i>
           </Box>
           <Typography sx={{ fontSize: '14px', color: '#374151' }}>{row.original.name}</Typography>
         </Box>
@@ -112,7 +131,7 @@ const BranchManagementSection = () => {
     },
     {
       accessorKey: 'location',
-      header: 'LOCATION',
+      header: activeTab === 0 ? 'LOCATION' : 'BRANCH',
       size: 150,
       cell: ({ row }: any) => (
         <Typography sx={{ fontSize: '14px', color: '#6B7280' }}>{row.original.location}</Typography>
@@ -120,21 +139,10 @@ const BranchManagementSection = () => {
     },
     {
       accessorKey: 'assignedTo',
-      header: 'ASSIGNED TO',
+      header: activeTab === 0 ? 'ASSIGNED TO' : 'USER TYPE',
       size: 150,
       cell: ({ row }: any) => (
         <Typography sx={{ fontSize: '14px', color: '#6B7280' }}>{row.original.assignedTo}</Typography>
-      )
-    },
-    {
-      accessorKey: 'action',
-      header: 'ACTION',
-      size: 100,
-      enableSorting: false,
-      cell: () => (
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
-          <i className='ri-more-2-fill text-[#6B7280] cursor-pointer text-[20px]'></i>
-        </Box>
       )
     }
   ]
@@ -241,7 +249,13 @@ const BranchManagementSection = () => {
           </Tabs>
         </Box>
 
-        <CommonTable data={dummyTableData} columns={tableColumns} enableSorting={true} />
+        {isLoading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
+            <Typography>Loading...</Typography>
+          </Box>
+        ) : (
+          <CommonTable data={tableData} columns={tableColumns} enableSorting={true} />
+        )}
       </Card>
     </Box>
   )
