@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useMemo, useState, useEffect } from 'react'
+import React, { useMemo, useState, useEffect, useRef } from 'react'
 
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 
@@ -32,6 +32,8 @@ const PmaTenderTable = () => {
   const [startDateModalOpen, setStartDateModalOpen] = useState(false)
   const [selectedWonTenderId, setSelectedWonTenderId] = useState<number | null>(null)
 
+  const isUserInteraction = useRef(false)
+
   const { tendersListData } = usePmaTenderListing({ filter: value })
 
   const pmaTendersData: PmaTenderType[] = tendersListData?.data?.tenders || []
@@ -48,15 +50,17 @@ const PmaTenderTable = () => {
     const newUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname
 
     router.replace(newUrl, { scroll: false })
-  }, [value, router, pathname, searchParams])
+  }, [value, router, pathname])
 
   useEffect(() => {
-    const filterFromUrl = searchParams.get('active') || (pathname === '/shortlisted' ? 'shortlisted' : 'went_live')
+    if (!isUserInteraction.current) {
+      const filterFromUrl = searchParams.get('active') || (pathname === '/shortlisted' ? 'shortlisted' : 'went_live')
 
-    if (filterFromUrl !== value) {
       setValue(filterFromUrl)
     }
-  }, [searchParams, value, pathname])
+
+    isUserInteraction.current = false
+  }, [searchParams, pathname])
 
   const columns = useMemo(() => {
     const baseColumns: any[] = [
@@ -200,7 +204,10 @@ const PmaTenderTable = () => {
         labelId='tender-filter-label'
         id='tender-filter'
         value={value}
-        onChange={e => setValue(e.target.value as string)}
+        onChange={e => {
+          isUserInteraction.current = true
+          setValue(e.target.value as string)
+        }}
         label='Select Tender Type'
         sx={{
           color: '#26C6F9 !important',
