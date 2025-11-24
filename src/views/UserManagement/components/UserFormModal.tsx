@@ -5,7 +5,7 @@ import React from 'react'
 import { Grid } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
-import { object, string, pipe, nonEmpty, email, check } from 'valibot'
+import { object, string, pipe, nonEmpty, email, check, number } from 'valibot'
 
 import CommonModal from '@/common/CommonModal'
 import FormInput from '@/components/form-components/FormInput'
@@ -45,28 +45,31 @@ const userSchema = object({
     check((value: string) => value.trim().length >= 2, 'Full name must be at least 2 characters')
   ),
   email: pipe(string(), nonEmpty('Email is required'), email('Please enter a valid email address')),
-  mobile: pipe(
+  mobile_number: pipe(
     string(),
     nonEmpty('Mobile number is required'),
     check(validateUKPhoneNumber, 'Please enter a valid UK mobile number')
   ),
-  branch: pipe(string(), nonEmpty('Branch is required'))
+  branch_id: pipe(
+    number(),
+    check((value) => value > 0, 'Branch is required and must be a valid number')
+  )
 })
 
 interface UserType {
   id: number
   name: string
   email: string
-  mobile: string
-  branch: string
+  mobile_number: string
+  branch_id: number
   status: 'active' | 'inactive'
 }
 
 type UserFormData = {
   name: string
   email: string
-  mobile: string
-  branch: string
+  mobile_number: string
+  branch_id: number
 }
 
 interface UserFormModalProps {
@@ -74,7 +77,7 @@ interface UserFormModalProps {
   onClose: () => void
   editingUser: UserType | null
   onSubmit: (data: UserFormData) => void
-  branchOptions: Array<{ value: string; label: string }>
+  branchOptions: Array<{ value: number; label: string }>
 }
 
 const UserFormModal: React.FC<UserFormModalProps> = ({ isOpen, onClose, editingUser, onSubmit, branchOptions }) => {
@@ -83,8 +86,8 @@ const UserFormModal: React.FC<UserFormModalProps> = ({ isOpen, onClose, editingU
     defaultValues: {
       name: editingUser?.name || '',
       email: editingUser?.email || '',
-      mobile: editingUser?.mobile || '',
-      branch: editingUser?.branch || ''
+      mobile_number: editingUser?.mobile_number || '',
+      branch_id: editingUser?.branch_id || 0
     },
     mode: 'onChange'
   })
@@ -94,15 +97,15 @@ const UserFormModal: React.FC<UserFormModalProps> = ({ isOpen, onClose, editingU
       reset({
         name: editingUser.name,
         email: editingUser.email,
-        mobile: editingUser.mobile,
-        branch: editingUser.branch
+        mobile_number: editingUser.mobile_number,
+        branch_id: editingUser.branch_id
       })
     } else {
       reset({
         name: '',
         email: '',
-        mobile: '',
-        branch: ''
+        mobile_number: '',
+        branch_id: 0
       })
     }
   }, [editingUser, reset])
@@ -138,10 +141,10 @@ const UserFormModal: React.FC<UserFormModalProps> = ({ isOpen, onClose, editingU
             <FormInput name='email' control={control} label='Email' type='email' />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <FormInput name='mobile' control={control} label='Mobile' type='tel' />
+            <FormInput name='mobile_number' control={control} label='Mobile' type='tel' />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <FormSelect name='branch' control={control} label='Branch' options={branchOptions} />
+            <FormSelect name='branch_id' control={control} label='Branch' options={branchOptions} />
           </Grid>
         </Grid>
 

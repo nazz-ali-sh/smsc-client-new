@@ -11,29 +11,32 @@ import TenderStatusCards from './components/TenderStatusCards'
 import CongratulationsSlider from './components/CongratulationsSlider'
 import PendingIncomeSection from './components/PendingIncomeSection'
 import BranchManagementSection from './components/BranchManagementSection'
-import type { PmaStatsType } from '@/views/PmaTenderListing/types'
+import { usePmadsahbaordData } from '@/hooks/usePmadsahbaordData'
 
-interface PmaDashboardViewProps {
-  statsData?: PmaStatsType
-}
-
-const PmaDashboardView = ({ statsData }: PmaDashboardViewProps) => {
+const PmaDashboardView = () => {
   const theme = useTheme()
   const belowMdScreen = useMediaQuery(theme.breakpoints.down('md'))
+  const { data: dashboardData } = usePmadsahbaordData()
 
   return (
     <Box>
       <div className='flex max-md:flex-col md:items-center gap-6 plb-5 w-full'>
         <div className='md:flex-[8]'>
-          <TenderStats text='Welcome Back' statsData={statsData} />
+          <TenderStats
+            text='Welcome Back'
+            statsData={{
+              responses_sent_to: dashboardData?.data?.dashboard_stats?.tender_submitted,
+              shortlisted_for_tender: dashboardData?.data?.dashboard_stats?.tender_shortlisted,
+              tender_won: dashboardData?.data?.dashboard_stats?.tender_won
+            }}
+          />
         </div>
         <Divider sx={{ marginY: '3px' }} orientation={belowMdScreen ? 'horizontal' : 'vertical'} flexItem />
         <div className='md:flex-[4]'>
           <PrimaryUserCard
-            pmaNumber={statsData?.pma_number}
-            activeOffices={statsData?.active_offices}
-            activeUsers={statsData?.active_users}
-            subUserVisibility={statsData?.sub_user_visibility}
+            pmaNumber={dashboardData?.data?.primary_user?.user_id}
+            activeOffices={dashboardData?.data?.primary_user?.active_offices}
+            activeUsers={dashboardData?.data?.primary_user?.active_users}
           />
         </div>
       </div>

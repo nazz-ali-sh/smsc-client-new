@@ -4,125 +4,21 @@ import React, { useMemo, useState } from 'react'
 
 import { TextField, Chip } from '@mui/material'
 import { createColumnHelper } from '@tanstack/react-table'
+import { useMutation } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
 import CommonTable from '@/common/CommonTable'
 import CustomTooltip from '@/common/CustomTooltip'
 import UserFormModal, { type UserType, type UserFormData } from './components/UserFormModal'
 import CustomButton from '@/common/CustomButton'
-
-const dummyUsers: UserType[] = [
-  {
-    id: 1,
-    name: 'Glenrose Apartments',
-    email: 'name@gmail.com',
-    mobile: '01',
-    branch: 'Branch Name 1',
-    status: 'active'
-  },
-  {
-    id: 2,
-    name: 'Glenrose Apartments',
-    email: 'name@gmail.com',
-    mobile: '01',
-    branch: 'Branch Name 1',
-    status: 'active'
-  },
-  {
-    id: 3,
-    name: 'Glenrose Apartments',
-    email: 'name@gmail.com',
-    mobile: '01',
-    branch: 'Branch Name 2',
-    status: 'inactive'
-  },
-  {
-    id: 4,
-    name: 'Glenrose Apartments',
-    email: 'name@gmail.com',
-    mobile: '01',
-    branch: 'Branch Name 2',
-    status: 'active'
-  },
-  {
-    id: 5,
-    name: 'Glenrose Apartments',
-    email: 'name@gmail.com',
-    mobile: '01',
-    branch: 'Branch Name 3',
-    status: 'active'
-  },
-  {
-    id: 6,
-    name: 'Glenrose Apartments',
-    email: 'name@gmail.com',
-    mobile: '01',
-    branch: 'Branch Name 1',
-    status: 'inactive'
-  },
-  {
-    id: 7,
-    name: 'Glenrose Apartments',
-    email: 'name@gmail.com',
-    mobile: '01',
-    branch: 'Branch Name 2',
-    status: 'active'
-  },
-  {
-    id: 8,
-    name: 'Glenrose Apartments',
-    email: 'name@gmail.com',
-    mobile: '01',
-    branch: 'Branch Name 1',
-    status: 'active'
-  },
-  {
-    id: 9,
-    name: 'Glenrose Apartments',
-    email: 'name@gmail.com',
-    mobile: '01',
-    branch: 'Branch Name 2',
-    status: 'inactive'
-  },
-  {
-    id: 10,
-    name: 'Glenrose Apartments',
-    email: 'name@gmail.com',
-    mobile: '01',
-    branch: 'Branch Name 2',
-    status: 'active'
-  },
-  {
-    id: 11,
-    name: 'Glenrose Apartments',
-    email: 'name@gmail.com',
-    mobile: '01',
-    branch: 'Branch Name 3',
-    status: 'active'
-  },
-  {
-    id: 12,
-    name: 'Glenrose Apartments',
-    email: 'name@gmail.com',
-    mobile: '01',
-    branch: 'Branch Name 1',
-    status: 'inactive'
-  },
-  {
-    id: 13,
-    name: 'Glenrose Apartments',
-    email: 'name@gmail.com',
-    mobile: '01',
-    branch: 'Branch Name 2',
-    status: 'active'
-  }
-]
+import * as PmaUserApi from '@/services/pma-user-management-apis/pma-user-management-apis'
+import { usePmaUsers } from '@/hooks/usePmaUsers'
 
 const branchOptions = [
-  { value: 'Branch Name 1', label: 'Branch Name 1' },
-  { value: 'Branch Name 2', label: 'Branch Name 2' },
-  { value: 'Branch Name 3', label: 'Branch Name 3' },
-  { value: 'Branch Name 4', label: 'Branch Name 4' }
+  { value: 1, label: 'Branch Name 1' },
+  { value: 2, label: 'Branch Name 2' },
+  { value: 3, label: 'Branch Name 3' },
+  { value: 4, label: 'Branch Name 4' }
 ]
 
 const columnHelper = createColumnHelper<UserType>()
@@ -132,7 +28,8 @@ const UserManagementView = () => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 })
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingUser, setEditingUser] = useState<UserType | null>(null)
-  const [users, setUsers] = useState<UserType[]>(dummyUsers)
+
+  const { data: users, refetch } = usePmaUsers()
 
   const handleOpenModal = (user?: UserType) => {
     setEditingUser(user || null)
@@ -144,42 +41,59 @@ const UserManagementView = () => {
     setEditingUser(null)
   }
 
-  const handleFormSubmit = (data: UserFormData) => {
-    if (editingUser) {
-      setUsers(prevUsers =>
-        prevUsers.map(user =>
-          user.id === editingUser.id
-            ? { ...user, name: data.name, email: data.email, mobile: data.mobile, branch: data.branch }
-            : user
-        )
-      )
-      toast.success('User updated successfully!')
-    } else {
-      const newUser: UserType = {
-        id: users.length + 1,
-        name: data.name,
-        email: data.email,
-        mobile: data.mobile,
-        branch: data.branch,
-        status: 'active'
+  const saveUserMutation = useMutation({
+    mutationFn: (data: UserFormData) => {
+      if (editingUser) {
+        return PmaUserApi.updatePmaUser(editingUser.id, {
+          name: data.name,
+          email: data.email,
+          mobile_number: data.mobile_number,
+          branch_id: data.branch_id
+        })
+      } else {
+        return PmaUserApi.addPmaUser({
+          name: data.name,
+          email: data.email,
+          mobile_number: data.mobile_number,
+          branch_id: data.branch_id
+        })
       }
+    },
+    onSuccess: async () => {
+      toast.success(editingUser ? 'User updated successfully!' : 'User added successfully!')
+      await refetch()
+      handleCloseModal()
+    },
+    onError: (error: any) => {
+      const errorMessage = error?.response?.data?.message || 'Failed to save user'
 
-      setUsers(prevUsers => [...prevUsers, newUser])
-      toast.success('User added successfully!')
+      toast.error(errorMessage)
     }
+  })
 
-    handleCloseModal()
+  const handleFormSubmit = (data: UserFormData) => {
+    saveUserMutation.mutate(data)
+  }
+
+  const handleDelete = async (id: number) => {
+    try {
+      await PmaUserApi.deletePmaUser(id)
+      toast.success('User deleted successfully!')
+
+      await refetch()
+    } catch (error) {
+      toast.error('Delete failed')
+    }
   }
 
   const filteredData = useMemo(() => {
-    if (!searchQuery) return users
+    if (!users) return []
 
     return users.filter(
-      user =>
-        user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.mobile.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.branch.toLowerCase().includes(searchQuery.toLowerCase())
+      (user: UserType) =>
+        (user.name ?? '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (user.email ?? '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (user.mobile_number ?? '').toLowerCase().includes(searchQuery.toLowerCase())
     )
   }, [searchQuery, users])
 
@@ -195,12 +109,12 @@ const UserManagementView = () => {
         cell: info => <span className='text-[#262B43E5] text-[12px]'>{info.getValue()}</span>,
         size: 180
       }),
-      columnHelper.accessor('mobile', {
+      columnHelper.accessor('mobile_number', {
         header: 'MOBILE',
         cell: info => <span className='text-[#262B43E5] text-[12px]'>{info.getValue()}</span>,
         size: 100
       }),
-      columnHelper.accessor('branch', {
+      columnHelper.accessor('branch_id', {
         header: 'BRANCH',
         cell: info => <span className='text-[#262B43E5] text-[12px]'>{info.getValue()}</span>,
         size: 150
@@ -239,7 +153,7 @@ const UserManagementView = () => {
               <CustomTooltip text='Edit' position='top' align='center'>
                 <div
                   className='size-8 rounded-md flex justify-center items-center bg-[#26C6F93D]'
-                  onClick={() => console.log('Delete user:', user)}
+                  onClick={() => handleOpenModal(user)}
                 >
                   <i className='ri-edit-line text-[16px] text-[#26C6F9]' />
                 </div>
@@ -248,7 +162,7 @@ const UserManagementView = () => {
               <CustomTooltip text='Delete' position='top' align='center'>
                 <div
                   className='size-8 rounded-md flex justify-center items-center bg-[#E1473D3D]'
-                  onClick={() => console.log('Delete user:', user)}
+                  onClick={() => handleDelete(user.id)}
                 >
                   <i className='ri-delete-bin-line text-[16px] text-[#E1473D]' />
                 </div>

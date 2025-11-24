@@ -2,6 +2,8 @@
 
 import { Grid, Card, Typography, Divider, Box } from '@mui/material'
 
+import { usePmadsahbaordData } from '@/hooks/usePmadsahbaordData'
+
 interface TenderStatusCardData {
   title: string
   icon: string
@@ -12,71 +14,96 @@ interface TenderStatusCardData {
   overdue_payment?: string | number
 }
 
-const dummyTenderData = {
-  live_tenders: {
-    title: 'Live Tenders',
-    icon: 'ri-mail-line',
-    today_count: '+10 Today',
-    total_count: 30,
-    description: 'Tenders Currently Open'
-  },
-  submitted_tenders: {
-    title: 'Submitted Tenders',
-    icon: 'ri-check-double-line',
-    today_count: '+4 Submitted',
-    total_count: 10,
-    description: 'Applied but not shortlisted yet.'
-  },
-  shortlisted_tenders: {
-    title: 'Shortlisted Tenders',
-    icon: 'ri-thumb-up-line',
-    today_count: '+4 Shortlisted',
-    total_count: 2,
-    description: 'Active shortlist (Includes date of shortlisting)'
-  },
-  video_call: {
-    title: 'Video Call',
-    icon: 'ri-video-add-line',
-    today_count: '4 Calls Today',
-    total_count: 2,
-    description: 'You have been invited to a video call for these tenders.'
-  },
-  site_visit: {
-    title: 'Site Visit',
-    icon: 'ri-user-location-line',
-    today_count: '4 Visits Today',
-    total_count: 3,
-    description: 'You have been invited to a site visit for these tenders.'
-  },
-  appointed: {
-    title: 'Appointed',
-    icon: 'ri-check-line',
-    today_count: '1 Appointed Today',
-    total_count: 1,
-    description: 'Congratulations! You have been appointed for these tenders.'
-  },
-  closed_tenders: {
-    title: 'Closed Tenders',
-    icon: 'ri-close-line',
-    today_count: '+5 Expired Today',
-    total_count: 1,
-    description: 'Tenders have concluded and your proposal was not selected.'
-  },
-  not_appointed: {
-    title: 'Payments',
-    icon: 'ri-money-pound-box-line',
-    today_count: '+5 Today',
-    total_count: 1,
-    description: '',
-    due_payment: 1,
-    overdue_payment: 3
-  }
-}
-
 const TenderStatusCards = () => {
+  const { data: dashboardData, isLoading } = usePmadsahbaordData()
+
+  const tenderData = dashboardData?.data
+    ? {
+        live_tenders: {
+          title: 'Live Tenders',
+          icon: 'ri-mail-line',
+          today_count: `+${dashboardData.data.stages.live_tenders.today_count} Today`,
+          total_count: dashboardData.data.stages.live_tenders.total_count,
+          description: 'Tenders Currently Open'
+        },
+        submitted_tenders: {
+          title: 'Submitted Tenders',
+          icon: 'ri-check-double-line',
+          today_count: `+${dashboardData.data.stages.submitted_tenders.today_count} Submitted`,
+          total_count: dashboardData.data.stages.submitted_tenders.total_count,
+          description: 'Applied but not shortlisted yet.'
+        },
+        shortlisted_tenders: {
+          title: 'Shortlisted Tenders',
+          icon: 'ri-thumb-up-line',
+          today_count: `+${dashboardData.data.stages.shortlisted_tenders.today_count} Shortlisted`,
+          total_count: dashboardData.data.stages.shortlisted_tenders.total_count,
+          description: 'Active shortlist (Includes date of shortlisting)'
+        },
+        video_call: {
+          title: 'Video Call',
+          icon: 'ri-video-add-line',
+          today_count: `${dashboardData.data.stages.video_calls.today_count} Calls Today`,
+          total_count: dashboardData.data.stages.video_calls.total_count,
+          description: 'You have been invited to a video call for these tenders.'
+        },
+        site_visit: {
+          title: 'Site Visit',
+          icon: 'ri-user-location-line',
+          today_count: `${dashboardData.data.stages.site_visits.today_count} Visits Today`,
+          total_count: dashboardData.data.stages.site_visits.total_count,
+          description: 'You have been invited to a site visit for these tenders.'
+        },
+        appointed: {
+          title: 'Appointed',
+          icon: 'ri-check-line',
+          today_count: `${dashboardData.data.stages.appointed.today_count} Appointed Today`,
+          total_count: dashboardData.data.stages.appointed.total_count,
+          description: 'Congratulations! You have been appointed for these tenders.'
+        },
+        closed_tenders: {
+          title: 'Closed Tenders',
+          icon: 'ri-close-line',
+          today_count: `+${dashboardData.data.stages.closed.today_count} Expired Today`,
+          total_count: dashboardData.data.stages.closed.total_count,
+          description: 'Tenders have concluded and your proposal was not selected.'
+        },
+        not_appointed: {
+          title: 'Payments',
+          icon: 'ri-money-pound-box-line',
+          today_count: `+${dashboardData.data.stages.payments.today_count || 0} Today`,
+          total_count: dashboardData.data.stages.payments.total_count || 0,
+          description: '',
+          due_payment: dashboardData.data.stages.payments.due_payments || 0,
+          overdue_payment: dashboardData.data.stages.payments.overdue_payments || 0
+        }
+      }
+    : {}
+
+  if (isLoading) {
+    return (
+      <Grid container spacing={6} sx={{ marginTop: 2 }}>
+        {[...Array(8)].map((_, index) => (
+          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+            <Card elevation={2} sx={{ borderRadius: '10px', height: '100%', position: 'relative' }}>
+              <Box sx={{ padding: 3 }}>
+                <div className='animate-pulse'>
+                  <div className='h-4 bg-gray-200 rounded w-3/4 mb-2'></div>
+                  <div className='h-6 bg-gray-200 rounded w-1/2 mb-4'></div>
+                  <div className='h-3 bg-gray-200 rounded w-full mb-2'></div>
+                  <div className='h-3 bg-gray-200 rounded w-2/3'></div>
+                </div>
+              </Box>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    )
+  }
+
   return (
     <Grid container spacing={6} sx={{ marginTop: 2 }}>
-      {Object.entries(dummyTenderData).map(([key, cardData]) => {
+      {Object.entries(tenderData).map(([key, cardData]) => {
         const card = cardData as TenderStatusCardData
 
         return (

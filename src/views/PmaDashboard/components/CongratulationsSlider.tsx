@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { Box, Card, Typography } from '@mui/material'
 
 import CustomButton from '@/common/CustomButton'
+import { usePmadsahbaordData } from '@/hooks/usePmadsahbaordData'
 
 interface SlideData {
   id: number
@@ -19,41 +20,42 @@ interface SlideData {
   imagePath: string
 }
 
-const slidesData: SlideData[] = [
-  {
-    id: 1,
-    title: 'Congratulations User Name!',
-    emoji: '🎉',
-    mainText: 'You have won ',
-    highlightText: '+1 Tender - RMC1XXXXX',
-    subText: 'Total Tenders Won - 5',
-    buttonText: 'View Tender',
-    imagePath: '/svgs/celebarations.svg'
-  },
-  {
-    id: 2,
-    title: 'Successfully Applied!',
-    emoji: '🎉',
-    mainText: 'You have applied for ',
-    highlightText: '+30 Tenders - RMC1XXXXX',
-    subText: 'Past 30 Days',
-    buttonText: 'View More',
-    imagePath: '/svgs/applied.svg'
-  },
-  {
-    id: 3,
-    title: 'Shortlisted Tenders!',
-    emoji: '🎉',
-    mainText: 'You are shortlisted for ',
-    highlightText: '+20 Tenders - RMC1XXXXX',
-    subText: 'Past 30 Days',
-    buttonText: 'View More',
-    imagePath: '/svgs/shortlisted.svg'
-  }
-]
-
 const CongratulationsSlider = () => {
   const [currentSlide, setCurrentSlide] = useState(0)
+  const { data: dashboardData } = usePmadsahbaordData()
+
+  const slidesData: SlideData[] = [
+    {
+      id: 1,
+      title: 'Congratulations User Name!',
+      emoji: '🎉',
+      mainText: 'You have won ',
+      highlightText: `+${dashboardData?.data?.tender_updates?.appointed?.last_thirty_days_count || 0} Tender - RMC1XXXXX`,
+      subText: `Total Tenders Won - ${dashboardData?.data?.tender_updates?.appointed?.total_count || 0}`,
+      buttonText: 'View Tender',
+      imagePath: '/svgs/celebarations.svg'
+    },
+    {
+      id: 2,
+      title: 'Successfully Applied!',
+      emoji: '🎉',
+      mainText: 'You have applied for ',
+      highlightText: `+${dashboardData?.data?.tender_updates?.submitted?.last_thirty_days_count || 0} Tenders - RMC1XXXXX`,
+      subText: `Past ${dashboardData?.data?.tender_updates?.submitted?.last_thirty_days_count || 0} Days`,
+      buttonText: 'View More',
+      imagePath: '/svgs/applied.svg'
+    },
+    {
+      id: 3,
+      title: 'Shortlisted Tenders!',
+      emoji: '🎉',
+      mainText: 'You are shortlisted for ',
+      highlightText: `+${dashboardData?.data?.tender_updates?.shortlisted?.last_thirty_days_count || 0} Tenders - RMC1XXXXX`,
+      subText: `Past ${dashboardData?.data?.tender_updates?.shortlisted?.last_thirty_days_count || 0} Days`,
+      buttonText: 'View More',
+      imagePath: '/svgs/shortlisted.svg'
+    }
+  ]
 
   useEffect(() => {
     const interval = setInterval(() => {

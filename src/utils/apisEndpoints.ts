@@ -40,6 +40,8 @@ export const apiEndpoints = {
 
   getDashbaordFaq: (tender_id: number) => `/rmc/faqs?tender_id=${tender_id}`,
 
+  getPmadsahbaordStats: () => `pma/dashboard/stats`,
+
   getTenderId: `/rmc/tenders`,
 
   //---------------------- Retender ------------------------------//

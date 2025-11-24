@@ -103,3 +103,83 @@ export const getDashboardData = async (tender_id: number): Promise<DashboardData
     throw error
   }
 }
+
+export interface PmadsahbaordStatsResponse {
+  status: string
+  message: string
+  data: {
+    dashboard_stats: {
+      tender_submitted: number
+      tender_shortlisted: number
+      tender_won: number
+    }
+    primary_user: {
+      user_id: string
+      active_offices: number
+      active_users: number
+    }
+    pending_invoices: null
+    stages: {
+      live_tenders: {
+        total_count: number
+        today_count: number
+      }
+      submitted_tenders: {
+        total_count: number
+        today_count: number
+      }
+      shortlisted_tenders: {
+        total_count: number
+        today_count: number
+      }
+      video_calls: {
+        total_count: number
+        today_count: number
+      }
+      site_visits: {
+        total_count: number
+        today_count: number
+      }
+      appointed: {
+        total_count: number
+        today_count: number
+      }
+      closed: {
+        total_count: number
+        today_count: number
+      }
+      payments: {
+        total_count: null
+        today_count: null
+        due_payments: null
+        overdue_payments: null
+      }
+    }
+    tender_updates: {
+      appointed: {
+        total_count: number
+        last_thirty_days_count: number
+      }
+      submitted: {
+        total_count: number
+        last_thirty_days_count: number
+      }
+      shortlisted: {
+        total_count: number
+        last_thirty_days_count: number
+      }
+    }
+  }
+}
+
+export const getPmadsahbaordStats = async (): Promise<PmadsahbaordStatsResponse> => {
+  try {
+    const url = apiEndpoints.getPmadsahbaordStats()
+    const response = await axiosClient.get(url)
+
+    return response.data
+  } catch (error) {
+    console.error('PMA Dashboard stats API error:', error)
+    throw error
+  }
+}
