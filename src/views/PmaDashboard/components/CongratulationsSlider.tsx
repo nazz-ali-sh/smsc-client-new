@@ -8,6 +8,7 @@ import { Box, Card, Typography } from '@mui/material'
 
 import CustomButton from '@/common/CustomButton'
 import { usePmadsahbaordData } from '@/hooks/usePmadsahbaordData'
+import { useTenderCardNavigation } from '@/hooks/useTenderCardNavigation'
 
 interface SlideData {
   id: number
@@ -23,6 +24,7 @@ interface SlideData {
 const CongratulationsSlider = () => {
   const [currentSlide, setCurrentSlide] = useState(0)
   const { data: dashboardData } = usePmadsahbaordData()
+  const { handleSliderNavigation } = useTenderCardNavigation()
 
   const slidesData: SlideData[] = [
     {
@@ -30,8 +32,8 @@ const CongratulationsSlider = () => {
       title: 'Congratulations User Name!',
       emoji: '🎉',
       mainText: 'You have won ',
-      highlightText: `+${dashboardData?.data?.tender_updates?.appointed?.last_thirty_days_count || 0} Tender - RMC1XXXXX`,
-      subText: `Total Tenders Won - ${dashboardData?.data?.tender_updates?.appointed?.total_count || 0}`,
+      highlightText: `+${dashboardData?.data?.tender_updates?.appointed?.total_count || 0} Tenders`,
+      subText: `Total Tenders Won`,
       buttonText: 'View Tender',
       imagePath: '/svgs/celebarations.svg'
     },
@@ -40,8 +42,8 @@ const CongratulationsSlider = () => {
       title: 'Successfully Applied!',
       emoji: '🎉',
       mainText: 'You have applied for ',
-      highlightText: `+${dashboardData?.data?.tender_updates?.submitted?.last_thirty_days_count || 0} Tenders - RMC1XXXXX`,
-      subText: `Past ${dashboardData?.data?.tender_updates?.submitted?.last_thirty_days_count || 0} Days`,
+      highlightText: `+${dashboardData?.data?.tender_updates?.submitted?.last_thirty_days_count || 0} Tenders`,
+      subText: `Past 30 Days`,
       buttonText: 'View More',
       imagePath: '/svgs/applied.svg'
     },
@@ -50,8 +52,8 @@ const CongratulationsSlider = () => {
       title: 'Shortlisted Tenders!',
       emoji: '🎉',
       mainText: 'You are shortlisted for ',
-      highlightText: `+${dashboardData?.data?.tender_updates?.shortlisted?.last_thirty_days_count || 0} Tenders - RMC1XXXXX`,
-      subText: `Past ${dashboardData?.data?.tender_updates?.shortlisted?.last_thirty_days_count || 0} Days`,
+      highlightText: `+${dashboardData?.data?.tender_updates?.shortlisted?.last_thirty_days_count || 0} Tenders`,
+      subText: `Past 30 Days`,
       buttonText: 'View More',
       imagePath: '/svgs/shortlisted.svg'
     }
@@ -136,7 +138,12 @@ const CongratulationsSlider = () => {
                 {slide.subText}
               </Typography>
 
-              <CustomButton sx={{ marginTop: 3 }}>{slide.buttonText}</CustomButton>
+              <CustomButton
+                sx={{ marginTop: 3 }}
+                onClick={() => handleSliderNavigation(slide.id)}
+              >
+                {slide.buttonText}
+              </CustomButton>
             </Box>
 
             <Box

@@ -43,7 +43,7 @@ export const rmcRetender = async (payload: { tender_id: number; days: number; mi
   try {
     const url = apiEndpoints.rmcRetender()
     const response = await axiosClient.post(url, payload)
-    
+
     return response.data
   } catch (error) {
     console.error('RMC Retender API error:', error)
@@ -118,7 +118,12 @@ export interface PmadsahbaordStatsResponse {
       active_offices: number
       active_users: number
     }
-    pending_invoices: null
+    pending_invoices: {
+      invoice_id: string | number
+      creation_date: string
+      total_amount: string | number
+      invoice_status: string | number
+    }
     stages: {
       live_tenders: {
         total_count: number

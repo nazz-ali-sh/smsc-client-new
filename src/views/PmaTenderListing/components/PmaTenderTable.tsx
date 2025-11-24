@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState, useEffect } from 'react'
 
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 
 import { MenuItem, Select, FormControl, InputLabel } from '@mui/material'
 import { createColumnHelper } from '@tanstack/react-table'
@@ -19,8 +19,14 @@ const columnHelper = createColumnHelper<PmaTenderType>()
 
 const PmaTenderTable = () => {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 })
-  const [value, setValue] = React.useState('went_live')
+
+  const [value, setValue] = React.useState(
+    searchParams.get('active') || (pathname === '/shortlisted' ? 'shortlisted' : 'went_live')
+  )
+
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [selectedTenderId, setSelectedTenderId] = useState<number | null>(null)
   const [startDateModalOpen, setStartDateModalOpen] = useState(false)
@@ -29,6 +35,28 @@ const PmaTenderTable = () => {
   const { tendersListData } = usePmaTenderListing({ filter: value })
 
   const pmaTendersData: PmaTenderType[] = tendersListData?.data?.tenders || []
+
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString())
+
+    if (value && value !== 'went_live') {
+      params.set('active', value)
+    } else {
+      params.delete('active')
+    }
+
+    const newUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname
+
+    router.replace(newUrl, { scroll: false })
+  }, [value, router, pathname, searchParams])
+
+  useEffect(() => {
+    const filterFromUrl = searchParams.get('active') || (pathname === '/shortlisted' ? 'shortlisted' : 'went_live')
+
+    if (filterFromUrl !== value) {
+      setValue(filterFromUrl)
+    }
+  }, [searchParams, value, pathname])
 
   const columns = useMemo(() => {
     const baseColumns: any[] = [
@@ -172,7 +200,7 @@ const PmaTenderTable = () => {
         labelId='tender-filter-label'
         id='tender-filter'
         value={value}
-        onChange={e => setValue(e.target.value)}
+        onChange={e => setValue(e.target.value as string)}
         label='Select Tender Type'
         sx={{
           color: '#26C6F9 !important',

@@ -3,6 +3,7 @@
 import { Grid, Card, Typography, Divider, Box } from '@mui/material'
 
 import { usePmadsahbaordData } from '@/hooks/usePmadsahbaordData'
+import { useTenderCardNavigation } from '@/hooks/useTenderCardNavigation'
 
 interface TenderStatusCardData {
   title: string
@@ -16,6 +17,7 @@ interface TenderStatusCardData {
 
 const TenderStatusCards = () => {
   const { data: dashboardData, isLoading } = usePmadsahbaordData()
+  const { handleCardNavigation } = useTenderCardNavigation()
 
   const tenderData = dashboardData?.data
     ? {
@@ -200,7 +202,10 @@ const TenderStatusCards = () => {
 
                 <div className='absolute bottom-4 right-4 left-4 flex items-center justify-between'>
                   <p className='text-[#696969] font-bold text-2xl leading-6'>{card.total_count}</p>
-                  <div className='w-8 h-8 rounded-md flex justify-center items-center bg-[#E0F2FE] cursor-pointer hover:bg-[#BAE6FD]'>
+                  <div
+                    className='w-8 h-8 rounded-md flex justify-center items-center bg-[#E0F2FE] cursor-pointer hover:bg-[#BAE6FD]'
+                    onClick={() => handleCardNavigation(key)}
+                  >
                     <i className='ri-eye-line text-[16px] text-[#0EA5E9]'></i>
                   </div>
                 </div>

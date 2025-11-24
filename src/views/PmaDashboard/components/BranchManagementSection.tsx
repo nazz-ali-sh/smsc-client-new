@@ -157,7 +157,10 @@ const BranchManagementSection = () => {
             paddingBottom: 0
           }}
         >
-          <CustomButton onClick={handleNavigate}> {activeTab === 0 ? 'Add Branch' : 'Add User'} </CustomButton>
+          <CustomButton onClick={handleNavigate}>
+            {' '}
+            {activeTab === 0 ? 'View All Branches' : 'View All Users'}{' '}
+          </CustomButton>
         </Box>
         <Box sx={{ paddingX: 3, paddingTop: 2 }}>
           <Tabs
@@ -238,14 +241,7 @@ const BranchManagementSection = () => {
           </Tabs>
         </Box>
 
-        <CommonTable
-          data={dummyTableData}
-          columns={tableColumns}
-          pagination={{ pageIndex: 0, pageSize: 5 }}
-          onPaginationChange={() => {}}
-          pageSizeOptions={[5, 10, 25]}
-          enableSorting={true}
-        />
+        <CommonTable data={dummyTableData} columns={tableColumns} enableSorting={true} />
       </Card>
     </Box>
   )
