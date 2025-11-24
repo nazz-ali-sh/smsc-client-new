@@ -94,16 +94,6 @@ const TenderDetailView = ({ tenderId }: TenderId) => {
               <Box sx={{ marginTop: 4 }}>
                 <ServiceChargeBudgetSection budgetData={transformedBudgetData} itemsPerRow={3} sx={titleClass} />
               </Box>
-
-              {tenderDetailData?.data?.pma_response && (
-                <Box className='pt-8 pb-32'>
-                  <Typography sx={titleClass}>Response</Typography>
-
-                  <Typography className='text-sm leading-7 text-[#736F6B] pt-3'>
-                    {tenderDetailData?.data?.pma_response}
-                  </Typography>
-                </Box>
-              )}
             </CardContent>
           </Card>
         </Grid>
