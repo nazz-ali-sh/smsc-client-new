@@ -63,7 +63,7 @@ const ServiceChargeBudgetSection = ({
   }
 
   const total = calculateTotal()
-  const sectionTitle = title || `Your Blocks Fixed Cost Summary: ${amountSymbol}${total.toFixed(2)}`
+  const sectionTitle = title ? `${title}: ${amountSymbol}${total.toFixed(2)}` : `Your Blocks Fixed Cost Summary: ${amountSymbol}${total.toFixed(2)}`
 
   const budgetItems = [
     { label: 'Management Fee', value: budgetData?.managing_fee, icon: '/svgs/managementFee.svg' },

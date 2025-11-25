@@ -10,10 +10,11 @@ import {
   maxLength,
   regex,
   optional,
-  boolean
+  boolean,
+  number
 } from 'valibot'
 
-const validateUKPhoneNumber = (value: string): boolean => {
+export const validateUKPhoneNumber = (value: string): boolean => {
   if (!/^\+?\d+$/.test(value)) {
     return false
   }
@@ -657,5 +658,23 @@ export const editProfileSchema = object({
     string(),
     nonEmpty('Company bio is required'),
     minLength(50, 'Company bio must be at least 50 characters')
+  )
+})
+
+export const userSchema = object({
+  name: pipe(
+    string(),
+    nonEmpty('Full name is required'),
+    check((value: string) => value.trim().length >= 2, 'Full name must be at least 2 characters')
+  ),
+  email: pipe(string(), nonEmpty('Email is required'), email('Please enter a valid email address')),
+  mobile_number: pipe(
+    string(),
+    nonEmpty('Mobile number is required'),
+    check(validateUKPhoneNumber, 'Please enter a valid UK mobile number')
+  ),
+  branch_id: pipe(
+    number(),
+    check((value) => value > 0, 'Branch is required and must be a valid number')
   )
 })

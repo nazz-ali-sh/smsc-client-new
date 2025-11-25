@@ -5,72 +5,13 @@ import React from 'react'
 import { Grid } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
-import { object, string, pipe, nonEmpty, email, check, number } from 'valibot'
 
 import CommonModal from '@/common/CommonModal'
 import FormInput from '@/components/form-components/FormInput'
 import FormSelect from '@/components/form-components/FormSelect'
 import CustomButton from '@/common/CustomButton'
-
-const validateUKPhoneNumber = (value: string): boolean => {
-  if (!/^\+?\d+$/.test(value)) {
-    return false
-  }
-
-  const cleanNumber = value.replace(/\s+/g, '')
-
-  if (/^\+44\d{9,10}$/.test(cleanNumber)) {
-    return true
-  }
-
-  if (/^\d{7,10}$/.test(cleanNumber)) {
-    return true
-  }
-
-  if (/^07\d{9}$/.test(cleanNumber)) {
-    return true
-  }
-
-  if (/^0[123]\d{8,9}$/.test(cleanNumber)) {
-    return true
-  }
-
-  return false
-}
-
-const userSchema = object({
-  name: pipe(
-    string(),
-    nonEmpty('Full name is required'),
-    check((value: string) => value.trim().length >= 2, 'Full name must be at least 2 characters')
-  ),
-  email: pipe(string(), nonEmpty('Email is required'), email('Please enter a valid email address')),
-  mobile_number: pipe(
-    string(),
-    nonEmpty('Mobile number is required'),
-    check(validateUKPhoneNumber, 'Please enter a valid UK mobile number')
-  ),
-  branch_id: pipe(
-    number(),
-    check((value) => value > 0, 'Branch is required and must be a valid number')
-  )
-})
-
-interface UserType {
-  id: number
-  name: string
-  email: string
-  mobile_number: string
-  branch_id: number
-  status: 'active' | 'inactive'
-}
-
-type UserFormData = {
-  name: string
-  email: string
-  mobile_number: string
-  branch_id: number
-}
+import {userSchema} from '@/schemas/validation-schemas'
+import type { UserType, UserFormData } from '../types'
 
 interface UserFormModalProps {
   isOpen: boolean

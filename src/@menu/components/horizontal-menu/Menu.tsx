@@ -138,7 +138,7 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
       <FloatingTree>
         <div
           className={`flex items-center justify-center ${
-            isOnboardingRoute ? 'gap-x-[13px]' : 'gap-x-[0px]'
+            isOnboardingRoute ? 'gap-x-[13px]' : 'gap-x-7'
           } min-w-[1300px] w-full`}
         >
           {menuData.map((items, index) => {
@@ -147,10 +147,7 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
             const isActive = isPmaUser
               ? pathname === items.href ||
                 (items.isInvite && pathname === '/calendar') ||
-                (items.isMyAccount &&
-                  ['/profile'].some(p =>
-                    pathname.startsWith(p)
-                  ))
+                (items.isMyAccount && ['/profile'].some(p => pathname.startsWith(p)))
               : pathname === items.href ||
                 (items.isInvite && ['/site-visits', '/video-calls', '/calendar'].some(p => pathname.startsWith(p)))
 
@@ -234,7 +231,11 @@ const Menu: ForwardRefRenderFunction<HTMLMenuElement, MenuProps> = props => {
                 className={`flex items-center ${isActive ? 'bg-[#35C0ED] text-white' : ''} ${
                   isDisabled ? 'cursor-default pointer-events-none' : 'cursor-pointer'
                 } justify-center py-2 rounded-lg ${
-                  isPmaUser && items.menuItem === 'My Account' ? 'min-w-[100px]' : isPmaUser ? 'min-w-[185px]' : 'min-w-[140px]'
+                  isPmaUser && items.menuItem === 'My Account'
+                    ? 'min-w-[100px]'
+                    : isPmaUser
+                      ? 'min-w-[185px]'
+                      : 'min-w-[140px]'
                 }`}
               >
                 <section className='flex gap-x-[8px] px-3'>

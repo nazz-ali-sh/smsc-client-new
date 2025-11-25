@@ -503,12 +503,12 @@ export const tenderTypeDetails = {
 
 export const tenderFilterMenuItems = [
   { value: 'went_live', label: 'Live Tenders' },
-  { value: 'appointment', label: 'Submitted Tenders' },
+  { value: 'result_received', label: 'Submitted Tenders' },
   { value: 'expired', label: 'Expired Tenders' },
   { value: 'closed', label: 'Closed Tenders' },
   { value: 'not_appointed', label: 'Not Appointed Tenders' },
   { value: 'shortlisted', label: 'Shortlisted Tenders' },
-  { value: 'date_registered', label: 'Won Tenders' }
+  { value: 'appointment', label: 'Won Tenders' }
 ]
 
 export const getTenderDetails = (value: string) => {
@@ -559,7 +559,6 @@ export const protectedRoutes = [
   '/trustpilot-form',
   '/trustpilot-reviews',
   '/invoices',
-  '/appointed',
   '/tender-detail',
   '/tender-quote',
   '/shortlisted',

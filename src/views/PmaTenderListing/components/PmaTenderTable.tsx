@@ -149,7 +149,7 @@ const PmaTenderTable = () => {
           cell: ({ row }) => {
             const tender_id = row?.original?.tender_id
             const isLiveTender = value === 'went_live'
-            const isAwardedTender = value === 'date_registered'
+            const isAwardedTender = value === 'appointment'
 
             const handleViewClick = () => {
               if (isLiveTender) {

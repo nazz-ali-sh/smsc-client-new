@@ -31,6 +31,8 @@ const UserManagementView = () => {
 
   const { data: users, refetch } = usePmaUsers()
 
+  const smallTextStyle = "text-[#262B43E5] text-[12px]";
+
   const handleOpenModal = (user?: UserType) => {
     setEditingUser(user || null)
     setIsModalOpen(true)
@@ -101,22 +103,22 @@ const UserManagementView = () => {
     () => [
       columnHelper.accessor('name', {
         header: 'NAME',
-        cell: info => <span className='text-[#262B43E5] text-[12px]'>{info.getValue()}</span>,
+        cell: info => <span className={smallTextStyle}>{info.getValue()}</span>,
         size: 200
       }),
       columnHelper.accessor('email', {
         header: 'EMAIL',
-        cell: info => <span className='text-[#262B43E5] text-[12px]'>{info.getValue()}</span>,
+        cell: info => <span className={smallTextStyle}>{info.getValue()}</span>,
         size: 180
       }),
       columnHelper.accessor('mobile_number', {
         header: 'MOBILE',
-        cell: info => <span className='text-[#262B43E5] text-[12px]'>{info.getValue()}</span>,
+        cell: info => <span className={smallTextStyle}>{info.getValue()}</span>,
         size: 100
       }),
       columnHelper.accessor('branch_id', {
         header: 'BRANCH',
-        cell: info => <span className='text-[#262B43E5] text-[12px]'>{info.getValue()}</span>,
+        cell: info => <span className={smallTextStyle}>{info.getValue()}</span>,
         size: 150
       }),
       columnHelper.accessor('status', {

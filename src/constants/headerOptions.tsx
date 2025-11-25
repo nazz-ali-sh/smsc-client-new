@@ -100,12 +100,6 @@ export const pmaMenuData: MenuItem[] = [
     alwaysEnabled: true
   },
   {
-    image: <i className='ri-calendar-check-line'></i>,
-    menuItem: 'Appointed',
-    href: '/appointed',
-    alwaysEnabled: true
-  },
-  {
     image: <i className='ri-user-line'></i>,
     menuItem: 'My Account',
     href: '/profile',

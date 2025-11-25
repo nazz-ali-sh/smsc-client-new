@@ -9,7 +9,7 @@ export const useTenderCardNavigation = () => {
         router.push('/tenders')
         break
       case 'submitted_tenders':
-        router.push('/tenders?active=appointment')
+        router.push('/tenders?active=result_received')
         break
       case 'shortlisted_tenders':
         router.push('/shortlisted')
@@ -21,7 +21,7 @@ export const useTenderCardNavigation = () => {
         router.push('/site-visits')
         break
       case 'appointed':
-        router.push('/tenders?active=date_registered')
+        router.push('/tenders?active=appointment')
         break
       case 'closed_tenders':
         router.push('/tenders?active=closed')
@@ -36,13 +36,13 @@ export const useTenderCardNavigation = () => {
 
   const handleSliderNavigation = (slideId: number) => {
     switch (slideId) {
-      case 1: 
-        router.push('/tenders?active=date_registered')
-        break
-      case 2:
+      case 1:
         router.push('/tenders?active=appointment')
         break
-      case 3: 
+      case 2:
+        router.push('/tenders?active=result_received')
+        break
+      case 3:
         router.push('/tenders?active=shortlisted')
         break
       default:

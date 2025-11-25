@@ -3,7 +3,13 @@ export type UserType = {
   name: string
   email: string
   mobile_number: string
-  branch_name?: string
-  status: string
-  tenderId: string | number
+  branch_id: number
+  status: 'active' | 'inactive'
+}
+
+export type UserFormData = {
+  name: string
+  email: string
+  mobile_number: string
+  branch_id: number
 }

@@ -26,7 +26,8 @@ function CommonTable<T>({
   onPaginationChange,
   pageSizeOptions = [5, 10, 25],
   className = '',
-  enableSorting = true
+  enableSorting = true,
+  isPagination = true
 }: CommonTableProps<T>) {
   const [internalPagination, setInternalPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 5 })
   const [sorting, setSorting] = useState<SortingState>([])
@@ -159,17 +160,19 @@ function CommonTable<T>({
           </table>
         </div>
 
-        <TablePagination
-          component='div'
-          count={table?.getFilteredRowModel()?.rows?.length}
-          page={pagination?.pageIndex}
-          onPageChange={(_, newPage) => setPagination({ ...pagination, pageIndex: newPage })}
-          rowsPerPage={pagination?.pageSize}
-          onRowsPerPageChange={e => setPagination({ ...pagination, pageSize: +e.target.value })}
-          rowsPerPageOptions={pageSizeOptions}
-          labelDisplayedRows={({ from, to, count }) => `${from}-${to} of ${count}`}
-          labelRowsPerPage='Page'
-        />
+        {isPagination && (
+          <TablePagination
+            component='div'
+            count={table?.getFilteredRowModel()?.rows?.length}
+            page={pagination?.pageIndex}
+            onPageChange={(_, newPage) => setPagination({ ...pagination, pageIndex: newPage })}
+            rowsPerPage={pagination?.pageSize}
+            onRowsPerPageChange={e => setPagination({ ...pagination, pageSize: +e.target.value })}
+            rowsPerPageOptions={pageSizeOptions}
+            labelDisplayedRows={({ from, to, count }) => `${from}-${to} of ${count}`}
+            labelRowsPerPage='Page'
+          />
+        )}
       </CardContent>
     </Card>
   )

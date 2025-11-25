@@ -8,6 +8,7 @@ import { Box, Card, Tab, Tabs, Typography } from '@mui/material'
 
 import CommonTable from '@/common/CommonTable'
 import CustomButton from '@/common/CustomButton'
+import CustomLoader from '@/common/CustomLoader'
 import { usePmaDashboardData } from '@/hooks/usePmaDashboardData'
 
 interface ApiBranchData {
@@ -63,7 +64,7 @@ const BranchManagementSection = () => {
           id: branchItem?.branch_id,
           name: branchItem?.branch_name,
           status: branchItem?.status,
-          location: `${branchItem?.region}, ${branchItem?.postcode}`,
+          location: `${branchItem?.region}`,
           assignedTo: branchItem?.assigned_to
         }
       } else {
@@ -73,7 +74,7 @@ const BranchManagementSection = () => {
           id: userItem?.user_id,
           name: userItem?.username,
           status: userItem?.status,
-          location: userItem?.branch || 'No Branch Assigned',
+          location: userItem?.branch || '--',
           assignedTo: userItem?.user_type
         }
       }
@@ -250,11 +251,9 @@ const BranchManagementSection = () => {
         </Box>
 
         {isLoading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
-            <Typography>Loading...</Typography>
-          </Box>
+          <CustomLoader message="Loading..." />
         ) : (
-          <CommonTable data={tableData} columns={tableColumns} enableSorting={true} />
+          <CommonTable data={tableData} columns={tableColumns} enableSorting={true} isPagination={false} />
         )}
       </Card>
     </Box>

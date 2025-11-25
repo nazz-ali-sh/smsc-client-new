@@ -129,6 +129,7 @@ declare global {
     pageSizeOptions?: number[]
     className?: string
     enableSorting?: boolean
+    isPagination?: boolean
   }
 }
 

@@ -34,6 +34,29 @@ const TenderDetailView = ({ tenderId }: TenderId) => {
     anti_money_fee: String(tenderDetailData?.data?.rmc_service_charge_budget?.anti_money_fee || 0)
   }
 
+  const transformedManagementFees = tenderDetailData?.data?.pma_response?.cost_breakdown?.management_fees?.reduce(
+    (acc: Record<string, string>, fee: { fee_name: string; fee_amount: number }) => {
+      const keyMap: Record<string, string> = {
+        'Management Fee': 'managing_fee',
+        'Accounting Fee': 'accounting_fee',
+        'CoSec Fee': 'cosec_fee',
+        'Out of Hours Fee': 'out_of_hours_fee',
+        'Emergency Lighting Fee': 'emergency_fee',
+        'Fire Door Inspection': 'fire_door_fee',
+        'AML Checks': 'anti_money_fee'
+      }
+
+      const key = keyMap[fee.fee_name] || fee.fee_name.toLowerCase().replace(/\s+/g, '_')
+
+      acc[key] = String(fee.fee_amount)
+
+      return acc
+    },
+    {}
+  )
+
+  console.log(tenderDetailData?.data?.pma_response?.cost_breakdown, 'tenderDetailData')
+
   return (
     <Box>
       <Grid container spacing={5}>
@@ -80,6 +103,18 @@ const TenderDetailView = ({ tenderId }: TenderId) => {
         <Grid item xs={12} md={8}>
           <Card>
             <CardContent>
+              {transformedManagementFees && (
+                <Box sx={{ marginBottom: 4 }}>
+                  <ServiceChargeBudgetSection
+                    budgetData={transformedManagementFees}
+                    itemsPerRow={3}
+                    sx={titleClass}
+                    title='Your Blocks Fixed Cost Summary'
+                  />
+                  <Divider sx={{ mt: 8 }} />
+                </Box>
+              )}
+
               <PrioritiesSection
                 priorities={tenderDetailData?.data?.rmc_priorities ?? []}
                 cardsPerRow={3}
@@ -92,8 +127,28 @@ const TenderDetailView = ({ tenderId }: TenderId) => {
                 <PainPoints painPoints={tenderDetailData?.data?.pain_points ?? []} titleSx={titleClass} />
               </Box>
               <Box sx={{ marginTop: 4 }}>
-                <ServiceChargeBudgetSection budgetData={transformedBudgetData} itemsPerRow={3} sx={titleClass} />
+                <ServiceChargeBudgetSection
+                  budgetData={transformedBudgetData}
+                  itemsPerRow={3}
+                  sx={titleClass}
+                  title='Fixed Cost Quote from Managing Agent'
+                />
               </Box>
+
+              <Typography
+                sx={{
+                  fontWeight: 600,
+                  fontSize: '18px',
+                  color: '#1F4E8D',
+                  paddingTop: '12px'
+                }}
+              >
+                Response
+              </Typography>
+
+              <Typography sx={{ paddingTop: '22px' }}>
+                {tenderDetailData?.data?.pma_response?.response_message}
+              </Typography>
             </CardContent>
           </Card>
         </Grid>

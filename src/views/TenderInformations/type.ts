@@ -201,6 +201,7 @@ export type CompanyMetrics = {
   trading_years: number | null
   total_units_managed: number | null
   avg_units_per_manager: number | null
+  units_managed_by_company: number | null
   fee_range: {
     min_fee_per_unit: number
     max_fee_per_unit: number

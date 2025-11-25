@@ -160,7 +160,8 @@ const KitchenSink = () => {
           currency: 'GBP'
         }),
         location: item?.location?.region || '-',
-        NoOfUnits: item?.company_metrics?.total_units_managed ?? item?.quotation?.per_unit_equivalent_inc_vat ?? '0',
+        NoOfUnits:
+          item?.company_metrics?.units_managed_by_company ?? item?.quotation?.per_unit_equivalent_inc_vat ?? '0',
         googleReview: item?.reviews?.google?.rating || 0,
         tradingYears: item?.company_metrics?.trading_years ?? '0',
         Questionaire: 'View Agents Response & Quote'
