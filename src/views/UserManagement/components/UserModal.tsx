@@ -15,13 +15,12 @@ import {
   Select
 } from '@mui/material'
 
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useForm, Controller } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
 import type { UserType } from '../types'
 import { addUser, updateUser } from '@/redux-store/slices/userSlice'
-import type { RootState } from '@/redux-store'
 
 type Props = {
   open: boolean
@@ -34,14 +33,19 @@ const defaultValues: UserType = {
   name: '',
   email: '',
   mobile_number: '',
-  branch_name: '',
-  status: '',
-  tenderId: ''
+  branch_id: 0,
+  status: 'active'
 }
+
+const branchOptions = [
+  { value: 1, label: 'Branch Name 1' },
+  { value: 2, label: 'Branch Name 2' },
+  { value: 3, label: 'Branch Name 3' },
+  { value: 4, label: 'Branch Name 4' }
+]
 
 const UserModal: React.FC<Props> = ({ open, setOpen, user }) => {
   const dispatch = useDispatch()
-  const branches = useSelector((state: RootState) => state.branches.branches)
 
   const {
     control,
@@ -134,14 +138,14 @@ const UserModal: React.FC<Props> = ({ open, setOpen, user }) => {
             </Grid>
             <Grid item xs={12}>
               <Controller
-                name='branch_name'
+                name='branch_id'
                 control={control}
                 render={({ field }) => (
                   <FormControl fullWidth>
-                    <Select
+                    <Select<number>
                       {...field}
                       displayEmpty
-                      defaultValue=''
+                      value={field.value || 0}
                       sx={{ height: 56 }}
                       MenuProps={{
                         PaperProps: {
@@ -150,13 +154,15 @@ const UserModal: React.FC<Props> = ({ open, setOpen, user }) => {
                           }
                         }
                       }}
-                      renderValue={selected =>
-                        selected ? selected : <span style={{ color: '#9e9e9e' }}>Branch (Optional)</span>
+                      renderValue={(selected) =>
+                        selected ? 
+                          branchOptions.find(b => b.value === selected)?.label || 'Select Branch' 
+                          : <span style={{ color: '#9e9e9e' }}>Branch (Optional)</span>
                       }
                     >
-                      {branches.map(branch => (
-                        <MenuItem key={branch.id} value={branch.branch_name}>
-                          {branch.branch_name}
+                      {branchOptions.map(branch => (
+                        <MenuItem key={branch.value} value={branch.value}>
+                          {branch.label}
                         </MenuItem>
                       ))}
                     </Select>
