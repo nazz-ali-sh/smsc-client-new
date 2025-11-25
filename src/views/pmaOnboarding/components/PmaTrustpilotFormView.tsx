@@ -110,7 +110,7 @@ export default function PmaTrustpilotFormView() {
 
   return (
     <>
-      <h1 className='text-[48px] text-center font-bold text-[#262B43E5] mt-8'>PMA Onboarding</h1>
+      <h1 className='text-[48px] text-center font-bold text-[#262B43E5] mt-8'>PMA Sign Up</h1>
       <div className='flex items-center justify-center p-4 bg-white mt-8 mb-20'>
         <div className='p-4 rounded-lg w-full'>
           <form>

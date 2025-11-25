@@ -58,13 +58,13 @@ const OnboardingBudget = () => {
 
   const calculateCurrentTotal = (): number => {
     const values = [
-      parseFloat(watchedValues?.managing_fee) || 0,
-      parseFloat(watchedValues?.accounting_fee) || 0,
-      parseFloat(watchedValues?.cosec_fee) || 0,
-      parseFloat(watchedValues?.out_of_hours_fee) || 0,
-      parseFloat(watchedValues?.emergency_fee) || 0,
-      parseFloat(watchedValues?.fire_door_fee) || 0,
-      parseFloat(watchedValues?.anti_money_fee) || 0
+      parseFloat(watchedValues?.managing_fee ?? '0') || 0,
+      parseFloat(watchedValues?.accounting_fee ?? '0') || 0,
+      parseFloat(watchedValues?.cosec_fee ?? '0') || 0,
+      parseFloat(watchedValues?.out_of_hours_fee ?? '0') || 0,
+      parseFloat(watchedValues?.emergency_fee ?? '0') || 0,
+      parseFloat(watchedValues?.fire_door_fee ?? '0') || 0,
+      parseFloat(watchedValues?.anti_money_fee ?? '0') || 0
     ]
 
     return values?.reduce((sum, value) => sum + value, 0)
@@ -118,13 +118,13 @@ const OnboardingBudget = () => {
     if (!budgetData) return
 
     const payload: RmcOnboardingBudgetPayload = {
-      managing_fee: parseFloat(budgetData?.managing_fee),
-      accounting_fee: parseFloat(budgetData?.accounting_fee),
-      cosec_fee: parseFloat(budgetData?.cosec_fee),
-      out_of_hours_fee: parseFloat(budgetData?.out_of_hours_fee),
-      emergency_fee: parseFloat(budgetData?.emergency_fee),
-      fire_door_fee: parseFloat(budgetData?.fire_door_fee),
-      anti_money_fee: parseFloat(budgetData?.anti_money_fee),
+      managing_fee: parseFloat(budgetData?.managing_fee ?? '0'),
+      accounting_fee: parseFloat(budgetData?.accounting_fee ?? '0'),
+      cosec_fee: parseFloat(budgetData?.cosec_fee ?? '0'),
+      out_of_hours_fee: parseFloat(budgetData?.out_of_hours_fee ?? '0'),
+      emergency_fee: parseFloat(budgetData?.emergency_fee ?? '0'),
+      fire_door_fee: parseFloat(budgetData?.fire_door_fee ?? '0'),
+      anti_money_fee: parseFloat(budgetData?.anti_money_fee ?? '0'),
       step: 4,
       tender_onboarding_id: onboardingData?.onboarding_id ?? rmcData?.tender_onboarding_id
     }
@@ -177,7 +177,7 @@ const OnboardingBudget = () => {
 
   return (
     <div className='flex flex-col items-center pt-10 mb-20'>
-      <h1 className='text-[48px] font-bold text-[#262B43E5] '>RMC Onboarding</h1>
+      <h1 className='text-[48px] font-bold text-[#262B43E5] '>RMC Sign Up</h1>
       <div className='bg-white p-8 pt-10 w-full  mt-6'>
         <Typography
           variant='h6'
@@ -275,20 +275,19 @@ const OnboardingBudget = () => {
         maxWidth='md'
       >
         <div className='space-y-4'>
-          <Typography variant='body2' className='text-[#696969] text-xs mt-3 leading-[22px]'>
+          <Typography variant='body2' className='text-[#696969] mt-3 leading-[22px] text-[13px]'>
             Save My Service Charge compares fixed cost elements of your service charge budget — the standard fees every
             block pays, such as management, accounting, and company secretarial fees.
           </Typography>
-
           <div>
-            <Typography variant='body2' className='text-[#696969] mb-3 leading-[22px]'>
+            <Typography variant='body2' className='text-[#696969] mb-3 leading-[22px] text-[13px]'>
               These are the most reliable figures for comparing value between managing agents. Variable costs (for
               example, cleaning, gardening, and energy) usually transfer across to your new managing agent and can be
               reviewed or re-tendered later if you wish to reduce them.
             </Typography>
           </div>
           <div className='mt-6'>
-            <Typography variant='body2' className='text-[#696969] leading-[22px] text-xs '>
+            <Typography variant='body2' className='text-[#696969] leading-[22px] text-[13px]'>
               By sharing your fixed costs now, you’ll enable a clearer and fairer comparison during the tender process.
             </Typography>
           </div>

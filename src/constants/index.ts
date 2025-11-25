@@ -30,9 +30,9 @@ export const budgetFields = [
   { name: 'accounting_fee', label: 'Accounting Fee' },
   { name: 'cosec_fee', label: 'CoSec Fee' },
   { name: 'out_of_hours_fee', label: 'Out of Hours Fee' },
-  { name: 'emergency_fee', label: 'Emergency Fee' },
-  { name: 'fire_door_fee', label: 'Fire Door Fee' },
-  { name: 'anti_money_fee', label: 'Anti Money Laundering Fee' }
+  { name: 'emergency_fee', label: 'Emergency Lighting Tests' },
+  { name: 'fire_door_fee', label: 'Fire Door Inspections' },
+  { name: 'anti_money_fee', label: 'Anti-Money Laundering Checks' }
 ] as const
 
 export const quoteFeeFields = [
@@ -197,7 +197,7 @@ export const pmaOnboardingAccountInputs = [
 ]
 
 export const budgetText =
-  'Providing your block’s fixed costs is optional, but highly recommended. Including this information helps managing agents give you more accurate and detailed quotes during the tender process. \n Not all fields are mandatory - some blocks may not have every cost listed. The figures you enter here will apply to the entire block.\n These fixed costs are standard across all service charge budgets and allow for a fair, like-for-like comparison later in the tender. Variable costs (such as cleaning, gardening, energy, and repairs) can be transferred to your new managing agent and reviewed later if you wish to reduce them. \nIf you’d like your new managing agent to help reduce variable costs, please mention this in the open-ended questions during registration.'
+  'Providing your block’s fixed costs is optional, but highly recommended. Including this information helps managing agents give you more accurate and detailed quotes during the tender process. \n\n Not all fields are mandatory - some blocks may not have every cost listed. The figures you enter here will apply to the entire block.\n These fixed costs are standard across all service charge budgets and allow for a fair, like-for-like comparison later in the tender. Variable costs (such as cleaning, gardening, energy, and repairs) can be transferred to your new managing agent and reviewed later if you wish to reduce them. \nIf you’d like your new managing agent to help reduce variable costs, please mention this in the open-ended questions during registration.'
 
 export const recommandedStep = [
   {

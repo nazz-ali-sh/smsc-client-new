@@ -142,7 +142,7 @@ const OnboardingEndedQuestions = () => {
   return (
     <>
       <div className='flex flex-col items-center pt-10 pb-32'>
-        <h1 className='text-[48px] font-bold text-[#262B43E5] '>RMC Onboarding</h1>
+        <h1 className='text-[48px] font-bold text-[#262B43E5] '>RMC Sign Up</h1>
         <div className='bg-white p-8 pt-10 w-full mt-8'>
           <Typography variant='h6' sx={{ fontSize: '24px', fontWeight: 500, color: '#333' }} className='mb-5'>
             Help Managing Agents Understand Your Needs

@@ -88,7 +88,7 @@ const OnboardingVerificationView = ({ portal }: OnboardingPortalProps) => {
     }
   }
 
-  const portalTitle = portal === 'pma_portal' ? 'PMA Onboarding' : 'RMC Onboarding'
+  const portalTitle = portal === 'pma_portal' ? 'PMA Sign Up' : 'RMC Sign Up'
 
   return (
     <div className='flex flex-col items-center pt-10 mb-20'>

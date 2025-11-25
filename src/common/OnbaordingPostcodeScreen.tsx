@@ -138,7 +138,7 @@ const OnbaordingPostcodeScreen = ({ portal }: OnboardingPortalProps) => {
     mutation.mutate(payload)
   }
 
-  const onbaordingType = portal === 'pma_portal' ? 'PMA Onbaording' : 'RMC Onboarding'
+  const onbaordingType = portal === 'pma_portal' ? 'PMA Onbaording' : 'RMC Sign Up'
 
   return (
     <div className='flex flex-col items-center pt-10 mb-20'>

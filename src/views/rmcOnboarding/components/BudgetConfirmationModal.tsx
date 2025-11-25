@@ -15,15 +15,15 @@ const BudgetConfirmationModal = ({
   onEdit,
   isLoading = false
 }: BudgetConfirmationModalProps) => {
-  const calculateTotal = (data: BudgetFormData): number => {
+  const calculateTotal = (data: BudgetFormData | null): number => {
     const values = [
-      parseFloat(data?.managing_fee) || 0,
-      parseFloat(data?.accounting_fee) || 0,
-      parseFloat(data?.cosec_fee) || 0,
-      parseFloat(data?.out_of_hours_fee) || 0,
-      parseFloat(data?.emergency_fee) || 0,
-      parseFloat(data?.fire_door_fee) || 0,
-      parseFloat(data?.anti_money_fee) || 0
+      parseFloat(data?.managing_fee ?? '0') || 0,
+      parseFloat(data?.accounting_fee ?? '0') || 0,
+      parseFloat(data?.cosec_fee ?? '0') || 0,
+      parseFloat(data?.out_of_hours_fee ?? '0') || 0,
+      parseFloat(data?.emergency_fee ?? '0') || 0,
+      parseFloat(data?.fire_door_fee ?? '0') || 0,
+      parseFloat(data?.anti_money_fee ?? '0') || 0
     ]
 
     return values?.reduce((sum, value) => sum + value, 0)
@@ -74,7 +74,6 @@ const BudgetConfirmationModal = ({
         <div className='bg-white border border-gray-200 rounded-lg overflow-hidden mb-6'>
           <div className='bg-gray-50 px-4 py-3 border-b border-gray-200'>
             <div className='grid grid-cols-12 gap-4 text-sm font-semibold text-gray-700'>
-              <div className='col-span-2'>Sr#</div>
               <div className='col-span-6'>Fee</div>
               <div className='col-span-4 text-right'>Per Block</div>
             </div>
@@ -84,7 +83,6 @@ const BudgetConfirmationModal = ({
             {getModalBudgetSummary()?.map((item, index) => (
               <div key={index} className='px-4 py-3'>
                 <div className='grid grid-cols-12 gap-4 text-sm'>
-                  <div className='col-span-2 text-gray-600'>{item?.sr}</div>
                   <div className='col-span-6 text-gray-800'>{item?.fee}</div>
                   <div className='col-span-4 text-right font-medium text-gray-800'>{formatCurrency(item?.amount)}</div>
                 </div>
@@ -93,7 +91,6 @@ const BudgetConfirmationModal = ({
 
             <div className='px-4 py-3 bg-gray-50 border-t-2 border-gray-300'>
               <div className='grid grid-cols-12 gap-4 text-sm font-semibold'>
-                <div className='col-span-2'></div>
                 <div className='col-span-6 text-gray-800'>TOTAL</div>
                 <div className='col-span-4 text-right text-gray-800'>
                   {budgetData ? formatCurrency(calculateTotal(budgetData)) : '£0.00'}

@@ -9,7 +9,7 @@ import { rmcRoutes, pmaRoutes } from '@/constants'
 const RetenderNotificationWrapper = () => {
   const pathname = usePathname()
   const { data: dashboardData } = useDashboardData()
-
+  
   const isOnboardingRoute =
     rmcRoutes.some(route => pathname === route || pathname.startsWith(route)) ||
     pmaRoutes.some(route => pathname === route || pathname.startsWith(route))
@@ -34,7 +34,7 @@ const RetenderNotificationWrapper = () => {
 
   const isShortlistedCompleted = dashboardData?.data?.tender_stage_progress?.stages?.shortlisted?.is_completed
 
-  if (isShortlistedCompleted) {
+  if (isShortlistedCompleted || (tenderResponseCount && tenderResponseCount >= 7)) {
     return null
   }
 
@@ -45,7 +45,7 @@ const RetenderNotificationWrapper = () => {
   return (
     <RetenderNotification
       title='Not getting enough replies?'
-      description="We've noticed this tender has received fewer than 3 responses. To increase your chances of success, you can re-tender Your Block."
+      description={`We've noticed this tender has received fewer than ${tenderResponseCount < 3 ? '3 responses' : '6 responses'}. To increase your chances of success, you can re-tender Your Block.`}
       buttonText='Re-Tender'
       showModal={!isShortlistedCompleted}
       tenderId='TND-xxxx'

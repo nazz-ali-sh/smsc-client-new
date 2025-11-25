@@ -1,13 +1,13 @@
 import type { RootState } from '@/redux-store'
 
 export interface BudgetFormData {
-  managing_fee: string
-  accounting_fee: string
-  cosec_fee: string
-  out_of_hours_fee: string
-  emergency_fee: string
-  fire_door_fee: string
-  anti_money_fee: string
+  managing_fee?: string
+  accounting_fee?: string
+  cosec_fee?: string
+  out_of_hours_fee?: string
+  emergency_fee?: string
+  fire_door_fee?: string
+  anti_money_fee?: string
 }
 
 export interface BudgetConfirmationModalProps {

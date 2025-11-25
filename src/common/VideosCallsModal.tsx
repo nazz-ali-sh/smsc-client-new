@@ -455,8 +455,17 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                 ? 'Reschedule Video Call  '
                 : ' Schedule Video Call '}
             </Typography>
-            <Typography variant='body2' sx={{ paddingY: '12px' }}>
-              Use this section to invite PMAs to meeting
+            <Typography variant='body2' sx={{ paddingTop: '12px' }}>
+              Use this section to invite PMAs (Property Management Agents) to video calls.
+            </Typography>
+            <Typography variant='body2' sx={{ paddingTop: '12px' }}>
+              <span className='font-bold'>To add your availability:</span> First, select the{' '}
+              <span className='font-bold'>Select Date.</span> Your current slots will be listed below. You can add or
+              update your available times by clicking the <span className='font-bold'>Update Slot button.</span>
+            </Typography>
+            <Typography variant='body2' sx={{ paddingTop: '12px' }}>
+              Once your availability is set, you can send the invitation to an individual managing agent or to all of
+              the agents you have shortlisted.
             </Typography>
           </Box>
           <IconButton onClick={onClose} sx={{ color: 'customColors.textGray' }}>

@@ -269,7 +269,7 @@ const OnboardingPriorities: React.FC = () => {
   return (
     <>
       <div className='flex flex-col items-center py-10 pb-20'>
-        <h1 className='text-3xl font-bold text-[#262B43] mb-8'>RMC Onboarding</h1>
+        <h1 className='text-3xl font-bold text-[#262B43] mb-8'>RMC Sign Up</h1>
 
         <DndContext
           sensors={sensors}

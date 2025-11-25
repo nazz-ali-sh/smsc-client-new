@@ -1,5 +1,7 @@
 'use client'
 
+import React, { useState } from 'react'
+
 import { useRouter } from 'next/navigation'
 
 import Image from 'next/image'
@@ -18,9 +20,12 @@ import { downloadBlindTenderPdf } from '@/services/tender_result-apis/tender-res
 import { downloadFinalSeectionPDf } from '@/services/final_result_and_archeive_apis/final_results_apis'
 import CustomButton from '@/common/CustomButton'
 import { useDashboardData } from '@/hooks/useDashboardData'
+import CommonModal from '@/common/CommonModal'
 
 const CurrentActivity = () => {
   const router = useRouter()
+
+  const [tenderReportModelOpen, setTenderReportModelOpen] = useState(false)
 
   const { data: dashboardResponce } = useDashboardData()
 
@@ -79,18 +84,18 @@ const CurrentActivity = () => {
         <div className=''>
           <div className='flex flex-col lg:flex-row  items-start justify-between pt-3'>
             <div className='w-[100%] lg:w-[50%]'>
-              <Typography className='w-[50%] text-[20px] font-semibold' sx={headingStyle}>
+              <Typography className='w-[50%] text-[30px] font-semibold' sx={headingStyle}>
                 Current Activity
               </Typography>
-              <div className='flex flex-col space-y-5 md:space-y-0 md:flex-row gap-x-[70px] items-center mt-[30px] '>
-                <div className='bg-white rounded-lg shadow-sm border border-gray-200 px-[20px] py-[20px] w-full h-[145px]'>
+              <div className='flex flex-col lg:flex-col space-y-5 md:space-y-0 md:flex-row gap-x-[70px] items-center mt-[30px] '>
+                <div className='bg-white rounded-lg shadow-sm border border-gray-200 px-[20px] py-[20px] w-full h-[145px] mb-3'>
                   <div className='flex items-center justify-between mb-4'>
-                    <div className='flex items-center space-x-4'>
+                    <div className='flex items-center space-x-4 w-[100%]'>
                       <div className=' bg-sky p-2 flex items-center rounded-lg'>
                         <i className='ri-customer-service-2-line bg-buttonPrimary'></i>
                       </div>
-                      <div>
-                        <div className=' font-bold text-gray-900 text-[15px]'>
+                      <div className='flex flex-row-reverse justify-between w-[100%]'>
+                        <div className=' font-bold text-gray-900 text-[15px] mr-16'>
                           {dashboardResponce?.data?.schedule_calls || '0'}
                         </div>
                         <div className='text-textGray text-[14px]'>Scheduled Calls</div>
@@ -109,12 +114,12 @@ const CurrentActivity = () => {
                 </div>
                 <div className='bg-white rounded-lg shadow-sm border border-gray-200 p-5 w-full h-[145px]'>
                   <div className='flex items-center justify-between mb-4'>
-                    <div className='flex items-center justify-center space-x-4'>
+                    <div className='flex items-center justify-center space-x-4 w-[100%]'>
                       <div className='bg-[#E6E7FF] p-2 flex items-center rounded-lg'>
                         <i className='ri-user-3-line bg-[#666CFF]'></i>
                       </div>
-                      <div>
-                        <div className='text-[15px] font-bold text-gray-900'>
+                      <div className='flex flex-row-reverse justify-between w-[100%]'>
+                        <div className='text-[15px] font-bold text-gray-900 mr-16'>
                           {dashboardResponce?.data?.shortlisted_pma || '0'}
                         </div>
                         <div className='text-[14px] text-textGray '>Shortlisted Agents</div>
@@ -137,62 +142,105 @@ const CurrentActivity = () => {
             <section className='w-[100%] lg:w-[50%] mt-10 lg:mt-0'>
               <div className='flex items-start'>
                 <div className='pt-8 pl-14 hidden lg:block'>
-                  <Image src={line} alt='horizontal line' height={260} />
+                  <Image src={line} alt='horizontal line' height={360} />
                 </div>
 
-                <div className='w-[100%] relative flex items-start justify-between gap-y-8 pl-16'>
-                  <section className='relative flex flex-col justify-between items-start w-[100%]  '>
-                    <p className='text-[20px] font-semibold mb-2'>Blind Report</p>
-                    <Image src={front} alt='pdf download' className='w-[170px] max-h-[230px] shadow-md' />
-                    <section className='w-[100%]'>
-                      <Typography
-                        variant='body1'
-                        align='left'
-                        className={`mt-4 text-[#696969] cursor-pointer hover:underline hover:underline-offset-4`}
-                        onClick={() => {
-                          downloadMutation.mutate(tender_id)
-                        }}
-                      >
-                        {isClickable ? ' Download Blind Tender Report' : ''}
-                      </Typography>
+                <div className='flex flex-col items-center justify-center w-[100%]'>
+                  <div className='mb-4 text-center'>
+                    <Typography variant='h5' className='text-[30px] font-bold text-[#262B43E5]'>
+                      Your Tender Reports
+                      <i
+                        className='ri-information-line cursor-pointer text-black transition-colors mt-1 ml-2'
+                        onClick={() => setTenderReportModelOpen(true)}
+                      ></i>
+                    </Typography>
+                    <Typography variant='body1' className='text-[14px] mt-2 text-[#696969]'>
+                      Download your tender reports here. These reports are the most important part of the process and
+                      provide full transparency over your managing agent selection journey.
+                    </Typography>
+                  </div>
+                  <div className='w-[100%] relative flex items-start justify-between gap-y-8 pl-16'>
+                    <section className='relative flex flex-col justify-between items-start w-[100%]  '>
+                      <p className='text-[20px] font-semibold mb-2'>Blind Tender Report</p>
+                      <Image src={front} alt='pdf download' className='w-[170px] max-h-[230px] shadow-md' />
+                      <section className='w-[100%]'>
+                        <Typography
+                          variant='body1'
+                          align='left'
+                          className={`mt-4 text-[#696969] cursor-pointer hover:underline hover:underline-offset-4`}
+                          onClick={() => {
+                            downloadMutation.mutate(tender_id)
+                          }}
+                        >
+                          {isClickable ? ' Download Blind Tender Report' : ''}
+                        </Typography>
 
-                      <Typography
-                        variant='body1'
-                        align='left'
-                        className='mt-4 cursor-pointer text-[#696969] hover:underline hover:underline-offset-4 '
-                      >
-                        {isClickable ? '' : 'Unlocks After Tender Closes'}
-                      </Typography>
+                        <Typography
+                          variant='body1'
+                          align='left'
+                          className='mt-4 cursor-pointer text-[#696969] hover:underline hover:underline-offset-4 '
+                        >
+                          {isClickable ? '' : 'Unlocks After Tender Closes'}
+                        </Typography>
+                      </section>
                     </section>
-                  </section>
 
-                  <section className='relative flex flex-col justify-between items-start w-[100%]'>
-                    <p className='text-[20px] font-semibold mb-2'>Final Report</p>
-                    <Image src={front_1} alt='pdf download' className='w-[170px] max-h-[230px] shadow-md' />
-                    <section className='w-[100%]'>
-                      <Typography
-                        variant='body1'
-                        align='left'
-                        className='mt-4 cursor-pointer text-[#696969] hover:underline hover:underline-offset-4'
-                        onClick={() => downloadFinalSelectionMutation.mutate(tender_id)}
-                      >
-                        {stages == 'appointment' ? 'Download Full Journey Report' : ''}
-                      </Typography>
-                      <Typography
-                        variant='body1'
-                        align='left'
-                        className='mt-4 cursor-pointer text-[#696969] hover:underline hover:underline-offset-4 '
-                      >
-                        {stages == 'appointment' ? '' : ' Unlocks After Appointing Your New Managing Agent'}
-                      </Typography>
+                    <section className='relative flex flex-col justify-between items-start w-[100%]'>
+                      <p className='text-[20px] font-semibold mb-2'>Final Tender Report</p>
+                      <Image src={front_1} alt='pdf download' className='w-[170px] max-h-[230px] shadow-md' />
+                      <section className='w-[100%]'>
+                        <Typography
+                          variant='body1'
+                          align='left'
+                          className='mt-4 cursor-pointer text-[#696969] hover:underline hover:underline-offset-4'
+                          onClick={() => downloadFinalSelectionMutation.mutate(tender_id)}
+                        >
+                          {stages == 'appointment' ? 'Download Full Journey Report' : ''}
+                        </Typography>
+                        <Typography
+                          variant='body1'
+                          align='left'
+                          className='mt-4 cursor-pointer text-[#696969] hover:underline hover:underline-offset-4 '
+                        >
+                          {stages == 'appointment' ? '' : ' Unlocks After Appointing Your New Managing Agent'}
+                        </Typography>
+                      </section>
                     </section>
-                  </section>
+                  </div>
                 </div>
               </div>
             </section>
           </div>
         </div>
       </div>
+
+      <CommonModal
+        isOpen={tenderReportModelOpen}
+        handleClose={() => setTenderReportModelOpen(false)}
+        header='About Your Tender Reports'
+        headerSx={{marginLeft: '13px' }}
+        maxWidth='md'
+      >
+        <div className='space-y-4'>
+          <Typography variant='body2' className='text-[#696969] mt-3 leading-[22px] text-[13px]'>
+            You can download both key reports for your block here:
+          </Typography>
+
+          <Typography variant='body2' className='text-[#696969] mt-3 leading-[22px] text-[13px]'>
+            <span className='font-bold'>Blind Tender Report:</span> This is your first report. It shows the anonymised replies and quotes from all
+            managing agents, creating a level playing field for you to shortlist from. It aligns with Save My Service
+            Charge’s blind tender process, helping you view all responses clearly in one document or webpage.
+          </Typography>
+          <div> 
+            <Typography variant='body2' className='text-[#696969] mb-3 leading-[22px] text-[13px]'>
+              <span className='font-bold'>Final Tender Report:</span> This is your final report once the process is complete. It includes all blind tender
+              replies, your shortlisted agents, those you met for video calls or site visits, and the agent you
+              ultimately selected. It’s an excellent document to share with your fellow leaseholders, showing that
+              you’ve followed a fair, transparent, and rigorous selection process.
+            </Typography>
+          </div>
+        </div>
+      </CommonModal>
     </>
   )
 }

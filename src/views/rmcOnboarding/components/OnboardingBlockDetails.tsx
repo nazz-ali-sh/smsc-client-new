@@ -211,7 +211,7 @@ const OnboardingBlockDetails = () => {
   return (
     <>
       <div className='flex flex-col items-center pt-10 mb-20'>
-        <h1 className='text-[48px] font-bold text-[#262B43E5] '>RMC Onboarding</h1>
+        <h1 className='text-[48px] font-bold text-[#262B43E5] '>RMC Sign Up</h1>
         <div className='bg-white p-8 pt-10 w-full  mt-6'>
           <Typography
             variant='h6'
@@ -268,7 +268,11 @@ const OnboardingBlockDetails = () => {
 
             <div className='flex justify-between'>
               <div className='pb-9 mt-16 flex justify-start'>
-                <CustomButton onClick={handleBackStep} variant='outlined' startIcon={<i className='ri-arrow-left-line'></i>}>
+                <CustomButton
+                  onClick={handleBackStep}
+                  variant='outlined'
+                  startIcon={<i className='ri-arrow-left-line'></i>}
+                >
                   Edit Address
                 </CustomButton>
               </div>

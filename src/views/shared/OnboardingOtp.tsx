@@ -224,7 +224,7 @@ export default function OnboardingOtp({ portal }: OnboardingPortalProps) {
     }
   }
 
-  const portalTitle = portal === 'pma_portal' ? 'PMA Onboarding' : 'RMC Onboarding'
+  const portalTitle = portal === 'pma_portal' ? 'PMA Sign Up' : 'RMC Sign Up'
 
   return (
     <>

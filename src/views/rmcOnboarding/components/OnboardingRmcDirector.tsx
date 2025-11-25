@@ -25,8 +25,9 @@ export default function OnboardingForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [userData, setUserData] = useState<{ firstName: string; lastName: string; email: string } | null>(null)
-  const savedFormData = typeof window !== 'undefined' ? JSON.parse(sessionStorage.getItem('directorFormData') || '{}') : {};
-  
+  const savedFormData =
+    typeof window !== 'undefined' ? JSON.parse(sessionStorage.getItem('directorFormData') || '{}') : {}
+
   const { control, handleSubmit } = useForm<registrationFormData>({
     resolver: valibotResolver(directorOfRMCSchema),
     defaultValues: {
@@ -79,15 +80,15 @@ export default function OnboardingForm() {
       email: data.email
     })
 
-     sessionStorage.setItem(
-    'directorFormData',
-    JSON.stringify({
-      fullName: data.fullName,
-      lastName: data.lastName,
-      email: data.email,
-      phoneNumber: data.phoneNumber
-    })
-  );
+    sessionStorage.setItem(
+      'directorFormData',
+      JSON.stringify({
+        fullName: data.fullName,
+        lastName: data.lastName,
+        email: data.email,
+        phoneNumber: data.phoneNumber
+      })
+    )
 
     const payload: registrationPayload = {
       name: `${data?.fullName} ${data?.lastName}`.trim(),
@@ -114,7 +115,7 @@ export default function OnboardingForm() {
 
   return (
     <>
-      <h1 className='text-[48px] text-center font-bold text-[#262B43E5] mt-8 '>RMC Onboarding</h1>
+      <h1 className='text-[48px] text-center font-bold text-[#262B43E5] mt-8 '>RMC Sign Up</h1>
       <div className='flex items-center justify-center p-4 bg-white mt-8 mb-20'>
         {showConfirmation ? (
           <ConfirmationRegistration

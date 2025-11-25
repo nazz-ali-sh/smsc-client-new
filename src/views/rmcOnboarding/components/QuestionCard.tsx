@@ -30,7 +30,7 @@ const QuestionCard = ({ question, questionKey, nextRoute, backRoute, questionNum
 
   return (
     <div className='flex flex-col items-center pt-10 mb-20'>
-      <h1 className='text-[48px] font-bold text-[#262B43E5]'>RMC Onboarding</h1>
+      <h1 className='text-[48px] font-bold text-[#262B43E5]'>RMC Sign Up</h1>
       <div className='bg-white p-8 pt-10 w-full mt-6'>
         <Typography
           variant='h6'

@@ -195,7 +195,7 @@ const OnboardingAddresScreen = ({ portal }: OnboardingPortalProps) => {
         dispatch(setSelectedAddress(null as any))
       }
     } else if (portal === 'pma_portal' && pmaOnboardingData?.data?.step_3) {
-      //  for pma onboarding
+      //  for PMA Sign Up
       const savedData = pmaOnboardingData?.data?.step_3
 
       let foundAddress = null
@@ -496,7 +496,7 @@ const OnboardingAddresScreen = ({ portal }: OnboardingPortalProps) => {
     }
   }
 
-  const onbaordingType = portal === 'pma_portal' ? 'PMA Onbaording' : 'RMC Onboarding'
+  const onbaordingType = portal === 'pma_portal' ? 'PMA Onbaording' : 'RMC Sign Up'
 
   return (
     <div className='flex flex-col items-center pt-10 mb-20'>
@@ -578,8 +578,8 @@ const OnboardingAddresScreen = ({ portal }: OnboardingPortalProps) => {
                   PaperProps: {
                     style: {
                       maxHeight: 300,
-                       overflowY: 'auto',
-                       overflowX: 'hidden'
+                      overflowY: 'auto',
+                      overflowX: 'hidden'
                     }
                   },
                   anchorOrigin: {
