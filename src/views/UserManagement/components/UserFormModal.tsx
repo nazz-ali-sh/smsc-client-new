@@ -10,7 +10,7 @@ import CommonModal from '@/common/CommonModal'
 import FormInput from '@/components/form-components/FormInput'
 import FormSelect from '@/components/form-components/FormSelect'
 import CustomButton from '@/common/CustomButton'
-import {userSchema} from '@/schemas/validation-schemas'
+import { userSchema } from '@/schemas/validation-schemas'
 import type { UserType, UserFormData } from '../types'
 
 interface UserFormModalProps {
@@ -25,31 +25,24 @@ const UserFormModal: React.FC<UserFormModalProps> = ({ isOpen, onClose, editingU
   const { control, handleSubmit, reset } = useForm<UserFormData>({
     resolver: valibotResolver(userSchema),
     defaultValues: {
-      name: editingUser?.name || '',
-      email: editingUser?.email || '',
-      mobile_number: editingUser?.mobile_number || '',
-      branch_id: editingUser?.branch_id || 0
+      name: '',
+      email: '',
+      mobile_number: '',
+      branch_id: undefined
     },
     mode: 'onChange'
   })
 
   React.useEffect(() => {
-    if (editingUser) {
+    if (isOpen && editingUser) {
       reset({
         name: editingUser.name,
         email: editingUser.email,
         mobile_number: editingUser.mobile_number,
-        branch_id: editingUser.branch_id
-      })
-    } else {
-      reset({
-        name: '',
-        email: '',
-        mobile_number: '',
-        branch_id: 0
+        branch_id: editingUser.branch?.id
       })
     }
-  }, [editingUser, reset])
+  }, [isOpen, editingUser, reset])
 
   const handleFormSubmit = (data: UserFormData) => {
     onSubmit(data)

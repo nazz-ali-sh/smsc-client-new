@@ -8,10 +8,9 @@ import { useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 import { valibotResolver } from '@hookform/resolvers/valibot'
-import { Grid, Typography } from '@mui/material'
+import { Grid } from '@mui/material'
 
 import CustomButton from '@/common/CustomButton'
-import CommonModal from '@/common/CommonModal'
 import FormInput from '@/components/form-components/FormInput'
 import FormSelect from '@/components/form-components/FormSelect'
 import { businessProfileSchema } from '@/schemas/validation-schemas'
@@ -22,6 +21,7 @@ import {
 } from '@/services/pma-onboarding-apis/pma-onboarding-api'
 import { usePmaOnboardingData } from '@/hooks/usePmaOnboardingData'
 import { PMA_ROUTES } from '@/constants'
+import BusinessProfileModals from '../../../views/pmaOnboarding/components/BusinessProfileModals'
 
 type BusinessProfileData = {
   tradingYears: string
@@ -40,9 +40,14 @@ export default function PmaBusinessProfileView() {
   const [isEditing, setIsEditing] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isSkipAction, setIsSkipAction] = useState(false)
+  const [isTotalUnitModalOpen, setIsTotalUnitModalOpen] = useState(false)
+  const [isUnitsAccountManagerModalOpen, setIsUnitsAccountManagerModalOpen] = useState(false)
+  const [isContactPreferencesModalOpen, setIsContactPreferencesModalOpen] = useState(false)
+  const [isSecondaryContactModalOpen, setIsSecondaryContactModalOpen] = useState(false)
+
   const { data: onboardingData, invalidateCache } = usePmaOnboardingData()
 
-  const { control, handleSubmit, reset } = useForm<BusinessProfileData>({
+  const { control, handleSubmit, reset, getValues } = useForm<BusinessProfileData>({
     resolver: valibotResolver(businessProfileSchema),
     defaultValues: {
       tradingYears: '',
@@ -160,12 +165,14 @@ export default function PmaBusinessProfileView() {
     if (isSubmitting || mutation.isPending) return
     setIsSubmitting(true)
 
+    const values = getValues()
+
     const payload: PmaBusinessProfilePayload = {
       step: 4,
-      trading_years: 0,
-      units_managed_by_company: 0,
-      units_managed_by_account_manager: 0,
-      preferred_contact_number: '',
+      trading_years: parseInt(values.tradingYears) || 0,
+      units_managed_by_company: parseInt(values.unitsManaged) || 0,
+      units_managed_by_account_manager: parseInt(values.unitsAccountManager) || 0,
+      preferred_contact_number: values.preferredContactNumber || '',
       full_name: '',
       email: '',
       mobile_number: '',
@@ -177,8 +184,19 @@ export default function PmaBusinessProfileView() {
   }
 
   const handleSkip = () => {
-    const step4 = onboardingData?.data?.step_4
-    const hasSecondaryData = step4?.secondary_user?.id
+    const values = getValues()
+
+    const hasMandatoryFields =
+      values.tradingYears && values.unitsManaged && values.unitsAccountManager && values.preferredContactNumber
+
+    if (!hasMandatoryFields) {
+      toast.error('Cannot skip secondary contact until mandatory fields are filled.')
+      
+      return
+    }
+
+    const hasSecondaryData =
+      values.secondaryFullName || values.secondaryEmail || values.secondaryPhone || values.secondaryMobile
 
     if (hasSecondaryData) {
       setIsSkipAction(true)
@@ -228,6 +246,13 @@ export default function PmaBusinessProfileView() {
     setIsSkipAction(false)
   }
 
+  const handleModalClose = () => {
+    setIsTotalUnitModalOpen(false)
+    setIsUnitsAccountManagerModalOpen(false)
+    setIsContactPreferencesModalOpen(false)
+    setIsSecondaryContactModalOpen(false)
+  }
+
   React.useEffect(() => {
     const step4 = onboardingData?.data?.step_4
 
@@ -254,7 +279,6 @@ export default function PmaBusinessProfileView() {
         <div className='p-4 rounded-lg w-full'>
           <form>
             <h2 className='text-2xl font-medium text-[#262B43E5]'>Business Profile</h2>
-
             <p className='mt-6 mb-12 font-normal text-base leading-6 text-[#696969]'>
               Share your business profile and contact details to help us create your company profile and connect you
               with the right opportunities.
@@ -266,39 +290,42 @@ export default function PmaBusinessProfileView() {
                   <FormInput
                     name='tradingYears'
                     control={control}
-                    label='Trading Years'
+                    label='Years Trading'
                     type='number'
-                    placeholder='Trading Years'
+                    placeholder='Years Trading'
                   />
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <FormInput
                     name='unitsManaged'
                     control={control}
-                    label='Units Managed By Company'
+                    label='Total Number Of Units Managed By Company'
                     type='number'
-                    placeholder='Units Managed By Company'
+                    placeholder='Total Number Of Units Managed By Company'
+                    icon={<i className='ri-information-line' style={{ fontSize: '18px' }} />}
+                    onIconClick={() => setIsTotalUnitModalOpen(true)}
                   />
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <FormInput
                     name='unitsAccountManager'
                     control={control}
-                    label='Units Managed by account manager'
+                    label='Units Managed Per Account Manager'
                     type='number'
-                    placeholder='Units Managed by account manager'
+                    placeholder='Units Managed Per Account Manager'
+                    icon={<i className='ri-information-line' style={{ fontSize: '18px' }} />}
+                    onIconClick={() => setIsUnitsAccountManagerModalOpen(true)}
                   />
                 </Grid>
               </Grid>
             </div>
 
             <div className='mb-8'>
-              <h3 className='text-xl font-medium text-[#262B43E5] mb-6'>Contact Preferences</h3>
-
+              <div className='flex'>
+                <h2 className='text-2xl font-medium text-[#262B43E5] mb-6'>Contact Preferences</h2>
+                <i className='ri-information-line m-1' onClick={() => setIsContactPreferencesModalOpen(true)}></i>
+              </div>
               <div className='mb-8'>
-                <Typography variant='body2' className='text-sm font-medium text-[#262B43E5] mb-4'>
-                  Preferred Contact Number
-                </Typography>
                 <Grid container spacing={6}>
                   <Grid item xs={12} sm={4}>
                     <FormSelect
@@ -315,10 +342,11 @@ export default function PmaBusinessProfileView() {
                 </Grid>
               </div>
 
-              <div className='mb-6'>
-                <Typography variant='body2' className='text-sm font-medium text-[#262B43E5] mb-4'>
-                  Secondary Contact (Optional)
-                </Typography>
+              <div className='mb-6 mt-6'>
+                <div className='flex'>
+                  <h2 className='text-2xl font-medium text-[#262B43E5] mb-6'>Secondary Contact (Optional)</h2>
+                  <i className='ri-information-line m-1' onClick={() => setIsSecondaryContactModalOpen(true)}></i>
+                </div>
                 <Grid container spacing={6}>
                   <Grid item xs={12} sm={4}>
                     <FormInput
@@ -425,40 +453,18 @@ export default function PmaBusinessProfileView() {
         </div>
       </div>
 
-      <CommonModal isOpen={isDeleteModalOpen} handleClose={handleCancelDelete} header='' maxWidth='sm' fullWidth={true}>
-        <div className='py-4'>
-          <Typography variant='body1' className='text-base text-[#262B43E5] mb-4'>
-            Are you sure you want to delete this secondary user?
-          </Typography>
-          <Typography variant='body2' className='text-sm text-[#696969] mb-6'>
-            This action will permanently remove the secondary user from your account.
-          </Typography>
-          <div className='flex justify-end gap-3'>
-            <CustomButton
-              variant='outlined'
-              onClick={handleCancelDelete}
-              sx={{ fontSize: '14px', fontWeight: 700 }}
-              disabled={deleteMutation.isPending}
-            >
-              Cancel
-            </CustomButton>
-            <CustomButton
-              variant='contained'
-              onClick={handleConfirmDelete}
-              sx={{ fontSize: '14px', fontWeight: 700 }}
-              disabled={deleteMutation.isPending}
-            >
-              {deleteMutation.isPending
-                ? isSkipAction
-                  ? 'Skipping...'
-                  : 'Deleting...'
-                : isSkipAction
-                  ? 'Skip'
-                  : 'Delete'}
-            </CustomButton>
-          </div>
-        </div>
-      </CommonModal>
+      <BusinessProfileModals
+        isDeleteModalOpen={isDeleteModalOpen}
+        isTotalUnitModalOpen={isTotalUnitModalOpen}
+        isUnitsAccountManagerModalOpen={isUnitsAccountManagerModalOpen}
+        isContactPreferencesModalOpen={isContactPreferencesModalOpen}
+        isSecondaryContactModalOpen={isSecondaryContactModalOpen}
+        isSkipAction={isSkipAction}
+        deleteMutationPending={deleteMutation.isPending}
+        handleCancelDelete={handleCancelDelete}
+        handleConfirmDelete={handleConfirmDelete}
+        handleModalClose={handleModalClose}
+      />
     </>
   )
 }

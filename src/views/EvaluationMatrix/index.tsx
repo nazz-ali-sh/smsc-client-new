@@ -52,7 +52,7 @@ const EvaluationMatrix = () => {
   const pmaColumns = useMemo(() => {
     if (shortlistedPMAs?.data?.shortlisted_pmas?.length > 0) {
       return shortlistedPMAs?.data?.shortlisted_pmas?.map(
-        (pma: any, index: number) => `PMA ${index + 1} (${pma?.pma_user?.full_name})`
+        (pma: any, index: number) => `PMA ${index + 1} (${pma?.company_details?.name})`
       )
     }
 

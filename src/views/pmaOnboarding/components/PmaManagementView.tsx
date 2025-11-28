@@ -95,10 +95,16 @@ export default function PmaManagementView() {
       <div className='flex items-center justify-center p-4 bg-white mt-8 mb-20'>
         <div className='p-4 rounded-lg w-full'>
           <form>
-            <h2 className='text-2xl font-medium text-[#262B43E5]'>Management Fee Range</h2>
+            <h2 className='text-2xl font-medium text-[#262B43E5]'>Management Fee Range (SMSC Internal Use Only)</h2>
 
+            <p className='mt-6 font-normal text-base leading-6 text-[#696969]'>
+              Please enter your typical minimum and maximum management fee per unit (including VAT). This information
+              is not shared with RMCs. It is collected by Save My Service Charge to support future platform development
+              and to help build accurate regional industry benchmarks.
+            </p>
             <p className='mt-6 mb-12 font-normal text-base leading-6 text-[#696969]'>
-              Provide your fee range. This helps us match your company with the most suitable tenders.
+              Providing this information helps us better match your company with the most suitable tenders over time,
+              but it does not affect your visibility or ranking with RMCs.
             </p>
 
             <div className='mb-8'>
@@ -110,6 +116,9 @@ export default function PmaManagementView() {
                     label='Minimum Fee per Unit (inc VAT)'
                     type='number'
                     placeholder='Minimum Fee per Unit (100-900)'
+                    InputProps={{
+                      startAdornment: <span style={{ marginRight: 4 }}>£</span>
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={4}>
@@ -119,6 +128,9 @@ export default function PmaManagementView() {
                     label='Maximum Fee per Unit (inc VAT)'
                     type='number'
                     placeholder='Maximum Fee per Unit (100-900)'
+                    InputProps={{
+                      startAdornment: <span style={{ marginRight: 4 }}>£</span>
+                    }}
                   />
                 </Grid>
               </Grid>

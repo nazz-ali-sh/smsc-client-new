@@ -568,7 +568,7 @@ const TenderCards = () => {
               <CustomTooltip
                 text={
                   stages?.shortlisted?.is_completed
-                    ? "You've appointed your agent. No further actions can be taken on this tender."
+                    ? "You've shortlisted your agent. No further actions can be taken on this tender."
                     : 'Shortlist Agents'
                 }
                 position='left'

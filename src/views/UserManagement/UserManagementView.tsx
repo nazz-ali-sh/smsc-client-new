@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react'
 
-import { TextField, Chip } from '@mui/material'
+import { TextField, Chip, Switch } from '@mui/material'
 import { createColumnHelper } from '@tanstack/react-table'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
@@ -13,13 +13,7 @@ import UserFormModal, { type UserType, type UserFormData } from './components/Us
 import CustomButton from '@/common/CustomButton'
 import * as PmaUserApi from '@/services/pma-user-management-apis/pma-user-management-apis'
 import { usePmaUsers } from '@/hooks/usePmaUsers'
-
-const branchOptions = [
-  { value: 1, label: 'Branch Name 1' },
-  { value: 2, label: 'Branch Name 2' },
-  { value: 3, label: 'Branch Name 3' },
-  { value: 4, label: 'Branch Name 4' }
-]
+import { usePmaBranches } from '@/hooks/usePmaBranches'
 
 const columnHelper = createColumnHelper<UserType>()
 
@@ -31,7 +25,9 @@ const UserManagementView = () => {
 
   const { data: users, refetch } = usePmaUsers()
 
-  const smallTextStyle = "text-[#262B43E5] text-[12px]";
+  const { data: branchOptions = [] } = usePmaBranches()
+
+  const smallTextStyle = 'text-[#262B43E5] text-[12px]'
 
   const handleOpenModal = (user?: UserType) => {
     setEditingUser(user || null)
@@ -42,6 +38,18 @@ const UserManagementView = () => {
     setIsModalOpen(false)
     setEditingUser(null)
   }
+
+  const toggleStatusMutation = useMutation({
+    mutationFn: ({ id, newStatus }: { id: number; newStatus: 'active' | 'inactive' }) =>
+      PmaUserApi.updatePmaUserStatus(id, newStatus),
+    onSuccess: async () => {
+      toast.success('User status updated successfully!')
+      await refetch()
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || 'Failed to update status')
+    }
+  })
 
   const saveUserMutation = useMutation({
     mutationFn: (data: UserFormData) => {
@@ -116,10 +124,17 @@ const UserManagementView = () => {
         cell: info => <span className={smallTextStyle}>{info.getValue()}</span>,
         size: 100
       }),
-      columnHelper.accessor('branch_id', {
-        header: 'BRANCH',
-        cell: info => <span className={smallTextStyle}>{info.getValue()}</span>,
+      columnHelper.accessor(user => user.branch?.branch_name, {
+        id: 'branch_name',
+        header: 'BRANCH NAME',
+        cell: info => <span className={smallTextStyle}>{info.getValue() || '-'}</span>,
         size: 150
+      }),
+      columnHelper.accessor(user => user.branch?.address, {
+        id: 'branch_address',
+        header: 'BRANCH ADDRESS',
+        cell: info => <span className={smallTextStyle}>{info.getValue() || '-'}</span>,
+        size: 200
       }),
       columnHelper.accessor('status', {
         header: 'STATUS',
@@ -170,12 +185,29 @@ const UserManagementView = () => {
                 </div>
               </CustomTooltip>
 
-              <CustomTooltip text='Active' position='top' align='center'>
-                <div
-                  className='size-8 rounded-md flex justify-center items-center bg-[#FDB5283D]'
-                  onClick={() => console.log('Delete user:', user)}
-                >
-                  <i className='ri-toggle-line text-[16px] text-[#FDB528]' />
+              <CustomTooltip text='Active/Inactive' position='top' align='center'>
+                <div className='size-8 rounded-md flex justify-center items-center bg-[#FDB5283D] p-[3px]'>
+                  <Switch
+                    checked={user.status === 'active'}
+                    onChange={() => {
+                      const newStatus = user.status === 'active' ? 'inactive' : 'active'
+                      
+                      toggleStatusMutation.mutate({ id: user.id, newStatus })
+                    }}
+                    sx={{
+                      '& .MuiSwitch-switchBase.Mui-checked': {
+                        color: '#22C55E'
+                      },
+                      '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                        height: 15,
+                        backgroundColor: '#22C55E1A'
+                      },
+                      '& .MuiSwitch-track': {
+                        height: 15,
+                        backgroundColor: '#F59E0B1A'
+                      }
+                    }}
+                  />
                 </div>
               </CustomTooltip>
             </div>
@@ -184,7 +216,7 @@ const UserManagementView = () => {
         size: 150
       }
     ],
-    [users]
+    [branchOptions]
   )
 
   const headerActions = (

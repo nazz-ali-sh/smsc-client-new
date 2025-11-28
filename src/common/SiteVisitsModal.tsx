@@ -449,13 +449,11 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
               Use this section to invite PMAs (Property Management Agents) to site visits.
             </Typography>
             <Typography variant='body2' sx={{ paddingTop: '12px' }}>
-              <span className='font-bold'>To add your availability:</span> First, select the{' '}
-              <span className='font-bold'>Select Date.</span> Your current slots will be listed below. You can add or
-              update your available times by clicking the <span className='font-bold'>Update Slot button.</span>
+              <span className='font-bold'>To add your availability:</span> First, select the date. Your current slots
+              will be listed below. You can add or update your available times by clicking the Update Slot button.
             </Typography>
             <Typography variant='body2' sx={{ paddingTop: '12px' }}>
-              Once your availability is set, you can send the invitation to an individual managing agent or to all of
-              the agents you have shortlisted.
+              Once your availability is set, you can send the invitation to selected managing agent.
             </Typography>
           </Box>
           <IconButton onClick={onClose} sx={{ color: 'customColors.textGray' }}>

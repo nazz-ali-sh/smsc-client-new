@@ -12,6 +12,8 @@ import { toast } from 'react-toastify'
 import { useMutation } from '@tanstack/react-query'
 
 import CustomButton from '@/common/CustomButton'
+import DataModal from '@/common/DataModal'
+import CommonModal from '@/common/CommonModal'
 import FormInput from '@/components/form-components/FormInput'
 import GenericAddressSelector from '@/common/GenericAddressSelector'
 import { usePmaOnboardingData } from '@/hooks/usePmaOnboardingData'
@@ -37,7 +39,9 @@ export default function PmaBranchLocationFormView() {
   const [currentPostcode, setCurrentPostcode] = useState('')
   const [selectedAddressFromDropdown, setSelectedAddressFromDropdown] = useState<any>(null)
   const [useHeadOfficeContact, setUseHeadOfficeContact] = useState(true)
+  const [isBranchLocationModalOpen, setIsBranchLocationModalOpen] = useState(false)
   const { data: onboardingData } = usePmaOnboardingData()
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false)
 
   const savedData = onboardingData?.data?.step_9
 
@@ -178,6 +182,10 @@ export default function PmaBranchLocationFormView() {
     router.push(PMA_ROUTES.TENDERS_NOTIFICATION)
   }
 
+  const handleModalClose = () => {
+    setIsBranchLocationModalOpen(false)
+  }
+
   const handleNext = async (data: BranchLocationFormData) => {
     const hasDropdownAddress = selectedAddressFromDropdown
     const hasManualAddress = addressData && addressData?.addressLine1
@@ -254,7 +262,13 @@ export default function PmaBranchLocationFormView() {
   }
 
   const handleSkip = () => {
-    router.push(PMA_ROUTES.TENDERS_NOTIFICATION)
+    setShowConfirmationModal(true)
+  }
+
+  const handleDataModalClose = () => {
+    setShowConfirmationModal(false)
+
+    router.push('/dashboard')
   }
 
   const handleAddressSelect = (address: any) => {
@@ -312,13 +326,15 @@ export default function PmaBranchLocationFormView() {
       <div className='flex items-center justify-center p-4 bg-white mt-4 mb-20'>
         <div className='p-4 rounded-lg w-full'>
           <form>
-            <div className='flex items-center justify-between mb-4'>
+            <div className='flex mb-4'>
               <h2 className='text-2xl font-medium text-[#262B43E5]'>Branch Location (Optional)</h2>
+              <i className='ri-information-line m-1' onClick={() => setIsBranchLocationModalOpen(true)}></i>
             </div>
 
             <p className='mt-6 mb-12 font-normal text-base leading-6 text-[#696969]'>
-              Tell us about your branch locations. This helps us match your company with the most suitable tenders in
-              your service areas.
+              Add the location of an additional branch office here. This helps us match your company with tenders in the
+              areas you cover. You can add one branch now or skip this step and add more branches later from your
+              portal.
             </p>
 
             <div className='mb-8'>
@@ -475,6 +491,41 @@ export default function PmaBranchLocationFormView() {
           </form>
         </div>
       </div>
+
+      <CommonModal
+        isOpen={isBranchLocationModalOpen}
+        headerSx={{ color: '#1F4E8D', fontSize: '20px', fontWeight: 600, marginLeft: '14px' }}
+        isBorder
+        maxWidth='md'
+        handleClose={handleModalClose}
+        header='About Branch Locations'
+      >
+        <div className='py-4'>
+          <Typography variant='body2' className='text-sm text-[#696969] mb-6'>
+            You can create as many branches as you need after registration. Each branch can have its own Branch Manager
+            assigned to reply to tenders in that area.
+          </Typography>
+          <Typography variant='body2' className='text-sm text-[#696969] mb-6'>
+            Branch Managers can view and respond to tenders sent to their branch, but they cannot edit your company
+            information or manage user accounts — only the Primary User can do that.
+          </Typography>
+          <Typography variant='body2' className='text-sm text-[#696969] mb-6'>
+            Adding branches helps ensure tenders go to the right people based on location.
+          </Typography>
+        </div>
+      </CommonModal>
+
+      <DataModal
+        open={showConfirmationModal}
+        onClose={handleDataModalClose}
+        onConfirm={handleDataModalClose}
+        title='Confirmation!'
+        description='Your profile is complete and your account is now active. You will start receiving tender invitations based on your region and profile settings.'
+        confirmText='OK'
+        cancelText=''
+        confirmColor='primary'
+        borderUnderTitle={true}
+      />
     </>
   )
 }

@@ -8,9 +8,10 @@ import { useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
-import { Grid } from '@mui/material'
+import { Grid, Typography } from '@mui/material'
 
 import CustomButton from '@/common/CustomButton'
+import CommonModal from '@/common/CommonModal'
 import FormInput from '@/components/form-components/FormInput'
 import { reviewsFormSchema } from '@/schemas/validation-schemas'
 import {
@@ -29,6 +30,7 @@ export default function PmaReviewsFormView() {
   const router = useRouter()
   const [showOnShortlist, setShowOnShortlist] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isGoogleReviewModalOpen, setIsGoogleReviewModalOpen] = useState(false)
   const { data: onboardingData } = usePmaOnboardingData()
 
   const { control, handleSubmit, reset } = useForm<ReviewsFormData>({
@@ -75,6 +77,10 @@ export default function PmaReviewsFormView() {
     mutation.mutate(payload)
   }
 
+  const handleModalClose = () => {
+    setIsGoogleReviewModalOpen(false)
+  }
+
   const handleNext = () => {
     handleSubmit(onSubmit)()
   }
@@ -117,12 +123,16 @@ export default function PmaReviewsFormView() {
             <h2 className='text-2xl font-medium text-[#262B43E5]'>Reviews</h2>
 
             <p className='mt-6 mb-12 font-normal text-base leading-6 text-[#696969]'>
-              Provide us with your top reviews. We'll add them to your profile to showcase your company's great work.
+              Manually add your Google reviews below. These will appear on your profile and help RMC directors
+              understand the experience you provide.
             </p>
 
             <div className='mb-8'>
               <div className='flex gap-8 items-center mb-4'>
-                <h3 className='text-base font-medium text-[#262B43E5]'>Google Reviews</h3>
+                <div className='flex'>
+                  <h3 className='text-base font-medium text-[#262B43E5]'>Google Reviews</h3>
+                  <i className='ri-information-line ml-1 text-xl' onClick={() => setIsGoogleReviewModalOpen(true)}></i>
+                </div>
                 <div className='flex items-center gap-1 text-sm font-normal'>
                   <span
                     onClick={handleHideClick}
@@ -164,7 +174,7 @@ export default function PmaReviewsFormView() {
                     control={control}
                     label='Number of Reviews'
                     type='number'
-                    placeholder='Number of Reviews (1-900)'
+                    placeholder='Number of Reviews'
                   />
                 </Grid>
               </Grid>
@@ -204,6 +214,30 @@ export default function PmaReviewsFormView() {
           </form>
         </div>
       </div>
+
+      <CommonModal
+        isOpen={isGoogleReviewModalOpen}
+        headerSx={{ color: '#1F4E8D', fontSize: '20px', fontWeight: 600, marginLeft: '14px' }}
+        isBorder
+        maxWidth='sm'
+        handleClose={handleModalClose}
+        header='Google Reviews'
+      >
+        <div className='py-4'>
+          <Typography variant='body2' className='text-sm text-[#696969] mb-6'>
+            You can manually add your Google reviews here. Adding them is optional, but remember that RMCs will often
+            check Google reviews once they shortlist a managing agent.
+          </Typography>
+          <Typography variant='body2' className='text-sm text-[#696969] mb-6'>
+            Be honest and include your real reviews. At Save My Service Charge, we remind RMCs that Google reviews
+            are not always a reliable measure of a Property Management Company’s performance — many negative reviews can
+            come from blocks with poor or inactive RMC/RTM directorship, rather than from the agent’s service.
+          </Typography>
+          <Typography variant='body2' className='text-sm text-[#696969] mb-6'>
+            Use the toggle to show or hide your Google reviews on your profile at any time.
+          </Typography>
+        </div>
+      </CommonModal>
     </>
   )
 }

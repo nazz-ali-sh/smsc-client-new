@@ -23,7 +23,7 @@ import { isPmaPortal } from '@/utils/portalHelper'
 
 type LoginFormData = InferOutput<typeof loginSchema>
 
-const LoginPage = () => {
+const LoginPage = ({ portal = isPmaPortal() ? 'pma_portal' : 'rmc_portal' }: LoginPortalProps) => {
   const router = useRouter()
   const dispatch = useDispatch()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -91,7 +91,7 @@ const LoginPage = () => {
           className='text-[#0B2952] text-[32px] font-bold mb-2'
           sx={{ fontSize: '28px', fontWeight: 700 }}
         >
-          Login
+          {portal === 'pma_portal' ? 'PMA Login': 'RMC Login'}
         </Typography>
       </div>
       <form onSubmit={handleSubmit(handleLogin)} className='space-y-4'>

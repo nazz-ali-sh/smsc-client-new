@@ -118,6 +118,10 @@ declare global {
     portal: 'rmc_portal' | 'pma_portal'
   }
 
+  interface LoginPortalProps{
+    portal?: 'rmc_portal' | 'pma_portal'
+  }
+
   interface CommonTableProps<T> {
     data: T[]
     columns: ColumnDef<T, any>[]

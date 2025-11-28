@@ -13,6 +13,7 @@ type DataModalProps = {
   confirmText?: string
   cancelText?: string
   confirmColor?: 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success'
+  borderUnderTitle?: boolean
 }
 
 const DataModal = ({
@@ -23,7 +24,8 @@ const DataModal = ({
   description,
   confirmText = 'Confirm',
   cancelText = 'Cancel',
-  confirmColor = 'primary'
+  confirmColor = 'primary',
+  borderUnderTitle = false
 }: DataModalProps) => {
   return (
     <Dialog open={open} onClose={onClose}>
@@ -32,7 +34,10 @@ const DataModal = ({
           color: '#1F4E8D',
           fontSize: '26px',
           lineHeight: '33px',
-          fontWeight: 600
+          fontWeight: 600,
+          borderBottom: borderUnderTitle ? '2px solid #E0E0E0' : 'none',
+          paddingBottom: borderUnderTitle ? '10px' : '0',
+          marginBottom: borderUnderTitle ? '20px' : '0'
         }}
       >
         {title}

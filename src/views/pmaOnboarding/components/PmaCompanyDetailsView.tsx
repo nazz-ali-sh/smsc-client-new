@@ -386,6 +386,16 @@ export default function PmaCompanyDetailsView() {
         fullWidth={true}
       >
         <div className='py-4'>
+          <p className='text-base text-[#262B43E5] mb-4'>
+            Our system has detected that your bio contains information that isn’t allowed under SMSC’s service. This may
+            include your company name, your location, an email address, or a phone number. Please remove or correct any
+            prohibited details before saving your bio.
+          </p>
+          <p className='text-base text-[#262B43E5] mb-6'>
+            If you believe this detection is incorrect and you have not included any restricted information, please
+            email the SMSC Admin Team at admin@savemyservicecharge.co.uk with your bio text. We will review it and
+            manually add it to your profile if appropriate.
+          </p>
           <div className='bg-gray-50 p-4 rounded-lg mb-6'>
             <Typography variant='body2' className='text-sm font-medium text-[#262B43E5] mb-2'>
               Highlighted Violations:

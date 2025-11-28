@@ -22,6 +22,7 @@ import {
 import { setPmaUserId } from '@/redux-store/slices/pmaOnboardingSlice'
 import ConfirmationRegistration from '@/common/ConfirmationRegistration'
 import { PMA_ROUTES } from '@/constants'
+import RmcTooltip from '@/common/RmcTooltip'
 
 export default function OnboardingPmaDirector() {
   const router = useRouter()
@@ -29,6 +30,18 @@ export default function OnboardingPmaDirector() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [userData, setUserData] = useState<{ firstName: string; lastName: string; email: string } | null>(null)
+
+  const [tooltipState, setTooltipState] = useState<{
+    isOpen: boolean
+    anchorEl: HTMLElement | null
+    title: string
+    content: string
+  }>({
+    isOpen: false,
+    anchorEl: null,
+    title: '',
+    content: ''
+  })
 
   const { control, handleSubmit } = useForm<PmaOnboardingFormData>({
     resolver: valibotResolver(pmaOnboardingSchema as any),
@@ -76,6 +89,14 @@ export default function OnboardingPmaDirector() {
       email: data.email
     })
 
+    sessionStorage.setItem(
+      'pmaFormData',
+      JSON.stringify({
+        fullName: data.fullName,
+        email: data.email
+      })
+    )
+
     const payload: PmaOnboardingStep1Payload = {
       company_name: data.companyName,
       website: data.website,
@@ -96,6 +117,24 @@ export default function OnboardingPmaDirector() {
 
   const handleConfirmationComplete = () => {
     router.replace(PMA_ROUTES.OTP_VERIFICATION)
+  }
+
+  const handleTooltipOpen = (event: React.MouseEvent<HTMLElement>, title: string, content: string) => {
+    setTooltipState({
+      isOpen: true,
+      anchorEl: event.currentTarget,
+      title,
+      content
+    })
+  }
+
+  const handleTooltipClose = () => {
+    setTooltipState({
+      isOpen: false,
+      anchorEl: null,
+      title: '',
+      content: ''
+    })
   }
 
   return (
@@ -125,13 +164,25 @@ export default function OnboardingPmaDirector() {
                     fontSize: '18px',
                     lineHeight: '31px',
                     color: '#696969',
-                    marginBottom: '78px'
+                    marginBottom: '38px'
                   }}
                 >
                   Help us get to know your company better. We'll use this information to create your profile and connect
                   you with the right opportunities.
                 </Typography>
 
+                <Typography
+                  variant='h6'
+                  sx={{
+                    fontSize: '24px',
+                    fontWeight: 500,
+                    color: 'customColors.darkGray1',
+                    marginTop: '54px',
+                    marginBottom: '24px'
+                  }}
+                >
+                  Company Details
+                </Typography>
                 <Grid container spacing={6}>
                   <Grid item xs={12} md={4}>
                     <FormInput
@@ -142,6 +193,41 @@ export default function OnboardingPmaDirector() {
                       disabled={mutation.isPending}
                     />
                   </Grid>
+
+                  <Grid item xs={12} md={4}>
+                    <FormInput
+                      name='website'
+                      control={control}
+                      label='Company Website'
+                      type='text'
+                      disabled={mutation.isPending}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <FormInput
+                      name='landline'
+                      control={control}
+                      label='Company Landline/Mobile Number'
+                      type='tel'
+                      disabled={mutation.isPending}
+                    />
+                  </Grid>
+                </Grid>
+
+                <Typography
+                  variant='h6'
+                  sx={{
+                    fontSize: '24px',
+                    fontWeight: 500,
+                    color: 'customColors.darkGray1',
+                    marginTop: '54px',
+                    marginBottom: '24px'
+                  }}
+                >
+                  Primary User Details
+                </Typography>
+
+                <Grid container spacing={6}>
                   <Grid item xs={12} md={4}>
                     <FormInput
                       name='fullName'
@@ -174,6 +260,28 @@ export default function OnboardingPmaDirector() {
                       label='Email'
                       type='email'
                       disabled={mutation.isPending}
+                      icon={
+                        <Box
+                          onMouseEnter={e =>
+                            handleTooltipOpen(
+                              e,
+                              'Email Info',
+                              'This email will become the administrator login for your PMA account. You can add secondary users and branch users from your portal.'
+                            )
+                          }
+                          onMouseLeave={handleTooltipClose}
+                          sx={{
+                            display: 'inline-block',
+                            position: 'relative',
+                            borderRadius: '50%',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <i className='ri-error-warning-line text-lg text-gray-500'></i>
+                        </Box>
+                      }
                     />
                   </Grid>
                   <Grid item xs={12} md={4}>
@@ -197,49 +305,6 @@ export default function OnboardingPmaDirector() {
                     />
                   </Grid>
                 </Grid>
-
-                <div className='flex gap-1 items-center mt-2'>
-                  <span className='size-[6px] rounded-full bg-[#696969]'></span>
-
-                  <Typography sx={{ fontSize: '12px', fontWeight: 400, lineHeight: '20px' }}>
-                    This email will become the administrator login for your PMA account. You can add secondary users and
-                    branch users from your portal.
-                  </Typography>
-                </div>
-
-                <Typography
-                  variant='h6'
-                  sx={{
-                    fontSize: '24px',
-                    fontWeight: 500,
-                    color: 'customColors.darkGray1',
-                    marginTop: '54px',
-                    marginBottom: '24px'
-                  }}
-                >
-                  Contact Details
-                </Typography>
-
-                <Grid container spacing={6}>
-                  <Grid item xs={12} md={4}>
-                    <FormInput
-                      name='website'
-                      control={control}
-                      label='Company Website'
-                      type='text'
-                      disabled={mutation.isPending}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                    <FormInput
-                      name='landline'
-                      control={control}
-                      label='Company Landline Number'
-                      type='tel'
-                      disabled={mutation.isPending}
-                    />
-                  </Grid>
-                </Grid>
               </Box>
 
               <div className='flex justify-end gap-2 items-center mt-40'>
@@ -256,6 +321,15 @@ export default function OnboardingPmaDirector() {
           </div>
         )}
       </div>
+
+      <RmcTooltip
+        isOpen={tooltipState.isOpen}
+        onClose={handleTooltipClose}
+        anchorEl={tooltipState.anchorEl}
+        placement='bottom'
+        title={tooltipState.title}
+        content={tooltipState.content}
+      />
     </>
   )
 }

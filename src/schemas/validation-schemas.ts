@@ -196,7 +196,7 @@ export const budgetSchema = pipe(
         check((value: string) => {
           if (value.trim() === '') return true
           const numValue = parseFloat(value.trim())
-          
+
           return numValue <= 9999
         }, 'Management Fee cannot exceed 9999')
       )
@@ -465,15 +465,7 @@ export const reviewsFormSchema = object({
       return !isNaN(num) && num >= 1 && num <= 5
     }, 'Average Rating must be between 1 and 5')
   ),
-  numberOfReviews: pipe(
-    string(),
-    nonEmpty('Number of Reviews is required'),
-    check((value: string) => {
-      const num = Number(value.trim())
-
-      return !isNaN(num) && num >= 1 && num <= 900
-    }, 'Number of Reviews must be between 1 and 900')
-  )
+  numberOfReviews: pipe(string(), nonEmpty('Number of Reviews is required'))
 })
 
 export const businessProfileSchema = object({
@@ -484,8 +476,8 @@ export const businessProfileSchema = object({
     check((value: string) => {
       const num = Number(value.trim())
 
-      return !isNaN(num) && num >= 1 && num <= 1000
-    }, 'Units Managed By Company must be between 1 and 1000')
+      return !isNaN(num) && num >= 1 && num <= 1000000
+    }, 'Units Managed By Company must be between 1 and 10,00,000')
   ),
   unitsAccountManager: pipe(
     string(),
@@ -513,15 +505,7 @@ export const trustpilotFormSchema = object({
       return !isNaN(num) && num >= 1 && num <= 5
     }, 'Average Rating must be between 1 and 5')
   ),
-  numberOfReviews: pipe(
-    string(),
-    nonEmpty('Number of Reviews is required'),
-    check((value: string) => {
-      const num = Number(value.trim())
-
-      return !isNaN(num) && num >= 1 && num <= 900
-    }, 'Number of Reviews must be between 1 and 900')
-  )
+  numberOfReviews: pipe(string(), nonEmpty('Number of Reviews is required'))
 })
 
 export const managementFeeSchema = object({
@@ -569,11 +553,7 @@ export const pmaOnboardingSchema = pipe(
       nonEmpty('Company website is required'),
       check(validateWebsiteURL, 'Please enter a valid website URL (e.g., https://example.co.uk)')
     ),
-    landline: pipe(
-      string(),
-      nonEmpty('Company landline is required'),
-      check(validateUKLandlineNumber, 'Please enter a valid UK landline number (e.g., 02071234567)')
-    ),
+    landline: pipe(string(), nonEmpty('Company landline is required')),
     fullName: pipe(
       string(),
       nonEmpty('First name is required'),
@@ -707,6 +687,6 @@ export const userSchema = object({
   ),
   branch_id: pipe(
     number(),
-    check((value) => value > 0, 'Branch is required and must be a valid number')
+    check(value => value > 0, 'Branch is required and must be a valid number')
   )
 })

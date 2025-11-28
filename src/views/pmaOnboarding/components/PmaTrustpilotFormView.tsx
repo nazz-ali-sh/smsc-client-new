@@ -8,9 +8,10 @@ import { useForm } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
-import { Grid } from '@mui/material'
+import { Grid, Typography } from '@mui/material'
 
 import CustomButton from '@/common/CustomButton'
+import CommonModal from '@/common/CommonModal'
 import FormInput from '@/components/form-components/FormInput'
 import { trustpilotFormSchema } from '@/schemas/validation-schemas'
 import {
@@ -29,6 +30,7 @@ export default function PmaTrustpilotFormView() {
   const router = useRouter()
   const [showOnShortlist, setShowOnShortlist] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isTrustpilotReviewModalOpen, setIsTrustpilotReviewModalOpen] = useState(false)
   const { data: onboardingData } = usePmaOnboardingData()
 
   const { control, handleSubmit, reset } = useForm<TrustpilotFormData>({
@@ -75,6 +77,10 @@ export default function PmaTrustpilotFormView() {
     mutation.mutate(payload)
   }
 
+  const handleModalClose = () => {
+    setIsTrustpilotReviewModalOpen(false)
+  }
+
   const handleNext = () => {
     handleSubmit(onSubmit)()
   }
@@ -117,12 +123,19 @@ export default function PmaTrustpilotFormView() {
             <h2 className='text-2xl font-medium text-[#262B43E5]'>Reviews</h2>
 
             <p className='mt-6 mb-12 font-normal text-base leading-6 text-[#696969]'>
-              Provide us with your top reviews. We'll add them to your profile to showcase your company's great work.
+              Manually add your Trustpilot reviews below. These will appear on your profile and help RMC directors
+              understand the experience you provide.
             </p>
 
             <div className='mb-8'>
               <div className='flex gap-8 items-center mb-4'>
-                <h3 className='text-base font-medium text-[#262B43E5]'>Trustpilot Reviews</h3>
+                <div className='flex'>
+                  <h3 className='text-base font-medium text-[#262B43E5]'>Trustpilot Reviews</h3>
+                  <i
+                    className='ri-information-line ml-1 text-xl'
+                    onClick={() => setIsTrustpilotReviewModalOpen(true)}
+                  ></i>
+                </div>
                 <div className='flex items-center gap-1 text-sm font-normal'>
                   <span
                     onClick={handleHideClick}
@@ -164,7 +177,7 @@ export default function PmaTrustpilotFormView() {
                     control={control}
                     label='Number of Reviews'
                     type='number'
-                    placeholder='Number of Reviews (1-900)'
+                    placeholder='Number of Reviews'
                   />
                 </Grid>
               </Grid>
@@ -204,6 +217,36 @@ export default function PmaTrustpilotFormView() {
           </form>
         </div>
       </div>
+
+      <CommonModal
+        isOpen={isTrustpilotReviewModalOpen}
+        headerSx={{ color: '#1F4E8D', fontSize: '20px', fontWeight: 600, marginLeft: '14px' }}
+        isBorder
+        maxWidth='md'
+        handleClose={handleModalClose}
+        header='Trustpilot Reviews'
+      >
+        <div className='py-4'>
+          <Typography variant='body2' className='text-sm text-[#696969] mb-6'>
+            Adding your Trustpilot reviews is optional. If you don’t have any Trustpilot reviews, simply leave this
+            section blank or skip it — a dash will appear in your profile when an RMC shortlists your company.
+          </Typography>
+          <Typography variant='body2' className='text-sm text-[#696969] mb-6'>
+            If you do have Trustpilot reviews, we recommend adding them for transparency. When RMCs shortlist a managing
+            agent, they often check external review sites as part of their decision-making process.
+          </Typography>
+          <Typography variant='body2' className='text-sm text-[#696969] mb-6'>
+            However, Save My Service Charge advises RMCs that Trustpilot reviews are not always an accurate reflection
+            of a Property Management Company’s performance. Negative reviews are sometimes the result of poor RMC
+            leadership, lease restrictions, or issues outside the agent’s control — not necessarily a sign of poor
+            management.
+          </Typography>
+          <Typography variant='body2' className='text-sm text-[#696969] mb-6'>
+            Use the toggle to show or hide your Trustpilot reviews on your profile. This gives you full control over
+            what is displayed to RMCs.
+          </Typography>
+        </div>
+      </CommonModal>
     </>
   )
 }

@@ -100,7 +100,7 @@ const PmaEmailNotificationView = () => {
           sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1' }}
           className='mb-6'
         >
-          Who Receives Email Notification
+          Who Receives Email Notifications
         </Typography>
 
         <Typography variant='body2' sx={{ fontSize: '18px', fontWeight: 400, color: '#696969', marginBottom: '24px' }}>

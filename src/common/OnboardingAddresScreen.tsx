@@ -496,7 +496,7 @@ const OnboardingAddresScreen = ({ portal }: OnboardingPortalProps) => {
     }
   }
 
-  const onbaordingType = portal === 'pma_portal' ? 'PMA Onbaording' : 'RMC Sign Up'
+  const onbaordingType = portal === 'pma_portal' ? 'PMA Sign Up' : 'RMC Sign Up'
 
   return (
     <div className='flex flex-col items-center pt-10 mb-20'>
@@ -509,11 +509,18 @@ const OnboardingAddresScreen = ({ portal }: OnboardingPortalProps) => {
         >
           Address
         </Typography>
-
-        <Typography sx={{ fontSize: '18px', fontWeight: 400, color: 'customColors.textGray' }} className=' mb-6'>
-          Please Select your address below. This allows us to identify and connect you with qualified managing agents
-          who are local to your area and have a strong understanding of the regional market and its specific needs.
-        </Typography>
+        {portal === 'pma_portal' ? (
+          <Typography sx={{ fontSize: '18px', fontWeight: 400, color: 'customColors.textGray' }} className=' mb-6'>
+            Select the address of your primary office. This helps us match you with verified Resident Management Company
+            directors who are actively seeking a managing agent in your area. Your office location is used as the
+            central point for allocating tenders to you.
+          </Typography>
+        ) : (
+          <Typography sx={{ fontSize: '18px', fontWeight: 400, color: 'customColors.textGray' }} className=' mb-6'>
+            Please enter your address below. This allows us to identify and connect you with qualified managing agents
+            who are local to your area and have a strong understanding of the regional market and its specific needs.
+          </Typography>
+        )}
 
         <div className='pb-14 mt-14'>
           <div className='flex gap-3 items-center'>

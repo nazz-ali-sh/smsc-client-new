@@ -31,7 +31,7 @@ export const addPmaUser = async (payload: {
 
 export const updatePmaUser = async (
   id: number,
-  payload: { name: string; email: string; mobile_number: string; branch_id: number }
+  payload: { name: string; email: string; mobile_number: string; branch_id: number; status?: string }
 ) => {
   try {
     const response = await axiosClient.put(`${url}/${id}`, payload)
@@ -63,4 +63,9 @@ export const getPmaUserById = async (id: number) => {
     console.error('Get PMA User By ID API error:', error)
     throw error
   }
+}
+
+
+export const updatePmaUserStatus = (id: number, status: 'active' | 'inactive') => {
+  return axiosClient.patch(`/pma/users/${id}/status`, { status })
 }

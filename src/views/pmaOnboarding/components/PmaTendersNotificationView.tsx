@@ -183,6 +183,7 @@ const PmaTendersNotificationView = () => {
         confirmText='OK'
         cancelText=''
         confirmColor='primary'
+        borderUnderTitle={true}
       />
     </div>
   )

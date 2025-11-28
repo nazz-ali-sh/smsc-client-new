@@ -11,9 +11,10 @@ interface RmcTooltipProps {
   title: string
   content: string
   children?: React.ReactNode
+  placement?: 'right' | 'left' | 'top' | 'bottom'
 }
 
-const RmcTooltip: React.FC<RmcTooltipProps> = ({ isOpen, onClose, anchorEl, title, content, children }) => {
+const RmcTooltip: React.FC<RmcTooltipProps> = ({ isOpen, onClose, anchorEl, title, content, children, placement }) => {
   const tooltipRef = useRef<HTMLDivElement>(null)
   const [position, setPosition] = useState({ top: 0, left: 0, arrowLeft: 0 })
 
@@ -23,21 +24,37 @@ const RmcTooltip: React.FC<RmcTooltipProps> = ({ isOpen, onClose, anchorEl, titl
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop
       const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft
 
-      const iconCenterY = rect.top + rect.height / 2
+      let tooltipTop = 0
+      let tooltipLeft = 0
+      let arrowLeft = 0
 
-      const tooltipLeft = rect.right + 15
-      const tooltipTop = iconCenterY - 66
+      switch (placement) {
+        case 'bottom':
+          tooltipTop = rect.bottom + 8 
+          tooltipLeft = rect.left + rect.width / 2 - 150 
+          arrowLeft = 150 - 6
+          break
+        case 'top':
+          tooltipTop = rect.top - 120
+          tooltipLeft = rect.left + rect.width / 2
+          arrowLeft = rect.width / 2 - 6
+          break
+        case 'left':
+          tooltipTop = rect.top + rect.height / 2 - 60
+          tooltipLeft = rect.left - 300 - 8
+          arrowLeft = 300 - 12
+          break
+        case 'right':
+        default: // default position
+          tooltipTop = rect.top + rect.height / 2 - 60
+          tooltipLeft = rect.right + 8
+          arrowLeft = -6
+          break
+      }
 
-      const iconCenterInContainer = 0
-      const arrowOffset = iconCenterInContainer - 3
-
-      setPosition({
-        top: tooltipTop + scrollTop,
-        left: tooltipLeft + scrollLeft,
-        arrowLeft: arrowOffset
-      })
+      setPosition({ top: tooltipTop + scrollTop, left: tooltipLeft + scrollLeft, arrowLeft })
     }
-  }, [isOpen, anchorEl])
+  }, [isOpen, anchorEl, placement])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -110,12 +127,14 @@ const RmcTooltip: React.FC<RmcTooltipProps> = ({ isOpen, onClose, anchorEl, titl
           }}
         />
 
-        <Box sx={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'space-between',
-          marginBottom: '8px'
-        }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '8px'
+          }}
+        >
           <Typography
             variant='h6'
             sx={{

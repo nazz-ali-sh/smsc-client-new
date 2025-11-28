@@ -10,6 +10,8 @@ import { useMutation } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 import { Typography } from '@mui/material'
 
+import CommonModal from '@/common/CommonModal'
+
 import CustomButton from '@/common/CustomButton'
 import FormInput from '@/components/form-components/FormInput'
 import { postcodeSchema } from '@/schemas/validation-schemas'
@@ -27,6 +29,7 @@ const OnbaordingPostcodeScreen = ({ portal }: OnboardingPortalProps) => {
   const router = useRouter()
   const dispatch = useDispatch()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isPostcodeModalOpen, setIsPostcodeModalOpen] = useState(false)
 
   const { control, handleSubmit, setValue } = useForm<PostcodeFormData>({
     resolver: valibotResolver(postcodeSchema),
@@ -34,6 +37,10 @@ const OnbaordingPostcodeScreen = ({ portal }: OnboardingPortalProps) => {
       postcode: ''
     }
   })
+
+  const handleModalClose = () => {
+    setIsPostcodeModalOpen(false)
+  }
 
   useEffect(() => {
     if (portal === 'pma_portal') {
@@ -144,18 +151,42 @@ const OnbaordingPostcodeScreen = ({ portal }: OnboardingPortalProps) => {
     <div className='flex flex-col items-center pt-10 mb-20'>
       <h1 className='text-[48px] font-bold text-[#262B43E5]'>{onbaordingType}</h1>
       <div className='bg-white p-8 pt-10 w-full  mt-6'>
-        <Typography
-          variant='h6'
-          sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1' }}
-          className='mb-6'
-        >
-          Postcode
-        </Typography>
+        {portal === 'pma_portal' ? (
+          <>
+            <div className='flex'>
+              <Typography
+                variant='h6'
+                sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1' }}
+                className='mb-6'
+              >
+                Postcode Lookup
+              </Typography>
+              <i className='ri-information-line m-1' onClick={() => setIsPostcodeModalOpen(true)}></i>
+            </div>
+            <Typography sx={{ fontSize: '18px', fontWeight: 400, color: 'customColors.textGray' }} className=' mb-6'>
+              Enter the postcode for your primary office. This will be used as your main registered address for tender
+              allocation.<br></br>
+              You can add additional branch locations later in your portal so you can receive tenders for those areas
+              too.
+            </Typography>
+          </>
+        ) : (
+          <>
+            <Typography
+              variant='h6'
+              sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1' }}
+              className='mb-6'
+            >
+              Postcode
+            </Typography>
 
-        <Typography sx={{ fontSize: '18px', fontWeight: 400, color: 'customColors.textGray' }} className=' mb-6'>
-          Please enter your postcode below. This allows us to identify and connect you with qualified managing agents
-          who are local to your area and have a strong understanding of the regional market and its specific needs.
-        </Typography>
+            <Typography sx={{ fontSize: '18px', fontWeight: 400, color: 'customColors.textGray' }} className=' mb-6'>
+              Please enter your postcode below. This allows us to identify and connect you with qualified managing
+              agents who are local to your area and have a strong understanding of the regional market and its specific
+              needs.
+            </Typography>
+          </>
+        )}      
 
         <form onSubmit={handleSubmit(handleFormSubmit)}>
           <div className='mt-20'>
@@ -176,6 +207,27 @@ const OnbaordingPostcodeScreen = ({ portal }: OnboardingPortalProps) => {
           </div>
         </form>
       </div>
+
+      <CommonModal
+        isOpen={isPostcodeModalOpen}
+        headerSx={{ color: '#1F4E8D', fontSize: '20px', fontWeight: 600, marginLeft: '14px' }}
+        isBorder
+        maxWidth='sm'
+        handleClose={handleModalClose}
+        header='About Your Primary Office'
+      >
+        <div className='py-4'>
+          <Typography variant='body2' className='text-sm text-[#696969] mb-6'>
+            This postcode identifies your main office, which becomes your default address for receiving tenders. Once
+            your account is created, you can add additional branches in your portal to receive tenders in multiple
+            areas.
+          </Typography>
+          <Typography variant='body2' className='text-sm text-[#696969] mb-6'>
+            For each branch, you can also assign branch managers, allowing you to control exactly who receives tenders
+            for each region.
+          </Typography>
+        </div>
+      </CommonModal>
     </div>
   )
 }
