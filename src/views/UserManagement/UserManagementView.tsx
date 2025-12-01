@@ -14,6 +14,7 @@ import CustomButton from '@/common/CustomButton'
 import * as PmaUserApi from '@/services/pma-user-management-apis/pma-user-management-apis'
 import { usePmaUsers } from '@/hooks/usePmaUsers'
 import { usePmaBranches } from '@/hooks/usePmaBranches'
+import DataModal from '@/common/DataModal'
 
 const columnHelper = createColumnHelper<UserType>()
 
@@ -22,6 +23,8 @@ const UserManagementView = () => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 })
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingUser, setEditingUser] = useState<UserType | null>(null)
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false)
+  const [userToDelete, setUserToDelete] = useState<number | null>(null)
 
   const { data: users, refetch } = usePmaUsers()
 
@@ -85,15 +88,29 @@ const UserManagementView = () => {
     saveUserMutation.mutate(data)
   }
 
-  const handleDelete = async (id: number) => {
-    try {
-      await PmaUserApi.deletePmaUser(id)
-      toast.success('User deleted successfully!')
+  const handleDeleteClick = (id: number) => {
+    setUserToDelete(id)
+    setShowConfirmationModal(true)
+  }
 
-      await refetch()
-    } catch (error) {
-      toast.error('Delete failed')
+  const handleConfirmDelete = async () => {
+    if (userToDelete) {
+      try {
+        await PmaUserApi.deletePmaUser(userToDelete)
+        toast.success('User deleted successfully!')
+        await refetch()
+      } catch (error) {
+        toast.error('Delete failed')
+      }
     }
+
+    setShowConfirmationModal(false)
+    setUserToDelete(null)
+  }
+
+  const handleCancelDelete = () => {
+    setShowConfirmationModal(false)
+    setUserToDelete(null)
   }
 
   const filteredData = useMemo(() => {
@@ -179,35 +196,47 @@ const UserManagementView = () => {
               <CustomTooltip text='Delete' position='top' align='center'>
                 <div
                   className='size-8 rounded-md flex justify-center items-center bg-[#E1473D3D]'
-                  onClick={() => handleDelete(user.id)}
+                  onClick={() => handleDeleteClick(user.id)}
                 >
                   <i className='ri-delete-bin-line text-[16px] text-[#E1473D]' />
                 </div>
               </CustomTooltip>
 
               <CustomTooltip text='Active/Inactive' position='top' align='center'>
-                <div className='size-8 rounded-md flex justify-center items-center bg-[#FDB5283D] p-[3px]'>
-                  <Switch
-                    checked={user.status === 'active'}
-                    onChange={() => {
-                      const newStatus = user.status === 'active' ? 'inactive' : 'active'
-                      
-                      toggleStatusMutation.mutate({ id: user.id, newStatus })
-                    }}
-                    sx={{
-                      '& .MuiSwitch-switchBase.Mui-checked': {
-                        color: '#22C55E'
-                      },
-                      '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                        height: 15,
-                        backgroundColor: '#22C55E1A'
-                      },
-                      '& .MuiSwitch-track': {
-                        height: 15,
-                        backgroundColor: '#F59E0B1A'
-                      }
-                    }}
-                  />
+                <div className='size-8 rounded-md flex justify-center items-center bg-[#FDB5283D]'>
+                  <div className='w-3 h-3 mr-[33px] mb-[25px]'>
+                    <Switch
+                      checked={user.status === 'active'}
+                      onChange={() => {
+                        const newStatus = user.status === 'active' ? 'inactive' : 'active'
+
+                        toggleStatusMutation.mutate({ id: user.id, newStatus })
+                      }}
+                      sx={{
+                        '& .MuiSwitch-switchBase': {
+                          transitionDuration: '300ms',
+                          '&.Mui-checked': {
+                            color: '#22C55E',
+                            '& + .MuiSwitch-track': {
+                              backgroundColor: '#22C55E1A',
+                              opacity: 1,
+                              border: 0
+                            }
+                          }
+                        },
+                        '& .MuiSwitch-thumb': {
+                          boxSizing: 'border-box',
+                          boxShadow: 'none'
+                        },
+                        '& .MuiSwitch-track': {
+                          borderRadius: 7,
+                          backgroundColor: '#F59E0B1A',
+                          opacity: 1,
+                          border: 0
+                        }
+                      }}
+                    />
+                  </div>
                 </div>
               </CustomTooltip>
             </div>
@@ -277,6 +306,18 @@ const UserManagementView = () => {
         editingUser={editingUser}
         onSubmit={handleFormSubmit}
         branchOptions={branchOptions}
+      />
+
+      <DataModal
+        open={showConfirmationModal}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        title='Confirmation Deletion'
+        description='Are you sure you want to delete this user? This action cannot be undone.'
+        confirmText='Delete'
+        cancelText='Cancel'
+        confirmColor='error'
+        borderUnderTitle={true}
       />
     </>
   )

@@ -70,18 +70,18 @@ export const directorOfRMCSchema = pipe(
   object({
     fullName: pipe(
       string(),
-      nonEmpty('First name is required'),
-      minLength(2, 'First name must be at least 2 characters'),
-      check((value: string) => value.length <= 15, 'First name cannot exceed 15 characters'),
+      nonEmpty('Full Name is required'),
+      minLength(2, 'Full Name must be at least 2 characters'),
+      check((value: string) => value.length <= 15, 'Full Name cannot exceed 15 characters'),
       check(
         (value: string) => /^[a-zA-Z\s'-]+$/.test(value.trim()),
-        'First name can only contain letters, spaces, hyphens, and apostrophes'
+        'Full Name can only contain letters, spaces, hyphens, and apostrophes'
       ),
-      check((value: string) => !/^\s|\s$/.test(value), 'First name cannot start or end with spaces'),
-      check((value: string) => !/\d/.test(value), 'First name cannot contain numbers'),
+      check((value: string) => !/^\s|\s$/.test(value), 'Full Name cannot start or end with spaces'),
+      check((value: string) => !/\d/.test(value), 'Full Name cannot contain numbers'),
       check(
         (value: string) => !/[!@#$%^&*()_+=\[\]{};':"\\|,.<>\/?]/.test(value),
-        'First name cannot contain special characters'
+        'Full Name cannot contain special characters'
       )
     ),
     lastName: pipe(
@@ -538,6 +538,23 @@ export const branchLocationSchema = object({
     check(validateUKPhoneNumber, 'Please enter a valid UK phone number (e.g., 07123456789)')
   ),
   branchName: pipe(string(), nonEmpty('Branch Name is required')),
+  postcode: pipe(string(), nonEmpty('Postcode is required'))
+})
+
+export const branchSchema = object({
+  branch_name: pipe(
+    string(),
+    nonEmpty('Branch Name is required'),
+    minLength(2, 'Branch Name must be at least 2 characters')
+  ),
+  address: pipe(string(), nonEmpty('Address is required'), minLength(5, 'Address must be at least 5 characters')),
+  contact_name: pipe(string(), nonEmpty('Contact Name is required')),
+  contact_email: pipe(string(), nonEmpty('Contact Email is required'), email('Please enter a valid email address')),
+  contact_phone: pipe(
+    string(),
+    nonEmpty('Contact Phone Number is required'),
+    check(validateUKPhoneNumber, 'Please enter a valid UK phone number (e.g., 07123456789)')
+  ),
   postcode: pipe(string(), nonEmpty('Postcode is required'))
 })
 

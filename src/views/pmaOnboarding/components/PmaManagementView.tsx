@@ -134,13 +134,6 @@ export default function PmaManagementView() {
                   />
                 </Grid>
               </Grid>
-
-              <p className='text-xs font-normal text-[#696969] mt-6 flex items-start'>
-                <span className='mr-1'>●</span>
-                <span>
-                  This information is never shown to RMCs. It's used by SMSC to calculate industry benchmarks.
-                </span>
-              </p>
             </div>
 
             <div className='flex justify-between mt-32 gap-2'>

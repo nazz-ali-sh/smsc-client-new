@@ -34,13 +34,22 @@ const UserFormModal: React.FC<UserFormModalProps> = ({ isOpen, onClose, editingU
   })
 
   React.useEffect(() => {
-    if (isOpen && editingUser) {
-      reset({
-        name: editingUser.name,
-        email: editingUser.email,
-        mobile_number: editingUser.mobile_number,
-        branch_id: editingUser.branch?.id
-      })
+    if (isOpen) {
+      if (editingUser) {
+        reset({
+          name: editingUser.name,
+          email: editingUser.email,
+          mobile_number: editingUser.mobile_number,
+          branch_id: editingUser.branch?.id
+        })
+      } else {
+        reset({
+          name: '',
+          email: '',
+          mobile_number: '',
+          branch_id: undefined
+        })
+      }
     }
   }, [isOpen, editingUser, reset])
 

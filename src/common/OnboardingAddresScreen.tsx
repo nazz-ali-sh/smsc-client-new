@@ -37,7 +37,7 @@ interface MapAddressData {
   }
 }
 
-const OnboardingAddresScreen = ({ portal }: OnboardingPortalProps) => {
+const OnboardingAddresScreen = ({ portal, hideHeader = false, hideDescription = false }: OnboardingPortalProps) => {
   const router = useRouter()
   const dispatch = useDispatch()
   const [selectedAddressId, setSelectedAddressId] = useState('')
@@ -500,26 +500,31 @@ const OnboardingAddresScreen = ({ portal }: OnboardingPortalProps) => {
 
   return (
     <div className='flex flex-col items-center pt-10 mb-20'>
-      <h1 className='text-[48px] font-bold text-[#262B43E5]'>{onbaordingType}</h1>
+      {!hideHeader && <h1 className='text-[48px] font-bold text-[#262B43E5]'>{onbaordingType}</h1>}
       <div className='bg-white p-8 pt-10 w-full mt-6'>
-        <Typography
-          variant='h6'
-          sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1' }}
-          className='mb-6'
-        >
-          Address
-        </Typography>
-        {portal === 'pma_portal' ? (
-          <Typography sx={{ fontSize: '18px', fontWeight: 400, color: 'customColors.textGray' }} className=' mb-6'>
-            Select the address of your primary office. This helps us match you with verified Resident Management Company
-            directors who are actively seeking a managing agent in your area. Your office location is used as the
-            central point for allocating tenders to you.
-          </Typography>
-        ) : (
-          <Typography sx={{ fontSize: '18px', fontWeight: 400, color: 'customColors.textGray' }} className=' mb-6'>
-            Please enter your address below. This allows us to identify and connect you with qualified managing agents
-            who are local to your area and have a strong understanding of the regional market and its specific needs.
-          </Typography>
+        {!hideDescription && (
+          <>
+            <Typography
+              variant='h6'
+              sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1' }}
+              className='mb-6'
+            >
+              Address
+            </Typography>
+            {portal === 'pma_portal' ? (
+              <Typography sx={{ fontSize: '18px', fontWeight: 400, color: 'customColors.textGray' }} className=' mb-6'>
+                Select the address of your primary office. This helps us match you with verified Resident Management
+                Company directors who are actively seeking a managing agent in your area. Your office location is used
+                as the central point for allocating tenders to you.
+              </Typography>
+            ) : (
+              <Typography sx={{ fontSize: '18px', fontWeight: 400, color: 'customColors.textGray' }} className=' mb-6'>
+                Please enter your address below. This allows us to identify and connect you with qualified managing
+                agents who are local to your area and have a strong understanding of the regional market and its
+                specific needs.
+              </Typography>
+            )}
+          </>
         )}
 
         <div className='pb-14 mt-14'>

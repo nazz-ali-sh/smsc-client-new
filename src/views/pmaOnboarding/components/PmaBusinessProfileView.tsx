@@ -344,7 +344,7 @@ export default function PmaBusinessProfileView() {
 
               <div className='mb-6 mt-6'>
                 <div className='flex'>
-                  <h2 className='text-2xl font-medium text-[#262B43E5] mb-6'>Secondary Contact (Optional)</h2>
+                  <h2 className='text-2xl font-medium text-[#262B43E5] mb-6'>Add A Secondary Contact (Optional)</h2>
                   <i className='ri-information-line m-1' onClick={() => setIsSecondaryContactModalOpen(true)}></i>
                 </div>
                 <Grid container spacing={6}>

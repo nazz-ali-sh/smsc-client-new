@@ -116,6 +116,8 @@ declare global {
   }
   interface OnboardingPortalProps {
     portal: 'rmc_portal' | 'pma_portal'
+    hideHeader?: boolean
+    hideDescription?: boolean
   }
 
   interface LoginPortalProps{
