@@ -21,6 +21,14 @@ const InviteCallHeader = ({ title = 'Video Calls', actionButton }: InviteCallHea
   const isAppointmentCompleted = useSelector((state: any) => state?.siteVisitAndCallStats?.isAppointmentCompleted)
   const isShortlistedCompleted = useSelector((state: any) => state?.siteVisitAndCallStats?.isShortlistedCompleted)
 
+  const isButtonDisabled = !isShortlistedCompleted || isAppointmentCompleted
+
+  const tooltipText = isAppointmentCompleted
+    ? `You've appointed your agent. No further actions can be taken on this tender.`
+    : !isShortlistedCompleted
+      ? `You’ll be able to invite agents to Video Call once you have shortlisted from your results.`
+      : ''
+
   const handleOnlineModal = () => {
     setOnlineCallsModalOpen(true)
   }
@@ -33,17 +41,20 @@ const InviteCallHeader = ({ title = 'Video Calls', actionButton }: InviteCallHea
         <Typography variant='h6' sx={{ color: 'customColors.gray9', fontWeight: 700, fontSize: '28px' }}>
           {title}
         </Typography>
-        <CustomTooltip
-          text={
-            isAppointmentCompleted
-              ? `You've appointed your agent. No further actions can be taken on this tender.`
-              : !isShortlistedCompleted
-                ? `You’ll be able to invite agents to video calls once you have shortlisted from your replies. `
-                : ''
-          }
-          position='top'
-          align='center'
-        >
+
+        {isButtonDisabled ? (
+          <>
+            <CustomTooltip text={tooltipText} position='top' align='center'>
+              <CustomButton
+                onClick={() => handleOnlineModal()}
+                variant='contained'
+                disabled={!isShortlistedCompleted || isAppointmentCompleted}
+              >
+                {actionButton}
+              </CustomButton>
+            </CustomTooltip>
+          </>
+        ) : (
           <CustomButton
             onClick={() => handleOnlineModal()}
             variant='contained'
@@ -51,7 +62,7 @@ const InviteCallHeader = ({ title = 'Video Calls', actionButton }: InviteCallHea
           >
             {actionButton}
           </CustomButton>
-        </CustomTooltip>
+        )}
       </Box>
       <Typography
         sx={{

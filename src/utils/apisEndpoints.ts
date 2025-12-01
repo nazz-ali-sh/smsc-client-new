@@ -136,6 +136,25 @@ export const apiEndpoints = {
 
   rmcSiteVisitAcceptReschedual: () => `rmc/site-visit/invites/rescheduled/accept`,
 
+  //---------------------- PMa Site Visit  ------------------------------//
+
+  pmaSiteVisitInvites: (status: string) => `pma/site-visit/invites?status=${status}`,
+
+  pmaSiteVisitAccepted: () => `pma/site-visit/invites/accept`,
+
+  pmaSiteVisitReschedual: () => `pma/site-visit/invites/reschedule`,
+
+  //---------------------- PMa video Calls  ------------------------------//
+
+  pmaVideoCallInvites: (status: string) => `pma/video-call/invites?status=${status}`,
+  pmaVideoCallAccepted: () => `pma/video-call/invites/accept`,
+
+  pmaVideoCallReschedual: () => `pma/video-call/invites/reschedule`,
+
+//---------------------- PMa Slot Avaailability   ------------------------------//
+
+   pmaSlotAvailability : () => `pma/availability/slots-for-invite`,
+
   //---------------------- Final selection   ------------------------------//
 
   gettingFianlSelectionDetails: (tender_id: number) => `/rmc/final-page-detail?tender_id=${tender_id}`,
@@ -162,6 +181,13 @@ export const apiEndpoints = {
 
   gettingCalanderData: (tender_id: number, status: string, type: string, month: string, date: string) =>
     `rmc/calendar?tender_id=${tender_id}&view=${status}&type=${type}&month=${month}&date=${date}`,
+ 
+  //---------------------- Pam Calander ------------------------------//
+
+
+  PmaCalanderData: ( status: string, type: string, month: string, date: string) =>
+    `pma/calendar?view=${status}&type=${type}&month=${month}&date=${date}`,
+ 
 
   addEvaluationMetric: () => 'rmc/evaluation-categories',
 

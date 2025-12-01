@@ -15,6 +15,8 @@ import {
 } from '@mui/material'
 
 import CustomButton from './CustomButton'
+import { getUserType } from '@/utils/tokenSync'
+import { isPmaPortalAndUser } from '@/utils/portalHelper'
 
 type DeleteModalProps = {
   open: boolean
@@ -23,6 +25,8 @@ type DeleteModalProps = {
   onReschedule?: () => void
   onConfirmVideCall?: () => void
   onVideoCallRejected?: () => void
+  onPmaReschedual?: () => void
+  pmaCallAccepted?: () => void
 
   onAccept?: () => void
   itemName?: string
@@ -38,10 +42,15 @@ const PendingModal = ({
   onReschedule = () => {},
   onConfirmVideCall = () => {},
   onVideoCallRejected = () => {},
+  onPmaReschedual = () => {},
+  pmaCallAccepted = () => {},
   title,
   types,
   siteVisitData
 }: DeleteModalProps) => {
+  const userType = getUserType()
+  const isPmaUser = isPmaPortalAndUser(userType)
+
 
   return (
     <Dialog
@@ -75,50 +84,83 @@ const PendingModal = ({
           <Divider />
         </Box>
       </DialogTitle>
-      <DialogContent>
-       
-        <DialogContentText sx={{ marginTop: '5px' }}>
-          <span className='font-bold'>Pma Name: </span> {siteVisitData?.pma_username}
-        </DialogContentText>
-        <DialogContentText sx={{ marginTop: '5px' }}>
-          <span className='font-bold'>Date & Time: </span> {siteVisitData?.slot}{' '}
-        </DialogContentText>
-        <DialogContentText sx={{ marginTop: '5px' }}>
-          <span className='font-bold'>Block Name: </span> {siteVisitData?.block_name || 'no data '}
-        </DialogContentText>
-        <DialogContentText sx={{ marginTop: '5px' }}>
-          <span className='font-bold'>Region: </span> {siteVisitData?.region || 'No data'}
-        </DialogContentText>
-        <DialogContentText sx={{ marginTop: '5px' }}>
-          {siteVisitData?.location && 'location :'} {siteVisitData?.location && siteVisitData?.location}
-        </DialogContentText>
-      </DialogContent>
+   
+      {isPmaUser ? (
+         <DialogContent>
+          <DialogContentText sx={{ marginTop: '5px' }}>
+            <span className='font-bold'>Rmc Name: </span> {siteVisitData?.rmc_details?.name}
+          </DialogContentText>
+          <DialogContentText sx={{ marginTop: '5px' }}>
+            <span className='font-bold'>Date & Time: </span> {siteVisitData?.timeline}{' '}
+          </DialogContentText>
+          <DialogContentText sx={{ marginTop: '5px' }}>
+            <span className='font-bold'>Block Name: </span> {siteVisitData?.rmc_details?.name || 'no data '}
+          </DialogContentText>
+          <DialogContentText sx={{ marginTop: '5px' }}>
+            <span className='font-bold'>Region: </span> {siteVisitData?.rmc_details?.region || 'No data'}
+          </DialogContentText>
+          <DialogContentText sx={{ marginTop: '5px' }}>
+            {siteVisitData?.location && 'location :'} {siteVisitData?.location && siteVisitData?.location}
+          </DialogContentText>
+        </DialogContent>
+      ) : (
+        <DialogContent>
+          <DialogContentText sx={{ marginTop: '5px' }}>
+            <span className='font-bold'>Pma Name: </span> {siteVisitData?.pma_username}
+          </DialogContentText>
+          <DialogContentText sx={{ marginTop: '5px' }}>
+            <span className='font-bold'>Date & Time: </span> {siteVisitData?.slot}{' '}
+          </DialogContentText>
+          <DialogContentText sx={{ marginTop: '5px' }}>
+            <span className='font-bold'>Block Name: </span> {siteVisitData?.block_name || 'no data '}
+          </DialogContentText>
+          <DialogContentText sx={{ marginTop: '5px' }}>
+            <span className='font-bold'>Region: </span> {siteVisitData?.region || 'No data'}
+          </DialogContentText>
+          <DialogContentText sx={{ marginTop: '5px' }}>
+            {siteVisitData?.location && 'location :'} {siteVisitData?.location && siteVisitData?.location}
+          </DialogContentText>
+        </DialogContent>
+      )}
 
       <DialogActions>
-        {types?.trim() === 'rescheduled' ? (
+        {isPmaUser ? (
           <>
-            <CustomButton color='error' variant='contained' onClick={onVideoCallRejected}>
-              Rejected
+            <CustomButton variant='contained' onClick={pmaCallAccepted}>
+              Accepted PMA Call
+            </CustomButton>
+
+            <CustomButton color='primary' variant='contained' onClick={onPmaReschedual}>
+              Pma Reschedule
             </CustomButton>
           </>
         ) : (
           <>
-            <CustomButton variant='contained' onClick={onReject}>
-              Cancel Call
+            {' '}
+            {types?.trim() === 'rescheduled' ? (
+              <>
+                <CustomButton color='error' variant='contained' onClick={onVideoCallRejected}>
+                  Rejected
+                </CustomButton>
+              </>
+            ) : (
+              <>
+                <CustomButton variant='contained' onClick={onReject}>
+                  Cancel Call
+                </CustomButton>
+              </>
+            )}
+            <CustomButton color='primary' variant='contained' onClick={onReschedule}>
+              Reschedule
             </CustomButton>
+            {types?.trim() === 'rescheduled' ? (
+              <CustomButton variant='contained' onClick={onConfirmVideCall}>
+                Confirm
+              </CustomButton>
+            ) : (
+              ''
+            )}{' '}
           </>
-        )}
-
-        <CustomButton color='primary' variant='contained' onClick={onReschedule}>
-          Reschedule
-        </CustomButton>
-
-        {types?.trim() === 'rescheduled' ? (
-          <CustomButton variant='contained' onClick={onConfirmVideCall}>
-            Confirm
-          </CustomButton>
-        ) : (
-          ''
         )}
       </DialogActions>
     </Dialog>

@@ -41,6 +41,11 @@ import CustomButton from './CustomButton'
 import FormInput from '@/components/form-components/FormInput'
 import SuccessModal from './SucessModal'
 import { isSlotDisabled } from '@/utils/dateFormater'
+import { pmaVideoCallsReschedual } from '@/services/pma_video_call/pma_video_call'
+import { isPmaPortalAndUser } from '@/utils/portalHelper'
+import { getUserType } from '@/utils/tokenSync'
+import { pmaAllAvailableSlots } from '@/services/pma_site_visit/pma_site_visit'
+import { isSlotInPast } from '@/utils/dateformate'
 
 interface Guest {
   id: string
@@ -63,6 +68,7 @@ interface OnlineCallsModalProps {
   reschedulGuest?: any
   shorlistedshortlisted_pmas?: any
   selectAllPmas?: any
+  tenderID?: any
 }
 
 interface Slot {
@@ -98,7 +104,8 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
   calanderReschedualData,
   VideoCallInviteId,
   reschedulGuest,
-  selectAllPmas
+  selectAllPmas,
+  tenderID
 }) => {
   const theme = useTheme()
   const router = useRouter()
@@ -111,6 +118,8 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
 
   console.log(schedualCalanderDate)
 
+  console.log(calanderReschedualData)
+
   const [userSelectedSlots, setUserSelectedSlots] = useState<{ selectedIds: string; slotName: string | null }>({
     selectedIds: '',
     slotName: ''
@@ -119,7 +128,9 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
   const { invalidateCache } = useDashboardData()
 
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false)
-  const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
+  const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId) || tenderID
+  const userType = getUserType()
+  const isPmaUser = isPmaPortalAndUser(userType)
   const queryClient = useQueryClient()
 
   const {
@@ -142,14 +153,36 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
   })
 
   const selectedDate = watch('selectedDate')
+  const selectedslot = watch('availableSlots')
 
   const handleSlotSelection = (selectedId: string) => {
-    const found = finalSelectedSlots.find(s => String(s.id) === String(selectedId)) ?? null
+    const found = finalSelectedSlots.find(s => String(s.id) === String(selectedId))
 
-    setUserSelectedSlots({ selectedIds: String(selectedId), slotName: found?.slot_name || '' })
-    setSlotError('')
-    clearErrors('availableSlots')
+    if (found) {
+      setUserSelectedSlots({
+        selectedIds: String(selectedId),
+        slotName: found.slot_name
+      })
+
+      setValue('availableSlots', String(selectedId), { shouldValidate: true })
+
+      setSlotError('')
+      clearErrors('availableSlots')
+    }
   }
+
+  useEffect(() => {
+    if (selectedslot && finalSelectedSlots.length > 0) {
+      const found = finalSelectedSlots.find(s => String(s.id) === String(selectedslot))
+
+      if (found) {
+        setUserSelectedSlots({
+          selectedIds: String(selectedslot),
+          slotName: found.slot_name
+        })
+      }
+    }
+  }, [selectedslot, finalSelectedSlots])
 
   const { data: allshortlsitedPmaData } = useQuery<ShortlistedPmaResponse, Error>({
     queryKey: ['shortlisted', tender_id],
@@ -164,7 +197,9 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
     error
   } = useQuery<SlotsApiResponse, Error>({
     queryKey: ['AvailableSlotsAndDays', selectedDate],
-    queryFn: () => getSlotsAndDay(selectedDate),
+    queryFn: isPmaUser
+      ? () => pmaAllAvailableSlots(VideoCallInviteId || calanderReschedualData?.invite_Id, selectedDate)
+      : () => getSlotsAndDay(selectedDate),
     enabled: open && !!selectedDate,
     retry: 2
   })
@@ -295,18 +330,18 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
 
     ...(mainSiteVisitVideoCalls?.data?.invites || [])?.map((invite: any) => ({
       id: invite?.pma_user_id,
-      pma_number: invite?.pma_name
+      pma_number: invite?.full_name
     })),
 
     ...(mainSiteVisitVideoCalls || [])?.map((item: any) => ({
       id: item?.id,
-      pma_number: item?.pma_number
+      pma_number: item?.full_name
     })),
 
     ...(Array.isArray(mainSiteVisitVideoCalls)
       ? mainSiteVisitVideoCalls.map((item: any) => ({
           id: item?.id,
-          pma_number: item?.pma_number
+          pma_number: item?.full_name
         }))
       : []),
 
@@ -372,6 +407,67 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
         slot_ids: Number(formData.availableSlots),
         message: formData.additionalNotes,
         tender_id: tender_id
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const pmaVideoCallReschedual = useMutation({
+    mutationFn: ({
+      invite_id,
+      tender_id,
+      value,
+      day_id,
+      slot_ids,
+      message
+    }: {
+      invite_id: number
+      tender_id: number
+      value: any | string
+      day_id: number
+      slot_ids: number
+      message: string
+    }) => pmaVideoCallsReschedual(invite_id, tender_id, value, day_id, slot_ids, message),
+    onSuccess: (data: any) => {
+      toast.success(data?.message || 'Invite sent successfully!')
+      reset()
+      onClose
+
+      queryClient.invalidateQueries({ queryKey: ['pmaVideoCallData'] })
+      
+      queryClient.invalidateQueries({
+        queryKey: ['calendarDates']
+      })
+
+      setSuccessOpen(true)
+      setSlotError('')
+    },
+    onError: (error: any) => {
+      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to send invite'
+
+      toast.error(errorMessage)
+      console.error('Failed to send invite:', error)
+      setSlotError('')
+    }
+  })
+
+  const handllepmaVideoReschedual = async (formData: any) => {
+    if (!formData.availableSlots) {
+      setSlotError('Select the slots')
+      setError('availableSlots', { message: 'Select the slots' })
+
+      return
+    }
+
+    try {
+      await pmaVideoCallReschedual.mutateAsync({
+        invite_id: Number(calanderReschedualData?.invite_Id) || VideoCallInviteId,
+        value: selectedDate,
+        day_id: Number(dayId),
+        slot_ids: Number(formData.availableSlots),
+        message: formData.additionalNotes,
+        tender_id: tender_id || calanderReschedualData?.tender_id
       })
     } catch (error) {
       console.error(error)
@@ -451,7 +547,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
                 fontSize: '1.75rem'
               }}
             >
-              {types == 'reschedual' || types == 'videoCallReschedual'
+              {types == 'reschedual' || types == 'videoCallReschedual' || types == 'pmavideoCallReschedual'
                 ? 'Reschedule Video Call  '
                 : ' Schedule Video Call '}
             </Typography>
@@ -592,69 +688,81 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
               Availability Set for
             </Typography>
 
-            <Grid container spacing={2} alignItems='center' sx={{ mb: 2, mt: 6 }}>
-              <Grid container spacing={4} alignItems='center' sx={{ mb: 2 }}>
-                {gettingSlotsAndDays?.data?.slots?.map(item => {
-                  const isSelected = userSelectedSlots?.selectedIds === String(item.id)
+            <Grid container spacing={4} alignItems='center' sx={{ mb: 2 }}>
+              {gettingSlotsAndDays?.data?.slots?.map(item => {
+                const isBooked = item.booked === true || item.booked === 'true'
+                const isPast = selectedDate && isSlotInPast(item, selectedDate)
+                const isDisabled = isBooked || isPast
+                const isSelected = userSelectedSlots?.selectedIds === String(item.id)
 
-                  return (
-                    <Grid item xs={12} sm={6} key={item?.id}>
-                      <Chip
-                        label={
-                          <Box
-                            sx={{
-                              display: 'flex',
-                              flexDirection: 'column',
-                              alignItems: 'flex-start'
-                            }}
+                return (
+                  <Grid item xs={12} sm={6} key={item.id}>
+                    <Chip
+                      label={
+                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                          <Typography
+                            variant='body1'
+                            fontWeight='bold'
+                            sx={{ color: 'white', opacity: isDisabled ? 0.6 : 1 }}
                           >
-                            <Typography
-                              variant='body1'
-                              fontWeight='bold'
-                              sx={{ color: 'white', bgcolor: item?.booked ? '#35C0ED' : '' }}
-                            >
-                              {item.slot_name.split('from')[0]}
-                            </Typography>
-                            <Typography sx={{ color: 'white' }} variant='body2'>
-                              {item.slot_name.split('from')[1]}
-                            </Typography>
-                          </Box>
+                            {item.slot_name.split('from')[0]}
+                          </Typography>
+                          <Typography sx={{ color: 'white', opacity: isDisabled ? 0.6 : 1 }} variant='body2'>
+                            <p> {item.slot_name.split('from')[1]}</p>
+                          </Typography>
+                        </Box>
+                      }
+                      onClick={() => !isDisabled && handleSlotSelection(String(item.id))}
+                      sx={{
+                        backgroundColor: isDisabled
+                          ? '#9CA3AF'
+                          : isSelected
+                            ? 'customColors.ligthBlue'
+                            : theme => theme.colorSchemes.light.palette.customColors.darkGray,
+                        color: 'white',
+                        opacity: isDisabled ? 0.75 : 1,
+                        cursor: isDisabled ? 'not-allowed' : 'pointer',
+                        '& .MuiChip-label': {
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'flex-start'
+                        },
+                        borderRadius: '8px',
+                        width: '100%',
+                        py: 2.5,
+                        px: 2,
+                        justifyContent: 'flex-start',
+                        border: isSelected ? '3px solid white' : '2px solid transparent',
+                        boxShadow: isSelected ? '0 0 0 4px rgba(53, 192, 237, 0.5)' : 'none',
+                        transition: 'all 0.25s ease',
+                        '&:hover': {
+                          opacity: isDisabled ? 0.75 : 0.95,
+                          transform: isDisabled ? 'none' : 'translateY(-2px)',
+                          boxShadow: isDisabled
+                            ? 'none'
+                            : isSelected
+                              ? '0 0 0 4px rgba(53, 192, 237, 0.6)'
+                              : '0 4px 12px rgba(0,0,0,0.1)'
                         }
-                        onClick={() => handleSlotSelection(String(item.id))}
-                        sx={{
-                          backgroundColor:
-                            isSelected || item?.booked
-                              ? 'customColors.ligthBlue'
-                              : theme => theme.colorSchemes.light.palette.customColors.darkGray,
-                          color: 'white',
-                          '& .MuiChip-label': {
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'flex-start'
-                          },
-                          borderRadius: '5px',
-                          width: '100%',
-                          py: 2,
-                          px: 2,
-                          cursor: 'pointer',
-                          justifyContent: 'flex-start',
-                          border: isSelected ? '2px solid' : 'none',
-                          borderColor: isSelected || item?.booked ? 'customColors.ligthBlue' : 'transparent'
-                        }}
-                      />
-                    </Grid>
-                  )
-                })}
-              </Grid>
+                      }}
+                    />
+                  </Grid>
+                )
+              })}
             </Grid>
-            <Box sx={{ display: 'flex', justifyContent: 'end', mt: 4 }}>
-              <CustomButton onClick={handleSlots} variant='contained'>
-                Update Slot
-              </CustomButton>
-            </Box>
+
+            {isPmaUser ? (
+              ''
+            ) : (
+              <Box sx={{ display: 'flex', justifyContent: 'end', mt: 4 }}>
+                <CustomButton onClick={handleSlots} variant='contained'>
+                  Update Slot
+                </CustomButton>
+              </Box>
+            )}
           </Grid>
 
-          {types == 'videoCallReschedual' || types == 'calanderVideoCall' ? (
+          {types == 'videoCallReschedual' || types == 'calanderVideoCall' || types == 'pmavideoCallReschedual' ? (
             ''
           ) : (
             <Grid item xs={12}>
@@ -781,7 +889,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
       </DialogContent>
 
       <DialogActions sx={{ px: 3, pb: 8, mt: types === 'videoCallReschedual' ? 0 : 5 }}>
-        {types == 'videoCallReschedual' || types == 'reschedual' ? (
+        {types === 'videoCallReschedual' || types === 'reschedual' ? (
           <>
             <CustomButton
               variant='contained'
@@ -791,6 +899,16 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
               {videoCallInviteMutation.isPending ? 'Sending...' : 'Reschedule'}
             </CustomButton>
           </>
+        ) : types === 'pmavideoCallReschedual' ? (
+          <>
+            <CustomButton
+              variant='contained'
+              onClick={handleSubmit(handllepmaVideoReschedual)}
+              disabled={videoCallInviteMutation.isPending}
+            >
+              Reschedule
+            </CustomButton>
+          </>
         ) : (
           <>
             <CustomButton
@@ -798,7 +916,7 @@ const VideosCallsModal: React.FC<OnlineCallsModalProps> = ({
               onClick={handleSubmit(handleSendVideoCalls)}
               disabled={videoCallInviteMutation.isPending}
             >
-              {'Send To All Shortlisted Agents'}
+              Send To All Shortlisted Agents
             </CustomButton>
 
             <CustomButton variant='contained' onClick={handleSubmit(handleSendVideoCall)}>

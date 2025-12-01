@@ -188,7 +188,7 @@ const SiteVisitUpcoming = ({ SiteUpComingData }: any) => {
         onClose={() => setSiteVisitsModalOpen(false)}
         shorlistedPmas={undefined}
         siteVisitDate={tableData}
-        types='Reschedual'
+        types='SiteVisits'
         SideVisitsSchedualInviteId={visitsSchedualInviteId}
         Reschedual={undefined}
         VideoCallInviteId={undefined}

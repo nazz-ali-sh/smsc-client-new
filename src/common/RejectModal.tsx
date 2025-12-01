@@ -55,13 +55,9 @@ const DeleteModal = ({
   const [textValue, setTextValue] = useState('')
   const [error, setError] = useState('')
 
-  console.log(calanderSiteVisitReject)
-  console.log(VideoCallInviteId)
-
   const rmctender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
   const queryClient = useQueryClient()
 
-  // video call rejected
   const rechedualRmcAgain = useMutation({
     mutationFn: ({
       RejectedInviteId,
@@ -149,7 +145,6 @@ const DeleteModal = ({
   })
 
   const handleConfirm = () => {
-    debugger
     const trimmedValue = textValue.trim()
 
     if (!trimmedValue) {

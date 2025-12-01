@@ -6,9 +6,9 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTheme } from '@mui/material/styles'
 
 import TenderStats from '@/common/TenderStats'
-import PrimaryUserCard from '@/views/PmaCalendar/components/PrimaryUserCard'
 import PmaTenderTable from './components/PmaTenderTable'
 import { usePmaStats } from '@/hooks/usePmaStats'
+import PrimaryUserCard from '../PmaCalendar/components/PrimaryUserCard'
 
 const PmaTenderListing = () => {
   const theme = useTheme()

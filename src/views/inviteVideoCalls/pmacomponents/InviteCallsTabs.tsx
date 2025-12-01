@@ -4,8 +4,6 @@ import React, { useState } from 'react'
 
 import { Box } from '@mui/material'
 
-import { useSelector } from 'react-redux'
-
 import { useQuery } from '@tanstack/react-query'
 
 import InviteRescheduleTab from './InviteRescheduleTab'
@@ -15,19 +13,19 @@ import InviteCallsTabSection from './InviteCallsTabSection'
 import InvitePendingCalls from './InvitePendingCalls'
 import InviteUpcomingCalls from './InviteUpcomingCalls'
 import InviteRejectedTab from './InviteRejectedTab'
-import { rmcVideoCallDetails } from '@/services/site_visit_apis/site_visit_api'
+import { pamvideoCall } from '@/services/pma_video_call/pma_video_call'
 
 const InviteCallsTabs = () => {
   const [activeTab, setActiveTab] = useState(0)
   const [activeStatus, setActiveStatus] = useState('')
 
-  const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
-
   const { data: getVideoCallsData } = useQuery({
-    queryKey: ['gettingVideoCallsDetails', tender_id, activeStatus],
-    queryFn: () => rmcVideoCallDetails(activeStatus, tender_id),
+    queryKey: ['pmaVideoCallData', activeStatus],
+    queryFn: () => pamvideoCall(activeStatus),
+
     enabled: !!activeStatus
   })
+
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue)

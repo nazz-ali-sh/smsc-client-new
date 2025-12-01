@@ -2,13 +2,10 @@
 
 import InviteSiteVisitView from '@/views/inviteSiteVisits.tsx/InviteSiteVisitView'
 import { withPortalCheck } from '@/components/hoc/withPortalCheck'
+import PmaInviteSiteVisitView from '@/views/inviteSiteVisits.tsx/PmaInviteSiteVisitView'
 
 const PmaSiteVisits = () => {
-  return (
-    <div className='flex items-center justify-center'>
-      <h1 className='text-4xl font-bold text-gray-800'>PMA Site Visits Coming Soon</h1>
-    </div>
-  )
+  return <PmaInviteSiteVisitView />
 }
 
 const RmcSiteVisits = () => {

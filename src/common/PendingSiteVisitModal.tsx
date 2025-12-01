@@ -15,6 +15,8 @@ import {
 } from '@mui/material'
 
 import CustomButton from './CustomButton'
+import { getUserType } from '@/utils/tokenSync'
+import { isPmaPortalAndUser } from '@/utils/portalHelper'
 
 type DeleteModalProps = {
   open: boolean
@@ -23,6 +25,8 @@ type DeleteModalProps = {
   onSiteVisitReschedule?: () => void
   onRejectedSiteVisit?: () => void
   onConfirmSiteVisit?: () => void
+  pmaSiteVisitAccepted?: () => void
+  PmaSiteVisitReschedual?: () => void
   onAccept?: () => void
   itemName?: string
   title?: string
@@ -37,10 +41,15 @@ const PendingSiteVisitModal = ({
   onSiteVisitReschedule = () => {},
   onRejectedSiteVisit = () => {},
   onConfirmSiteVisit = () => {},
+  pmaSiteVisitAccepted = () => {},
+  PmaSiteVisitReschedual = () => {},
   title,
   types,
   siteVisitData
 }: DeleteModalProps) => {
+  const userType = getUserType()
+  const isPmaUser = isPmaPortalAndUser(userType)
+
   return (
     <Dialog
       open={open}
@@ -91,33 +100,53 @@ const PendingSiteVisitModal = ({
           {siteVisitData?.location && siteVisitData?.location}{' '}
         </DialogContentText>
       </DialogContent>
-      <DialogActions>
-        {types?.trim() === 'rescheduled' ? (
-          <>
-            <CustomButton color='error' variant='contained' onClick={onRejectedSiteVisit}>
-              Rejected
+      {isPmaUser ? (
+        <DialogActions>
+          
+           <>
+            <CustomButton variant='contained' onClick={pmaSiteVisitAccepted}>
+              Site Visit Accepted
+            </CustomButton>
+
+            <CustomButton color='primary' variant='contained' onClick={PmaSiteVisitReschedual}>
+              Pma site visit Reschedule
             </CustomButton>
           </>
-        ) : (
-          <>
-            <CustomButton color='error' variant='contained' onClick={onCanceledSiteVisit}>
-              Cancel Meeting
-            </CustomButton>
-          </>
-        )}
+            
+        </DialogActions>
+      ) : (
+        <DialogActions>
+          {types?.trim() === 'rescheduled' ? (
+            <>
+              <CustomButton color='error' variant='contained' onClick={onRejectedSiteVisit}>
+                Rejected
+              </CustomButton>
+            </>
+          ) : (
+            <>
+              <CustomButton color='error' variant='contained' onClick={onCanceledSiteVisit}>
+                Cancel Meeting
+              </CustomButton>
+            </>
+          )}
 
-        <CustomButton color='primary' variant='contained' onClick={onSiteVisitReschedule}>
-          Reschedule
-        </CustomButton>
-
-        {types?.trim() === 'rescheduled' ? (
-          <CustomButton color='error' variant='contained' onClick={onConfirmSiteVisit}>
-            confirm
+          <CustomButton color='primary' variant='contained' onClick={onSiteVisitReschedule}>
+            Reschedule
           </CustomButton>
-        ) : (
-          ''
-        )}
-      </DialogActions>
+
+          <CustomButton color='primary' variant='contained' onClick={onSiteVisitReschedule}>
+            Reschedule
+          </CustomButton>
+
+          {types?.trim() === 'rescheduled' ? (
+            <CustomButton color='error' variant='contained' onClick={onConfirmSiteVisit}>
+              confirm
+            </CustomButton>
+          ) : (
+            ''
+          )}
+        </DialogActions>
+      )}
     </Dialog>
   )
 }
