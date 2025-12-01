@@ -191,7 +191,7 @@ export default function PmaBusinessProfileView() {
 
     if (!hasMandatoryFields) {
       toast.error('Cannot skip secondary contact until mandatory fields are filled.')
-      
+
       return
     }
 
