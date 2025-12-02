@@ -19,6 +19,19 @@ export const useTenderReports = () => {
     }
   })
 
+  const viewBlindTenderMutation = useMutation({
+    mutationFn: (tender_id: number) => downloadTenderReportPdf(tender_id, 'blind'),
+    onSuccess: (blob: Blob) => {
+      const url = window.URL.createObjectURL(blob)
+
+      window.open(url, '_blank')
+      window.URL.revokeObjectURL(url)
+    },
+    onError: error => {
+      console.error('Blind tender report view failed:', error)
+    }
+  })
+
   const downloadFinalReportMutation = useMutation({
     mutationFn: (tender_id: number) => downloadTenderReportPdf(tender_id, 'final_report'),
     onSuccess: (blob: Blob, tender_id: number) => {
@@ -37,6 +50,7 @@ export const useTenderReports = () => {
 
   return {
     downloadBlindTenderMutation,
+    viewBlindTenderMutation,
     downloadFinalReportMutation
   }
 }

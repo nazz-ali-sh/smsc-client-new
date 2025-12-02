@@ -31,13 +31,14 @@ import type { ApiResponseItem, DataType, TenderResponse } from './type'
 import ChevronRight from '@menu/svg/ChevronRight'
 import styles from '@core/styles/table.module.css'
 import AnchorTemporaryDrawer from '@/common/RightDrawer'
-import { downloadBlindTenderPdf, ShortlistedPma, tenderResponce } from '@/services/tender_result-apis/tender-result-api'
+import { ShortlistedPma, tenderResponce } from '@/services/tender_result-apis/tender-result-api'
 import SuccessModal from '../../common/SucessModal'
 import ShortListAgent from '@/common/ShortListAgent'
 import CustomButton from '@/common/CustomButton'
 import CommonModal from '@/common/CommonModal'
 import { calculateTimeLeft } from '@/utils/dateFormater'
 import { useDashboardData } from '@/hooks/useDashboardData'
+import { useTenderReports } from '@/hooks/useTenderReports'
 import CustomLoader from '@/common/CustomLoader'
 
 const columnHelper = createColumnHelper<DataType>()
@@ -80,6 +81,8 @@ const KitchenSink = () => {
 
   const { invalidateCache } = useDashboardData()
 
+  const { downloadBlindTenderMutation, viewBlindTenderMutation } = useTenderReports()
+
   const [selectedResponse, setSelectedResponse] = useState<ApiResponseItem | null>(null)
   const [quoteModelOpen, setQuoteModalOpen] = useState(false)
 
@@ -119,31 +122,6 @@ const KitchenSink = () => {
     setShortListedSuccessModalOpen(false)
     router.push('/shortlist-agent')
   }
-
-  const downloadMutation = useMutation<Blob, Error, { id: number; open?: boolean }>({
-    mutationFn: async ({ id }) => {
-      return await downloadBlindTenderPdf(id)
-    },
-    onSuccess: (data, variables) => {
-      const blob = new Blob([data], { type: 'application/pdf' })
-      const url = window.URL.createObjectURL(blob)
-
-      if (variables.open) {
-        window.open(url, '_blank')
-      } else {
-        const link = document.createElement('a')
-
-        link.href = url
-        link.download = `tender_${variables.id}.pdf`
-        link.click()
-      }
-
-      window.URL.revokeObjectURL(url)
-    },
-    onError: error => {
-      console.error('Download failed:', error)
-    }
-  })
 
   useEffect(() => {
     if (responceData?.data?.responses) {
@@ -457,14 +435,19 @@ const KitchenSink = () => {
               <div className='pb-[12px]'>
                 <CustomButton
                   sx={{ width: '100%' }}
-                  onClick={() => downloadMutation.mutate({ id: tender_id, open: true })}
+                  disabled={viewBlindTenderMutation.isPending}
+                  onClick={() => viewBlindTenderMutation.mutate(tender_id)}
                 >
-                  View Tender Report Online
+                  {viewBlindTenderMutation.isPending ? 'Loading...' : 'View Tender Report Online'}
                 </CustomButton>
               </div>
               <div>
-                <CustomButton sx={{ width: '100%' }} onClick={() => downloadMutation.mutate({ id: tender_id })}>
-                  Download Tender Report
+                <CustomButton
+                  sx={{ width: '100%' }}
+                  disabled={downloadBlindTenderMutation.isPending}
+                  onClick={() => downloadBlindTenderMutation.mutate(tender_id)}
+                >
+                  {downloadBlindTenderMutation.isPending ? 'Downloading...' : 'Download Tender Report'}
                 </CustomButton>
               </div>
             </section>

@@ -133,12 +133,14 @@ const CurrentActivity = () => {
                         <Typography
                           variant='body1'
                           align='left'
-                          className={`mt-4 text-[#696969] cursor-pointer hover:underline hover:underline-offset-4`}
+                          className={`mt-4 text-[#696969] cursor-pointer hover:underline hover:underline-offset-4 ${downloadBlindTenderMutation.isPending ? 'cursor-default opacity-50' : ''}`}
                           onClick={() => {
-                            downloadBlindTenderMutation.mutate(tender_id)
+                            if (!downloadBlindTenderMutation.isPending) {
+                              downloadBlindTenderMutation.mutate(tender_id)
+                            }
                           }}
                         >
-                          {isClickable ? ' Download Blind Tender Report' : ''}
+                          {isClickable ? (downloadBlindTenderMutation.isPending ? 'Downloading...' : ' Download Blind Tender Report') : ''}
                         </Typography>
 
                         <Typography
@@ -166,17 +168,17 @@ const CurrentActivity = () => {
                         <Typography
                           variant='body1'
                           align='left'
-                          className={`mt-4 text-[#696969] hover:underline hover:underline-offset-4 ${stages != 'appointment' ? 'cursor-pointer' : ''}`}
+                          className={`mt-4 text-[#696969] hover:underline hover:underline-offset-4 ${stages != 'appointment' ? (downloadFinalReportMutation.isPending ? 'cursor-default' : 'cursor-pointer') : ''} ${downloadFinalReportMutation.isPending ? 'opacity-50' : ''}`}
                           onClick={e => {
                             e.stopPropagation()
 
-                            if (stages != 'appointment') {
+                            if (stages != 'appointment' && !downloadFinalReportMutation.isPending) {
                               console.log('Final report clicked - Unlocks After Appointing')
                               downloadFinalReportMutation.mutate(tender_id)
                             }
                           }}
                         >
-                          {stages == 'appointment' ? '' : ' Unlocks After Appointing Your New Managing Agent'}
+                          {stages == 'appointment' ? '' : (downloadFinalReportMutation.isPending ? 'Downloading...' : ' Unlocks After Appointing Your New Managing Agent')}
                         </Typography>
                       </section>
                     </section>
