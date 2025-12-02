@@ -1,11 +1,10 @@
 import Image from 'next/image'
 
 import { useQuery } from '@tanstack/react-query'
-import { useSelector } from 'react-redux'
 
 import { Typography, CardContent, Card } from '@mui/material'
 
-import { getrmcshortlistStats } from '@/services/tender_result-apis/tender-result-api'
+import { getPmaShortlistStats } from '@/services/pma-tender-listing-apis/pma-stats-api'
 
 import successVisit from '../../public/images/customImages/sucess.svg'
 
@@ -13,45 +12,40 @@ interface shortListedstats {
   data?: any
 }
 
-interface AgentInviteStatsProps {
+interface PmaAgentInviteStatsProps {
   cardWidth?: string
 }
 
-const AgentInviteStats = ({ cardWidth }: AgentInviteStatsProps) => {
-  const tenderId = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
-
-  const { data: rmcShortlistStats } = useQuery<shortListedstats, Error>({
-    queryKey: ['shortlistData', tenderId],
-    queryFn: () => getrmcshortlistStats(Number(tenderId)),
-    enabled: !!tenderId,
+const PmaAgentInviteStats = ({ cardWidth }: PmaAgentInviteStatsProps) => {
+  const { data: pmaShortlistStats } = useQuery<shortListedstats, Error>({
+    queryKey: ['pmaShortlistData'],
+    queryFn: () => getPmaShortlistStats(),
     refetchOnWindowFocus: false
   })
 
   const cardsData = [
     {
       id: 0,
-      state: rmcShortlistStats?.data?.scheduled_calls,
+      state: pmaShortlistStats?.data?.scheduled_calls,
       icons: <i className='ri-customer-service-2-line'></i>,
       descrption: 'Scheduled Calls'
     },
     {
       id: 1,
       icons: <i className='ri-phone-line'></i>,
-      state: rmcShortlistStats?.data?.completed_calls,
+      state: pmaShortlistStats?.data?.completed_calls,
       descrption: 'Completed Calls'
     },
-
     {
       id: 2,
       icons: <i className='ri-map-pin-2-line'></i>,
-      state: rmcShortlistStats?.data?.scheduled_visits,
+      state: pmaShortlistStats?.data?.scheduled_visits,
       descrption: 'Scheduled Visits'
     },
-
     {
       id: 3,
       icons: <Image src={successVisit} alt='success Visit' />,
-      state: rmcShortlistStats?.data?.successful_visits,
+      state: pmaShortlistStats?.data?.successful_visits,
       descrption: 'Successful visits'
     }
   ]
@@ -111,4 +105,4 @@ const AgentInviteStats = ({ cardWidth }: AgentInviteStatsProps) => {
   )
 }
 
-export default AgentInviteStats
+export default PmaAgentInviteStats

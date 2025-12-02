@@ -1,10 +1,10 @@
 'use client'
-import AgentInviteStats from '@/common/AgentInviteStats'
+import PmaAgentInviteStats from '@/common/PmaAgentInviteStats'
 
 const InviteCallStats = () => {
   return (
     <section className='mb-[34px] mt-[12px]'>
-      <AgentInviteStats />
+      <PmaAgentInviteStats />
     </section>
   )
 }

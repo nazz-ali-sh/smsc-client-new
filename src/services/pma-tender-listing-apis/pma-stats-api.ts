@@ -12,3 +12,15 @@ export const getPmaStats = async () => {
   }
 }
 
+export const getPmaShortlistStats = async () => {
+  try {
+    const url = 'pma/shortlist-agent/stats'
+    const response = await axiosClient.get(url)
+
+    return response.data
+  } catch (error) {
+    console.error('PMA Shortlist Stats API error:', error)
+    throw error
+  }
+}
+
