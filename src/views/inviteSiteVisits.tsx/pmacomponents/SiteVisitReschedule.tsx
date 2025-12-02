@@ -12,7 +12,6 @@ import { toast } from 'react-toastify'
 import CommonTable from '@/common/CommonTable'
 import SuccessModal from '@/common/SucessModal'
 import { rmcSideVisitAccept } from '@/services/site_visit_apis/site_visit_api'
-import { formatDates } from '@/utils/dateFormater'
 import CustomTooltip from '@/common/CustomTooltip'
 import { lazyModal } from '@/utils/dynamicLoading'
 
@@ -32,6 +31,7 @@ interface RescheduledCallType {
   siteRechedual: any
   region: any
   tenderId: any
+  updated_timeline?: string
 }
 
 const columnHelper = createColumnHelper<RescheduledCallType>()
@@ -52,7 +52,7 @@ const SiteVisitReschedule = ({ siteRechedual }: any) => {
       rmcEmail: invite.rmc_details?.rmc_email ?? '',
       location: invite.rmc_details?.site_location ?? '',
       rescheduledSlot: invite.timeline ?? '',
-      rescheduledDate: formatDates(invite.scheduled_date),
+      updated_timeline: invite?.updated_timeline,
       invite_id: invite?.id,
       slot_ids: invite.slot?.id ?? '',
       status_label: invite.status_label ?? '',
@@ -85,13 +85,6 @@ const SiteVisitReschedule = ({ siteRechedual }: any) => {
   }
 
   const columns = [
-    columnHelper.accessor((row, index) => index + 1, {
-      id: 'sr',
-      header: 'SR #',
-      size: 30,
-      enableSorting: true
-    }),
-
     columnHelper.accessor('rmcName', {
       header: 'RMC Name',
       size: 150,
@@ -124,25 +117,23 @@ const SiteVisitReschedule = ({ siteRechedual }: any) => {
 
     columnHelper.accessor('location', {
       header: 'Location',
-      cell: info => (
-        <a href={info.getValue()} className='text-[13px]'>
-          {info.getValue()}
-        </a>
-      ),
+      cell: info => <span className='text-[13px] break-words whitespace-normal'>{info.getValue()}</span>,
       size: 200,
       enableSorting: false
     }),
 
     columnHelper.accessor('rescheduledSlot', {
-      header: 'Rescheduled Slot',
+      header: 'Timeline',
       size: 150,
-      enableSorting: true
+      enableSorting: true,
+      cell: info => <span className='whitespace-normal break-words text-[13px]'>{info.getValue()}</span>
     }),
 
-    columnHelper.accessor('rescheduledDate', {
-      header: 'Rescheduled Date',
+    columnHelper.accessor('updated_timeline', {
+      header: 'Updated Timeline',
       size: 150,
-      enableSorting: true
+      enableSorting: true,
+      cell: info => <span className='whitespace-normal break-words text-[13px]'>{info.getValue()}</span>
     }),
 
     columnHelper.display({

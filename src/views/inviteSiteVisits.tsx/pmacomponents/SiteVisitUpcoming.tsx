@@ -7,12 +7,9 @@ import { createColumnHelper } from '@tanstack/react-table'
 
 import CommonTable from '@/common/CommonTable'
 
-import { formatDates } from '@/utils/dateFormater'
 import CustomTooltip from '@/common/CustomTooltip'
-import { lazyModal } from '@/utils/dynamicLoading'
-import type { SiteVisitsModalProps } from './types'
 
-const SiteVisitsModal = lazyModal<SiteVisitsModalProps>('@/common/SiteVisitsModal')
+import SiteVisitsModal from '../../../common/SiteVisitsModal'
 
 interface RescheduledCallType {
   rmcName: string
@@ -45,7 +42,6 @@ const SiteVisitUpcoming = ({ SiteUpComingData }: any) => {
       rmcEmail: invite.rmc_details?.rmc_email ?? '',
       location: invite.rmc_details?.site_location ?? '',
       rescheduledSlot: invite.timeline ?? '',
-      rescheduledDate: formatDates(invite.scheduled_date),
       invite_id: invite?.id,
       slot_ids: invite.slot?.id ?? '',
       status_label: invite.status_label ?? '',
@@ -53,13 +49,6 @@ const SiteVisitUpcoming = ({ SiteUpComingData }: any) => {
     })) || []
 
   const columns = [
-    columnHelper.accessor((row, index) => index + 1, {
-      id: 'sr',
-      header: 'SR #',
-      size: 30,
-      enableSorting: true
-    }),
-
     columnHelper.accessor('rmcName', {
       header: 'RMC Name',
       size: 150,
@@ -86,25 +75,16 @@ const SiteVisitUpcoming = ({ SiteUpComingData }: any) => {
 
     columnHelper.accessor('location', {
       header: 'Location',
-      cell: info => (
-        <a href={info.getValue()} className='text-[13px]'>
-          {info.getValue()}
-        </a>
-      ),
+      cell: info => <span className='text-[13px]'>{info.getValue()}</span>,
       size: 200,
       enableSorting: false
     }),
 
     columnHelper.accessor('rescheduledSlot', {
-      header: 'Rescheduled Slot',
-      size: 150,
-      enableSorting: true
-    }),
-
-    columnHelper.accessor('rescheduledDate', {
-      header: 'Rescheduled Date',
-      size: 150,
-      enableSorting: true
+      header: 'Timeline',
+      size: 200,
+      enableSorting: true,
+      cell: info => <span className='whitespace-normal break-words text-[13px]'>{info.getValue()}</span>
     }),
 
     columnHelper.display({

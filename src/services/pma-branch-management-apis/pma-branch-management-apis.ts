@@ -71,4 +71,4 @@ export const deletePmaBranch = async (id: number) => {
     console.error('Delete PMA Branch API error:', error)
     throw error
   }
-}
+}   

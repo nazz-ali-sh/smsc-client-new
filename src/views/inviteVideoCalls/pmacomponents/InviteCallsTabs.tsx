@@ -26,7 +26,6 @@ const InviteCallsTabs = () => {
     enabled: !!activeStatus
   })
 
-
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue)
 

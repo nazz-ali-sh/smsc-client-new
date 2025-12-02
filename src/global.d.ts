@@ -120,7 +120,7 @@ declare global {
     hideDescription?: boolean
   }
 
-  interface LoginPortalProps {
+  interface LoginPortalProps{
     portal?: 'rmc_portal' | 'pma_portal'
   }
 

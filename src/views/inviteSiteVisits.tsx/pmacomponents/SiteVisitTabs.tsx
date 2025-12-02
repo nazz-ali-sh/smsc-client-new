@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react'
 
 import { Box } from '@mui/material'
 
-
 import { useQuery } from '@tanstack/react-query'
 
 import SiteVisitHeader from './SiteVisitHeader'

@@ -61,13 +61,6 @@ const SiteVisitCompletedCalls = ({ siteCompleted }: any) => {
     ) || []
 
   const columns = [
-    columnHelper.accessor((row, index) => index + 1, {
-      id: 'sr',
-      header: 'SR #',
-      cell: info => info.getValue(),
-      size: 30,
-      enableSorting: true
-    }),
     columnHelper.accessor('pmaId', {
       header: 'PMA Name',
       cell: info => info.getValue(),
@@ -114,20 +107,19 @@ const SiteVisitCompletedCalls = ({ siteCompleted }: any) => {
       size: 150,
       enableSorting: true
     }),
-    columnHelper.accessor('action', { 
+    columnHelper.accessor('action', {
       header: 'Action',
       cell: () => (
         <>
           <div className='flex gap-2'>
-              <CustomTooltip text='Appoint the Agent' position='left' align='left'>
-                    <span
-              onClick={() => setApointAgentModalOpen(true)}
-              className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#DE481A] flex justify-center items-center'
-            >
-              <Image src={person} alt='person' />
-            </span>
-              </CustomTooltip>
-        
+            <CustomTooltip text='Appoint the Agent' position='left' align='left'>
+              <span
+                onClick={() => setApointAgentModalOpen(true)}
+                className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#DE481A] flex justify-center items-center'
+              >
+                <Image src={person} alt='person' />
+              </span>
+            </CustomTooltip>
           </div>
         </>
       ),

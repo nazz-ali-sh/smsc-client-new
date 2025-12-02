@@ -33,13 +33,13 @@ const SiteVisitCompletedCalls = ({ siteCompleted }: any) => {
 
   const tableData =
     siteCompleted?.data?.invites?.map((invite: any) => ({
-      rmcName: invite.rmc_details?.rmc_name ?? '', 
-      yearBuilt: invite.rmc_details?.year_built ?? '', 
-      blockName: invite.rmc_details?.block_name ?? '', 
-      region: invite.rmc_details?.region ?? '', 
-      rmcEmail: invite.rmc_details?.rmc_email ?? '', 
-      location: invite.rmc_details?.site_location ?? '', 
-      rescheduledSlot: invite.timeline ?? '', 
+      rmcName: invite.rmc_details?.rmc_name ?? '',
+      yearBuilt: invite.rmc_details?.year_built ?? '',
+      blockName: invite.rmc_details?.block_name ?? '',
+      region: invite.rmc_details?.region ?? '',
+      rmcEmail: invite.rmc_details?.rmc_email ?? '',
+      location: invite.rmc_details?.site_location ?? '',
+      rescheduledSlot: invite.timeline ?? '',
       rescheduledDate: formatDates(invite.scheduled_date),
       invite_id: invite?.id,
       slot_ids: invite.slot?.id ?? '',
@@ -48,13 +48,6 @@ const SiteVisitCompletedCalls = ({ siteCompleted }: any) => {
     })) || []
 
   const columns = [
-    columnHelper.accessor((row, index) => index + 1, {
-      id: 'sr',
-      header: 'SR #',
-      size: 30,
-      enableSorting: true
-    }),
-
     columnHelper.accessor('rmcName', {
       header: 'RMC Name',
       size: 150,
@@ -72,8 +65,8 @@ const SiteVisitCompletedCalls = ({ siteCompleted }: any) => {
       size: 150,
       enableSorting: true
     }),
-    
-     columnHelper.accessor('region', {
+
+    columnHelper.accessor('region', {
       header: 'Region',
       size: 150,
       enableSorting: true
@@ -87,20 +80,16 @@ const SiteVisitCompletedCalls = ({ siteCompleted }: any) => {
 
     columnHelper.accessor('location', {
       header: 'Location',
-      cell: info => (
-        <a href={info.getValue()} className='text-[13px]'>
-          {info.getValue()}
-        </a>
-      ),
+      cell: info => <span className='text-[13px] whitespace-normal break-words'>{info.getValue()}</span>,
       size: 200,
       enableSorting: false
     }),
 
-    columnHelper.accessor('rescheduledDate', {
+    columnHelper.accessor('rescheduledSlot', {
       header: 'Timeline',
-      cell: info => info.getValue(),
       size: 150,
-      enableSorting: true
+      enableSorting: true,
+      cell: info => <span className='whitespace-normal break-words text-[13px]'>{info.getValue()}</span>
     })
   ]
 

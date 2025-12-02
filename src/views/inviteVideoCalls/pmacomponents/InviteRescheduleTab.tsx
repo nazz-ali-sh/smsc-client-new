@@ -9,11 +9,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { toast } from 'react-toastify'
 
-
 import CommonTable from '@/common/CommonTable'
 
 import SuccessModal from '@/common/SucessModal'
-import { formatDates } from '@/utils/dateFormater'
 import VideosCallsModal from '@/common/VideosCallsModal'
 import CustomTooltip from '@/common/CustomTooltip'
 import { pmaVideoCallAccept } from '@/services/pma_video_call/pma_video_call'
@@ -23,9 +21,9 @@ interface RescheduledCallType {
   yearBuilt: string | number | null
   blockName: string
   rmcEmail: string
-  location: string
-  rescheduledSlot: string
-  rescheduledDate: string
+  zoom_meeting_link: string
+  timeline: string
+  updated_timeline: string
   invite_id: number
   slot_ids: string
   status_label: string
@@ -43,7 +41,6 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
   const [selectedTenderId, setSelectedTenderId] = useState<string | number | null>(null)
   const queryClient = useQueryClient()
 
-
   const tableData =
     rescheduaInviteData?.data?.invites?.map((invite: any) => ({
       rmcName: invite.rmc_details?.rmc_name ?? '',
@@ -52,9 +49,9 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
       blockName: invite.rmc_details?.block_name ?? '',
       region: invite.rmc_details?.region ?? '',
       rmcEmail: invite.rmc_details?.rmc_email ?? '',
-      location: invite.rmc_details?.site_location ?? '',
-      rescheduledSlot: invite.timeline ?? '',
-      rescheduledDate: formatDates(invite.scheduled_date),
+      zoom_meeting_link: invite?.zoom_meeting_link ?? '',
+      timeline: invite.timeline ?? '',
+      updated_timeline: invite?.updated_timeline,
       invite_id: invite?.id,
       slot_ids: invite.slot?.id ?? '',
       status_label: invite.status_label ?? '',
@@ -86,13 +83,6 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
   }
 
   const columns = [
-    columnHelper.accessor((row, index) => index + 1, {
-      id: 'sr',
-      header: 'SR #',
-      size: 30,
-      enableSorting: true
-    }),
-
     columnHelper.accessor('rmcName', {
       header: 'RMC Name',
       size: 150,
@@ -123,25 +113,28 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
       enableSorting: true
     }),
 
-    columnHelper.accessor('location', {
-      header: 'Location',
+    columnHelper.accessor('zoom_meeting_link', {
+      header: 'Video Call Link',
       cell: info => (
-        <a href={info.getValue()} className='text-[13px]'>
-          {info.getValue()}
+        <a href={info.getValue()} className='text-[13px] font-bold text-[#8BD6F4]'>
+          Join Meeting
         </a>
       ),
       size: 200,
       enableSorting: false
     }),
 
-    columnHelper.accessor('rescheduledSlot', {
-      header: 'Rescheduled Slot',
+    columnHelper.accessor('timeline', {
+      header: 'Timeline',
+      cell: info => <span className='text-[13px] whitespace-normal break-words'>{info.getValue()}</span>,
       size: 150,
+
       enableSorting: true
     }),
 
-    columnHelper.accessor('rescheduledDate', {
-      header: 'Rescheduled Date',
+    columnHelper.accessor('updated_timeline', {
+      header: 'Updated Timeline',
+      cell: info => <span className='text-[13px] whitespace-normal break-words'>{info.getValue()}</span>,
       size: 150,
       enableSorting: true
     }),
@@ -153,7 +146,7 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
       enableSorting: false,
       cell: info => (
         <div className='flex gap-2'>
-          <CustomTooltip text='Accept Rescheduled Site Visit' position='left' align='left'>
+          <CustomTooltip text='Accept Rescheduled Video Call' position='left' align='left'>
             <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'>
               <i
                 onClick={() => {
@@ -168,7 +161,7 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
             </span>
           </CustomTooltip>
 
-          <CustomTooltip text='Reschedule Site Visit' position='left' align='left'>
+          <CustomTooltip text='Reschedule Video Call' position='left' align='left'>
             <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'>
               <i
                 onClick={() => {

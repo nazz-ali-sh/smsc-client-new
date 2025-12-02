@@ -68,6 +68,24 @@ export const downloadBlindTenderPdf = async (tender_id: number) => {
   }
 }
 
+export const downloadTenderReportPdf = async (tender_id: number, type: 'blind' | 'final_report') => {
+  try {
+    const url = `/rmc/reports/pdf?tender_id=${tender_id}&type=${type}`
+
+    const response = await axiosClient.get(url, {
+      responseType: 'blob',
+      headers: {
+        Accept: 'application/pdf'
+      }
+    })
+
+    return response.data as Blob
+  } catch (error) {
+    console.error(`Tender PDF download API error for type ${type}:`, error)
+    throw error
+  }
+}
+
 export const getPmaCompanyDetails = async (user_id: number, type?: string) => {
   try {
     const query = type ? `&type=${encodeURIComponent(type)}` : ''

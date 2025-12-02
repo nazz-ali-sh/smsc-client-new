@@ -78,13 +78,6 @@ const SiteVisitUpcoming = ({ SiteUpComingData }: any) => {
   }, [visitsSchedualInviteId, tableData])
 
   const columns = [
-    columnHelper.accessor((row, index) => index + 1, {
-      id: 'sr',
-      header: 'SR #',
-      cell: info => info.getValue(),
-      size: 30,
-      enableSorting: true
-    }),
     columnHelper.accessor('pmaId', {
       header: 'PMA Name',
       cell: info => info.getValue(),

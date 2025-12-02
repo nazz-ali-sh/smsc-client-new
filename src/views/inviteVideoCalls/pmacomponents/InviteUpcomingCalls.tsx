@@ -6,7 +6,6 @@ import { Box } from '@mui/material'
 import { createColumnHelper } from '@tanstack/react-table'
 
 import CommonTable from '@/common/CommonTable'
-import { formatDates } from '@/utils/dateFormater'
 import VideosCallsModal from '@/common/VideosCallsModal'
 import CustomTooltip from '@/common/CustomTooltip'
 
@@ -15,9 +14,8 @@ interface RescheduledCallType {
   yearBuilt: string | number | null
   blockName: string
   rmcEmail: string
-  location: string
-  rescheduledSlot: string
-  rescheduledDate: string
+  zoom_meeting_link?: string
+  timeline: string
   invite_id: number
   slot_ids: string
   status_label: string
@@ -43,9 +41,8 @@ const InviteUpcomingCalls: React.FC<pendingInviteData> = ({ pendingInviteData })
       yearBuilt: invite.rmc_details?.year_built ?? '',
       blockName: invite.rmc_details?.block_name ?? '',
       rmcEmail: invite.rmc_details?.rmc_email ?? '',
-      location: invite.rmc_details?.site_location ?? '',
-      rescheduledSlot: invite.timeline ?? '',
-      rescheduledDate: formatDates(invite.scheduled_date),
+      zoom_meeting_link: invite?.zoom_meeting_link ?? '',
+      timeline: invite.timeline ?? '',
       invite_id: invite?.id,
       slot_ids: invite.slot?.id ?? '',
       status_label: invite.status_label ?? '',
@@ -53,13 +50,6 @@ const InviteUpcomingCalls: React.FC<pendingInviteData> = ({ pendingInviteData })
     })) || []
 
   const columns = [
-    columnHelper.accessor((row, index) => index + 1, {
-      id: 'sr',
-      header: 'SR #',
-      size: 30,
-      enableSorting: true
-    }),
-
     columnHelper.accessor('rmcName', {
       header: 'RMC Name',
       size: 150,
@@ -83,29 +73,24 @@ const InviteUpcomingCalls: React.FC<pendingInviteData> = ({ pendingInviteData })
       size: 150,
       enableSorting: true
     }),
-
-    columnHelper.accessor('location', {
-      header: 'Location',
+    columnHelper.accessor('zoom_meeting_link', {
+      header: 'Video Call Link',
       cell: info => (
-        <a href={info.getValue()} className='text-[13px]'>
-          {info.getValue()}
+        <a href={info.getValue()} className='text-[13px] font-bold text-[#8BD6F4]'>
+          Join Meeting
         </a>
       ),
       size: 200,
       enableSorting: false
     }),
 
-    columnHelper.accessor('rescheduledSlot', {
-      header: 'Rescheduled Slot',
+    columnHelper.accessor('timeline', {
+      header: 'Timeline',
+      cell: info => <span className='text-[13px] whitespace-normal break-words'>{info.getValue()}</span>,
       size: 150,
       enableSorting: true
     }),
 
-    columnHelper.accessor('rescheduledDate', {
-      header: 'Rescheduled Date',
-      size: 150,
-      enableSorting: true
-    }),
     columnHelper.display({
       id: 'action',
       header: 'Action',

@@ -24,14 +24,13 @@ const SiteVisitHeader = ({ title = 'Video Calls', actionButton }: InviteCallHead
 
   const { data: finalShortListedResponce } = useShortlistedPmas()
 
-   const isButtonDisabled = !isShortlistedCompleted || isAppointmentCompleted
+  const isButtonDisabled = !isShortlistedCompleted || isAppointmentCompleted
 
   const tooltipText = isAppointmentCompleted
     ? `You've appointed your agent. No further actions can be taken on this tender.`
     : !isShortlistedCompleted
       ? `You’ll be able to invite agents to site visits once you have shortlisted from your results.`
       : ''
-
 
   return (
     <Box className=' p-6'>
@@ -40,7 +39,7 @@ const SiteVisitHeader = ({ title = 'Video Calls', actionButton }: InviteCallHead
           {title}
         </Typography>
 
-         {isButtonDisabled ? (
+        {isButtonDisabled ? (
           <CustomTooltip text={tooltipText} position='top' align='center'>
             <CustomButton
               variant='contained'

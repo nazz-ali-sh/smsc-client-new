@@ -11,15 +11,15 @@ interface CompletedCallType {
   yearBuilt: string | number | null
   blockName: string
   rmcEmail: string
-  location: string
   rescheduledSlot: string
-  rescheduledDate: string
+  timeline: string
   invite_id: number
   slot_ids: string
   status_label: string
   siteRechedual: any
-  timeline: any
   region: any
+  zoom_meeting_link?: string
+  updated_timeline?: string
 }
 
 const columnHelper = createColumnHelper<CompletedCallType>()
@@ -32,23 +32,17 @@ const InviteCompletedCalls = ({ videoInviteData }: any) => {
       blockName: invite.rmc_details?.block_name ?? '',
       region: invite.rmc_details?.region ?? '',
       rmcEmail: invite.rmc_details?.rmc_email ?? '',
-      location: invite.rmc_details?.site_location ?? '',
-      rescheduledSlot: invite.timeline ?? '',
+      zoom_meeting_link: invite?.zoom_meeting_link ?? '',
+      timeline: invite.timeline ?? '',
       rescheduledDate: formatDates(invite.scheduled_date),
       invite_id: invite?.id,
       slot_ids: invite.slot?.id ?? '',
       status_label: invite.status_label ?? '',
+      updated_timeline: invite?.updated_timeline,
       videoInviteData
     })) || []
 
   const columns = [
-    columnHelper.accessor((row, index) => index + 1, {
-      id: 'sr',
-      header: 'SR #',
-      size: 30,
-      enableSorting: true
-    }),
-
     columnHelper.accessor('rmcName', {
       header: 'RMC Name',
       size: 150,
@@ -79,20 +73,26 @@ const InviteCompletedCalls = ({ videoInviteData }: any) => {
       enableSorting: true
     }),
 
-    columnHelper.accessor('location', {
-      header: 'Location',
+    columnHelper.accessor('zoom_meeting_link', {
+      header: 'Video Call Link',
       cell: info => (
-        <a href={info.getValue()} className='text-[13px]'>
-          {info.getValue()}
+        <a href={info.getValue()} className='text-[13px] font-bold text-[#8BD6F4]'>
+          Join Meeting
         </a>
       ),
       size: 200,
       enableSorting: false
     }),
 
-    columnHelper.accessor('rescheduledDate', {
+    columnHelper.accessor('timeline', {
       header: 'Timeline',
-      cell: info => info.getValue(),
+      cell: info => <span className='text-[13px] whitespace-normal break-words'>{info.getValue()}</span>,
+      size: 150,
+      enableSorting: true
+    }),
+    columnHelper.accessor('updated_timeline', {
+      header: 'Updated Timeline',
+      cell: info => <span className='text-[13px] whitespace-normal break-words'>{info.getValue() ?? '--'}</span>,
       size: 150,
       enableSorting: true
     })

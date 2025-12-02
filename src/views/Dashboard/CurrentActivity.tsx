@@ -10,16 +10,13 @@ import { Typography } from '@mui/material'
 
 import { useSelector } from 'react-redux'
 
-import { useMutation } from '@tanstack/react-query'
-
 import line from '../../../public/images/customImages/line.svg'
 import front from '../../../public/images/dashboardImages/Front.png'
 import front_1 from '../../../public/images/dashboardImages/Front-1.png'
 
-import { downloadBlindTenderPdf } from '@/services/tender_result-apis/tender-result-api'
-import { downloadFinalSeectionPDf } from '@/services/final_result_and_archeive_apis/final_results_apis'
 import CustomButton from '@/common/CustomButton'
 import { useDashboardData } from '@/hooks/useDashboardData'
+import { useTenderReports } from '@/hooks/useTenderReports'
 import CommonModal from '@/common/CommonModal'
 
 const CurrentActivity = () => {
@@ -45,38 +42,7 @@ const CurrentActivity = () => {
 
   const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
 
-  const downloadMutation = useMutation({
-    mutationFn: (id: number) => downloadBlindTenderPdf(id),
-    onSuccess: (blob: Blob) => {
-      const url = window.URL.createObjectURL(blob)
-      const link = document.createElement('a')
-
-      link.href = url
-      link.download = `tender_${tender_id}.pdf`
-      link.click()
-      window.URL.revokeObjectURL(url)
-    },
-    onError: error => {
-      console.error('Download failed:', error)
-    }
-  })
-
-  const downloadFinalSelectionMutation = useMutation({
-    mutationFn: (id: number) => downloadFinalSeectionPDf(id),
-    onSuccess: (blob: Blob) => {
-      const url = window.URL.createObjectURL(blob)
-      const link = document.createElement('a')
-
-      link.href = url
-      link.download = `tender_${tender_id}.pdf`
-      link.click()
-
-      window.URL.revokeObjectURL(url)
-    },
-    onError: error => {
-      console.error('Download failed:', error)
-    }
-  })
+  const { downloadBlindTenderMutation, downloadFinalReportMutation } = useTenderReports()
 
   return (
     <>
@@ -169,7 +135,7 @@ const CurrentActivity = () => {
                           align='left'
                           className={`mt-4 text-[#696969] cursor-pointer hover:underline hover:underline-offset-4`}
                           onClick={() => {
-                            downloadMutation.mutate(tender_id)
+                            downloadBlindTenderMutation.mutate(tender_id)
                           }}
                         >
                           {isClickable ? ' Download Blind Tender Report' : ''}
@@ -178,7 +144,7 @@ const CurrentActivity = () => {
                         <Typography
                           variant='body1'
                           align='left'
-                          className='mt-4 cursor-pointer text-[#696969] hover:underline hover:underline-offset-4 '
+                          className='mt-4 text-[#696969] hover:underline hover:underline-offset-4 '
                         >
                           {isClickable ? '' : 'Unlocks After Tender Closes'}
                         </Typography>
@@ -193,14 +159,22 @@ const CurrentActivity = () => {
                           variant='body1'
                           align='left'
                           className='mt-4 cursor-pointer text-[#696969] hover:underline hover:underline-offset-4'
-                          onClick={() => downloadFinalSelectionMutation.mutate(tender_id)}
+                          onClick={() => downloadFinalReportMutation.mutate(tender_id)}
                         >
                           {stages == 'appointment' ? 'Download Full Journey Report' : ''}
                         </Typography>
                         <Typography
                           variant='body1'
                           align='left'
-                          className='mt-4 cursor-pointer text-[#696969] hover:underline hover:underline-offset-4 '
+                          className={`mt-4 text-[#696969] hover:underline hover:underline-offset-4 ${stages != 'appointment' ? 'cursor-pointer' : ''}`}
+                          onClick={e => {
+                            e.stopPropagation()
+
+                            if (stages != 'appointment') {
+                              console.log('Final report clicked - Unlocks After Appointing')
+                              downloadFinalReportMutation.mutate(tender_id)
+                            }
+                          }}
                         >
                           {stages == 'appointment' ? '' : ' Unlocks After Appointing Your New Managing Agent'}
                         </Typography>
@@ -218,7 +192,7 @@ const CurrentActivity = () => {
         isOpen={tenderReportModelOpen}
         handleClose={() => setTenderReportModelOpen(false)}
         header='About Your Tender Reports'
-        headerSx={{marginLeft: '13px' }}
+        headerSx={{ marginLeft: '13px' }}
         maxWidth='md'
       >
         <div className='space-y-4'>
@@ -227,16 +201,17 @@ const CurrentActivity = () => {
           </Typography>
 
           <Typography variant='body2' className='text-[#696969] mt-3 leading-[22px] text-[13px]'>
-            <span className='font-bold'>Blind Tender Report:</span> This is your first report. It shows the anonymised replies and quotes from all
-            managing agents, creating a level playing field for you to shortlist from. It aligns with Save My Service
-            Charge’s blind tender process, helping you view all responses clearly in one document or webpage.
+            <span className='font-bold'>Blind Tender Report:</span> This is your first report. It shows the anonymised
+            replies and quotes from all managing agents, creating a level playing field for you to shortlist from. It
+            aligns with Save My Service Charge’s blind tender process, helping you view all responses clearly in one
+            document or webpage.
           </Typography>
-          <div> 
+          <div>
             <Typography variant='body2' className='text-[#696969] mb-3 leading-[22px] text-[13px]'>
-              <span className='font-bold'>Final Tender Report:</span> This is your final report once the process is complete. It includes all blind tender
-              replies, your shortlisted agents, those you met for video calls or site visits, and the agent you
-              ultimately selected. It’s an excellent document to share with your fellow leaseholders, showing that
-              you’ve followed a fair, transparent, and rigorous selection process.
+              <span className='font-bold'>Final Tender Report:</span> This is your final report once the process is
+              complete. It includes all blind tender replies, your shortlisted agents, those you met for video calls or
+              site visits, and the agent you ultimately selected. It’s an excellent document to share with your fellow
+              leaseholders, showing that you’ve followed a fair, transparent, and rigorous selection process.
             </Typography>
           </div>
         </div>

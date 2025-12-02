@@ -28,7 +28,6 @@ interface RescheduledCallType {
   slot_ids: string
   status_label: string
   siteRechedual: any
-  region: any
   tenderId: any
 }
 
@@ -51,7 +50,6 @@ const SiteVisitPending = ({ sitePendingData }: any) => {
       tenderId: invite.tender_id ?? '',
       yearBuilt: invite.rmc_details?.year_built ?? '',
       blockName: invite.rmc_details?.block_name ?? '',
-      region: invite.rmc_details?.region ?? '',
       rmcEmail: invite.rmc_details?.rmc_email ?? '',
       location: invite.rmc_details?.site_location ?? '',
       rescheduledSlot: invite.timeline ?? '',
@@ -89,13 +87,6 @@ const SiteVisitPending = ({ sitePendingData }: any) => {
   }
 
   const columns = [
-    columnHelper.accessor((row, index) => index + 1, {
-      id: 'sr',
-      header: 'SR #',
-      size: 30,
-      enableSorting: true
-    }),
-
     columnHelper.accessor('rmcName', {
       header: 'RMC Name',
       size: 150,
@@ -114,12 +105,6 @@ const SiteVisitPending = ({ sitePendingData }: any) => {
       enableSorting: true
     }),
 
-    columnHelper.accessor('region', {
-      header: 'Region',
-      size: 150,
-      enableSorting: true
-    }),
-
     columnHelper.accessor('rmcEmail', {
       header: 'Email',
       size: 150,
@@ -128,23 +113,23 @@ const SiteVisitPending = ({ sitePendingData }: any) => {
 
     columnHelper.accessor('location', {
       header: 'Location',
-      cell: info => (
-        <a href={info.getValue()} className='text-[13px]'>
-          {info.getValue()}
-        </a>
-      ),
+      cell: info => <span className='text-[13px] whitespace-normal break-words'>{info.getValue()}</span>,
       size: 200,
       enableSorting: false
     }),
 
     columnHelper.accessor('rescheduledSlot', {
-      header: 'Rescheduled Slot',
+      header: 'Timeline',
+      cell: info => <span className='text-[13px] whitespace-normal break-words'>{info.getValue()}</span>,
+
       size: 150,
       enableSorting: true
     }),
 
     columnHelper.accessor('rescheduledDate', {
-      header: 'Rescheduled Date',
+      header: 'Updated Timeline',
+      cell: () => <span className='text-[13px] whitespace-normal break-words'>--</span>,
+
       size: 150,
       enableSorting: true
     }),
@@ -154,7 +139,7 @@ const SiteVisitPending = ({ sitePendingData }: any) => {
       header: 'Action',
       cell: info => (
         <div className='flex gap-2'>
-          <CustomTooltip text='Accept Rescheduled Site Visit' position='left' align='left'>
+          <CustomTooltip text='Accept Pending Site Visit' position='left' align='left'>
             <span className='size-[33px] rounded-[5px] cursor-pointer bg-[#E8F9FE] text-[#35C0ED] flex justify-center items-center'>
               <i
                 onClick={() => {
@@ -166,7 +151,6 @@ const SiteVisitPending = ({ sitePendingData }: any) => {
                 }}
                 className='ri-check-line'
               />
-              gg
             </span>
           </CustomTooltip>
 

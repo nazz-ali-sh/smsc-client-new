@@ -54,13 +54,6 @@ const SiteVisitReject = ({ siteRejectedData }: any) => {
     ) || []
 
   const columns = [
-    columnHelper.accessor((row, index) => index + 1, {
-      id: 'sr',
-      header: 'SR #',
-      cell: info => info.getValue(),
-      size: 30,
-      enableSorting: true
-    }),
     columnHelper.accessor('pmaId', {
       header: 'PMA Name',
       cell: info => info.getValue(),
@@ -88,11 +81,7 @@ const SiteVisitReject = ({ siteRejectedData }: any) => {
     columnHelper.accessor('videoCallLink', {
       header: 'Location',
       cell: info => (
-        <a
-          href={info.getValue()}
-      
-          className='text-[13px] '
-        >
+        <a href={info.getValue()} className='text-[13px] '>
           {info.getValue()}
         </a>
       ),

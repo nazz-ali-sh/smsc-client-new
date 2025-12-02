@@ -20,7 +20,6 @@ interface RescheduledCallType {
   slot_ids: string
   status_label: string
   siteRechedual: any
-  region: any
   reason: any
 }
 
@@ -30,13 +29,12 @@ const SiteVisitReject = ({ siteRejectedData }: any) => {
   const tableData =
     siteRejectedData?.data?.invites?.map((invite: any) => ({
       rmcName: invite.rmc_details?.rmc_name ?? '',
-      yearBuilt: invite.rmc_details?.year_built ?? '', 
-      blockName: invite.rmc_details?.block_name ?? '', 
-      region: invite.rmc_details?.region ?? '', 
-      rmcEmail: invite.rmc_details?.rmc_email ?? '', 
-      location: invite.rmc_details?.site_location ?? '', 
-      rescheduledSlot: invite.timeline ?? '', 
-      rescheduledDate: formatDates(invite.scheduled_date), 
+      yearBuilt: invite.rmc_details?.year_built ?? '',
+      blockName: invite.rmc_details?.block_name ?? '',
+      rmcEmail: invite.rmc_details?.rmc_email ?? '',
+      location: invite.rmc_details?.site_location ?? '',
+      rescheduledSlot: invite.timeline ?? '',
+      rescheduledDate: formatDates(invite.scheduled_date),
       invite_id: invite?.id,
       slot_ids: invite.slot?.id ?? '',
       status_label: invite.status_label ?? '',
@@ -44,13 +42,6 @@ const SiteVisitReject = ({ siteRejectedData }: any) => {
     })) || []
 
   const columns = [
-    columnHelper.accessor((row, index) => index + 1, {
-      id: 'sr',
-      header: 'SR #',
-      size: 30,
-      enableSorting: true
-    }),
-
     columnHelper.accessor('rmcName', {
       header: 'RMC Name',
       size: 150,
@@ -69,12 +60,6 @@ const SiteVisitReject = ({ siteRejectedData }: any) => {
       enableSorting: true
     }),
 
-    columnHelper.accessor('region', {
-      header: 'Region',
-      size: 150,
-      enableSorting: true
-    }),
-
     columnHelper.accessor('rmcEmail', {
       header: 'Email',
       size: 150,
@@ -83,19 +68,16 @@ const SiteVisitReject = ({ siteRejectedData }: any) => {
 
     columnHelper.accessor('location', {
       header: 'Location',
-      cell: info => (
-        <a href={info.getValue()} className='text-[13px]'>
-          {info.getValue()}
-        </a>
-      ),
+      cell: info => <span className='text-[13px] whitespace-normal break-words'>{info.getValue()}</span>,
       size: 200,
       enableSorting: false
     }),
 
     columnHelper.accessor('reason', {
       header: 'Reason of Rejection',
-      size: 150,
-      enableSorting: true
+      cell: info => <span className='text-[13px] whitespace-normal break-words'>{info.getValue()}</span>,
+      size: 200,
+      enableSorting: false
     })
   ]
 

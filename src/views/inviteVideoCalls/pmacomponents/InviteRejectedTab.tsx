@@ -43,13 +43,6 @@ const InviteRejectedTab = ({ rejectedInviteData }: any) => {
     })) || []
 
   const columns = [
-    columnHelper.accessor((row, index) => index + 1, {
-      id: 'sr',
-      header: 'SR #',
-      size: 30,
-      enableSorting: true
-    }),
-
     columnHelper.accessor('rmcName', {
       header: 'RMC Name',
       size: 150,
@@ -79,8 +72,6 @@ const InviteRejectedTab = ({ rejectedInviteData }: any) => {
       size: 150,
       enableSorting: true
     }),
-
-  
 
     columnHelper.accessor('reason', {
       header: 'Reason of Rejection',

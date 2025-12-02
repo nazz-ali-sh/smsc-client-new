@@ -52,7 +52,7 @@ const BranchManagementView = () => {
         toast.error('Delete failed')
       }
     }
-
+    
     setShowConfirmationModal(false)
     setBranchToDelete(null)
   }
