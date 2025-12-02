@@ -84,6 +84,14 @@ const QuoteFormSection = ({ tenderId }: QuoteFormSectionProps) => {
   })
 
   const handleFormSubmit = (data: QuoteFormData) => {
+    const hasAtLeastOneValue = Object.values(data).some(value => value && value.trim() !== '')
+
+    if (!hasAtLeastOneValue) {
+      toast.error('Please fill at least one fee field before submitting')
+
+      return
+    }
+
     const feeData = {
       managing_fee: data.managementFee,
       accounting_fee: data.accountingFee,
@@ -139,6 +147,16 @@ const QuoteFormSection = ({ tenderId }: QuoteFormSectionProps) => {
   }
 
   const displayBudgetData = budgetDataFromStorage
+    ? {
+        managing_fee: budgetDataFromStorage.managing_fee || '0',
+        accounting_fee: budgetDataFromStorage.accounting_fee || '0',
+        cosec_fee: budgetDataFromStorage.cosec_fee || '0',
+        out_of_hours_fee: budgetDataFromStorage.out_of_hours_fee || '0',
+        emergency_fee: budgetDataFromStorage.emergency_fee || '0',
+        fire_door_fee: budgetDataFromStorage.fire_door_fee || '0',
+        anti_money_fee: budgetDataFromStorage.anti_money_fee || '0'
+      }
+    : undefined
 
   return (
     <Box>
@@ -175,7 +193,7 @@ const QuoteFormSection = ({ tenderId }: QuoteFormSectionProps) => {
           budgetData={displayBudgetData}
           itemsPerRow={3}
           sx={titleClass}
-          title='PMA Cost Breakdown'
+          title='Your Blocks Fixed Cost Summary'
         />
       </Box>
 

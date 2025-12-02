@@ -5,6 +5,7 @@ import React from 'react'
 import { Box, Card, CardContent, Divider, Grid, Typography } from '@mui/material'
 
 import PrioritiesSection from '@/views/TenderInformationUpdated/components/PrioritiesSection'
+import ServiceChargeBudgetSection from '@/views/TenderInformationUpdated/components/ServiceChargeBudgetSection'
 import PainPoints from '@/views/TenderInformations/PainPoints'
 import { usePmaTenderDetail } from '@/hooks/usePmaTenderDetail'
 import CustomLoader from '@/common/CustomLoader'
@@ -16,6 +17,16 @@ import type { TenderId } from './types'
 
 const TenderDetailViewResponse = ({ tenderId }: TenderId) => {
   const { tenderDetailData, isLoading } = usePmaTenderDetail({ tenderId })
+
+  const transformedBudgetData = tenderDetailData?.data?.rmc_service_charge_budget && {
+    managing_fee: String(tenderDetailData?.data?.rmc_service_charge_budget?.managing_fee || 0),
+    accounting_fee: String(tenderDetailData?.data?.rmc_service_charge_budget?.accounting_fee || 0),
+    cosec_fee: String(tenderDetailData?.data?.rmc_service_charge_budget?.cosec_fee || 0),
+    out_of_hours_fee: String(tenderDetailData?.data?.rmc_service_charge_budget?.out_of_hours_fee || 0),
+    emergency_fee: String(tenderDetailData?.data?.rmc_service_charge_budget?.emergency_fee || 0),
+    fire_door_fee: String(tenderDetailData?.data?.rmc_service_charge_budget?.fire_door_fee || 0),
+    anti_money_fee: String(tenderDetailData?.data?.rmc_service_charge_budget?.anti_money_fee || 0)
+  }
 
   if (isLoading) {
     return (
@@ -43,6 +54,18 @@ const TenderDetailViewResponse = ({ tenderId }: TenderId) => {
               <Typography sx={titleClass}>Written Response</Typography>
             </Box>
             <CardContent sx={{ paddingX: '20px' }}>
+              {transformedBudgetData && (
+                <Box sx={{ marginBottom: 4 }}>
+                  <ServiceChargeBudgetSection
+                    budgetData={transformedBudgetData}
+                    itemsPerRow={3}
+                    sx={titleClass}
+                    title='Fixed Cost Quote from Managing Agent'
+                  />
+                  <Divider sx={{ mt: 8 }} />
+                </Box>
+              )}
+
               <PrioritiesSection
                 priorities={tenderDetailData?.data?.rmc_priorities ?? []}
                 cardsPerRow={3}

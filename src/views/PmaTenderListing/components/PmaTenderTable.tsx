@@ -9,7 +9,7 @@ import { createColumnHelper } from '@tanstack/react-table'
 
 import CommonTable from '@/common/CommonTable'
 import { usePmaTenderListing } from '@/hooks/usePmaTenderListing'
-import { getTenderDetails, tenderFilterMenuItems } from '@/constants'
+import { getTenderDetails, tenderFilterMenuItems, getOutdoorSpaceLabel } from '@/constants'
 import type { PmaTenderType } from '../types'
 import PmaTenderDrawer from './PmaTenderDrawer'
 import AppointedModal from './AppointedModal'
@@ -102,11 +102,13 @@ const PmaTenderTable = () => {
       }),
       columnHelper.accessor('outdoor_space', {
         header: 'Outdoor Space',
-        cell: info => info.getValue(),
+        cell: info => <span className='whitespace-normal break-words text-[13px]'>{getOutdoorSpaceLabel(info.getValue())}</span>,
         size: 130,
         enableSorting: true
       }),
       columnHelper.accessor('year_built', {
+
+        
         header: 'Year Built',
         cell: info => {
           const year = info.getValue()
@@ -369,7 +371,7 @@ const PmaTenderTable = () => {
         columns={columns}
         title={tenderDetails?.title}
         description={tenderDetails?.description}
-        actionButton={filterButton}
+        actionButton={pathname === '/shortlisted' && value === 'shortlisted' ? null : filterButton}
         pagination={pagination}
         onPaginationChange={setPagination}
         pageSizeOptions={[5, 10, 25]}

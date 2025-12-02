@@ -36,13 +36,13 @@ export const budgetFields = [
 ] as const
 
 export const quoteFeeFields = [
-  { label: 'Management Fee (ex VAT)', name: 'managementFee' as const },
-  { label: 'Accounting Fee (ex VAT)', name: 'accountingFee' as const },
-  { label: 'CoSec Fee (ex VAT)', name: 'coSecFee' as const },
-  { label: 'Out of House Fee (ex VAT)', name: 'outOfHouseFee' as const },
-  { label: 'Emergency Lighting Tasks (ex VAT)', name: 'emergencyLightingTasks' as const },
-  { label: 'Fire Door Inspections (ex VAT)', name: 'fireDoorInspections' as const },
-  { label: 'AML Money Laundering Checks (ex VAT)', name: 'amlMoneyLaunderingChecks' as const }
+  { label: 'Management Fee', name: 'managementFee' as const },
+  { label: 'Accounting Fee', name: 'accountingFee' as const },
+  { label: 'CoSec Fee', name: 'coSecFee' as const },
+  { label: 'Out of House Fee', name: 'outOfHouseFee' as const },
+  { label: 'Emergency Lighting Tasks', name: 'emergencyLightingTasks' as const },
+  { label: 'Fire Door Inspections', name: 'fireDoorInspections' as const },
+  { label: 'AML Money Laundering Checks', name: 'amlMoneyLaunderingChecks' as const }
 ]
 
 export const blockOptions = [
@@ -471,8 +471,7 @@ export const tenderTypeDetails = {
   },
   result_received: {
     title: 'Submitted Tenders',
-    description:
-      `These are tenders you've responded to, but the RMC has not shortlisted your company yet. Your submission is locked and cannot be edited. Tenders remain in this section until either:\n• You are shortlisted, or\n• The RMC appoints a new managing agent.\nPlease note: An RMC may initially shortlist other PMAs, conduct meetings, and later return to shortlist additional agents if needed. You remain eligible for shortlisting until the RMC makes a final appointment.`
+    description: `These are tenders you've responded to, but the RMC has not shortlisted your company yet. Your submission is locked and cannot be edited. Tenders remain in this section until either:\n• You are shortlisted, or\n• The RMC appoints a new managing agent.\nPlease note: An RMC may initially shortlist other PMAs, conduct meetings, and later return to shortlist additional agents if needed. You remain eligible for shortlisting until the RMC makes a final appointment.`
   },
   expired: {
     title: 'Expired Tenders',

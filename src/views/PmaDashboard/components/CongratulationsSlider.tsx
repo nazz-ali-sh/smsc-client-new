@@ -9,6 +9,7 @@ import { Box, Card, Typography } from '@mui/material'
 import CustomButton from '@/common/CustomButton'
 import { usePmadsahbaordData } from '@/hooks/usePmadsahbaordData'
 import { useTenderCardNavigation } from '@/hooks/useTenderCardNavigation'
+import { useMyAccount } from '@/hooks/useMyAccount'
 
 interface SlideData {
   id: number
@@ -25,15 +26,17 @@ const CongratulationsSlider = () => {
   const [currentSlide, setCurrentSlide] = useState(0)
   const { data: dashboardData } = usePmadsahbaordData()
   const { handleSliderNavigation } = useTenderCardNavigation()
+  const { data: accountData } = useMyAccount()
+  const userName = accountData?.user?.name
 
   const slidesData: SlideData[] = [
     {
       id: 1,
-      title: 'Congratulations User Name!',
+      title: `Congratulations ${userName}!`,
       emoji: '🎉',
       mainText: 'You have won ',
-      highlightText: `+${dashboardData?.data?.tender_updates?.appointed?.total_count || 0} Tenders`,
-      subText: `Total Tenders Won`,
+      highlightText: `+${dashboardData?.data?.tender_updates?.appointed?.last_thirty_days_count || 0} Tenders`,
+      subText: `Total Tenders Won: ${dashboardData?.data?.tender_updates?.appointed?.total_count}`,
       buttonText: 'View Tender',
       imagePath: '/svgs/celebarations.svg'
     },
@@ -138,10 +141,7 @@ const CongratulationsSlider = () => {
                 {slide.subText}
               </Typography>
 
-              <CustomButton
-                sx={{ marginTop: 3 }}
-                onClick={() => handleSliderNavigation(slide.id)}
-              >
+              <CustomButton sx={{ marginTop: 3 }} onClick={() => handleSliderNavigation(slide.id)}>
                 {slide.buttonText}
               </CustomButton>
             </Box>

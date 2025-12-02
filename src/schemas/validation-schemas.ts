@@ -612,13 +612,13 @@ export const pmaOnboardingSchema = pipe(
 )
 
 export const quoteFormSchema = object({
-  managementFee: pipe(string(), nonEmpty('Management Fee is required')),
-  accountingFee: pipe(string(), nonEmpty('Accounting Fee is required')),
-  coSecFee: pipe(string(), nonEmpty('CoSec Fee is required')),
-  outOfHouseFee: pipe(string(), nonEmpty('Out of House Fee is required')),
-  emergencyLightingTasks: pipe(string(), nonEmpty('Emergency Lighting Tasks fee is required')),
-  fireDoorInspections: pipe(string(), nonEmpty('Fire Door Inspections fee is required')),
-  amlMoneyLaunderingChecks: pipe(string(), nonEmpty('AML Money Laundering Checks fee is required'))
+  managementFee: optional(string()),
+  accountingFee: optional(string()),
+  coSecFee: optional(string()),
+  outOfHouseFee: optional(string()),
+  emergencyLightingTasks: optional(string()),
+  fireDoorInspections: optional(string()),
+  amlMoneyLaunderingChecks: optional(string())
 })
 
 export const startDateSchema = object({

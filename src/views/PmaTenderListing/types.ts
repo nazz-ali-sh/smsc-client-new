@@ -32,13 +32,13 @@ export interface PmaStatsType {
 }
 
 export type QuoteFormData = {
-  managementFee: string
-  accountingFee: string
-  coSecFee: string
-  outOfHouseFee: string
-  emergencyLightingTasks: string
-  fireDoorInspections: string
-  amlMoneyLaunderingChecks: string
+  managementFee?: string
+  accountingFee?: string
+  coSecFee?: string
+  outOfHouseFee?: string
+  emergencyLightingTasks?: string
+  fireDoorInspections?: string
+  amlMoneyLaunderingChecks?: string
 }
 
 export interface QuoteFormSectionProps {

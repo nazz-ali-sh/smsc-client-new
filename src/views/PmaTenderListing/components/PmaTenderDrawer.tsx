@@ -76,7 +76,7 @@ const PmaTenderDrawer = ({ open, onClose, tenderId }: PmaTenderDrawerProps) => {
           budgetData={transformedBudgetData}
           itemsPerRow={3}
           sx={titleClass}
-          title='RMC Service Charge Budget'
+          title='Fixed Cost Quote from Managing Agent'
         />
       </Box>
       <Divider sx={{ mt: 6 }} />
