@@ -27,6 +27,8 @@ const PmaTenderTable = () => {
     searchParams.get('active') || (pathname === '/shortlisted' ? 'shortlisted' : 'went_live')
   )
 
+  console.log('value', value)
+
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [selectedTenderId, setSelectedTenderId] = useState<number | null>(null)
   const [startDateModalOpen, setStartDateModalOpen] = useState(false)
@@ -132,14 +134,91 @@ const PmaTenderTable = () => {
         },
         size: 150,
         enableSorting: true
-      }),
-      columnHelper.accessor('end_date', {
-        header: 'End Date',
-        cell: info => info.getValue() || '-',
-        size: 130,
-        enableSorting: true
       })
     ]
+
+    // Add End Date column conditionally (not for appointment, submitted, closed, or shortlisted filters)
+    if (value !== 'appointment' && value !== 'result_received' && value !== 'closed' && value !== 'shortlisted') {
+      baseColumns.push(
+        columnHelper.accessor('end_date', {
+          header: 'End Date',
+          cell: info => info.getValue() || '-',
+          size: 130,
+          enableSorting: true
+        })
+      )
+    }
+
+    // Add additional columns for won tenders (appointment)
+    if (value === 'appointment') {
+      baseColumns.push(
+        columnHelper.accessor('uploaded_on' as keyof PmaTenderType, {
+          header: 'Uploaded On',
+          cell: info => (info.row.original as any).uploaded_on || '-',
+          size: 130,
+          enableSorting: true
+        }),
+        columnHelper.accessor('submitted_on' as keyof PmaTenderType, {
+          header: 'Submitted On',
+          cell: info => (info.row.original as any).submitted_on || '-',
+          size: 130,
+          enableSorting: true
+        }),
+        columnHelper.accessor('shortlisted_on' as keyof PmaTenderType, {
+          header: 'Shortlisted On',
+          cell: info => (info.row.original as any).shortlisted_on || '-',
+          size: 130,
+          enableSorting: true
+        }),
+        columnHelper.accessor('appointed_on' as keyof PmaTenderType, {
+          header: 'Appointed On',
+          cell: info => (info.row.original as any).appointed_on || '-',
+          size: 130,
+          enableSorting: true
+        })
+      )
+    }
+
+    // Add columns for submitted and closed filters
+    if (value === 'result_received' || value === 'closed' || value === 'not_appointed') {
+      baseColumns.push(
+        columnHelper.accessor('uploaded_on' as keyof PmaTenderType, {
+          header: 'Uploaded On',
+          cell: info => (info.row.original as any).uploaded_on || '-',
+          size: 130,
+          enableSorting: true
+        }),
+        columnHelper.accessor('submitted_on' as keyof PmaTenderType, {
+          header: 'Submitted On',
+          cell: info => (info.row.original as any).submitted_on || '-',
+          size: 130,
+          enableSorting: true
+        })
+      )
+    }
+
+    if (value === 'shortlisted') {
+      baseColumns.push(
+        columnHelper.accessor('shortlisted_on' as keyof PmaTenderType, {
+          header: 'Shortlisted On',
+          cell: info => (info.row.original as any).shortlisted_on || '-',
+          size: 130,
+          enableSorting: true
+        })
+      )
+    }
+
+    // Add column for expired filter
+    if (value === 'expired') {
+      baseColumns.push(
+        columnHelper.accessor('uploaded_on' as keyof PmaTenderType, {
+          header: 'Uploaded On',
+          cell: info => (info.row.original as any).uploaded_on || '-',
+          size: 130,
+          enableSorting: true
+        })
+      )
+    }
 
     if (value !== 'expired') {
       baseColumns.push(

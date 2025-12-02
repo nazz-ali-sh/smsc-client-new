@@ -469,6 +469,11 @@ export const tenderTypeDetails = {
     description:
       'These are open tenders currently accepting submissions. You are eligible to respond if the block falls within your service radius. The tender remains live for 5 working days unless extended by the RMC.'
   },
+  result_received: {
+    title: 'Submitted Tenders',
+    description:
+      `These are tenders you've responded to, but the RMC has not shortlisted your company yet. Your submission is locked and cannot be edited. Tenders remain in this section until either:\n• You are shortlisted, or\n• The RMC appoints a new managing agent.\nPlease note: An RMC may initially shortlist other PMAs, conduct meetings, and later return to shortlist additional agents if needed. You remain eligible for shortlisting until the RMC makes a final appointment.`
+  },
   expired: {
     title: 'Expired Tenders',
     description:
@@ -495,9 +500,9 @@ export const tenderTypeDetails = {
       'These are the tenders where you’ve been successfully appointed as the managing agent. Keep track of key dates, documents, and next steps here.'
   },
   appointment: {
-    title: 'Submitted Tenders',
+    title: 'Appointed Tenders',
     description:
-      "These are tenders you've responded to, but the RMC has not shortlisted your company yet. Your submission is locked and cannot be edited. Tenders remain in this section until either:\n• You are shortlisted, or\n• The RMC appoints a new managing agent.\nPlease note: An RMC may initially shortlist other PMAs, conduct meetings, and later return to shortlist additional agents if needed. You remain eligible for shortlisting until the RMC makes a final appointment."
+      'These are the tenders where you’ve been successfully appointed as the managing agent. Keep track of key dates, documents, and next steps here.'
   }
 }
 
@@ -600,6 +605,5 @@ export const onboardingPublicRoutes = [
 
 export const placeholderImage =
   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIf4R5qPKHPNMyAqV-FjS_OTBB8pfUV29Phg&s'
-
 
 export const currencySymbol = '£'

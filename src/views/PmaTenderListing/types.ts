@@ -13,6 +13,10 @@ export interface PmaTenderType {
   property_type: string
   end_date: string
   distance_miles: number
+  appointed_on?: string
+  shortlisted_on?: string
+  submitted_on?: string
+  uploaded_on?: string
 }
 
 export interface PmaStatsType {
