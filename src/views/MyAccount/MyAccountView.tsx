@@ -1,15 +1,11 @@
 'use client'
 
-import React, { useState } from 'react'
-
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
 
 import { Switch } from '@mui/material'
 
 import CustomButton from '@/common/CustomButton'
 import { useMyAccount } from '@/hooks/useMyAccount'
-import { placeholderImage } from '@/constants'
 import AccountLayout from './AccountWrapper'
 
 const MyAccountView: React.FC = () => {
@@ -17,7 +13,6 @@ const MyAccountView: React.FC = () => {
   const { data: accountData } = useMyAccount()
   const user = accountData?.user
   const notificationPreferences = accountData?.notification_preferences
-  const [imgSrc, setImgSrc] = useState(user?.logo_url || placeholderImage)
 
   const handleEditProfile = () => {
     router.push('/account-detail')
@@ -48,26 +43,6 @@ const MyAccountView: React.FC = () => {
     <AccountLayout>
       <div className='min-h-[59vh] flex justify-center bg-[#F8FAFC] mt-3 w-full'>
         <div className='w-full max-w-full bg-white rounded-[12px] shadow-[0px_4px_10px_rgba(0,0,0,0.05)] p-8'>
-          <div className='flex items-center mb-6'>
-            <div className='w-20 h-20 bg-[#1F2937] rounded-lg flex items-center justify-center mr-4 overflow-hidden'>
-              {user?.logo_url ? (
-                <Image
-                  src={imgSrc}
-                  alt='User Logo'
-                  width={60}
-                  height={60}
-                  className='w-full h-full object-cover'
-                  onError={() => setImgSrc(placeholderImage)}
-                />
-              ) : (
-                <p className='text-white text-[20px] font-bold'>{user?.name?.charAt(0)?.toUpperCase() || 'S'}</p>
-              )}
-            </div>
-            <h1 className='text-[#1F2937] font-bold text-[28px]'>{user?.name || 'RMC Name'}</h1>
-          </div>
-
-          <div className='h-px bg-[#E5E7EB] mb-6' />
-
           <div className='mb-8'>
             <h2 className='text-[#262B43E5] font-medium text-[18px] mb-4'>Details</h2>
             <div className='flex flex-row gap-10 mt-3 justify-between'>
@@ -105,7 +80,6 @@ const MyAccountView: React.FC = () => {
                     </div>
                     <div className='flex items-center gap-2'>
                       <p className='text-[#696969] text-[14px] font-medium'>{label}</p>
-                      <i className='ri-information-line cursor-pointer text-[#696969] transition-colors'></i>
                     </div>
                   </div>
                 )

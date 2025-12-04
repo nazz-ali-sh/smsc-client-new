@@ -93,4 +93,3 @@ const data: DataType[] = [
 ]
 
 export default data
-

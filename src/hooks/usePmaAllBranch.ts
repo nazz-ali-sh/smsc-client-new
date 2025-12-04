@@ -10,7 +10,7 @@ export const usePmaBranches = () => {
     queryKey: ['pma-branches'],
     queryFn: async () => {
       try {
-        const response = await PmaBranchApi.getPmaBranches()
+        const response = await PmaBranchApi.getAllPmaBranches()
 
         return response || []
       } catch (error: any) {

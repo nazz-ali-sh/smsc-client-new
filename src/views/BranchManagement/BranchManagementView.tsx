@@ -2,15 +2,16 @@
 
 import React, { useMemo, useState } from 'react'
 
-import { TextField } from '@mui/material'
+import { TextField, Switch, Chip } from '@mui/material'
 import { createColumnHelper } from '@tanstack/react-table'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
 import CommonTable from '@/common/CommonTable'
 import CustomTooltip from '@/common/CustomTooltip'
 import CustomButton from '@/common/CustomButton'
-import BranchFormModal, { type BranchType, type BranchFormData } from './components/BranchFormModal'
+import BranchFormModal from './components/BranchFormModal'
+import type { BranchType, BranchFormData } from './types'
 import DataModal from '@/common/DataModal'
 import { usePmaBranches } from '@/hooks/usePmaAllBranch'
 import * as PmaBranchApi from '@/services/pma-branch-management-apis/pma-branch-management-apis'
@@ -25,7 +26,8 @@ const BranchManagementView = () => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
   const [branchToDelete, setBranchToDelete] = useState<number | null>(null)
 
-  const { data: branchOptions = [], isLoading: branchesLoading, refetch: refetchBranches } = usePmaBranches()
+  const queryClient = useQueryClient()
+  const { data: branchOptions = [], isLoading: branchesLoading, refetch } = usePmaBranches()
 
   const handleOpenModal = (branch?: BranchType) => {
     setEditingBranch(branch || null)
@@ -42,19 +44,38 @@ const BranchManagementView = () => {
     setShowConfirmationModal(true)
   }
 
-  const handleConfirmDelete = async () => {
-    if (branchToDelete) {
-      try {
-        await PmaBranchApi.deletePmaBranch(branchToDelete)
-        toast.success('Branch deleted successfully!')
-        await refetchBranches()
-      } catch (error) {
-        toast.error('Delete failed')
-      }
+  const toggleStatusMutation = useMutation({
+    mutationFn: ({ id, newStatus }: { id: number; newStatus: 'active' | 'inactive' }) =>
+      PmaBranchApi.updatePmaBranchStatus(id, newStatus),
+    onSuccess: async () => {
+      toast.success('Branch status updated successfully!')
+      await refetch()
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || 'Failed to update status')
     }
-    
-    setShowConfirmationModal(false)
-    setBranchToDelete(null)
+  })
+
+  const deleteBranchMutation = useMutation({
+    mutationFn: (id: number) => PmaBranchApi.deletePmaBranch(id),
+    onSuccess: () => {
+      toast.success('Branch deleted successfully!')
+      queryClient.invalidateQueries({ queryKey: ['pmaBranches'] })
+      refetch()
+      setShowConfirmationModal(false)
+      setBranchToDelete(null)
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || 'Failed to delete branch')
+      setShowConfirmationModal(false)
+      setBranchToDelete(null)
+    }
+  })
+
+  const handleConfirmDelete = () => {
+    if (branchToDelete) {
+      deleteBranchMutation.mutate(branchToDelete)
+    }
   }
 
   const handleCancelDelete = () => {
@@ -65,28 +86,15 @@ const BranchManagementView = () => {
   const saveBranchMutation = useMutation({
     mutationFn: (data: BranchFormData) => {
       if (editingBranch) {
-        return PmaBranchApi.updatePmaBranch(editingBranch.id, {
-          branch_name: data.branch_name,
-          address: data.address,
-          postcode: data.postcode,
-          contact_name: data.contact_name,
-          contact_email: data.contact_email,
-          contact_phone: data.contact_phone
-        })
+        return PmaBranchApi.updatePmaBranch(editingBranch.id, data)
       } else {
-        return PmaBranchApi.addPmaBranch({
-          branch_name: data.branch_name,
-          address: data.address,
-          postcode: data.postcode,
-          contact_name: data.contact_name,
-          contact_email: data.contact_email,
-          contact_phone: data.contact_phone
-        })
+        return PmaBranchApi.addPmaBranch(data)
       }
     },
-    onSuccess: async () => {
+    onSuccess: () => {
       toast.success(editingBranch ? 'Branch updated successfully!' : 'Branch added successfully!')
-      await refetchBranches()
+      queryClient.invalidateQueries({ queryKey: ['pmaBranches'] })
+      refetch()
       handleCloseModal()
     },
     onError: (error: any) => {
@@ -133,6 +141,32 @@ const BranchManagementView = () => {
         cell: info => info.getValue() || '-',
         size: 150
       }),
+      columnHelper.accessor('status', {
+        header: 'STATUS',
+        cell: info => {
+          const rawValue = info.getValue() as string | undefined
+          const normalized = rawValue?.toString().toLowerCase()
+          const isActive = normalized === 'active'
+          const label = rawValue ?? '-'
+
+          return (
+            <Chip
+              label={label}
+              sx={{
+                backgroundColor: isActive ? '#22C55E1A' : '#F59E0B1A',
+                color: isActive ? '#22C55E' : '#F59E0B',
+                fontWeight: 500,
+                fontSize: '12px',
+                height: '24px',
+                width: '100px',
+                borderRadius: '20px'
+              }}
+              size='small'
+            />
+          )
+        },
+        size: 120
+      }),
 
       {
         id: 'actions',
@@ -161,7 +195,40 @@ const BranchManagementView = () => {
               </CustomTooltip>
               <CustomTooltip text='Active' position='top' align='center'>
                 <div className='size-8 rounded-md flex justify-center items-center bg-[#FDB5283D]'>
-                  <i className='ri-toggle-line text-[16px] text-[#FDB528]' />
+                  <div className='w-3 h-3 mr-[33px] mb-[25px]'>
+                    <Switch
+                      checked={branch.status?.toString().toLowerCase().trim() === 'active'}
+                      onChange={() => {
+                        const currentStatus = branch.status?.toString().toLowerCase().trim()
+                        const newStatus = currentStatus === 'active' ? 'inactive' : 'active'
+                        
+                        toggleStatusMutation.mutate({ id: branch.id, newStatus })
+                      }}
+                      sx={{
+                        '& .MuiSwitch-switchBase': {
+                          transitionDuration: '300ms',
+                          '&.Mui-checked': {
+                            color: '#22C55E',
+                            '& + .MuiSwitch-track': {
+                              backgroundColor: '#22C55E1A',
+                              opacity: 1,
+                              border: 0
+                            }
+                          }
+                        },
+                        '& .MuiSwitch-thumb': {
+                          boxSizing: 'border-box',
+                          boxShadow: 'none'
+                        },
+                        '& .MuiSwitch-track': {
+                          borderRadius: 7,
+                          backgroundColor: '#F59E0B1A',
+                          opacity: 1,
+                          border: 0
+                        }
+                      }}
+                    />
+                  </div>
                 </div>
               </CustomTooltip>
             </div>
@@ -215,6 +282,7 @@ const BranchManagementView = () => {
           onPaginationChange={setPagination}
           pageSizeOptions={[10, 25, 50]}
           enableSorting
+          enableCellWrapping
         />
       </div>
 

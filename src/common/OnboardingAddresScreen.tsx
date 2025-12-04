@@ -37,7 +37,7 @@ interface MapAddressData {
   }
 }
 
-const OnboardingAddresScreen = ({ portal, hideHeader = false, hideDescription = false }: OnboardingPortalProps) => {
+const OnboardingAddresScreen = ({ portal }: OnboardingPortalProps) => {
   const router = useRouter()
   const dispatch = useDispatch()
   const [selectedAddressId, setSelectedAddressId] = useState('')
@@ -143,7 +143,6 @@ const OnboardingAddresScreen = ({ portal, hideHeader = false, hideDescription = 
 
   useEffect(() => {
     if (portal === 'rmc_portal' && onboardingData?.steps?.step_3) {
-      // this is for rmc onbaording
       const savedData = onboardingData?.steps.step_3
 
       let foundAddress = null
@@ -195,7 +194,6 @@ const OnboardingAddresScreen = ({ portal, hideHeader = false, hideDescription = 
         dispatch(setSelectedAddress(null as any))
       }
     } else if (portal === 'pma_portal' && pmaOnboardingData?.data?.step_3) {
-      //  for PMA Sign Up
       const savedData = pmaOnboardingData?.data?.step_3
 
       let foundAddress = null
@@ -296,7 +294,6 @@ const OnboardingAddresScreen = ({ portal, hideHeader = false, hideDescription = 
   )
 
   const handleManualAddressChange = useCallback(() => {
-    // Do nothing - we want to keep the dropdown selection when manually editing fields
   }, [])
 
   const handleManualAddressData = useCallback((data: MapAddressData) => {
@@ -500,31 +497,26 @@ const OnboardingAddresScreen = ({ portal, hideHeader = false, hideDescription = 
 
   return (
     <div className='flex flex-col items-center pt-10 mb-20'>
-      {!hideHeader && <h1 className='text-[48px] font-bold text-[#262B43E5]'>{onbaordingType}</h1>}
+      <h1 className='text-[48px] font-bold text-[#262B43E5]'>{onbaordingType}</h1>
       <div className='bg-white p-8 pt-10 w-full mt-6'>
-        {!hideDescription && (
-          <>
-            <Typography
-              variant='h6'
-              sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1' }}
-              className='mb-6'
-            >
-              Address
-            </Typography>
-            {portal === 'pma_portal' ? (
-              <Typography sx={{ fontSize: '18px', fontWeight: 400, color: 'customColors.textGray' }} className=' mb-6'>
-                Select the address of your primary office. This helps us match you with verified Resident Management
-                Company directors who are actively seeking a managing agent in your area. Your office location is used
-                as the central point for allocating tenders to you.
-              </Typography>
-            ) : (
-              <Typography sx={{ fontSize: '18px', fontWeight: 400, color: 'customColors.textGray' }} className=' mb-6'>
-                Please enter your address below. This allows us to identify and connect you with qualified managing
-                agents who are local to your area and have a strong understanding of the regional market and its
-                specific needs.
-              </Typography>
-            )}
-          </>
+        <Typography
+          variant='h6'
+          sx={{ fontSize: '24px', fontWeight: 500, color: 'customColors.darkGray1' }}
+          className='mb-6'
+        >
+          Address
+        </Typography>
+        {portal === 'pma_portal' ? (
+          <Typography sx={{ fontSize: '18px', fontWeight: 400, color: 'customColors.textGray' }} className=' mb-6'>
+            Select the address of your primary office. This helps us match you with verified Resident Management Company
+            directors who are actively seeking a managing agent in your area. Your office location is used as the
+            central point for allocating tenders to you.
+          </Typography>
+        ) : (
+          <Typography sx={{ fontSize: '18px', fontWeight: 400, color: 'customColors.textGray' }} className=' mb-6'>
+            Please enter your address below. This allows us to identify and connect you with qualified managing agents
+            who are local to your area and have a strong understanding of the regional market and its specific needs.
+          </Typography>
         )}
 
         <div className='pb-14 mt-14'>

@@ -63,7 +63,8 @@ const NavbarContent = () => {
   const user = accountData?.user?.name
 
   const shouldHideElements = routesWithNavbarContent.some(route => pathname.includes(route))
-                
+
+  console.log(shouldHideElements, 'shouldHideElements')
 
   const isOnboardingRoute =
     pmaRoutes.some(route => pathname === route || pathname.startsWith(route)) ||
@@ -212,8 +213,9 @@ const NavbarContent = () => {
             </Grid>
           </div>
         )}
+        
         {!shouldHideElements && <NavSearch />}
-        {!shouldHideElements && !isPmaUser && <NotificationsDropdown notifications={notifications} />}
+        {!shouldHideElements && !isPmaUser && <NotificationsDropdown notificationss={notifications} />}
         <UserDropdown selectedTenderInitial={userInitials} />
       </div>
     </div>

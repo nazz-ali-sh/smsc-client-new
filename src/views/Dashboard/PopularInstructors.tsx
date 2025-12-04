@@ -3,8 +3,6 @@ import { useState, useEffect } from 'react'
 
 import Image from 'next/image'
 
-import { useRouter } from 'next/navigation'
-
 import {
   Grid,
   Card,
@@ -39,10 +37,12 @@ import { formatDates, getDaysPassed } from '@/utils/dateFormater'
 import DashboardSkeletonGrid from '@/components/DashboardSkeletonGrid'
 import { useShortlistedPmas } from '@/hooks/useShortlistedPmasData'
 import { useDashboardData } from '@/hooks/useDashboardData'
+import { useNavigateTo } from '@/utils/navigator'
 
 const TenderCards = () => {
   const dispatch = useDispatch()
 
+  const navigateTo = useNavigateTo()
   const [onlineCallsModalOpen, setOnlineCallsModalOpen] = useState(false)
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
   const [apointAgentModalOpen, setApointAgentModalOpen] = useState(false)
@@ -71,8 +71,6 @@ const TenderCards = () => {
   }
 
   const stages = dashboardResponce?.data?.tender_stage_progress?.stages
-
-  const router = useRouter()
 
   interface PmaUser {
     id: number
@@ -242,7 +240,7 @@ const TenderCards = () => {
             )}
 
             <Box
-              onClick={!stages?.went_live?.is_completed ? undefined : () => router.push('/tender-information')}
+              onClick={!stages?.went_live?.is_completed ? undefined : () => navigateTo('/tender-information')}
               sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '30px', marginTop: '75px' }}
               className=' absolute bottom-[18px] right-2'
             >
@@ -402,7 +400,7 @@ const TenderCards = () => {
               </CardContent>
             )}
             <Box
-              onClick={!stages?.result_received?.is_completed ? undefined : () => router.push('/tender-result')}
+              onClick={!stages?.result_received?.is_completed ? undefined : () => navigateTo('/tender-result')}
               sx={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '80px' }}
               className=' absolute bottom-[18px] right-2'
             >
@@ -546,7 +544,7 @@ const TenderCards = () => {
             >
               <CustomTooltip text='View Shortlisted Agents ' position='left' align='left'>
                 <Box
-                  onClick={!stages?.shortlisted?.is_completed ? undefined : () => router.push('/shortlist-agent')}
+                  onClick={!stages?.shortlisted?.is_completed ? undefined : () => navigateTo('/shortlist-agent')}
                   sx={{
                     width: '36px',
                     height: '36px',
@@ -575,7 +573,7 @@ const TenderCards = () => {
                 align='left'
               >
                 <Box
-                  onClick={stages?.shortlisted?.is_completed ? undefined : () => router.push('/tender-result')}
+                  onClick={!stages?.shortlisted?.is_completed ? undefined : () => navigateTo('/tender-result')}
                   sx={{
                     width: '36px',
                     height: '36px',
@@ -782,7 +780,7 @@ const TenderCards = () => {
             >
               <CustomTooltip text='View All Video Calls' position='left' align='left'>
                 <Box
-                  onClick={!stages?.shortlisted?.is_current ? undefined : () => router.push('/video-calls')}
+                  onClick={!stages?.shortlisted?.is_current ? undefined : () => navigateTo('/video-calls')}
                   sx={{
                     width: '36px',
                     height: '36px',
@@ -1023,7 +1021,7 @@ const TenderCards = () => {
             >
               <CustomTooltip text='View All Site visits' position='left' align='left'>
                 <Box
-                  onClick={!stages?.appointment?.is_current ? undefined : () => router.push('/site-visits')}
+                  onClick={!stages?.appointment?.is_current ? undefined : () => navigateTo('/site-visits')}
                   sx={{
                     width: '36px',
                     height: '36px',
@@ -1188,7 +1186,7 @@ const TenderCards = () => {
             >
               <CustomTooltip text='View Final Selection ' position='left' align='left'>
                 <Box
-                  onClick={!stages?.appointment?.is_current ? undefined : () => router.push('/final-selection')}
+                  onClick={!stages?.appointment?.is_current ? undefined : () => navigateTo('/final-selection')}
                   sx={{
                     width: '36px',
                     height: '36px',

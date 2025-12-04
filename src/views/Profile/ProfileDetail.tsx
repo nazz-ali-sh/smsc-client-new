@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 import { useRouter } from 'next/navigation'
 
-import { Card, CardContent, Divider, Typography } from '@mui/material'
+import { Card, CardContent, Divider, Typography, Switch } from '@mui/material'
 
 import CustomButton from '@/common/CustomButton'
 import successVisit from '../../../public/images/customImages/sucess.svg'
@@ -16,23 +16,19 @@ interface ProfileDetailProps {
 
 const ProfileDetail = ({ userData }: ProfileDetailProps) => {
   const router = useRouter()
-  
+
   const managementFee = {
-    minimum: '£1,500',
-    maximum: '£1,500'
+    minimum: userData?.data?.management_fee?.min_management_fee
+      ? `£${userData.data.management_fee.min_management_fee}`
+      : '0',
+    maximum: userData?.data?.management_fee?.max_management_fee
+      ? `£${userData.data.management_fee.max_management_fee}`
+      : '0'
   }
 
-  const preferredContact = '(219) 555-0114 (Primary)'
+  const preferredContact = userData?.data?.preferred_contact ? `${userData.data.preferred_contact} (Primary)` : '-'
 
-  const secondaryContact = {
-    name: 'Moiz',
-    phoneNumber: '219 - 555 - 00114',
-    email: 'moiz@gmail.com',
-    mobileLandline: '219 - 555 - 00114'
-  }
-
-  const companyBio =
-    'Lorem ipsum dolor sit amet consectetur. Massa aliquet sagittis tristique ut nisl tempor eu. Mattis vel tellus gravida sapien leo magna. Lorem ac volutpat in eros vitae. Lectus tempor adipiscing tellus lacinia diam nunc netus. Sed pharetra eras mauris sem nibh elementum. Tortor nulla faucibus fermentum faucibus tellus gravida. In eras nulla nec sagittis. Sagittis ut faucibus id auctor non enim. Pretium vestibulum sed sed nisl sapien massa tristique eget.'
+  const companyBio = userData?.data?.company_details?.bio
 
   const tabs = [
     {
@@ -101,7 +97,6 @@ const ProfileDetail = ({ userData }: ProfileDetailProps) => {
         ))}
       </div>
 
-      {/* Management fee Section */}
       <div className='mt-8'>
         <Typography sx={{ color: '#1F4E8D', fontSize: '20px', fontWeight: 600, marginBottom: 2 }}>
           Management fee
@@ -138,72 +133,56 @@ const ProfileDetail = ({ userData }: ProfileDetailProps) => {
         <Typography sx={{ color: '#1F4E8D', fontSize: '20px', fontWeight: 600, marginBottom: 2 }}>
           Notification Preferences
         </Typography>
-        <div className='space-y-2'>
-          <div className='flex items-center justify-between'>
+        <div className='flex justify-between'>
+          <div className='flex items-center'>
+            <Switch
+              checked={userData?.data?.notification_preferences?.notify_email || false}
+              color='primary'
+              sx={{
+                '& .MuiSwitch-switchBase.Mui-checked': {
+                  color: 'white'
+                },
+                '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                  backgroundColor: '#35C0ED'
+                }
+              }}
+            />
             <Typography variant='body2' sx={{ fontSize: '14px', color: '#6B7280' }}>
               Get notification through Email
             </Typography>
-            <Typography variant='body2' sx={{ fontSize: '14px' }}>
-              <span style={{ color: '#6B7280' }}>No</span> /{' '}
-              <span style={{ color: '#35C0ED', fontWeight: 500 }}>Yes</span>
-            </Typography>
           </div>
-          <div className='flex items-center justify-between'>
+          <div className='flex items-center'>
+            <Switch
+              checked={userData?.data?.notification_preferences?.notify_message || false}
+              color='primary'
+              sx={{
+                '& .MuiSwitch-switchBase.Mui-checked': {
+                  color: 'white'
+                },
+                '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                  backgroundColor: '#35C0ED'
+                }
+              }}
+            />
             <Typography variant='body2' sx={{ fontSize: '14px', color: '#6B7280' }}>
               Get notification through Message
             </Typography>
-            <Typography variant='body2' sx={{ fontSize: '14px' }}>
-              <span style={{ color: '#6B7280' }}>No</span> /{' '}
-              <span style={{ color: '#35C0ED', fontWeight: 500 }}>Yes</span>
-            </Typography>
           </div>
-          <div className='flex items-center justify-between'>
+          <div className='flex items-center'>
+            <Switch
+              checked={userData?.data?.notification_preferences?.notify_portal || false}
+              color='primary'
+              sx={{
+                '& .MuiSwitch-switchBase.Mui-checked': {
+                  color: 'white'
+                },
+                '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                  backgroundColor: '#35C0ED'
+                }
+              }}
+            />
             <Typography variant='body2' sx={{ fontSize: '14px', color: '#6B7280' }}>
               Get notification in Portal
-            </Typography>
-            <Typography variant='body2' sx={{ fontSize: '14px' }}>
-              <span style={{ color: '#6B7280' }}>No</span> /{' '}
-              <span style={{ color: '#35C0ED', fontWeight: 500 }}>Yes</span>
-            </Typography>
-          </div>
-        </div>
-      </div>
-
-      <div className='mt-6'>
-        <Typography sx={{ color: '#1F4E8D', fontSize: '20px', fontWeight: 600, marginBottom: 2 }}>
-          Secondary Contact Details
-        </Typography>
-        <div className='grid grid-cols-2 gap-4'>
-          <div>
-            <Typography variant='body2' sx={{ color: '#6B7280', fontSize: '14px' }}>
-              Contact Name
-            </Typography>
-            <Typography variant='body2' sx={{ fontSize: '14px', marginTop: 0.5 }}>
-              {secondaryContact.name}
-            </Typography>
-          </div>
-          <div>
-            <Typography variant='body2' sx={{ color: '#6B7280', fontSize: '14px' }}>
-              Phone Number
-            </Typography>
-            <Typography variant='body2' sx={{ fontSize: '14px', marginTop: 0.5 }}>
-              {secondaryContact.phoneNumber}
-            </Typography>
-          </div>
-          <div>
-            <Typography variant='body2' sx={{ color: '#6B7280', fontSize: '14px' }}>
-              Email
-            </Typography>
-            <Typography variant='body2' sx={{ fontSize: '14px', marginTop: 0.5 }}>
-              {secondaryContact.email}
-            </Typography>
-          </div>
-          <div>
-            <Typography variant='body2' sx={{ color: '#6B7280', fontSize: '14px' }}>
-              Mobile/Landline
-            </Typography>
-            <Typography variant='body2' sx={{ fontSize: '14px', marginTop: 0.5 }}>
-              {secondaryContact.mobileLandline}
             </Typography>
           </div>
         </div>

@@ -55,7 +55,7 @@ const UserFormModal: React.FC<UserFormModalProps> = ({ isOpen, onClose, editingU
 
   const handleFormSubmit = (data: UserFormData) => {
     onSubmit(data)
-    reset()
+    
   }
 
   const handleClose = () => {

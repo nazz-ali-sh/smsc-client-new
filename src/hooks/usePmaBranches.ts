@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
-import { getPmaBranches } from '@/services/pma-branch-management-apis/pma-branch-management-apis'
+import { getPmaBranches } from '@/services/pma-user-management-apis/pma-user-management-apis'
 
 interface BranchOption {
   value: number

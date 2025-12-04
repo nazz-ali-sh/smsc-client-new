@@ -1,4 +1,4 @@
-import type { NotificationsType } from '@/components/layout/shared/NotificationsDropdown'
+import type { NotificationsType } from "@/components/layout/shared/shareType"
 
 export type MenuItem = {
   image: JSX.Element

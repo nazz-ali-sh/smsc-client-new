@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 
-import { useRouter } from 'next/navigation'
 
 import { Typography } from '@mui/material'
 
@@ -21,9 +20,10 @@ import CustomButton from '@/common/CustomButton'
 import AgentInviteStats from '@/common/AgentInviteStats'
 
 import { finalShortListedAgent } from '@/services/tender_result-apis/tender-result-api'
+import { useNavigateTo } from '@/utils/navigator'
 
 export default function Pages() {
-  const router = useRouter()
+  const navigateTo = useNavigateTo()
 
   interface shortListedFinalAgent {
     data: any
@@ -104,7 +104,7 @@ export default function Pages() {
             </div>
             <div className='md:mt-4 md:mb-4 lg:mt-0'>
               <CustomButton
-                onClick={() => router.push('/evaluation-matrix')}
+                onClick={() => navigateTo('/evaluation-matrix')}
                 variant='contained'
                 startIcon={<i className='ri-edit-line size-[22px]'></i>}
               >
@@ -139,7 +139,7 @@ export default function Pages() {
           {finalShortListedResponce ? (
             <DetailedReview finalShortListedResponce={finalShortListedResponce} />
           ) : (
-           <div className='text-center mt-[50px]'> Data Not Found</div>
+            <div className='text-center mt-[50px]'> Data Not Found</div>
           )}
         </section>
       )}

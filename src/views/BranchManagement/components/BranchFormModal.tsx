@@ -1,81 +1,106 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 
-import { Grid } from '@mui/material'
-import { useForm } from 'react-hook-form'
-import { valibotResolver } from '@hookform/resolvers/valibot'
+import { useQuery } from '@tanstack/react-query'
+import { Select, MenuItem, FormControl, InputLabel, Typography } from '@mui/material'
+import { toast } from 'react-toastify'
 
 import CommonModal from '@/common/CommonModal'
-import FormInput from '@/components/form-components/FormInput'
-
-// import FormSelect from '@/components/form-components/FormSelect'
 import CustomButton from '@/common/CustomButton'
-import { branchSchema } from '@/schemas/validation-schemas'
-import OnboardingAddresScreen from '@/common/OnboardingAddresScreen'
-
-export interface BranchType {
-  id: number
-  branch_name: string
-  address: string
-  postcode: string
-  contact_name: string
-  contact_email: string
-  contact_phone: string
-  status?: 'active' | 'inactive'
-}
-
-export interface BranchFormData {
-  branch_name: string
-  address: string
-  postcode: string
-  contact_name: string
-  contact_email: string
-  contact_phone: string
-}
-
-interface BranchFormModalProps {
-  isOpen: boolean
-  onClose: () => void
-  editingBranch: BranchType | null
-  onSubmit: (data: BranchFormData) => void
-}
+import PmaBranchLocationFormView from '@/views/pmaOnboarding/components/PmaBranchLocationFormView'
+import { getPmaSubUserNames } from '@/services/pma-branch-management-apis/pma-branch-management-apis'
+import type { BranchFormModalProps } from '../types'
+import { getBranchApiPayload } from '../types'
 
 const BranchFormModal: React.FC<BranchFormModalProps> = ({ isOpen, onClose, editingBranch, onSubmit }) => {
-  const { control, handleSubmit, reset } = useForm<BranchFormData>({
-    resolver: valibotResolver(branchSchema),
-    defaultValues: {
-      branch_name: '',
-      address: '',
-      postcode: '',
-      contact_name: '',
-      contact_email: '',
-      contact_phone: ''
-    },
-    mode: 'onChange'
+  const [branchFormData, setBranchFormData] = useState<any>(null)
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null)
+
+  const { data: usersData, isLoading: isLoadingUsers } = useQuery({
+    queryKey: ['pmaSubUserNames'],
+    queryFn: getPmaSubUserNames,
+    enabled: isOpen
   })
 
   React.useEffect(() => {
-    if (isOpen && editingBranch) {
-      reset({
-        branch_name: editingBranch.branch_name,
-        address: editingBranch.address,
-        postcode: editingBranch.postcode,
-        contact_name: editingBranch.contact_name || '',
-        contact_email: editingBranch.contact_email || '',
-        contact_phone: editingBranch.contact_phone || ''
-      })
+    if (isOpen && !editingBranch) {
+      setBranchFormData(null)
+      setSelectedUserId(null)
     }
-  }, [isOpen, editingBranch, reset])
+  }, [isOpen, editingBranch])
 
-  const handleFormSubmit = (data: BranchFormData) => {
-    onSubmit(data)
-    reset()
+  const users = usersData?.data?.users || []
+
+  React.useEffect(() => {
+    if (isOpen && editingBranch) {
+      const matchingUser = users.find((user: any) => user.email === editingBranch.contact_email)
+
+      if (matchingUser) {
+        setSelectedUserId(matchingUser.user_id)
+      }
+    }
+  }, [isOpen, editingBranch, users])
+
+  const getInitialBranchData = (editingBranch: any) => {
+    if (!editingBranch) return undefined
+
+    return {
+      branchName: editingBranch.branch_name,
+      postcode: editingBranch.postcode,
+      addressData: {
+        addressLine1: editingBranch.address || editingBranch.address_line_1 || '',
+        addressLine2: editingBranch.address_line2 || editingBranch.address_line_2 || '',
+        postcode: editingBranch.postcode || '',
+        region: editingBranch.region || '',
+        county: editingBranch.county || '',
+        coordinates: {
+          lat: Number(editingBranch.lat) || 0,
+          lng: Number(editingBranch.lng) || 0
+        },
+        address_type: 'manual'
+      }
+    }
+  }
+
+  const handleSubmitForm = () => {
+    if (!branchFormData) {
+      toast.error('Please fill in the branch location form')
+
+      return
+    }
+
+    if (!selectedUserId) {
+      toast.error('Please select a branch contact')
+
+      return
+    }
+
+    const selectedUser = users.find((user: any) => user.user_id === selectedUserId)
+
+    if (!selectedUser) {
+      toast.error('Selected user not found')
+
+      return
+    }
+
+    const payload = getBranchApiPayload(branchFormData, selectedUser)
+
+    onSubmit(payload)
+
+    setSelectedUserId(null)
+    setBranchFormData(null)
+    onClose()
   }
 
   const handleClose = () => {
-    reset()
+    setSelectedUserId(null)
+    setBranchFormData(null)
     onClose()
+  }
+
+  const handleUserChange = (event: any) => {
+    setSelectedUserId(event.target.value)
   }
 
   return (
@@ -90,33 +115,74 @@ const BranchFormModal: React.FC<BranchFormModalProps> = ({ isOpen, onClose, edit
         fontWeight: 600
       }}
     >
-      <OnboardingAddresScreen portal='pma_portal' hideHeader={true} hideDescription={true} />
+      {isLoadingUsers && <p className='text-sm text-gray-500'>Loading users...</p>}
 
-      <form onSubmit={handleSubmit(handleFormSubmit)}>
-        <Grid container spacing={3} sx={{ mt: 1 }}>
-          <Grid item xs={12} sm={6}>
-            <FormInput name='branch_name' control={control} label='Branch Name' type='text' />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <FormInput name='address' control={control} label='Address' type='text' />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <FormInput name='postcode' control={control} label='Postcode' type='text' />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <FormInput name='contact_name' control={control} label='Contact Name' type='text' />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <FormInput name='contact_email' control={control} label='Contact Email' type='email' />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <FormInput name='contact_phone' control={control} label='Contact Phone' type='tel' />
-          </Grid>
-        </Grid>
+      <PmaBranchLocationFormView
+        key={editingBranch?.id || 'new'}
+        hideHeader={true}
+        onDataChange={setBranchFormData}
+        loadSavedData={false}
+        initialBranchData={getInitialBranchData(editingBranch)}
+      />
 
+      <div className='mb-4'>
+        <Typography variant='subtitle1' className='text-[14px] text-[#696969] mb-4 font-normal'>
+          To add a new user, please add them in user management. To edit users assigned to a branch, please click edit
+          button in branch management.
+        </Typography>
+        <FormControl fullWidth>
+          <InputLabel
+            id='user-select-label'
+            sx={{
+              '&.Mui-focused': {
+                color: '#35C0ED !important'
+              },
+              '&.MuiInputLabel-shrink': {
+                color: '#35C0ED !important'
+              }
+            }}
+          >
+            Add A Branch Contact
+          </InputLabel>
+          <Select
+            labelId='user-select-label'
+            id='user-select'
+            value={selectedUserId || ''}
+            label='Add A Branch Contact'
+            onChange={handleUserChange}
+            sx={{
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#d9d9d9'
+              },
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#26C6F9'
+              },
+              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#26C6F9'
+              }
+            }}
+          >
+            <MenuItem value='' disabled>
+              <em>Select a user</em>
+            </MenuItem>
+            {users.map((user: any) => (
+              <MenuItem key={user.user_id} value={user.user_id}>
+                {user.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </div>
+
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+          handleSubmitForm()
+        }}
+      >
         <div className='flex justify-end gap-3 mt-6'>
           <CustomButton onClick={handleClose} variant='outlined'>
-            Cancel
+            Back
           </CustomButton>
           <CustomButton type='submit' variant='contained'>
             {editingBranch ? 'Update' : 'Add'}

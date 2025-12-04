@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from 'react'
 
+import { useSearchParams } from 'next/navigation'
+
 import { Box } from '@mui/material'
 import { createColumnHelper } from '@tanstack/react-table'
 
@@ -37,6 +39,13 @@ interface RescheduledCallType {
 const columnHelper = createColumnHelper<RescheduledCallType>()
 
 const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
+  const searchParams = useSearchParams()
+
+  const params = {
+    tab: searchParams.get('tab'),
+    id: searchParams.get('id')
+  }
+
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [SuccessOpen, setSuccessOpen] = useState(false)
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
@@ -45,6 +54,14 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
   const [selectedPmaName, setSelectedPmaName] = useState<string | number | null>(null)
 
   const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
+
+  useEffect(() => {
+    if (params?.tab === 'rescheduled') {
+      setOnlineCallsModalOpen(true)
+    }
+  }, [params?.tab])
+
+  console.log(params?.id)
 
   const tableData: RescheduledCallType[] =
     rescheduaInviteData?.data?.invites?.map(
@@ -249,7 +266,7 @@ const InviteRescheduleTab = ({ rescheduaInviteData }: any) => {
 
       <VideosCallsModal
         open={onlineCallsModalOpen}
-        VideoCallInviteId={visitsSchedualInviteId}
+        VideoCallInviteId={visitsSchedualInviteId || params?.id}
         onClose={() => setOnlineCallsModalOpen(false)}
         shorlistedPmas={null}
         types='videoCallReschedual'

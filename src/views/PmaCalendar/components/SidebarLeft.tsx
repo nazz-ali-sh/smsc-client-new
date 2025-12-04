@@ -188,7 +188,6 @@ const SidebarLeft = (props: SidebarLeftProps) => {
                 />
               }
             />
-            kjdabjah
             <FormControlLabel
               label='Video Call'
               control={
@@ -227,8 +226,6 @@ const SidebarLeft = (props: SidebarLeftProps) => {
           </div>
         </div>
       </Drawer>
-
-     
     </>
   )
 }

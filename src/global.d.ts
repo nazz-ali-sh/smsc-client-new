@@ -116,8 +116,13 @@ declare global {
   }
   interface OnboardingPortalProps {
     portal: 'rmc_portal' | 'pma_portal'
+  }
+
+  interface PmaBranchLocationFormProps {
     hideHeader?: boolean
-    hideDescription?: boolean
+    onDataChange?: (data: BranchLocationFormData & { addressData?: any }) => void
+    loadSavedData?: boolean
+    savedData?: any
   }
 
   interface LoginPortalProps{
@@ -136,6 +141,7 @@ declare global {
     className?: string
     enableSorting?: boolean
     isPagination?: boolean
+    enableCellWrapping?: boolean
   }
 }
 

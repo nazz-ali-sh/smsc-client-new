@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from 'react'
 
+import { useSearchParams } from 'next/navigation'
+
 import { Box } from '@mui/material'
 import { createColumnHelper } from '@tanstack/react-table'
 
@@ -37,6 +39,15 @@ interface RescheduledCallType {
 const columnHelper = createColumnHelper<RescheduledCallType>()
 
 const SiteVisitReschedule = ({ siteRechedual }: any) => {
+  const searchParams = useSearchParams()
+
+  const params = {
+    tab: searchParams.get('tab'),
+    id: searchParams.get('id')
+  }
+
+  // const tabParam = searchParams.get('tab')
+  // const id = searchParams.get('id')
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [SuccessOpen, setSuccessOpen] = useState(false)
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
@@ -44,6 +55,13 @@ const SiteVisitReschedule = ({ siteRechedual }: any) => {
   const [selectedPmaName, setSelectedPmaName] = useState<string | number | null>(null)
 
   const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
+
+  console.log(params?.tab)
+  useEffect(() => {
+    if (params?.tab === 'rescheduled') {
+      setSiteVisitsModalOpen(true)
+    }
+  }, [params?.tab])
 
   const tableData: RescheduledCallType[] =
     siteRechedual?.data?.invites?.map(
@@ -237,7 +255,7 @@ const SiteVisitReschedule = ({ siteRechedual }: any) => {
         onClose={() => setSiteVisitsModalOpen(false)}
         shorlistedPmas={undefined}
         Reschedual={tableData}
-        SideVisitsSchedualInviteId={visitsSchedualInviteId}
+        SideVisitsSchedualInviteId={visitsSchedualInviteId || params?.id}
         types='Reschedual'
         siteVisitDate={undefined}
         VideoCallInviteId={undefined}

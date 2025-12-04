@@ -7,7 +7,7 @@ export type UserType = {
   status: 'active' | 'inactive'
   branch?: {
     id: number
-    branch_name: string
+    name: string
     address: string
   }
 }

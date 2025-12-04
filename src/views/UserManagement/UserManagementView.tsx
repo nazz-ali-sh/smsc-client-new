@@ -26,7 +26,9 @@ const UserManagementView = () => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
   const [userToDelete, setUserToDelete] = useState<number | null>(null)
 
-  const { data: users, refetch } = usePmaUsers()
+  const { data: usersResponse, refetch } = usePmaUsers()
+
+  const users = usersResponse?.users ?? []
 
   const { data: branchOptions = [] } = usePmaBranches()
 
@@ -114,8 +116,6 @@ const UserManagementView = () => {
   }
 
   const filteredData = useMemo(() => {
-    if (!users) return []
-
     return users.filter(
       (user: UserType) =>
         (user.name ?? '').toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -141,7 +141,7 @@ const UserManagementView = () => {
         cell: info => <span className={smallTextStyle}>{info.getValue()}</span>,
         size: 100
       }),
-      columnHelper.accessor(user => user.branch?.branch_name, {
+      columnHelper.accessor(user => user.branch?.name, {
         id: 'branch_name',
         header: 'BRANCH NAME',
         cell: info => <span className={smallTextStyle}>{info.getValue() || '-'}</span>,
@@ -297,6 +297,7 @@ const UserManagementView = () => {
           onPaginationChange={setPagination}
           pageSizeOptions={[10, 25, 50]}
           enableSorting={true}
+          enableCellWrapping
         />
       </div>
 

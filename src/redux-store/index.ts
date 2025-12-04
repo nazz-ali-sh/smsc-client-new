@@ -18,6 +18,7 @@ import postcodeReducer from '@/redux-store/slices/postcodeSlice'
 import pmaPostcodeReducer from '@/redux-store/slices/pmaPostcodeSlice'
 import tabSlice from '@/redux-store/slices/tabSlice'
 import tenderInformationReducer from '@/redux-store/slices/tenderInformationSlice'
+import notificationReducer from '@/redux-store/slices/notificationSlice'
 
 const persistConfig = {
   key: 'root',
@@ -53,7 +54,8 @@ const rootReducer = combineReducers({
   postcode: postcodeReducer,
   pmaPostcode: pmaPostcodeReducer,
   tabSwitch: tabSlice,
-  tenderInformation: tenderInformationReducer
+  tenderInformation: tenderInformationReducer,
+  notifications: notificationReducer
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

@@ -1,10 +1,10 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 import { useRouter } from 'next/navigation'
 
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { Grid, Typography, Checkbox, FormControlLabel } from '@mui/material'
 import { toast } from 'react-toastify'
@@ -31,7 +31,36 @@ type BranchLocationFormData = {
   useHeadOfficeAddress?: boolean
 }
 
-export default function PmaBranchLocationFormView() {
+type BranchInitialAddressData = {
+  addressLine1: string
+  addressLine2?: string
+  postcode: string
+  region?: string
+  county?: string
+  coordinates?: {
+    lat: number
+    lng: number
+  }
+  address_type?: string
+}
+
+type PmaBranchLocationFormProps = {
+  hideHeader?: boolean
+  onDataChange?: (data: any) => void
+  loadSavedData?: boolean
+  initialBranchData?: {
+    branchName?: string
+    postcode?: string
+    addressData?: BranchInitialAddressData
+  }
+}
+
+export default function PmaBranchLocationFormView({
+  hideHeader = false,
+  onDataChange,
+  loadSavedData = true,
+  initialBranchData,
+}: PmaBranchLocationFormProps) {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [addressData, setAddressData] = useState<any>(null)
@@ -43,24 +72,81 @@ export default function PmaBranchLocationFormView() {
   const { data: onboardingData } = usePmaOnboardingData()
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
 
-  const savedData = onboardingData?.data?.step_9
+  const savedData = loadSavedData ? onboardingData?.data?.step_9 : null
+  const hasInitializedFromInitialBranch = useRef(false)
+
+  const initialFormDefaults: BranchLocationFormData = initialBranchData
+    ? {
+        contactName: '',
+        contactEmail: '',
+        contactPhoneNumber: '',
+        branchName: initialBranchData.branchName || '',
+        postcode: initialBranchData.postcode || '',
+        useHeadOfficeAddress: false
+      }
+    : {
+        contactName: savedData?.contact_name || '',
+        contactEmail: savedData?.contact_email || '',
+        contactPhoneNumber: savedData?.contact_phone || '',
+        branchName: savedData?.branch_name || '',
+        postcode: savedData?.postcode || '',
+        useHeadOfficeAddress: undefined
+      }
 
   const { control, handleSubmit, watch, reset } = useForm<BranchLocationFormData>({
     resolver: valibotResolver(branchLocationSchema as any),
-    defaultValues: {
-      contactName: savedData?.contact_name || '',
-      contactEmail: savedData?.contact_email || '',
-      contactPhoneNumber: savedData?.contact_phone || '',
-      branchName: savedData?.branch_name || '',
-      postcode: savedData?.postcode || ''
-    },
+    defaultValues: initialFormDefaults,
     mode: 'onChange'
   })
+
+  const watchedValues = useWatch({ control })
+  const lastEmittedDataRef = useRef<any>(null)
+
+  useEffect(() => {
+    if (onDataChange) {
+      const nextData = {
+        ...watchedValues,
+        addressData,
+        useHeadOfficeContact
+      }
+
+      const prevData = lastEmittedDataRef.current
+      const hasChanged = JSON.stringify(prevData) !== JSON.stringify(nextData)
+
+      if (hasChanged) {
+        lastEmittedDataRef.current = nextData
+        onDataChange(nextData)
+      }
+    }
+  }, [watchedValues, addressData, useHeadOfficeContact, onDataChange])
 
   const postcodeValue = watch('postcode')
   const hasAttemptedFetch = React.useRef(false)
 
   React.useEffect(() => {
+    if (initialBranchData) {
+      if (hasInitializedFromInitialBranch.current) {
+        return
+      }
+
+      if (initialBranchData.addressData) {
+        const initialAddress = {
+          ...initialBranchData.addressData,
+          address_type: initialBranchData.addressData.address_type || 'manual'
+        }
+
+        setAddressData(initialAddress)
+
+        if (initialBranchData.addressData.postcode) {
+          setCurrentPostcode(initialBranchData.addressData.postcode)
+        }
+      }
+
+      hasInitializedFromInitialBranch.current = true
+
+      return
+    }
+
     if (addresses && addresses?.length > 0) {
       return
     }
@@ -105,9 +191,13 @@ export default function PmaBranchLocationFormView() {
           console.error('Error fetching postcode data:', error)
         })
     }
-  }, [addresses, savedData?.postcode])
+  }, [addresses, savedData?.postcode, initialBranchData])
 
   React.useEffect(() => {
+    if (initialBranchData) {
+      return
+    }
+
     if (savedData) {
       reset({
         contactName: savedData?.contact_name || '',
@@ -148,7 +238,7 @@ export default function PmaBranchLocationFormView() {
         setAddressData(savedAddressData)
       }
     }
-  }, [savedData, reset])
+  }, [savedData, reset, initialBranchData])
 
   const postcodeMutation = useMutation({
     mutationFn: lookupPostcode,
@@ -321,75 +411,83 @@ export default function PmaBranchLocationFormView() {
 
   return (
     <>
-      <h1 className='text-[48px] text-center font-bold text-[#262B43E5] mt-8'>PMA Sign Up</h1>
-
-      <div className='flex items-center justify-center p-4 bg-white mt-4 mb-20'>
+      {!hideHeader && <h1 className='text-[48px] text-center font-bold text-[#262B43E5] mt-8'>PMA Sign Up</h1>}
+      <div className={`flex items-center justify-center p-4 bg-white mt-4 ${!hideHeader ? 'mb-20': 'mb-0'}`}>
         <div className='p-4 rounded-lg w-full'>
           <form>
-            <div className='flex mb-4'>
-              <h2 className='text-2xl font-medium text-[#262B43E5]'>Branch Location (Optional)</h2>
-              <i className='ri-information-line m-1' onClick={() => setIsBranchLocationModalOpen(true)}></i>
-            </div>
+            {!hideHeader && (
+              <>
+                <div className='flex mb-4'>
+                  <h2 className='text-2xl font-medium text-[#262B43E5]'>Branch Location (Optional)</h2>
+                  <i className='ri-information-line m-1' onClick={() => setIsBranchLocationModalOpen(true)}></i>
+                </div>
 
-            <p className='mt-6 mb-12 font-normal text-base leading-6 text-[#696969]'>
-              Add the location of an additional branch office here. This helps us match your company with tenders in the
-              areas you cover. You can add one branch now or skip this step and add more branches later from your
-              portal.
-            </p>
+                <p className='mt-6 mb-12 font-normal text-base leading-6 text-[#696969]'>
+                  Add the location of an additional branch office here. This helps us match your company with tenders in
+                  the areas you cover. You can add one branch now or skip this step and add more branches later from
+                  your portal.
+                </p>
+              </>
+            )}
+
+            {!hideHeader && (
+              <div className='mb-8'>
+                <Typography variant='body2' className='text-sm font-medium text-[#262B43E5] mb-4'>
+                  Contact Information
+                </Typography>
+
+                <Grid container spacing={6}>
+                  <Grid item xs={12} sm={4}>
+                    <FormInput
+                      name='contactName'
+                      control={control}
+                      label='Contact Name'
+                      type='text'
+                      placeholder='Contact Name'
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <FormInput
+                      name='contactEmail'
+                      control={control}
+                      label='Contact Email'
+                      type='email'
+                      placeholder='Contact Email'
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <FormInput
+                      name='contactPhoneNumber'
+                      control={control}
+                      label='Contact Phone Number'
+                      type='tel'
+                      placeholder='Contact Phone Number'
+                    />
+                  </Grid>
+                </Grid>
+              </div>
+            )}
 
             <div className='mb-8'>
-              <Typography variant='body2' className='text-sm font-medium text-[#262B43E5] mb-4'>
-                Contact Information
-              </Typography>
-              <Grid container spacing={6}>
-                <Grid item xs={12} sm={4}>
-                  <FormInput
-                    name='contactName'
-                    control={control}
-                    label='Contact Name'
-                    type='text'
-                    placeholder='Contact Name'
-                  />
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <FormInput
-                    name='contactEmail'
-                    control={control}
-                    label='Contact Email'
-                    type='email'
-                    placeholder='Contact Email'
-                  />
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <FormInput
-                    name='contactPhoneNumber'
-                    control={control}
-                    label='Contact Phone Number'
-                    type='tel'
-                    placeholder='Contact Phone Number'
-                  />
-                </Grid>
-              </Grid>
-            </div>
+              {!hideHeader && (
+                <Typography variant='body2' className='text-sm font-medium text-[#262B43E5] mb-4'>
+                  Branch Name
+                </Typography>
+              )}
 
-            <div className='mb-8'>
-              <Typography variant='body2' className='text-sm font-medium text-[#262B43E5] mb-4'>
-                Branch Name
-              </Typography>
-              <Grid container spacing={6}>
-                <Grid item xs={12} sm={4}>
-                  <FormInput
-                    name='branchName'
-                    control={control}
-                    label='Branch Name'
-                    type='text'
-                    placeholder='Branch Name'
-                  />
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={12} sx={{ marginTop: 8 }}>
-                <div className='flex gap-3 items-center'>
-                  <div className='flex-1'>
+              {hideHeader ? (
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <FormInput
+                      name='branchName'
+                      control={control}
+                      label='Branch Name'
+                      type='text'
+                      placeholder='Branch Name'
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} sm={6}>
                     <FormInput
                       name='postcode'
                       control={control}
@@ -397,22 +495,88 @@ export default function PmaBranchLocationFormView() {
                       type='text'
                       placeholder='Enter Postcode'
                     />
-                  </div>
-                </div>
-                <CustomButton
-                  onClick={handlePostcodeLookupFromForm}
-                  disabled={postcodeMutation.isPending}
-                  sx={{ fontSize: '14px', fontWeight: 700, backgroundColor: '#26C6F9', marginTop: 6 }}
-                >
-                  {postcodeMutation.isPending ? 'Finding...' : 'Find Address'}
-                </CustomButton>
-              </Grid>
+                  </Grid>
+
+                  <Grid
+                    item
+                    xs={12}
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'flex-end'
+                    }}
+                  >
+                    <CustomButton
+                      onClick={handlePostcodeLookupFromForm}
+                      disabled={postcodeMutation.isPending}
+                      sx={{
+                        fontSize: '14px',
+                        fontWeight: 700,
+                        backgroundColor: '#26C6F9',
+                        width: '20%'
+                      }}
+                    >
+                      {postcodeMutation.isPending ? 'Finding...' : 'Find Address'}
+                    </CustomButton>
+                  </Grid>
+                </Grid>
+              ) : (
+                <>
+                  <Grid container spacing={6}>
+                    <Grid item xs={12} sm={4}>
+                      <FormInput
+                        name='branchName'
+                        control={control}
+                        label='Branch Name'
+                        type='text'
+                        placeholder='Branch Name'
+                      />
+                    </Grid>
+                  </Grid>
+                  <Grid item xs={12} sm={4} sx={{ marginTop: 8 }}>
+                    <div className='flex gap-3 items-center'>
+                      <div className='flex-1'>
+                        <FormInput
+                          name='postcode'
+                          control={control}
+                          label='Enter Postcode'
+                          type='text'
+                          placeholder='Enter Postcode'
+                        />
+                      </div>
+                    </div>
+                    <CustomButton
+                      onClick={handlePostcodeLookupFromForm}
+                      disabled={postcodeMutation.isPending}
+                      sx={{ fontSize: '14px', fontWeight: 700, backgroundColor: '#26C6F9', marginTop: 6 }}
+                    >
+                      {postcodeMutation.isPending ? 'Finding...' : 'Find Address'}
+                    </CustomButton>
+                  </Grid>
+                </>
+              )}
             </div>
 
             <GenericAddressSelector
               addresses={addresses}
-              currentPostcode={currentPostcode || savedData?.postcode || 'SWA 1AA'}
-              savedAddressData={savedData}
+              currentPostcode={
+                currentPostcode ||
+                initialBranchData?.postcode ||
+                savedData?.postcode ||
+                'SWA 1AA'
+              }
+              savedAddressData={
+                initialBranchData?.addressData
+                  ? {
+                      address: initialBranchData.addressData.addressLine1 || '',
+                      address_line2: initialBranchData.addressData.addressLine2 || '',
+                      postcode: initialBranchData.addressData.postcode || '',
+                      region: initialBranchData.addressData.region || '',
+                      county: initialBranchData.addressData.county || '',
+                      lat: String(initialBranchData.addressData.coordinates?.lat || 0),
+                      lng: String(initialBranchData.addressData.coordinates?.lng || 0)
+                    }
+                  : savedData
+              }
               showManualEntry={true}
               showPostcodeSection={false}
               onAddressSelect={handleAddressSelect}
@@ -422,72 +586,76 @@ export default function PmaBranchLocationFormView() {
               isSubmitting={isSubmitting || postcodeMutation.isPending}
             />
 
-            <div className='mb-6 mt-10'>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={useHeadOfficeContact}
-                    onChange={e => setUseHeadOfficeContact(e.target.checked)}
-                    sx={{
-                      color: '#d9d9d9',
-                      '&.Mui-checked': {
-                        color: '#26C6F9'
-                      }
-                    }}
+            {!hideHeader && (
+              <>
+                <div className='mb-6 mt-10'>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={useHeadOfficeContact}
+                        onChange={e => setUseHeadOfficeContact(e.target.checked)}
+                        sx={{
+                          color: '#d9d9d9',
+                          '&.Mui-checked': {
+                            color: '#26C6F9'
+                          }
+                        }}
+                      />
+                    }
+                    label={
+                      <Typography variant='body2' className='text-sm font-normal text-[#696969]'>
+                        Use Head Office Address As Main Contact For This Branch
+                      </Typography>
+                    }
                   />
-                }
-                label={
-                  <Typography variant='body2' className='text-sm font-normal text-[#696969]'>
-                    Use Head Office Address As Main Contact For This Branch
-                  </Typography>
-                }
-              />
-            </div>
-
-            <div className='mb-8 flex flex-col gap-2'>
-              {!useHeadOfficeContact && (
-                <div className='flex items-start'>
-                  <span className='text-[#696969] text-xs mr-1'>●</span>
-                  <Typography variant='body2' className='text-xs font-normal text-[#696969]'>
-                    New User will be created based on the above contact information.
-                  </Typography>
                 </div>
-              )}
-              <div className='flex items-start'>
-                <span className='text-[#696969] text-xs mr-1'>●</span>
-                <Typography variant='body2' className='text-xs font-normal text-[#696969]'>
-                  You can manage branch user access and permissions from within your user settings. Adding branches
-                  ensures local tenders are routed to the correct contact.
-                </Typography>
-              </div>
-            </div>
 
-            <div className='flex justify-between mt-8 gap-2'>
-              <CustomButton
-                variant='outlined'
-                onClick={handleBack}
-                startIcon={<i className='ri-arrow-left-line'></i>}
-                sx={{ fontSize: '14px', fontWeight: 700 }}
-              >
-                Back
-              </CustomButton>
+                <div className='mb-8 flex flex-col gap-2'>
+                  {!useHeadOfficeContact && (
+                    <div className='flex items-start'>
+                      <span className='text-[#696969] text-xs mr-1'>●</span>
+                      <Typography variant='body2' className='text-xs font-normal text-[#696969]'>
+                        New User will be created based on the above contact information.
+                      </Typography>
+                    </div>
+                  )}
+                  <div className='flex items-start'>
+                    <span className='text-[#696969] text-xs mr-1'>●</span>
+                    <Typography variant='body2' className='text-xs font-normal text-[#696969]'>
+                      You can manage branch user access and permissions from within your user settings. Adding branches
+                      ensures local tenders are routed to the correct contact.
+                    </Typography>
+                  </div>
+                </div>
 
-              <div className='flex gap-2'>
-                <CustomButton variant='outlined' onClick={handleSkip} sx={{ fontSize: '14px', fontWeight: 700 }}>
-                  Skip
-                </CustomButton>
-                <CustomButton
-                  variant='contained'
-                  onClick={handleSubmit(handleNext)}
-                  endIcon={<i className='ri-arrow-right-line'></i>}
-                  sx={{ fontSize: '14px', fontWeight: 700 }}
-                  disabled={isSubmitting}
-                  isLoading={isSubmitting}
-                >
-                  {isSubmitting ? 'Processing...' : 'Next'}
-                </CustomButton>
-              </div>
-            </div>
+                <div className='flex justify-between mt-8 gap-2'>
+                  <CustomButton
+                    variant='outlined'
+                    onClick={handleBack}
+                    startIcon={<i className='ri-arrow-left-line'></i>}
+                    sx={{ fontSize: '14px', fontWeight: 700 }}
+                  >
+                    Back
+                  </CustomButton>
+
+                  <div className='flex gap-2'>
+                    <CustomButton variant='outlined' onClick={handleSkip} sx={{ fontSize: '14px', fontWeight: 700 }}>
+                      Skip
+                    </CustomButton>
+                    <CustomButton
+                      variant='contained'
+                      onClick={handleSubmit(handleNext)}
+                      endIcon={<i className='ri-arrow-right-line'></i>}
+                      sx={{ fontSize: '14px', fontWeight: 700 }}
+                      disabled={isSubmitting}
+                      isLoading={isSubmitting}
+                    >
+                      {isSubmitting ? 'Processing...' : 'Next'}
+                    </CustomButton>
+                  </div>
+                </div>
+              </>
+            )}
           </form>
         </div>
       </div>

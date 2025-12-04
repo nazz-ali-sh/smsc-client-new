@@ -558,9 +558,7 @@ const KitchenSink = () => {
             <CustomButton
               variant='contained'
               onClick={openModal}
-              disabled={
-                isViewingResponse || table?.getSelectedRowModel().rows?.length === 0 || tenderStatus !== 'active'
-              }
+              disabled={isViewingResponse || table?.getSelectedRowModel().rows?.length === 0}
             >
               Shortlist Selected Agents
             </CustomButton>

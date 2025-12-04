@@ -1,5 +1,3 @@
-import type { BranchType, UserType } from './types'
-
 const mobilePrefixes = ['074', '075', '077', '078', '079']
 
 const generateUKMobileNumber = () => {
@@ -12,7 +10,7 @@ const generateUKMobileNumber = () => {
   return `+44${prefix}${number}`
 }
 
-export const dummyBranches: BranchType[] = Array.from({ length: 20 }, (_, i) => ({
+export const dummyBranches: any[] = Array.from({ length: 20 }, (_, i) => ({
   id: i + 1,
   company_id: Math.floor(1 + Math.random() * 5),
   user_id: Math.floor(1 + Math.random() * 10),
@@ -27,7 +25,7 @@ export const dummyBranches: BranchType[] = Array.from({ length: 20 }, (_, i) => 
   status: Math.random() > 0.5 ? 'active' : 'inactive'
 }))
 
-export const dummyUsers: UserType[] = Array.from({ length: 50 }, (_, i) => ({
+export const dummyUsers: any[] = Array.from({ length: 50 }, (_, i) => ({
   id: i + 1,
   name: `User ${i + 1}`,
   email: `user${i + 1}@example.com`,

@@ -1,7 +1,7 @@
 'use client'
 
-import InviteSiteVisitView from '@/views/inviteSiteVisits.tsx/InviteSiteVisitView'
 import { withPortalCheck } from '@/components/hoc/withPortalCheck'
+import InviteSiteVisitView from '@/views/inviteSiteVisits.tsx/InviteSiteVisitView '
 import PmaInviteSiteVisitView from '@/views/inviteSiteVisits.tsx/PmaInviteSiteVisitView'
 
 const PmaSiteVisits = () => {

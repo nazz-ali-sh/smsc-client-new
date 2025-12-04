@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from 'react'
 
+import { useSearchParams } from 'next/navigation'
+
 import { Box } from '@mui/material'
 
 import { useSelector } from 'react-redux'
@@ -17,11 +19,33 @@ import SiteVisitUpcoming from './SiteVisitUpcoming'
 import SiteVisitReject from './SiteVisitReject'
 import SiteVisitTabSection from './SiteVisitTabSection'
 
-const SiteVisitTabs = () => {
+const RmcSiteVisitTabs = () => {
+  const searchParams = useSearchParams()
+  const tabParam = searchParams.get('tab')
+
   const [activeTab, setActiveTab] = useState(0)
   const [activeStatus, setActiveStatus] = useState('')
 
   const tender_id = useSelector((state: any) => state?.rmcOnboarding?.tenderId)
+
+  useEffect(() => {
+    if (tabParam === 'pending') {
+      setActiveTab(3)
+      setActiveStatus('pending')
+    } else if (tabParam === 'rescheduled') {
+      setActiveTab(1)
+      setActiveStatus('rescheduled')
+    } else if (tabParam === 'accepted') {
+      setActiveTab(2)
+      setActiveStatus('accepted')
+    } else if (tabParam === 'rejected') {
+      setActiveTab(4)
+      setActiveStatus('rejected')
+    } else {
+      setActiveTab(0)
+      setActiveStatus('upcoming')
+    }
+  }, [tabParam])
 
   useEffect(() => {
     if (activeTab === 0) {
@@ -80,4 +104,4 @@ const SiteVisitTabs = () => {
   )
 }
 
-export default SiteVisitTabs
+export default RmcSiteVisitTabs

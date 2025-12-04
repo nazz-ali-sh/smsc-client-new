@@ -27,7 +27,8 @@ function CommonTable<T>({
   pageSizeOptions = [5, 10, 25],
   className = '',
   enableSorting = true,
-  isPagination = true
+  isPagination = true,
+  enableCellWrapping = false
 }: CommonTableProps<T>) {
   const [internalPagination, setInternalPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 5 })
   const [sorting, setSorting] = useState<SortingState>([])
@@ -141,9 +142,16 @@ function CommonTable<T>({
                         style={{
                           minWidth: cell?.column?.columnDef?.size,
                           maxWidth: cell?.column?.columnDef?.size || '1px',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
+                          ...(enableCellWrapping
+                            ? {
+                                whiteSpace: 'normal',
+                                wordBreak: 'break-word'
+                              }
+                            : {
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap'
+                              }),
                           color: '#262B43E5',
                           fontSize: '12px',
                           paddingTop: '22px',

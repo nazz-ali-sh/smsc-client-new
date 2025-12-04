@@ -669,20 +669,42 @@ export const editProfileSchema = object({
   minimumManagementFee: pipe(string(), nonEmpty('Minimum management fee is required')),
   maximumManagementFee: pipe(string(), nonEmpty('Maximum management fee is required')),
   preferredContact: pipe(string(), nonEmpty('Preferred contact is required')),
-  secondaryContactName: pipe(string(), nonEmpty('Secondary contact name is required')),
-  secondaryPhoneNumber: pipe(
+  googleAverageRating: pipe(
     string(),
-    nonEmpty('Secondary phone number is required'),
-    check(validateUKPhoneNumber, 'Please enter a valid UK phone number')
+    check(value => {
+      if (!value || value.trim() === '') return true
+      const num = parseFloat(value)
+
+      return num >= 1 && num <= 5
+    }, 'Google average rating must be between 1 and 5')
   ),
-  secondaryEmail: pipe(string(), nonEmpty('Secondary email is required'), email('Please enter a valid email address')),
-  secondaryMobileLandline: pipe(
+  googleNumberOfReviews: pipe(
     string(),
-    nonEmpty('Mobile/Landline is required'),
-    check(validateUKPhoneNumber, 'Please enter a valid UK phone number')
+    check(value => {
+      if (!value || value.trim() === '') return true
+      const num = parseInt(value)
+
+      return num >= 0 && num <= 900
+    }, 'Google number of reviews must be between 0 and 900')
   ),
-  googleReviews: pipe(string(), nonEmpty('Google reviews is required')),
-  trustpilotReviews: pipe(string(), nonEmpty('Trustpilot reviews is required')),
+  trustpilotAverageRating: pipe(
+    string(),
+    check(value => {
+      if (!value || value.trim() === '') return true
+      const num = parseFloat(value)
+
+      return num >= 1 && num <= 5
+    }, 'Trustpilot average rating must be between 1 and 5')
+  ),
+  trustpilotNumberOfReviews: pipe(
+    string(),
+    check(value => {
+      if (!value || value.trim() === '') return true
+      const num = parseInt(value)
+
+      return num >= 0 && num <= 900
+    }, 'Trustpilot number of reviews must be between 0 and 900')
+  ),
   companyBio: pipe(
     string(),
     nonEmpty('Company bio is required'),
