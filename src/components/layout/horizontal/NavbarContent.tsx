@@ -215,7 +215,7 @@ const NavbarContent = () => {
         )}
         
         {!shouldHideElements && <NavSearch />}
-        {!shouldHideElements && !isPmaUser && <NotificationsDropdown notificationss={notifications} />}
+        {!shouldHideElements  && <NotificationsDropdown notificationss={notifications} />}
         <UserDropdown selectedTenderInitial={userInitials} />
       </div>
     </div>
