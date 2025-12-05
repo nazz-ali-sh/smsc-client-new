@@ -1,11 +1,7 @@
-import React from 'react'
+import PmaInvoiceView from '@/views/PmaInvoices/PmaInvoiceView'
 
 const page = () => {
-  return (
-    <div>
-      <h1 className='text-4xl font-bold text-gray-800'>PMA Invoices Coming Soon</h1>
-    </div>
-  )
+  return <PmaInvoiceView />
 }
 
 export default page

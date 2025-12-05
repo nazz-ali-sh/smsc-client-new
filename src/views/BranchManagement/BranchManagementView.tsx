@@ -111,13 +111,13 @@ const BranchManagementView = () => {
   const filteredData = useMemo(() => {
     if (!searchQuery) return branchOptions
 
-    return branchOptions.filter(
+    return branchOptions?.filter(
       (branch: BranchType) =>
-        (branch.branch_name ?? '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (branch.address ?? '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (branch.postcode ?? '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (branch.contact_name ?? '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (branch.contact_email ?? '').toLowerCase().includes(searchQuery.toLowerCase())
+        (branch?.branch_name ?? '')?.toLowerCase()?.includes(searchQuery.toLowerCase()) ||
+        (branch?.address ?? '')?.toLowerCase()?.includes(searchQuery.toLowerCase()) ||
+        (branch?.postcode ?? '')?.toLowerCase()?.includes(searchQuery.toLowerCase()) ||
+        (branch?.contact_name ?? '')?.toLowerCase()?.includes(searchQuery.toLowerCase()) ||
+        (branch?.contact_email ?? '')?.toLowerCase()?.includes(searchQuery.toLowerCase())
     )
   }, [branchOptions, searchQuery])
 

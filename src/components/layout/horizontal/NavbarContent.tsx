@@ -213,9 +213,9 @@ const NavbarContent = () => {
             </Grid>
           </div>
         )}
-
+        
         {!shouldHideElements && <NavSearch />}
-        {!shouldHideElements && <NotificationsDropdown notificationss={notifications} />}
+        {!shouldHideElements  && <NotificationsDropdown notificationss={notifications} />}
         <UserDropdown selectedTenderInitial={userInitials} />
       </div>
     </div>

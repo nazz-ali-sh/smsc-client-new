@@ -7,7 +7,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import type { CalendarOptions } from '@fullcalendar/core'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
@@ -25,6 +25,8 @@ import PendingSiteVisitModal from '@/common/PendingSiteVisitModal'
 import { reSchedualAccepted, rmcSideVisitAccept } from '@/services/site_visit_apis/site_visit_api'
 import JoinMeetingModal from '@/common/JoinMeetingModal'
 import CommonModal from '@/common/CommonModal'
+import { setCalendarApiPayload } from '@/redux-store/slices/rmcCalendar'
+import { formatCalendarDate } from '@/utils/dateformate'
 
 type CalenderProps = {
   calendarStore?: CalendarType
@@ -50,7 +52,7 @@ const Calendar = (props: CalenderProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
   const [joinSiteVisitmetting, setJoinSiteVisitMetting] = useState(false)
-
+   const dispatch = useDispatch()
 
   interface PillsData {
     pma_username: PillsData | undefined
@@ -192,6 +194,22 @@ const Calendar = (props: CalenderProps) => {
       start: 'sidebarToggle, prev, next, title',
       end: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
     },
+
+
+   datesSet: (dateInfo) => {
+
+  const { yearMonth, fullDate } = formatCalendarDate(dateInfo.start);
+
+  dispatch(
+    setCalendarApiPayload({
+      tenderId: rmctender_id,
+      status: 'month',
+      selectedYearMonth: yearMonth,     
+      selectedFullDate: fullDate      
+    })
+  );
+},
+
     views: {
       week: {
         titleFormat: { year: 'numeric', month: 'short', day: 'numeric' },
@@ -291,7 +309,7 @@ const Calendar = (props: CalenderProps) => {
 
       <VideosCallsModal
         open={onlineCallsModalOpen}
-        onClose={() => setOnlineCallsModalOpen(false)}
+      onClose={() => setOnlineCallsModalOpen(false)}
         componentTypes='fromCalender'
         types='reschedual'
         mainSiteVisitVideoCalls={undefined}
@@ -300,7 +318,7 @@ const Calendar = (props: CalenderProps) => {
 
       <RejectModal
         open={siteVisitRejectedModal}
-        setConfirmOpen={setsiteVisitRejectedModal} // ✅ fixed
+        setConfirmOpen={setsiteVisitRejectedModal}
         title='Reschedule Request Rejected!'
         description={`You have rejected the reschedule request from ${
           selectedPillsData && selectedPillsData?.pma_username

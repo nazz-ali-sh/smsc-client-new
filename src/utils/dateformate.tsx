@@ -1,3 +1,19 @@
+import dayjs from 'dayjs';
+
+
+
+export const formatCalendarDate = (date: Date | string | number): {
+  yearMonth: string;
+  fullDate: string;
+} => {
+  const d = dayjs(date);
+
+  return {
+    yearMonth: d.format('YYYY-MM'),
+    fullDate: d.format('YYYY-MM-DD'),
+  };
+};
+
 export const formatDate = (dateString?: string | null): string => {
     if (!dateString) return '--'
 

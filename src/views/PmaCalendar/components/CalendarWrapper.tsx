@@ -12,6 +12,7 @@ import Calendar from './Calendar'
 import SidebarLeft from './SidebarLeft'
 import type { RootState } from '@/redux-store'
 import { pmagettingCalanderDates } from '@/services/pma_site_visit/pma_site_visit'
+import { setCalendarApiPayload } from '@/redux-store/slices/rmcCalendar'
 
 const calendarsColor: CalendarColors = {
   Personal: 'primary',
@@ -74,7 +75,6 @@ interface ApiResponse {
 }
 
 const CalendarWrapper = () => {
-  const today = dayjs()
   const [calendarApi, setCalendarApi] = useState<any>(null)
   const [leftSidebarOpen, setLeftSidebarOpen] = useState<boolean>(false)
   const [eventsData, setEventsData] = useState<CalendarEvent[]>([])
@@ -85,9 +85,22 @@ const CalendarWrapper = () => {
   const calendarApiPayload = useSelector((state: RootState) => state.rmcCalendarReducer.calendarApiPayload)
   const calendarActiveStatus = useSelector((state: RootState) => state.rmcCalendarReducer.calendarStatus)
 
+  useEffect(() => {
+    const today = dayjs()
+
+    dispatch(
+      setCalendarApiPayload({
+        tenderId: null, 
+        status: 'month',
+        selectedYearMonth: today.format('YYYY-MM'),
+        selectedFullDate: today.format('YYYY-MM-DD')
+      })
+    )
+  }, [dispatch])
+
   const { data: rmcCalendarData } = useQuery<ApiResponse | undefined>({
     queryKey: [
-      'calendarDates',
+      'pmaCalendarDates',
       calendarApiPayload?.status,
       calendarActiveStatus,
       calendarApiPayload?.selectedYearMonth,
@@ -95,19 +108,20 @@ const CalendarWrapper = () => {
     ],
     queryFn: () =>
       pmagettingCalanderDates(
-        calendarApiPayload?.status || 'month',
-        calendarActiveStatus || 'month',
-        calendarApiPayload?.selectedYearMonth || today.format('YYYY-MM'),
-        calendarApiPayload?.selectedFullDate || today.format('YYYY-MM-DD')
+        calendarApiPayload!.status || 'month',
+        calendarActiveStatus!,
+        calendarApiPayload!.selectedYearMonth!,
+        calendarApiPayload!.selectedFullDate!
       ),
-    enabled: !!calendarApiPayload?.status,
-    retry: 2
+    enabled: !!calendarApiPayload?.selectedYearMonth && calendarActiveStatus !== null,
   })
 
-  console.log(rmcCalendarData)
-
   useEffect(() => {
-    if (!rmcCalendarData?.data) return
+    if (calendarActiveStatus === null || !rmcCalendarData?.data) {
+      setEventsData([])
+
+      return
+    }
 
     const videoCalls: CalendarEvent[] = (rmcCalendarData.data.video_call_invites ?? []).map(invite => ({
       invite_Id: invite.id,
@@ -139,7 +153,7 @@ const CalendarWrapper = () => {
     }))
 
     setEventsData([...videoCalls, ...siteVisits])
-  }, [rmcCalendarData])
+  }, [rmcCalendarData, calendarActiveStatus])
 
   const handleLeftSidebarToggle = () => setLeftSidebarOpen(prev => !prev)
 

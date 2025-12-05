@@ -14,6 +14,7 @@ import SidebarLeft from './SidebarLeft'
 import { gettingCalanderDates } from '@/services/final_result_and_archeive_apis/final_results_apis'
 import type { RootState } from '@/redux-store'
 import { formatDates } from '@/utils/dateFormater'
+import { setCalendarApiPayload } from '@/redux-store/slices/rmcCalendar'
 
 const calendarsColor: CalendarColors = {
   Personal: 'primary',
@@ -44,8 +45,8 @@ export interface Invite {
     end_time: string
   }
   status?: string
-  zoom_meeting_link?: string // only for video call
-  location?: string // only for site visit
+  zoom_meeting_link?: string
+  location?: string
 }
 
 interface RmcCalendarData {
@@ -89,7 +90,6 @@ const CalendarWrapper = () => {
   const [addEventSidebarOpen, setAddEventSidebarOpen] = useState<boolean>(false)
   const [eventsData, setEventsData] = useState<CalendarEvent[]>([])
 
-
   const dispatch = useDispatch()
   const mdAbove = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'))
   const handleLeftSidebarToggle = () => setLeftSidebarOpen(!leftSidebarOpen)
@@ -107,34 +107,59 @@ const CalendarWrapper = () => {
 
   console.log(setCalendarFilters)
 
+  useEffect(() => {
+    const today = dayjs()
+    const yearMonth = today.format('YYYY-MM')
+    const fullDate = today.format('YYYY-MM-DD')
+
+    dispatch(
+      setCalendarApiPayload({
+        tenderId,
+        status: 'month',
+        selectedYearMonth: yearMonth,
+        selectedFullDate: fullDate
+      })
+    )
+  }, [dispatch, tenderId])
+
   const { data: rmcCalendarData } = useQuery({
     queryKey: [
       'calendarDates',
       tenderId,
       calendarApiPayload?.status || calendarFilters?.status,
-      calendarActiveStatus || calendarFilters?.view,
+      calendarActiveStatus,
       calendarApiPayload?.selectedYearMonth || calendarFilters?.selectedYearMonth,
       calendarApiPayload?.selectedFullDate || calendarFilters?.selectedFullDate
     ],
+
     queryFn: () =>
       gettingCalanderDates(
         tenderId,
-        calendarApiPayload?.status || calendarFilters?.status,
-        calendarActiveStatus || calendarFilters?.view,
-        calendarApiPayload?.selectedYearMonth || calendarFilters?.selectedYearMonth,
-        calendarApiPayload?.selectedFullDate || calendarFilters?.selectedFullDate
+        calendarApiPayload.status,
+        calendarActiveStatus!,
+        calendarApiPayload.selectedYearMonth,
+        calendarApiPayload.selectedFullDate
       ),
-    enabled: !!tenderId
+    enabled: !!tenderId && !!calendarApiPayload?.selectedYearMonth && calendarActiveStatus !== null
   })
 
   useEffect(() => {
-    if (!rmcCalendarData) return
+    if (calendarActiveStatus === null) {
+      setEventsData([])
 
-    const mapCalendarDataToEvents = (rmcCalendarData: RmcCalendarData): CalendarEvent[] => {
+      return
+    }
+
+    if (!rmcCalendarData) {
+      setEventsData([])
+
+      return
+    }
+
+    const mapCalendarDataToEvents = (data: RmcCalendarData): CalendarEvent[] => {
       const videoCallEvents: CalendarEvent[] =
-        rmcCalendarData?.data?.video_call_invites?.map(invite => {
+        data?.data?.video_call_invites?.map(invite => {
           const date = invite.scheduled_date.split('T')[0]
-
 
           return {
             invite_Id: invite.id,
@@ -151,15 +176,13 @@ const CalendarWrapper = () => {
             end: `${date}T${invite?.slot?.end_time}`,
             schedualDate: formatDates(invite?.scheduled_date),
             allDay: false,
-
             status: invite?.status,
             calendartype: 'VideoCall'
           }
         }) ?? []
 
-
       const siteVisitEvents: CalendarEvent[] =
-        rmcCalendarData?.data?.site_visit_invites?.map(invite => {
+        data?.data?.site_visit_invites?.map(invite => {
           const date = invite.scheduled_date.split('T')[0]
 
           return {
@@ -182,14 +205,13 @@ const CalendarWrapper = () => {
           }
         }) ?? []
 
-
       return [...videoCallEvents, ...siteVisitEvents]
     }
 
     const events = mapCalendarDataToEvents(rmcCalendarData)
 
     setEventsData(events)
-  }, [rmcCalendarData])
+  }, [rmcCalendarData, calendarActiveStatus])
 
   return (
     <>

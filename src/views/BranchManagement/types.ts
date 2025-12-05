@@ -5,11 +5,11 @@ export interface BranchType {
   branch_name?: string
   address?: string
   address_line2?: string
-  postcode: string
+  postcode?: string
   region?: string
   county?: string
-  lat?: string
-  lng?: string
+  lat?: string 
+  lng?: string 
   contact_name?: string
   contact_email?: string
   contact_phone?: string

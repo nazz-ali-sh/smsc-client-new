@@ -29,7 +29,9 @@ const SidebarLeft = (props: SidebarLeftProps) => {
   const [onlineCallsModalOpen, setOnlineCallsModalOpen] = useState(false)
   const [selectedFullDate, setSelectedFullDate] = useState<string | null>(null)
   const [selectedYearMonth, setSelectedYearMonth] = useState<string | null>(null)
-  const [selectedFilter, setSelectedFilter] = useState<string>('')
+  const [selectedFilters, setSelectedFilters] = useState<string[]>(['site_visit', 'video_call'])
+
+  // const [selectedFilter, setSelectedFilter] = useState<string>('')
   const dispatch = useDispatch()
 
   const isAppointmentCompleted = useSelector((state: any) => state?.siteVisitAndCallStats?.isAppointmentCompleted)
@@ -63,13 +65,28 @@ const SidebarLeft = (props: SidebarLeftProps) => {
   }
 
   const handleChange = (value: string) => {
-    setSelectedFilter(prev => (prev === value ? '' : value))
-    dispatch(setCalendarStatus(selectedFilter))
+    setSelectedFilters(prev => {
+      if (prev.includes(value)) {
+        // Uncheck
+        return prev.filter(f => f !== value)
+      } else {
+        // Check
+        return [...prev, value]
+      }
+    })
   }
 
   useEffect(() => {
-    dispatch(setCalendarStatus(selectedFilter))
-  }, [selectedFilter, dispatch])
+    if (selectedFilters.length === 0) {
+      dispatch(setCalendarStatus(null)) // This will block API
+
+      return
+    }
+
+    const typeValue = selectedFilters.length === 2 ? '' : selectedFilters[0]
+
+    dispatch(setCalendarStatus(typeValue))
+  }, [selectedFilters, dispatch])
 
   return (
     <>
@@ -159,7 +176,7 @@ const SidebarLeft = (props: SidebarLeftProps) => {
           >
             <CustomButton
               fullWidth
-              disabled={!isShortlistedCompleted || isAppointmentCompleted} 
+              disabled={!isShortlistedCompleted || isAppointmentCompleted}
               onClick={() => setSiteVisitsModalOpen(true)}
             >
               Schedule Site Visit
@@ -178,9 +195,15 @@ const SidebarLeft = (props: SidebarLeftProps) => {
                   calendarApi?.gotoDate(date)
                   const { yearMonthDate, yearMonth } = formatDateValues(date)
 
-                  setSelectedFullDate(yearMonthDate)
                   setSelectedYearMonth(yearMonth)
+                  setSelectedFullDate(yearMonthDate)
                 }
+              }}
+              onMonthChange={(date: Date) => {
+                const { yearMonthDate, yearMonth } = formatDateValues(date)
+
+                setSelectedYearMonth(yearMonth)
+                setSelectedFullDate(yearMonthDate)
               }}
               renderCustomHeader={({
                 date,
@@ -232,26 +255,23 @@ const SidebarLeft = (props: SidebarLeftProps) => {
                 <Checkbox
                   sx={{
                     color: '#FF4D49',
-                    '&.Mui-checked': {
-                      color: '#FF4D49'
-                    }
+                    '&.Mui-checked': { color: '#FF4D49' }
                   }}
-                  checked={selectedFilter === 'site_visit'}
+                  checked={selectedFilters.includes('site_visit')}
                   onChange={() => handleChange('site_visit')}
                 />
               }
             />
+
             <FormControlLabel
               label='Video Call'
               control={
                 <Checkbox
                   sx={{
                     color: '#35C0ED',
-                    '&.Mui-checked': {
-                      color: '#35C0ED'
-                    }
+                    '&.Mui-checked': { color: '#35C0ED' }
                   }}
-                  checked={selectedFilter === 'video_call'}
+                  checked={selectedFilters.includes('video_call')}
                   onChange={() => handleChange('video_call')}
                 />
               }

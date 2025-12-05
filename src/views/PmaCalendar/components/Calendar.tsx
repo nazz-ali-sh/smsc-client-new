@@ -14,6 +14,8 @@ import { toast } from 'react-toastify'
 
 import { Box, DialogContent, DialogContentText } from '@mui/material'
 
+import { useDispatch } from 'react-redux'
+
 import type { CalendarColors, CalendarType } from '@/types/apps/calendarTypes'
 import PendingModal from '@/common/PendingModals'
 
@@ -26,6 +28,8 @@ import SiteVisitsModal from '../../../common/SiteVisitsModal'
 import SuccessModal from '@/common/SucessModal'
 import { pmaVideoCallAccept } from '@/services/pma_video_call/pma_video_call'
 import { pmaSideVisitAccept } from '@/services/pma_site_visit/pma_site_visit'
+import { setCalendarApiPayload } from '@/redux-store/slices/rmcCalendar'
+import { formatCalendarDate } from '@/utils/dateformate'
 
 type CalenderProps = {
   calendarStore?: CalendarType
@@ -39,6 +43,7 @@ type CalenderProps = {
 }
 
 const Calendar = (props: CalenderProps) => {
+  const dispatch = useDispatch()
   const { calendarApi, setCalendarApi, calendarsColor, calenderEventData } = props
 
   const [onlineCallsModalOpen, setOnlineCallsModalOpen] = useState(false)
@@ -55,8 +60,6 @@ const Calendar = (props: CalenderProps) => {
   const [siteVisitsModalOpen, setSiteVisitsModalOpen] = useState(false)
   const [joinSiteVisitmetting, setJoinSiteVisitMetting] = useState(false)
   const [isPmaSiteVisitAccepted, setIsPmaSiteVisitAccepted] = useState(false)
-
-
 
   interface PillsData {
     pma_username: PillsData | undefined
@@ -82,8 +85,6 @@ const Calendar = (props: CalenderProps) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-
 
   const handleModalClose = () => {
     setIsOpen(false)
@@ -149,7 +150,6 @@ const Calendar = (props: CalenderProps) => {
     }
   })
 
- 
   const rechedualRmcAgain = useMutation({
     mutationFn: ({ visitsSchedualInviteId, rmctender_id }: { visitsSchedualInviteId: any; rmctender_id: any }) =>
       pmaSideVisitAccept(visitsSchedualInviteId, rmctender_id),
@@ -194,6 +194,21 @@ const Calendar = (props: CalenderProps) => {
       start: 'sidebarToggle, prev, next, title',
       end: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
     },
+
+    datesSet: dateInfo => {
+      const start = dateInfo.start
+      const { yearMonth, fullDate } = formatCalendarDate(start)
+
+      dispatch(
+        setCalendarApiPayload({
+          tenderId: selectedPillsData?.tender_id,
+          status: 'month',
+          selectedYearMonth: yearMonth,
+          selectedFullDate: fullDate
+        })
+      )
+    },
+
     views: {
       week: {
         titleFormat: { year: 'numeric', month: 'short', day: 'numeric' },
@@ -330,7 +345,6 @@ const Calendar = (props: CalenderProps) => {
         message='Success! You have Sent the new meeting time.'
         title='Reschedule Request Accepted!'
         confirmButtonText='Confirm'
-
       />
 
       <SuccessModal
@@ -341,7 +355,6 @@ const Calendar = (props: CalenderProps) => {
         message='Success! You have Sent the new meeting time.'
         title='Reschedule Request Accepted!'
         confirmButtonText='Confirm'
-
       />
 
       <PendingSiteVisitModal
@@ -364,7 +377,6 @@ const Calendar = (props: CalenderProps) => {
         reschedualeSiteInvite={reschedualeSiteInvite}
         onPmaReschedual={PmaReschedualVideoCall}
         PmaSiteVisitReschedual={PmaSiteVisitReschedual}
-
       />
 
       <CommonModal
